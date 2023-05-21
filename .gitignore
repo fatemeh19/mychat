@@ -35,3 +35,6 @@
 /frontend/*.tsbuildinfo
 /frontend/next-env.d.ts
 # ----------------------------------------------- END frontend ignore
+# backend gitignore
+/server/node_modules
+/server/.env
