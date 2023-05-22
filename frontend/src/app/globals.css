@@ -2,26 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+:root
+{
+  --foreground-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+
+body
+{
+  background-color: rgb(var(--foreground-rgb));
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Thin.ttf');
+  font-weight: 100;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-ExtraLight.ttf');
+  font-weight: 200;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-ExtraBold.ttf');
+  font-weight: 800;
+}
+
+@font-face
+{
+  font-family: 'vazir';
+  src: url('/fonts/Vazir/Vazirmatn-Black.ttf');
+  font-weight: 900;
 }
