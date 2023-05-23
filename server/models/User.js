@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require('bcryptjs')
 const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "please provide name"],
+    //   required: [true, "please provide name"],
       minLength: [4, "name must be more than 4 characters"],
       maxLength: [20, "name must be less than 20 characters"],
     },
     email: {
       type: String,
-    //   required: [true, "please provide email"],
       validate: {
         validator: validator.isEmail,
-        message: "please provide valid email",
+        message: 'Please provide valid email',
       },
-      unique: true,
+      // unique: true,
     },
     password: {
       type: String,
@@ -24,9 +24,9 @@ const UserSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     //   required: [true, "please provide phoneNumber"],
-      validate: {
-        validator: validator.isMobilePhone("any"),
-      },
+      // validate: {
+      //   validator: validator.isMobilePhone('ir-IR'),
+      // },
       unique: true,
     },
     username: {
@@ -52,7 +52,7 @@ const UserSchema = new mongoose.Schema(
         type:Boolean,
         default:false
     },
-    VerificationToken:String,
+    verificationToken:String,
     verified:Date,
     passwordToken: {
         type: String,
@@ -63,3 +63,17 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+UserSchema.pre("save",async function(){
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
+})
+
+// UserSchema.methods.hashPassowrd = async function(){
+  
+// }
+UserSchema.methods.comparePassowrd = async function(){
+  
+}
+
+
+module.exports = mongoose.model('User', UserSchema)
