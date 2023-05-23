@@ -13,13 +13,14 @@ const register = async (req, res) => {
     throw new CustomError.BadRequestError("email already exists");
   }
   const verificationToken = crypto.randomBytes(40).toString("hex");
-  await sendVerificationEmail(email, verificationToken);
-
   await User.create({
     email,
     password,
     verificationToken,
   });
+  await sendVerificationEmail(email, verificationToken);
+
+ 
 
   res
     .status(StatusCodes.OK)

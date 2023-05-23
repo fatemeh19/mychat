@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema(
       // validate: {
       //   validator: validator.isMobilePhone('ir-IR'),
       // },
-      unique: true,
+      // unique: true,
     },
     username: {
       type: String,
