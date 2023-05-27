@@ -14,9 +14,9 @@ let btn: any;
 let btnHandler: () => void
 
 interface RegisterFormValue {
-    name: string,
+    // name?: string,
+    // phone?: Number | '',
     email: string,
-    phone: Number | '',
     password: string
 }
 
@@ -25,9 +25,9 @@ const InnerRegisterForm = (props: any) => {
     const { values } = props
     const router = useRouter()
 
-    // this code for navigate to login page after register
+    // this code for navigate to varifiy email page after register
     btn = document.querySelector('#register')
-    // btnHandler = () => router.push('/auth/login')
+    btnHandler = () => router.push('/auth/register/verify-email')
 
     return (
         <Form className=" w-full">
@@ -49,23 +49,24 @@ const InnerRegisterForm = (props: any) => {
     )
 }
 
+// name : we will recieve 
 const registerFormValidationSchema = yup.object().shape({
-    name: yup.string().required('وارد کردن این فیلد الزامی است').min(3, 'حداقل 3 کاراکتر وارد کنید'),
+    // name: yup.string().required('وارد کردن این فیلد الزامی است').min(3, 'حداقل 3 کاراکتر وارد کنید'),
+    // phone: yup.string().required(),
     email: yup.string().required().email(),
-    phone: yup.string().required(),
     password: yup
         .string()
         .required('Please Enter your password')
-        .minLowercase(1, 'At least One Lowercase')
-        .minUppercase(1, 'At least One Uppercase')
-        .minNumbers(1, 'At least One Number')
-        .minSymbols(1, 'At least One Symbole')
-        .min(8, 'Must atleast contain 8 charechter')
+        // .minLowercase(1, 'At least One Lowercase')
+        // .minUppercase(1, 'At least One Uppercase')
+        // .minNumbers(1, 'At least One Number')
+        // .minSymbols(1, 'At least One Symbole')
+        // .min(8, 'Must atleast contain 8 charechter')
 })
 
 interface registerFormProps {
-    name?: string,
-    phone?: Number | '',
+    // name?: string,
+    // phone?: Number | '',
     email?: string,
     password?: string
 }
@@ -73,18 +74,17 @@ interface registerFormProps {
 const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     mapPropsToValues: props => {
         return {
-            name: '',
-            email: '',
-            phone: '',
-            password: ''
+            // name: '',
+            email: "",
+            // phone: '',
+            password: ""
         }
     },
     validationSchema: registerFormValidationSchema,
-    handleSubmit: (values) => {
-        // btn.addEventListener('onclick', btnHandler());
-        // const res = callApi().post('/auth/register', values)
+    handleSubmit: async (values) => {
+        // const res = await callApi().post('/auth/register', values)
         // console.log(res)
-        console.log(' btn is : ', btn)
+        // btn.addEventListener('onclick', btnHandler());
 
     }
 })(InnerRegisterForm)
