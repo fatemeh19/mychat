@@ -6,7 +6,7 @@ export default function LogoIcon(){
     return (
         
             <div className="flex justify-center mb-10">
-                <BiConversation className="text-white cursor-pointer w-[50px] h-[50px]" />
+                <BiConversation className="text-white cursor-pointer w-[40px] h-[50px]" />
             </div>
         
     )

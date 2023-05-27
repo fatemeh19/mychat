@@ -10,7 +10,7 @@ export default function LeftSideMainPage(){
                 <SideBar />
             </div>
             <div className="col-span-3 ">
-                ff
+                
             </div>
         </div>
     )

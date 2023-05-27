@@ -2,20 +2,24 @@
 
 import LogoIcon from "./icons/logo";
 import DashbordIcon from "./icons/dashbord";
-import ChartIcon from "./icons/chart";
 import ChatIcon from "./icons/chat";
 import ContactsIcon from "./icons/contacts";
 import CalenderIcon from "./icons/calender";
+import SettingIcon from "./icons/setting";
+import BottomIcons from "./BottomIcons";
+
+
 export default function SideBar(){
 
     return (
-        <div className="h-screen bg-mainColor  pt-12">
+        <div className="h-screen bg-mainColor relative pt-12">
             <LogoIcon />
             <DashbordIcon />
-            <ChartIcon />
             <CalenderIcon />
             <ChatIcon />
             <ContactsIcon />
+            <SettingIcon />
+            <BottomIcons />
         </div>
     )
 }
