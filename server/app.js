@@ -5,6 +5,7 @@ const express = require('express')
 const app = express()
 
 const morgan = require('morgan')
+const cors = require('cors')
 
 const notFound = require('./middlewares/notfound')
 const errorHandlerMiddleware = require('./middlewares/error-handler')
@@ -14,6 +15,11 @@ app.use(morgan('common'))
 // db
 const connectDB = require('./db/connect')
 
+app.use(cors({
+    origin: '*',
+    
+    
+}));
 
 // routers
 app.use('/api/v1/auth', authRouter)

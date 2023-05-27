@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema(
     },
     username: {
       type: String,
-      unique: true,
+      // unique: true,
       minLength: [10, "username must be more than 10 characters"],
       maxLength: [20, "username must be less than 20 characters"],
     },
@@ -64,6 +64,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 UserSchema.pre("save",async function(){
+  
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
 })
@@ -71,9 +72,17 @@ UserSchema.pre("save",async function(){
 // UserSchema.methods.hashPassowrd = async function(){
   
 // }
-UserSchema.methods.comparePassowrd = async function(){
+// UserSchema.methods.comparePassowrd = async function(password){
+//   const isMatch = await bcrypt.compare(password,this.password)
+//   return isMatch 
   
-}
+// }
+UserSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch =  await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+ 
+
+};
 
 
 module.exports = mongoose.model('User', UserSchema)
