@@ -8,13 +8,15 @@ module.exports = {
     extend: {
       backgroundColor: {
         // 'mainColor': '#166e48'
-        'mainColor': '#2563eb'
+        'mainColor': '#2563eb',
+        'bgColorLight': '#fafafa',
+        'bgColorDark': '#1b1b1b'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        
+
       },
     },
   },
