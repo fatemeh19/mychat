@@ -82,8 +82,8 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     },
     validationSchema: registerFormValidationSchema,
     handleSubmit: async (values) => {
-        // const res = await callApi().post('/auth/register', values)
-        // console.log(res)
+        const res = await callApi().post('/auth/register', values)
+        console.log(res)
         btn.addEventListener('onclick', btnHandler());
 
     }
