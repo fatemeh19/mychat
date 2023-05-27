@@ -8,9 +8,10 @@ YupPassword(yup)
 
 import Input from "../input"
 import { useRouter } from 'next/navigation';
+import callApi from '@/src/helper/callApi';
 
 let btn: any;
-let btnHandler : () => void
+let btnHandler: () => void
 
 interface RegisterFormValue {
     name: string,
@@ -25,15 +26,15 @@ const InnerRegisterForm = (props: any) => {
     const router = useRouter()
 
     // this code for navigate to login page after register
-    btn = document.querySelector('.submit-btn')
-    btnHandler = () => router.push('/auth/login')
+    btn = document.querySelector('#register')
+    // btnHandler = () => router.push('/auth/login')
 
     return (
         <Form className=" w-full">
 
-            <Input name='name' label="name" />
+            {/* <Input name='name' label="name" /> */}
             <Input name="email" type="email" label="Email address" />
-            <Input name="phone" label="phone number" />
+            {/* <Input name="phone" label="phone number" /> */}
             <Input name="password" type="password" label="password" />
             <PasswordStrengthBar password={values.password} userInputs={[]} />
             <div className="my-5">
@@ -41,7 +42,7 @@ const InnerRegisterForm = (props: any) => {
                     id="register"
                     name="register"
                     type='submit'
-                    className="submit-btn w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
+                    className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                 >Register</button>
             </div>
         </Form>
@@ -80,9 +81,11 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     },
     validationSchema: registerFormValidationSchema,
     handleSubmit: (values) => {
-        console.log('submit value : ', values)
-        console.log(btn)
-        btn.addEventListener('onclick', btnHandler());
+        // btn.addEventListener('onclick', btnHandler());
+        // const res = callApi().post('/auth/register', values)
+        // console.log(res)
+        console.log(' btn is : ', btn)
+
     }
 })(InnerRegisterForm)
 
