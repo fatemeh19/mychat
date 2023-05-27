@@ -6,11 +6,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundColor: {
+        'mainColor': '#166e48'
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'mainColor':"#166e48"
+        
       },
     },
   },
