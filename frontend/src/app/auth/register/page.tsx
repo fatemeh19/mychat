@@ -1,5 +1,5 @@
 import Image from "next/image"
-import RegisterForm from "@/src/components/forms/registerForm"
+import RegisterForm from "@/src/components/auth/forms/registerForm"
 
 const Register = () => {
 

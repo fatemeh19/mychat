@@ -9,9 +9,12 @@ YupPassword(yup)
 import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
+import ValidationError from '@/src/errors/validationError';
 
 let btn: any;
 let btnHandler: () => void
+let message : string;
+// let notif: any
 
 interface RegisterFormValue {
     // name?: string,
@@ -27,8 +30,14 @@ const InnerRegisterForm = (props: any) => {
 
     // this code for navigate to varifiy email page after register
     btn = document.querySelector('#register')
-    btnHandler = () => router.push('/auth/register/verify-email')
 
+    btnHandler = () => {
+        localStorage.setItem('message', 'please go to your Email and press the link to verify your Email ')
+        router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
+
+    }
+    
+    // notif = document.querySelector('#notif')
     return (
         <Form className=" w-full">
 
@@ -44,6 +53,7 @@ const InnerRegisterForm = (props: any) => {
                     type='submit'
                     className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                 >Register</button>
+                {/* <h1 id='notif' className='text-red-400 my-2 hidden'>please go to your Email and press the link to verify your Email </h1> */}
             </div>
         </Form>
     )
@@ -57,11 +67,11 @@ const registerFormValidationSchema = yup.object().shape({
     password: yup
         .string()
         .required('Please Enter your password')
-        // .minLowercase(1, 'At least One Lowercase')
-        // .minUppercase(1, 'At least One Uppercase')
-        // .minNumbers(1, 'At least One Number')
-        // .minSymbols(1, 'At least One Symbole')
-        // .min(8, 'Must atleast contain 8 charechter')
+    // .minLowercase(1, 'At least One Lowercase')
+    // .minUppercase(1, 'At least One Uppercase')
+    // .minNumbers(1, 'At least One Number')
+    // .minSymbols(1, 'At least One Symbole')
+    // .min(8, 'Must atleast contain 8 charechter')
 })
 
 interface registerFormProps {
@@ -81,19 +91,25 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
         }
     },
     validationSchema: registerFormValidationSchema,
-    handleSubmit: async (values) => {
-        console.log('submit')
-        const res = await callApi().post('/auth/register', values)
-        console.log(res)
-        if(res.statusText && res.statusText === 'OK')
-        {
-            console.log('transfering ...')
-            // btn.addEventListener('onclick', btnHandler());
-
+    handleSubmit: async (values, { setFieldError }) => {
+        try {
+            console.log('submit')
+            const res = await callApi().post('/auth/register', values)
+            console.log(res)
+            if (res.statusText && res.statusText === 'OK') {
+                console.log('transfering ...')
+                btn.addEventListener('onclick', btnHandler());
+                // notif?.classList.remove('hidden')
+            }
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                setFieldError('email', error.message)
+            }
         }
 
 
     }
+
 })(InnerRegisterForm)
 
 export default RegisterForm
