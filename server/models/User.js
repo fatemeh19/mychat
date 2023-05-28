@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-    //   required: [true, "please provide name"],
+      //   required: [true, "please provide name"],
       minLength: [4, "name must be more than 4 characters"],
       maxLength: [20, "name must be less than 20 characters"],
     },
@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-    //   required: [true, "please provide phoneNumber"],
+      //   required: [true, "please provide phoneNumber"],
       // validate: {
       //   validator: validator.isMobilePhone('ir-IR'),
       // },
@@ -44,43 +44,43 @@ const UserSchema = new mongoose.Schema(
       lastseen: Date,
     },
     contacts: [],
-    profilePic:{
-        type:String,
-        Url:String
+    profilePic: {
+      type: String,
+      Url: String
     },
-    isVerified:{
-        type:Boolean,
-        default:false
+    isVerified: {
+      type: Boolean,
+      default: false
     },
-    verificationToken:String,
-    verified:Date,
+    verificationToken: String,
+    verified: Date,
     passwordToken: {
-        type: String,
+      type: String,
     },
     passwordTokenExpirationDate: {
-    type: Date,
+      type: Date,
     },
   },
   { timestamps: true }
 );
-UserSchema.pre("save",async function(){
-  
+UserSchema.pre("save", async function () {
+
   const salt = await bcrypt.genSalt(10)
   this.password = await bcrypt.hash(this.password, salt)
 })
 
 // UserSchema.methods.hashPassowrd = async function(){
-  
+
 // }
 // UserSchema.methods.comparePassowrd = async function(password){
 //   const isMatch = await bcrypt.compare(password,this.password)
 //   return isMatch 
-  
+
 // }
 UserSchema.methods.comparePassword = async function (canditatePassword) {
-  const isMatch =  await bcrypt.compare(canditatePassword, this.password);
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
- 
+
 
 };
 

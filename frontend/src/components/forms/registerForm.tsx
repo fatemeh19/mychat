@@ -82,9 +82,16 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     },
     validationSchema: registerFormValidationSchema,
     handleSubmit: async (values) => {
+        console.log('submit')
         const res = await callApi().post('/auth/register', values)
         console.log(res)
-        btn.addEventListener('onclick', btnHandler());
+        if(res.statusText && res.statusText === 'OK')
+        {
+            console.log('transfering ...')
+            // btn.addEventListener('onclick', btnHandler());
+
+        }
+
 
     }
 })(InnerRegisterForm)
