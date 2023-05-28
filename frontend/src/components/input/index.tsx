@@ -26,8 +26,12 @@ const Input: FC<inputProps> = ({
                 id={name}
                 name={name}
                 type={type}
-                className={`w-full border border-zinc-300 px-3 py-2 outline-none rounded-lg ${inputClassName ?? ''}`} />
-            <ErrorMessage name={name} className={`text-red-500 ${errorClassName ?? ''}`} />
+                className={`w-full border border-zinc-300 px-3 py-2 outline-none rounded-lg ${inputClassName ?? ''}`} 
+                />
+
+            <p className={`text-cyan-600 text-sm rtl ${errorClassName ?? ''}`}>
+                <ErrorMessage name={name} />
+            </p>
         </div>
     )
 }

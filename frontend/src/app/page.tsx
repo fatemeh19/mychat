@@ -1,13 +1,14 @@
 import Image from 'next/image'
 import LeftSideMainPage from '../components/leftSideMainPage'
+import RightSideMainPage from '../components/rightSideMainPage'
 export default function Home() {
   return (
-    <main className="grid grid-cols-12">
+    <main className="grid grid-cols-[repeat(16,_minmax(0,_1fr))] gap-[2px] bg-bgColorLight dark:bg-bgColorDark">
       <div className="col-span-4 leftSideMainPage">
         <LeftSideMainPage />
       </div>
-      <div className="col-span-8 rightSideMainPage">
-        av
+      <div className="col-span-12 rightSideMainPage">
+        <RightSideMainPage />
       </div>
     </main>
   )
