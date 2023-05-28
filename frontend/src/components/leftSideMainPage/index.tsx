@@ -1,6 +1,7 @@
 "use client"
 
 import SideBar from "./sideBar"
+import ChatList from "./chatList"
 
 export default function LeftSideMainPage(){
 
@@ -10,7 +11,7 @@ export default function LeftSideMainPage(){
                 <SideBar />
             </div>
             <div className="col-span-3 ">
-                
+                <ChatList />
             </div>
         </div>
     )

@@ -1,12 +1,12 @@
 "use client"
 
-import LogoIcon from "./icons/logo";
-import DashbordIcon from "./icons/dashbord";
-import ChatIcon from "./icons/chat";
-import ContactsIcon from "./icons/contacts";
-import CalenderIcon from "./icons/calender";
-import SettingIcon from "./icons/setting";
-import BottomIcons from "./BottomIcons";
+import {LogoIcon} from "../../home/HomeIcons";
+import {DashbordIcon} from "../../home/HomeIcons";
+import {ChatIcon} from "../../home/HomeIcons";
+import {ContactsIcon} from "../../home/HomeIcons";
+import {CalenderIcon} from "../../home/HomeIcons";
+import {SettingIcon} from "../../home/HomeIcons";
+import BottomIcons from "./bottomIcons";
 
 
 export default function SideBar(){
@@ -20,6 +20,7 @@ export default function SideBar(){
             <ContactsIcon />
             <SettingIcon />
             <BottomIcons />
+
         </div>
     )
 }
