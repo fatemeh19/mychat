@@ -3,7 +3,6 @@ const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const Utils = require("../utils");
 const crypto = require("crypto");
-const bcrypt = require('bcrypt')
 const register = async (req, res) => {
   const { email, password } = req.body;
   const emailAlreadyExists = await User.findOne({ email });
@@ -53,28 +52,21 @@ const verifyEmail = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    throw new CustomError.BadRequestError("Please provide email and password");
+  if (!email ) {
+    throw new CustomError.BadRequestError("Please provide email ");
+  }
+  if (!password) {
+    throw new CustomError.BadRequestError("Please provide password");
   }
   const user = await User.findOne({ email });
   if (!user) {
-    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+    throw new CustomError.UnauthenticatedError("email Not Found");
   }
 
-  // const isCorrectPassword = await bcrypt.compare(password, user.password)
   const isCorrectPassword = await user.comparePassword(password);
-//   console.log(await bcrypt.hash(password,10))
-//   console.log(user.password)
-//   bcrypt.compare(password, user.password)
-//        .then(result => {
-//            console.log(result)
-//        })
-//        .catch(err => {
-//            console.log(err)
-//        })
-  // console.log(isCorrectPassword)
+  console.log(isCorrectPassword)
   if(!isCorrectPassword) {
-    throw new CustomError.UnauthenticatedError("Invalid! Credentials");
+    throw new CustomError.UnauthenticatedError("Wrong Password");
   }
   if (!user.isVerified) {
     throw new CustomError.UnauthenticatedError(
