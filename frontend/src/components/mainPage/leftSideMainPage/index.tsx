@@ -1,8 +1,9 @@
 "use client"
 
+import ChatList from "./chatList"
 import SideBar from "./sideBar"
 
-export default function LeftSideMainPage(){
+export default function LeftSideMainPage() {
 
     return (
         <div className="grid grid-cols-6">
@@ -10,7 +11,7 @@ export default function LeftSideMainPage(){
                 <SideBar />
             </div>
             <div className="col-span-5 bg-yellow-300">
-                f
+                <ChatList />
             </div>
         </div>
     )
