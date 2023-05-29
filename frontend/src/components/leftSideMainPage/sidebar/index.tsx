@@ -12,7 +12,7 @@ import BottomIcons from "./bottomIcons";
 export default function SideBar(){
 
     return (
-        <div className="h-screen bg-mainColor relative pt-12">
+        <div className="h-screen bg-mainColor relative pt-10">
             <LogoIcon />
             <DashbordIcon />
             <CalenderIcon />
