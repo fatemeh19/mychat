@@ -90,7 +90,7 @@ body
   .charListContainer h1{font-size:22px;}
   .searchbox{margin:1rem;}
   .searchbox div{padding-top: .5rem;padding-bottom: .5rem;}
-  .charListContainer .container{gap: .5rem;}
+  .charListContainer .container-chatbox{gap: .5rem;padding-top:1rem;padding-bottom:1rem;}
   .charListContainer .contact-name,
   .charListContainer .last-mes,
   .mess-detail2{font-size:14px;}

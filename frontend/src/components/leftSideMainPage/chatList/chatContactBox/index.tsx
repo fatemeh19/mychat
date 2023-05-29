@@ -31,8 +31,8 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     return (
         
-        <div className={"container w-full flex py-5 gap-5 px-8 pt-8 "+ (chatOpenned ? "bg-gray-50":"" )}>
-                <div className='relative contactProfile'>
+        <div className={"container w-full flex py-5 gap-5 px-8 pt-8 container-chatbox "+ (chatOpenned ? "bg-gray-50":"" )}>
+                <div className='relative contactProfile h-full'>
                     {status ? 
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0">
                         <div className="rounded-full w-[10px] h-[10px]  bg-green-500"></div>
