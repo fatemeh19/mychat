@@ -36,12 +36,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                             height={50}
                             src={'/images/girl-profile3.jpg'}
                             alt='chat profile'
-                            className='rounded-full'
+                            className='rounded-full '
                         />
                     </div>
                     <div className="profile-info">
-                        <h2 className='font-bold'>Design Team</h2>
-                        <p className='text-xs text-gray-400 font-medium'>
+                        <h2 className='font-bold whitespace-nowrap'>Design Team</h2>
+                        <p className='text-xs text-gray-400 font-medium whitespace-nowrap'>
                             <span>12</span> member,&nbsp;
                             <span>5</span> online
                         </p>

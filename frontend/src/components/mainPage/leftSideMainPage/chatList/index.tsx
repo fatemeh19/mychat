@@ -9,7 +9,7 @@ import ChatContactBox from './chatContactBox';
 export default function ChatList(){
 
     return (
-        <div className="h-screen  bg-white overflow-auto charListContainer no-scrollbar">
+        <div className="h-screen  bg-white overflow-auto charListContainer no-scrollbar min-w-full">
             <h1 className="text-4xl font-bold	px-8 pt-5">Messages</h1>
             <SearchBox  />
             <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-5">

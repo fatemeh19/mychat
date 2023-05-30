@@ -11,6 +11,7 @@
 body
 {
   background-color: rgb(var(--foreground-rgb));
+  overflow: hidden;
 }
 
 @font-face
@@ -75,7 +76,8 @@ body
   src: url('/fonts/Vazir/Vazirmatn-Black.ttf');
   font-weight: 900;
 }
-
+.closeInfoTab
+{display: block;}
 
 /* style scrollbar in homepage */
 .no-scrollbar::-webkit-scrollbar {width: 7px;}
@@ -111,3 +113,13 @@ body
 .chat-scrollbar::-webkit-scrollbar-thumb {background-color: #778bb7 ;border-radius: 10rem;}
 .chat-scrollbar::-webkit-scrollbar-track{background-color: #c8c8c8;border-radius: 10rem;margin-top: 3px;margin-bottom: 3px;}
 
+@media  (max-width:1024px) {
+  .closeInfoTab{
+    display: none;
+    
+  }
+  .allGrid{
+    grid-column: span 14 / span 14;;
+  }
+
+}

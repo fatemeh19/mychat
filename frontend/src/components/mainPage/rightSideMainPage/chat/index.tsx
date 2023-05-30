@@ -14,7 +14,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoState }) => {
 
     return (
         // <div className="">
-        <div className="flex flex-col w-full h-screen relative">
+        <div className="flex flex-col w-full h-screen relative min-w-fit">
             <ChatHeader infoState={infoState} setInfoState={setInfoState} />
             <ChatMessages />
             <ChatSendBox />
