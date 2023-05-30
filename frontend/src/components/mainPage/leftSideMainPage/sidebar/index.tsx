@@ -1,18 +1,20 @@
 "use client"
 
-import LogoIcon from "./icons/logo";
-import DashbordIcon from "./icons/dashbord";
-import ChatIcon from "./icons/chat";
-import ContactsIcon from "./icons/contacts";
-import CalenderIcon from "./icons/calender";
-import SettingIcon from "./icons/setting";
-import BottomIcons from "./BottomIcons";
+import {
+    LogoIcon,
+    DashbordIcon,
+    ChatIcon,
+    ContactsIcon,
+    CalenderIcon,
+    SettingIcon
+} from "../../../icons/home/HomeIcons";
 
+import BottomIcons from "./bottomIcons";
 
-export default function SideBar(){
+export default function SideBar() {
 
     return (
-        <div className="h-screen bg-mainColor relative pt-12">
+        <div className="h-screen bg-mainColor relative pt-10">
             <LogoIcon />
             <DashbordIcon />
             <CalenderIcon />

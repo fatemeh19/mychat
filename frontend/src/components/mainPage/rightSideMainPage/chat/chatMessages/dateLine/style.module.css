@@ -1,0 +1,43 @@
+.line
+{
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 0;
+    /* background-color: #d5ffd5; */
+}
+
+.line div
+{
+    display: table-row;
+    white-space: nowrap;
+}
+
+.line h1
+{
+    overflow: hidden;
+    display: table-cell;
+    width: 1px;
+    color: #555555;
+    font-size: .9rem;
+    text-transform: uppercase;
+}
+
+/* padding change the space between line and text */
+.line h1
+{
+    padding: 0 3rem;
+}
+
+/* height change the thick of lines */
+.line span.spacer:after
+{
+    display: inline-block;
+    width: 100%;
+    content: "";
+    height: 3px;
+    background: #f5f5f5;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
