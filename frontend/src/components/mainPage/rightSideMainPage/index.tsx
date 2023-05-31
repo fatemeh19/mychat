@@ -14,20 +14,18 @@ export default function RightSideMainPage() {
             {
                 infoState
                     ? (
-                        <div className="grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-[2px] min-w-fit">
-                            <div className="col-span-10 allGrid ">
+                        <div className="flex gap-[1px]">
+                            <div className="w-full ">
                                 <Chat infoState={infoState} setInfoState={setInfoState} />
                             </div>
-                            <div className="col-span-4 bg-purple-400 ">
+                            <div className="min-w-fit">
                                 <ChatInfo />
                             </div>
                         </div>
                     )
                     : (
                         <div className="">
-                            <div className="col-span-10  ">
-                                <Chat infoState={infoState} setInfoState={setInfoState} />
-                            </div>
+                            <Chat infoState={infoState} setInfoState={setInfoState} />
                         </div>
                     )
             }
