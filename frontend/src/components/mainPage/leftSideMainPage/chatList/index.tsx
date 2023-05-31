@@ -10,16 +10,16 @@ import ChatContactBox from './chatContactBox';
 export default function ChatList(){
 
     return (
-        <div className="h-screen  bg-white  charListContainer overflow-none  min-w-full">
+        <div className="h-screen  bg-white  charListContainer overflow-none  min-w-full dark:bg-[rgb(36,36,36)]">
             <div className="flex relative px-8 pt-5">
-                <h1 className="text-4xl font-bold	">Messages</h1>
+                <h1 className="text-4xl font-bold	dark:text-white">Messages</h1>
                 <BiEdit className="text-[#2563eb] absolute right-4 cursor-pointer top-8 text-xl" />
             </div>
 
             <SearchBox  />
             
             <div className="no-scrollbar h-[80%] overflow-auto">
-                <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-5">
+                <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-5 dark:text-white">
                     <BiPin className="text-2xl " />
                     <span>PINNED</span>
                 </div>
@@ -28,7 +28,7 @@ export default function ChatList(){
                 <ChatContactBox  chatOpenned={true} lastMessegeByContact={false} ContactName={'Contact name2'} status={false} lastMessage={'hi, how you doin?'} ContactSeen={true} lastMessageTime={'9:36 AM'} numberOfUnSeen={''} recivedMessage={false} isTyping={false}  />
                 <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact name3'} status={false} lastMessage={'Wow really cool'} ContactSeen={false} lastMessageTime={'1:15 AM'} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
 
-                <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-8">
+                <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-8 dark:text-white">
                     <BiMessageRoundedDetail className="text-2xl " />
                     <span className="semiBold">ALL MESSAGE</span>
                 </div>

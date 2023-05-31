@@ -22,7 +22,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
     }
 
     return (
-        <div className="w-full mx-auto bg-white">
+        <div className="w-full mx-auto bg-white dark:bg-bgColorDark2">
             <div className="flex justify-between flex-row-reverse p-3 px-6">
                 <div className="righ flex flex-row-reverse gap-4 items-center">
                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
@@ -40,7 +40,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                         />
                     </div>
                     <div className="profile-info">
-                        <h2 className='font-bold whitespace-nowrap'>Design Team</h2>
+                        <h2 className='font-bold whitespace-nowrap dark:text-white'>Design Team</h2>
                         <p className='text-xs text-gray-400 font-medium whitespace-nowrap'>
                             <span>12</span> member,&nbsp;
                             <span>5</span> online

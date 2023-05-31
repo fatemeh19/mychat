@@ -7,7 +7,7 @@ const TextMessage = () => {
 
     return (
         <div className="relative max-w-lg">
-            <div className={`bg-gray-200 w-fit rounded-lg rounded-tl-sm`}>
+            <div className={`bg-gray-200 w-fit rounded-lg rounded-tl-sm dark:bg-bgColorDark3 dark:text-white`}>
                 <p className="break-all px-2 py-1 pb-2">
                     hiiiiiiggggggggggggggggggggggggggggggggggfffffffffffffffffffffffffdddddddddddddddddddddgggggggggggggggggggggggggggg
                 </p>

@@ -31,10 +31,10 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     return (
         
-        <div className={"container cursor-pointer w-full flex py-5 gap-5 px-8 pt-8 container-chatbox "+ (chatOpenned ? "bg-gray-50":"" )}>
+        <div className={"container cursor-pointer w-full flex py-5 gap-5 px-8 pt-8 container-chatbox "+ (chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]":"" )}>
                 <div className='relative contactProfile h-full'>
                     {status ? 
-                    <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0">
+                    <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 dark:bg-[rgb(36,36,36)]">
                         <div className="rounded-full w-[10px] h-[10px]  bg-green-500"></div>
                     </div>
                     : null}
@@ -42,7 +42,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 </div>
                 <div className='contactMessageDetail w-full grid '>
                     <div className="relative   w-full">
-                        <span className='text-lg font-bold contact-name w-3/5 inline-block truncate '>{ContactName}</span>
+                        <span className='text-lg font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
                         <div className="right-0 font-semibold text-sm top-[3px] absolute messageTimeSent text-gray-400">
                             <span className="last-mes-time">{lastMessageTime}</span>
                             
@@ -51,7 +51,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                     <div className="relative mess-detail2 w-full">
                         {isTyping ?
                         <span className='text-md text-green-500'>Typing...</span>
-                        : <span className={"text-md truncate last-mes w-5/6 inline-block "+(recivedMessage ? "text-gray-400" : (ContactSeen ? (chatOpenned ? "" : "text-gray-400") : ""))}>{lastMessage}</span>
+                        : <span className={"text-md truncate last-mes w-5/6 inline-block "+(recivedMessage ? "text-gray-400" : (ContactSeen ? (chatOpenned ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>{lastMessage}</span>
                         }
                         {lastMessegeByContact ?
                         (recivedMessage ? null :

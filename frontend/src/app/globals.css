@@ -81,8 +81,8 @@ body
 {display: block;}
 
 /* style scrollbar in homepage */
-.no-scrollbar::-webkit-scrollbar {width: 7px;}
-.no-scrollbar::-webkit-scrollbar-thumb {background-color: whitesmoke;border-radius: 10rem;border: 1px solid #fff;}
+.no-scrollbar::-webkit-scrollbar {width: 5px;}
+.no-scrollbar::-webkit-scrollbar-thumb {background-color: #778bb7;border-radius: 10rem;border: 1px solid #778bb7;}
 .no-scrollbar::-webkit-scrollbar-track-piece:start {background: transparent;}
 .no-scrollbar::-webkit-scrollbar-track-piece:end {background: transparent;}
 

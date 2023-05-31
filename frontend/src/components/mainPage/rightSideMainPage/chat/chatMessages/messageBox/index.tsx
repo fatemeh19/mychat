@@ -36,7 +36,7 @@ const MessageBox = ({ dir }: { dir: MessageBoxProps }) => {
                                 </div>
                                 <div className="content flex flex-col">
                                     <div className="flex gap-2 items-end mb-2 flex-row-reverse ">
-                                        <h1 className="name font-bold text-sm text-center whitespace-nowrap">Putri Tanjak</h1>
+                                        <h1 className="name font-bold text-sm text-center whitespace-nowrap dark:text-white">Putri Tanjak</h1>
                                         <p className="date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap ">9:12 AM</p>
                                     </div>
                                     <div className="gap-3 flex flex-col">
@@ -70,7 +70,7 @@ const MessageBox = ({ dir }: { dir: MessageBoxProps }) => {
                                 </div>
                                 <div className="content flex flex-col">
                                     <div className="flex gap-2 items-end mb-2 ">
-                                        <h1 className="name font-bold text-sm text-center whitespace-nowrap">Putri Tanjak</h1>
+                                        <h1 className="name font-bold text-sm text-center whitespace-nowrap  dark:text-white">Putri Tanjak</h1>
                                         <p className="date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap ">9:12 AM</p>
                                     </div>
                                     <div className="gap-3 flex flex-col">
