@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema(
     contacts: [],
     profilePic:{
         type:String,
-        Url:String
+        url:String
     },
     isVerified:{
         type:Boolean,
