@@ -11,7 +11,7 @@ const ImageMessage = ({ isText }: { isText: boolean | undefined }) => {
                     ? (
                         <div className="relative max-w-[32rem]">
 
-                            <div className={"w-fit bg-gray-200 rounded-lg rounded-tl-sm"}>
+                            <div className={"w-fit bg-gray-200 rounded-lg rounded-tl-sm dark:bg-bgColorDark2 dark:text-white"}>
                                 <div className="flex flex-col ">
                                     <Image
                                         width={300}

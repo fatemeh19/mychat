@@ -28,8 +28,8 @@ export  function ChatIcon(){
     return (
         
         <div className="flex justify-center relative home-icons py-5">
-            <div className="bg-white h-[30px] w-[5px] rounded-r  clicked-sign absolute left-0  "></div>
-            <BiMessageRoundedDots className="text-white h-icon cursor-pointer w-[30px] h-[30px]" />
+            <div className="bg-white h-[30px] w-[5px] rounded-r  clicked-sign absolute left-0 dark:bg-mainColor "></div>
+            <BiMessageRoundedDots className="text-white h-icon cursor-pointer w-[30px] h-[30px] dark:text-[#2563eb]" />
         </div>
         
     )

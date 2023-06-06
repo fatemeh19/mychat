@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import LeftSideMainPage from '../components/mainPage/leftSideMainPage'
 import RightSideMainPage from '../components/mainPage/rightSideMainPage'
 

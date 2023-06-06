@@ -10,7 +10,9 @@ module.exports = {
         // 'mainColor': '#166e48'
         'mainColor': '#2563eb',
         'bgColorLight': '#fafafa',
-        'bgColorDark': '#1b1b1b'
+        'bgColorDark': '#1b1b1b',
+        'bgColorDark2': 'rgb(36,36,36)',
+        'bgColorDark3': 'rgb(53,55,59)',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

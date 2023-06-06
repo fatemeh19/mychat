@@ -3,6 +3,7 @@
 
 # dependencies
 /frontend/node_modules
+/frontend/history
 /frontend/.pnp
 /frontend/.pnp.js
 
@@ -38,4 +39,8 @@
 # backend gitignore
 /server/node_modules
 /server/.env
+<<<<<<< HEAD
 /server/uploads
+=======
+.history/frontend/src/components/auth/forms/loginForm_20230604120347.tsx
+>>>>>>> cc3adc207f380ef9a58b2254e4d40077fc4e14d3
