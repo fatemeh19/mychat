@@ -73,7 +73,7 @@ const login = async (req, res) => {
       "Please Verify Your Email First"
     );
   }
-  const token = Utils.jwt.createJWT({ userId: user._id, name: user.name });
+  const token = Utils.jwt.createJWT({ userId: user._id });
 
   res.status(StatusCodes.OK).json({ token });
 };
