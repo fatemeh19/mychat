@@ -1,14 +1,18 @@
 "use client"
 
 import { Field, ErrorMessage } from 'formik'
-import { FC } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
+import { IconType } from 'react-icons'
 
 interface inputProps {
     name: string,
     label: string,
     type?: string,
     inputClassName?: string,
-    errorClassName?: string
+    errorClassName?: string,
+    icon: IconType,
+    show?: boolean
+    setShow?: Dispatch<SetStateAction<boolean>>
 }
 
 const Input: FC<inputProps> = ({
@@ -16,17 +20,36 @@ const Input: FC<inputProps> = ({
     label,
     type = 'text',
     inputClassName,
-    errorClassName
+    errorClassName,
+    icon: Icon,
+    setShow,
+    show
 }) => {
 
     return (
-        <div className="my-4 ">
+        <div className="my-4 relative">
             <label htmlFor={name} className="text-zinc-600 font-[500]">{label}</label>
             <Field
                 id={name}
                 name={name}
                 type={type}
-                className={`w-full border border-zinc-300 px-3 py-2 outline-none rounded-lg ${inputClassName ?? ''}`} 
+                className={
+                    `w-full
+                    border
+                    border-zinc-300 
+                    px-3 py-2 
+                    outline-none 
+                    rounded-lg
+                    peer
+                     ${inputClassName ?? ''}`}
+            />
+            <Icon className={
+                `absolute top-9 right-3 
+                    text-xl text-gray-500
+                    peer-focus-visible:text-blue-800
+                    hover:text-blue-800
+                `}
+                onClick={() => setShow && setShow(!show)} 
                 />
 
             <p className={`text-cyan-600 text-sm rtl ${errorClassName ?? ''}`}>

@@ -3,6 +3,11 @@ import PasswordStrengthBar from 'react-password-strength-bar';
 
 import { Form, withFormik } from "formik"
 import * as yup from 'yup'
+
+import {BsFingerprint} from 'react-icons/bs'
+import {MdAlternateEmail} from 'react-icons/md'
+
+// implement of yup for password checking the requirement like lowerCase & UperCase & etc.
 import YupPassword from 'yup-password'
 YupPassword(yup)
 
@@ -10,6 +15,7 @@ import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
+import { useState } from 'react';
 
 let btn: any;
 let btnHandler: () => void
@@ -25,6 +31,8 @@ interface RegisterFormValue {
 
 const InnerRegisterForm = (props: any) => {
 
+    const [show, setShow] = useState(false)
+
     const { values } = props
     const router = useRouter()
 
@@ -32,7 +40,6 @@ const InnerRegisterForm = (props: any) => {
     btn = document.querySelector('#register')
 
     btnHandler = () => {
-        localStorage.setItem('message', 'please go to your Email and press the link to verify your Email ')
         router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
 
     }
@@ -42,10 +49,10 @@ const InnerRegisterForm = (props: any) => {
         <Form className=" w-full">
 
             {/* <Input name='name' label="name" /> */}
-            <Input name="email" type="email" label="Email address" />
+            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail}/>
             {/* <Input name="phone" label="phone number" /> */}
-            <Input name="password" type="password" label="password" />
-            <PasswordStrengthBar password={values.password} userInputs={[]} />
+            <Input name="password" type={show ? 'text' : 'password'} label="password" icon={BsFingerprint} setShow={setShow} show={show} />
+            <PasswordStrengthBar password={values.password} />
             <div className="my-5">
                 <button
                     id="register"
@@ -67,11 +74,11 @@ const registerFormValidationSchema = yup.object().shape({
     password: yup
         .string()
         .required('Please Enter your password')
-    .minLowercase(1, 'At least One Lowercase')
-    .minUppercase(1, 'At least One Uppercase')
-    .minNumbers(1, 'At least One Number')
-    .minSymbols(1, 'At least One Symbole')
-    .min(8, 'Must atleast contain 8 charechter')
+        .minLowercase(1, 'At least One Lowercase')
+        .minUppercase(1, 'At least One Uppercase')
+        .minNumbers(1, 'At least One Number')
+        .minSymbols(1, 'At least One Symbole')
+        .min(8, 'Must atleast contain 8 charechter')
 })
 
 interface registerFormProps {
