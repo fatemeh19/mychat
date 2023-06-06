@@ -9,20 +9,23 @@ const cors = require('cors')
 
 const notFound = require('./middlewares/notfound')
 const errorHandlerMiddleware = require('./middlewares/error-handler')
+
 const authRouter = require('./routers/auth')
+const mainRouter = require('./routers/main')
+
 app.use(express.json())
 app.use(morgan('common'))
+
 // db
 const connectDB = require('./db/connect')
 
 app.use(cors({
     origin: '*',
-
-
 }));
 
 // routers
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/main', mainRouter)
 
 // middlewares
 app.use(notFound)
