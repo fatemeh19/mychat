@@ -67,11 +67,11 @@ const registerFormValidationSchema = yup.object().shape({
     password: yup
         .string()
         .required('Please Enter your password')
-    // .minLowercase(1, 'At least One Lowercase')
-    // .minUppercase(1, 'At least One Uppercase')
-    // .minNumbers(1, 'At least One Number')
-    // .minSymbols(1, 'At least One Symbole')
-    // .min(8, 'Must atleast contain 8 charechter')
+    .minLowercase(1, 'At least One Lowercase')
+    .minUppercase(1, 'At least One Uppercase')
+    .minNumbers(1, 'At least One Number')
+    .minSymbols(1, 'At least One Symbole')
+    .min(8, 'Must atleast contain 8 charechter')
 })
 
 interface registerFormProps {
@@ -93,11 +93,9 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     validationSchema: registerFormValidationSchema,
     handleSubmit: async (values, { setFieldError }) => {
         try {
-            console.log('submit')
             const res = await callApi().post('/auth/register', values)
             console.log(res)
             if (res.statusText && res.statusText === 'OK') {
-                console.log('transfering ...')
                 btn.addEventListener('onclick', btnHandler());
                 // notif?.classList.remove('hidden')
             }

@@ -1,21 +1,24 @@
 "use client"
 
-import NotificationIcon from "./icons/notification";
-import MoonIcon from "./icons/moon";
+import {
+    MoonIcon,
+    NotificationIcon
+} from "../../../icons/home/HomeIcons";
+
 import Image from "next/image"
 
-export default function BottomIcons(){
+export default function BottomIcons() {
 
     return (
-        
-            <div className="absolute w-full px-5 bottom-10">
-                <NotificationIcon />
-                <MoonIcon />
-                <hr className="w-full text-gray-300  opacity-[.5]" />
-                <div className='flex justify-center mt-10'>
-                    <Image src={'/images/girl-profile3.jpg'} className="rounded-xl" width={50} height={50} alt="profile-icon" />
-                </div>
+
+        <div className="absolute w-full grid justify-center bottom-10">
+            <NotificationIcon />
+            <MoonIcon />
+            <hr className="w-full text-gray-50  opacity-[.5] mt-5" />
+            <div className='flex justify-center mt-10 sidebar-profile-div'>
+                <Image src={'/images/girl-profile3.jpg'} className="sidebar-profile rounded-lg" width={50} height={50} alt="profile-icon" />
             </div>
-       
+        </div>
+
     )
 }

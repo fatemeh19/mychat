@@ -11,6 +11,8 @@
 body
 {
   background-color: rgb(var(--foreground-rgb));
+  overflow: hidden;
+  /* user-select: none; */
 }
 
 @font-face
@@ -74,4 +76,48 @@ body
   font-family: 'vazir';
   src: url('/fonts/Vazir/Vazirmatn-Black.ttf');
   font-weight: 900;
+}
+.closeInfoTab
+{display: block;}
+
+/* style scrollbar in homepage */
+.no-scrollbar::-webkit-scrollbar {width: 7px;}
+.no-scrollbar::-webkit-scrollbar-thumb {background-color: whitesmoke;border-radius: 10rem;border: 1px solid #fff;}
+.no-scrollbar::-webkit-scrollbar-track-piece:start {background: transparent;}
+.no-scrollbar::-webkit-scrollbar-track-piece:end {background: transparent;}
+
+/* responsive leftside in homepage */
+
+@media  (min-width:1024px) and  (max-width:1800px){
+  .charListContainer > *.px-8{padding-left:1rem;padding-right:1rem;}
+  .charListContainer h1{font-size:22px;}
+  .searchbox{margin:1rem;}
+  .searchbox div{padding-top: .5rem;padding-bottom: .5rem;}
+  .charListContainer .container-chatbox{gap: .5rem;padding-top:1rem;padding-bottom:1rem;}
+  .charListContainer .contact-name,
+  .charListContainer .last-mes,
+  .mess-detail2{font-size:14px;}
+  .charListContainer .last-mes-time {font-size:12px;}
+  .charListContainer .check-mes-seen{font-size:20px;}
+  .mess-detail2{margin-top: -5px;}
+  .logo-icon{margin-bottom:1rem;}
+  .logo-icon > *{width:30px;height:40px;}
+  .home-icons{padding-bottom:5%;padding-bottom:5%;}
+  .home-icons .h-icon{width:25px;height:25px;}
+  .home-icons .clicked-sign{width:4px;height:25px;}
+  .sidebar-profile{width:35px;height:35px;}
+  .sidebar-profile-div{margin-top:1.5rem}
+}
+
+/* style scrollbar in chatSection */
+.chat-scrollbar::-webkit-scrollbar {width: 7px;padding-right: 5rem;}
+.chat-scrollbar::-webkit-scrollbar-thumb {background-color: #778bb7 ;border-radius: 10rem;}
+.chat-scrollbar::-webkit-scrollbar-track{background-color: #c8c8c8;border-radius: 10rem;margin-top: 3px;margin-bottom: 3px;}
+
+@media  (max-width:1024px) {
+  .closeInfoTab{
+    display: none;
+    
+  }
+
 }
