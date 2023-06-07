@@ -85,11 +85,11 @@ export default function PasswordStrengthMeter({ name }: { name: string }) {
             }
             else {
                 // add circle icon
-                requirementItem.previousElementSibling.classList.add('fa-circle', 'fa-xs')
+                requirementItem.previousElementSibling.classList.add('fa-circle', 'fa-xs', 'text-gray-400')
                 requirementItem.classList.add('text-gray-500')
 
                 // remove check icon
-                requirementItem.previousElementSibling.classList.remove('fa-check', 'fa-sm', 'text-blue-500')
+                requirementItem.previousElementSibling.classList.remove('fa-check', 'fa-sm', 'text-green-500')
 
                 requirements[item.index].valid = false
                 count--
