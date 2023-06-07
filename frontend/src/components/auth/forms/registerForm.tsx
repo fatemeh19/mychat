@@ -24,17 +24,22 @@ interface RegisterFormValue {
     // name?: string,
     // phone?: Number | '',
     email: string,
-    password: string
+    password: string,
+    msg: string
 }
 
 const InnerRegisterForm = (props: any) => {
     const router = useRouter()
 
+    const { values } = props
+    console.log(values)
     // this code for navigate to varifiy email page after register
     btn = document.querySelector('#register')
 
     btnHandler = () => {
-        router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
+        setTimeout(() => {
+            router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
+        }, 3000);
 
     }
 
@@ -46,13 +51,13 @@ const InnerRegisterForm = (props: any) => {
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             <PasswordStrengthMeter name="password" />
             <div className="my-5">
+            <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p>
                 <button
                     id="register"
                     name="register"
                     type='submit'
                     className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                 >Register</button>
-                {/* <h1 id='notif' className='text-red-400 my-2 hidden'>please go to your Email and press the link to verify your Email </h1> */}
             </div>
         </Form>
     )
@@ -86,7 +91,8 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
             // name: '',
             email: "",
             // phone: '',
-            password: ""
+            password: "",
+            msg: ''
         }
     },
     validationSchema: registerFormValidationSchema,
@@ -94,7 +100,8 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
         try {
             const res = await callApi().post('/auth/register', values)
             console.log(res)
-            if (res.statusText && res.statusText === 'OK') {
+            if (res.statusText === 'OK') {
+                values.msg = 'Successful, wait ..'
                 btn.addEventListener('onclick', btnHandler());
             }
         } catch (error) {

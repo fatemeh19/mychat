@@ -1,15 +1,27 @@
 "use client"
 
 import callApi from "@/src/helper/callApi"
-import { Dispatch, FC, SetStateAction, useState } from "react"
+import { useRouter } from "next/navigation"
+import { FC, useState } from "react"
 import { SiMinutemailer } from 'react-icons/si'
 interface VerifyEmailComponentProps {
     searchParams: any,
 }
 
 const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) => {
-    const [verified, setVerified] = useState(false)
+    const [verified, setVerified] = useState(true)
+    const [second, setSecond] = useState<number>(10)
 
+    const router = useRouter()
+
+    setTimeout(() => {
+        setSecond(second-1)
+    }, 1000)
+    
+    setTimeout(() => {
+        router.push('/auth/login')
+    }, 10000)
+    
 
     const verifyEmailHandler = async () => {
         console.log('search params in verify components : ', searchParams)
@@ -50,6 +62,9 @@ const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) =
                                 <SiMinutemailer className="text-blue-600 text-7xl mb-4" />
                                 {/* اینجا یه گیف تیک اضافه بشه */}
                                 <h1 className="font-[700] text-3xl">Your Email Verified!!!!</h1>
+
+                                <p className="mt-5 text-gray-600">after <span className="text-blue-500">{second}</span> second you will translate to login page</p>
+                                
                             </div>
                         </div>
                     )}
