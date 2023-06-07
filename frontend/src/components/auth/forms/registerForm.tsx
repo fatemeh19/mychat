@@ -4,8 +4,8 @@ import PasswordStrengthBar from 'react-password-strength-bar';
 import { Form, withFormik } from "formik"
 import * as yup from 'yup'
 
-import {BsFingerprint} from 'react-icons/bs'
-import {MdAlternateEmail} from 'react-icons/md'
+import { BsFingerprint } from 'react-icons/bs'
+import { MdAlternateEmail } from 'react-icons/md'
 
 // implement of yup for password checking the requirement like lowerCase & UperCase & etc.
 import YupPassword from 'yup-password'
@@ -19,7 +19,7 @@ import { useState } from 'react';
 
 let btn: any;
 let btnHandler: () => void
-let message : string;
+let message: string;
 // let notif: any
 
 interface RegisterFormValue {
@@ -43,13 +43,13 @@ const InnerRegisterForm = (props: any) => {
         router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
 
     }
-    
+
     // notif = document.querySelector('#notif')
     return (
         <Form className=" w-full">
 
             {/* <Input name='name' label="name" /> */}
-            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail}/>
+            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             {/* <Input name="phone" label="phone number" /> */}
             <Input name="password" type={show ? 'text' : 'password'} label="password" icon={BsFingerprint} setShow={setShow} show={show} />
             <PasswordStrengthBar password={values.password} />

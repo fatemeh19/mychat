@@ -8,6 +8,8 @@ import ValidationError from '@/src/errors/validationError';
 import {GenerateString} from '@/src/helper/captcha';
 import { BiRedo } from "react-icons/bi";
 import Image from "next/image"
+import {BsFingerprint} from 'react-icons/bs'
+import {MdAlternateEmail} from 'react-icons/md'
 
 let btn: any;
 let btnHandler: () => void
@@ -29,12 +31,14 @@ const InnerLoginForm = (props: any) => {
         values.captcha=GenerateString()
     }
     btnHandler = () => {
+        // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
         console.log(inputData)
         if(values.captcha == inputData){
             values.msg='Successful, wait to Login ..'
             router.push(
                 '/',
+                // @ts-ignore
                 { query : {token : values.token}}
             )
             console.log("login")
@@ -50,8 +54,8 @@ const InnerLoginForm = (props: any) => {
     return (
         <Form className=" w-full">
 
-            <Input name="email" type="email" label="Email address" />
-            <Input name="password" type="password" label="password" />
+            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
+            <Input name="password" type="password" label="password" icon={BsFingerprint}/>
             <div className="flex relative w-full   py-2 outline-none " >
                 <Image src={'/images/captcha_img.jpg'}  width={20} height={40} alt=""  className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic "/>
                 <div className="select-none absolute w-4/5 top-[1rem] text-center tracking-[2rem] italic font-bold">{values.captcha}</div>
@@ -103,7 +107,19 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             
         } catch (error) {
             if (error instanceof ValidationError) {
-                setFieldError('email', error.message)
+                console.log('error : ', error)
+                let spliteArr = error.message.split(' ')
+                spliteArr.forEach(item => {
+                    if(item === 'email' || item === 'Email')
+                    {
+                        // @ts-ignore
+                        setFieldError('email', error.message)
+                    }
+                    else if(item === 'password' || item === 'Password') {
+                        // @ts-ignore
+                        setFieldError('password', error.message)
+                    }
+                })
             }
         }
 
