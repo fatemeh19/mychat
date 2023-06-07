@@ -10,7 +10,7 @@ interface inputProps {
     type?: string,
     inputClassName?: string,
     errorClassName?: string,
-    icon: IconType,
+    icon?: IconType,
     show?: boolean,
     setShow?: Dispatch<SetStateAction<boolean>>,
     keyHandler?: (e: any) => void
@@ -46,15 +46,26 @@ const Input: FC<inputProps> = ({
                     ${inputClassName ?? ''}`}
                 onKeyUp={keyHandler}
             />
-            <Icon className={`
-                    absolute top-9 right-3 
-                    text-xl text-gray-500
-                    ${show && 'text-red-400'}
-                    peer-focus-visible:text-blue-500
-                `}
-                onClick={() => setShow && setShow(!show)}
-            />
 
+
+            <>
+                {/* if icon exist => show Icon */}
+                {
+                    !!Icon &&
+                    (
+                        < Icon className={`
+                                absolute top-9 right-3 
+                                text-xl text-gray-500
+                                ${show && 'text-red-400'}
+                                peer-focus-visible:text-blue-500
+                                ${type === 'text' && 'peer-focus-visible:text-red-400'}
+                                ${name === 'password' && 'hover:cursor-pointer'}
+                            `}
+                            onClick={() => setShow && setShow(!show)}
+                        />
+                    )
+                }
+            </>
             <p className={`text-cyan-600 text-sm rtl ${errorClassName ?? ''}`}>
                 <ErrorMessage name={name} />
             </p>
