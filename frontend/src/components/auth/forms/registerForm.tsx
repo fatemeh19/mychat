@@ -15,12 +15,10 @@ import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
-import { useState } from 'react';
+import PasswordStrengthMeter from '../inputPassword/passwordStrengthMeter';
 
 let btn: any;
 let btnHandler: () => void
-let message: string;
-// let notif: any
 
 interface RegisterFormValue {
     // name?: string,
@@ -30,10 +28,6 @@ interface RegisterFormValue {
 }
 
 const InnerRegisterForm = (props: any) => {
-
-    const [show, setShow] = useState(false)
-
-    const { values } = props
     const router = useRouter()
 
     // this code for navigate to varifiy email page after register
@@ -44,15 +38,13 @@ const InnerRegisterForm = (props: any) => {
 
     }
 
-    // notif = document.querySelector('#notif')
     return (
         <Form className=" w-full">
 
             {/* <Input name='name' label="name" /> */}
-            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             {/* <Input name="phone" label="phone number" /> */}
-            <Input name="password" type={show ? 'text' : 'password'} label="password" icon={BsFingerprint} setShow={setShow} show={show} />
-            <PasswordStrengthBar password={values.password} />
+            <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
+            <PasswordStrengthMeter name="password" />
             <div className="my-5">
                 <button
                     id="register"
@@ -104,15 +96,12 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
             console.log(res)
             if (res.statusText && res.statusText === 'OK') {
                 btn.addEventListener('onclick', btnHandler());
-                // notif?.classList.remove('hidden')
             }
         } catch (error) {
             if (error instanceof ValidationError) {
                 setFieldError('email', error.message)
             }
         }
-
-
     }
 
 })(InnerRegisterForm)

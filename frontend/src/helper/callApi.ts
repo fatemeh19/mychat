@@ -7,7 +7,7 @@ const callApi = () => {
 
 
     const axiosInstance = axios.create({
-        baseURL: 'http://127.0.0.1:3000/api/v1'
+        baseURL: 'http://localhost:3000/api/v1'
     })
 
     axiosInstance.interceptors.request.use(

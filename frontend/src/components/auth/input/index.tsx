@@ -11,8 +11,9 @@ interface inputProps {
     inputClassName?: string,
     errorClassName?: string,
     icon: IconType,
-    show?: boolean
-    setShow?: Dispatch<SetStateAction<boolean>>
+    show?: boolean,
+    setShow?: Dispatch<SetStateAction<boolean>>,
+    keyHandler?: (e: any) => void
 }
 
 const Input: FC<inputProps> = ({
@@ -23,11 +24,12 @@ const Input: FC<inputProps> = ({
     errorClassName,
     icon: Icon,
     setShow,
-    show
+    show,
+    keyHandler
 }) => {
 
     return (
-        <div className="my-4 relative">
+        <div className="my-4 relative inputBox">
             <label htmlFor={name} className="text-zinc-600 font-[500]">{label}</label>
             <Field
                 id={name}
@@ -41,16 +43,17 @@ const Input: FC<inputProps> = ({
                     outline-none 
                     rounded-lg
                     peer
-                     ${inputClassName ?? ''}`}
+                    ${inputClassName ?? ''}`}
+                onKeyUp={keyHandler}
             />
-            <Icon className={
-                `absolute top-9 right-3 
+            <Icon className={`
+                    absolute top-9 right-3 
                     text-xl text-gray-500
-                    peer-focus-visible:text-blue-800
-                    hover:text-blue-800
+                    ${show && 'text-red-400'}
+                    peer-focus-visible:text-blue-500
                 `}
-                onClick={() => setShow && setShow(!show)} 
-                />
+                onClick={() => setShow && setShow(!show)}
+            />
 
             <p className={`text-cyan-600 text-sm rtl ${errorClassName ?? ''}`}>
                 <ErrorMessage name={name} />
