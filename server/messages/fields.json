@@ -1,0 +1,17 @@
+{
+    "email": {
+      "name":"email",
+      "value":"ایمیل"
+    },
+    "password": {
+      "name":"password",
+      "value":"پسورد"
+
+    },
+    "verificationToken": {
+      "name":"verificationToken",
+      "value":"توکن"
+
+    }
+  
+}

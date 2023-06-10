@@ -1,0 +1,27 @@
+{
+  "NotFoundError": {
+    "name":"NotFoundError",
+    "message": "یافت نشد"
+  },
+  "DuplicateError": {
+    "name":"DuplicateError",
+    "message": "موجود است"
+  },
+  "CompareError": {
+    "name":"CompareError",
+    "message": "اشتباه است"
+  },
+  "EmptyError": {
+    "name":"EmptyError",
+    "message": "نباید خالی باشد"
+  },
+  "ConfirmError": {
+    "name":"ConfirmError",
+    "message": "لطفا اول ایمیل خود را تایید کنید"
+  },
+  "FormatError":{
+    "name":"FormatError",
+    "message": "فرمت نباید به این شکل باشد"
+
+  }
+}
