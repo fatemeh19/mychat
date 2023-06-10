@@ -53,14 +53,19 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    verificationToken: String,
-    verified: Date,
+    isFirstTimeLogin:{
+      type:Boolean,
+      default:true
+    },
+    verificationToken:String,
+    verified:Date,
     passwordToken: {
       type: String,
     },
     passwordTokenExpirationDate: {
       type: Date,
     },
+    
   },
   { timestamps: true }
 );
