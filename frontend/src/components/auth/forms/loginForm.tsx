@@ -36,11 +36,9 @@ const InnerLoginForm = (props: any) => {
         console.log(inputData)
         if(values.captcha == inputData){
             values.msg='Successful, wait to Login ..'
-            router.push(
-                '/',
-                // @ts-ignore
-                { query : {token : values.token}}
-            )
+            console.log(values.token)
+            localStorage.setItem('token',values.token)
+            router.push('/')
             console.log("login")
         }
         else{
@@ -100,7 +98,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             const res = await callApi().post('/auth/login', values)
             console.log(res)
             if (res.statusText && res.statusText === 'OK') {
-                values.token=res.data.token;
+                values.token=res.data.value.token;
                 btn.addEventListener('onclick', btnHandler());
             }
             
