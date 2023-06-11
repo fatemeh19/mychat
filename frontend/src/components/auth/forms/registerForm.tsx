@@ -1,10 +1,8 @@
 "use client"
-import PasswordStrengthBar from 'react-password-strength-bar';
 
 import { Form, withFormik } from "formik"
 import * as yup from 'yup'
 
-import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
 
 // implement of yup for password checking the requirement like lowerCase & UperCase & etc.
@@ -21,8 +19,6 @@ let btn: any;
 let btnHandler: () => void
 
 interface RegisterFormValue {
-    // name?: string,
-    // phone?: Number | '',
     email: string,
     password: string,
     msg: string
@@ -45,9 +41,6 @@ const InnerRegisterForm = (props: any) => {
 
     return (
         <Form className=" w-full">
-
-            {/* <Input name='name' label="name" /> */}
-            {/* <Input name="phone" label="phone number" /> */}
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             <PasswordStrengthMeter name="password" />
             <div className="my-5">
@@ -63,10 +56,7 @@ const InnerRegisterForm = (props: any) => {
     )
 }
 
-// name : we will recieve 
 const registerFormValidationSchema = yup.object().shape({
-    // name: yup.string().required('وارد کردن این فیلد الزامی است').min(3, 'حداقل 3 کاراکتر وارد کنید'),
-    // phone: yup.string().required(),
     email: yup.string().required().email(),
     password: yup
         .string()
@@ -79,8 +69,6 @@ const registerFormValidationSchema = yup.object().shape({
 })
 
 interface registerFormProps {
-    // name?: string,
-    // phone?: Number | '',
     email?: string,
     password?: string
 }
@@ -88,9 +76,7 @@ interface registerFormProps {
 const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     mapPropsToValues: props => {
         return {
-            // name: '',
             email: "",
-            // phone: '',
             password: "",
             msg: ''
         }

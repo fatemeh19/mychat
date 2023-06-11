@@ -45,6 +45,7 @@ const Input: FC<inputProps> = ({
                     peer
                     ${inputClassName ?? ''}`}
                 onKeyUp={keyHandler}
+                
             />
 
 

@@ -37,7 +37,7 @@ const InnerLoginForm = (props: any) => {
         if(values.captcha == inputData){
             values.msg='Successful, wait to Login ..'
             router.push(
-                '/',
+                '/completeInformation',
                 // @ts-ignore
                 { query : {token : values.token}}
             )

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './features/counterSlice'
+import completeInfoReducer from './features/completeInfoSlice'
 // ...
 export const store = configureStore({
   reducer: {
-    counterReducer
+    completeInfo: completeInfoReducer
   },
 })
 
