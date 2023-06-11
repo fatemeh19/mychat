@@ -2,7 +2,7 @@
 
 import DateLine from "./dateLine"
 import MessageBox from "./messageBox"
-import { MessageBoxProps } from "@/src/interfaces/enum"
+import { MessageBoxProps } from "@/src/models/enum"
 
 export default function ChatMessages() {
 
