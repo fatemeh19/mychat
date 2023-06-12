@@ -7,6 +7,7 @@ export default function LeftSideMainPage(){
     console.log(localStorage.getItem('token'))
     return (
         <div className="grid grid-cols-6">
+            
             <div className="col-span-1">
                 <SideBar />
             </div>
