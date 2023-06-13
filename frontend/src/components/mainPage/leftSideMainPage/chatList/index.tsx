@@ -1,19 +1,19 @@
 "use client"
 
 
-import SearchBox from './searchBox'
+import SearchBox from './searchBox';
 import { BiPin } from "react-icons/bi";
 import { BiEdit } from "react-icons/bi";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import ChatContactBox from './chatContactBox';
-
 export default function ChatList(){
-
+    
     return (
         <div className="h-screen  bg-white  charListContainer overflow-none  min-w-full dark:bg-[rgb(36,36,36)]">
             <div className="flex relative px-8 pt-5">
                 <h1 className="text-4xl font-bold	dark:text-white">Messages</h1>
-                <BiEdit className="text-[#2563eb] absolute right-4 cursor-pointer top-8 text-xl" />
+                <BiEdit className="text-[#2563eb] absolute right-4 cursor-pointer top-8 text-xl"  />
+                
             </div>
 
             <SearchBox  />
