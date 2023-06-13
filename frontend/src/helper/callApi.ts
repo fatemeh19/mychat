@@ -27,7 +27,7 @@ const callApi = () => {
             console.log('res : ', res)
             if (res.status === 400 || res.status === 401) {
                 console.log('throw')
-                throw new ValidationError(res.data.msg)
+                throw new ValidationError(res.data.Error)
             }
 
 

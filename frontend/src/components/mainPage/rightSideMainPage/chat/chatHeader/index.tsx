@@ -1,11 +1,17 @@
 "use client"
 
 import Image from 'next/image'
+import { useState } from 'react'
 
 import { CgMoreO } from 'react-icons/cg'
 import { FiPhone } from 'react-icons/fi'
 import { HiOutlineVideoCamera } from 'react-icons/hi'
 import { Dispatch, FC, SetStateAction } from "react";
+import { useAppDispatch } from '@/src/redux/hooks'
+import { setOpen } from '@/src/redux/features/popUpSlice'
+import ProfileInfo from '@/src/components/profileInfo'
+import ChannelInfo from '@/src/components/profileInfo/channelInfo'
+import CustomizedDialogs from '@/src/components/popUp'
 
 
 interface ChatHeaderProps {
@@ -15,21 +21,34 @@ interface ChatHeaderProps {
 
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
 
+    const [open, setOpen] = useState(false)
+
     let closeInfoSide = () => {
         console.log('close')
         if (infoState) setInfoState(false)
         else setInfoState(true)
     }
 
+
+    let clickHandler = () => setOpen(true)
+    let closeHandler = () => setOpen(false)
+
     return (
-        <div className="w-full mx-auto bg-white dark:bg-bgColorDark2">
-            <div className="flex justify-between flex-row-reverse p-3 px-6">
-                <div className="righ flex flex-row-reverse gap-4 items-center">
+        <div
+            className=" w-full mx-auto bg-white cursor-pointer dark:bg-bgColorDark2">
+            <div className="flex justify-between flex-row-reverse">
+                <div className="righ flex flex-row-reverse gap-4 items-center pr-6">
                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
                 </div>
-                <div className="left flex gap-3 items-center">
+                <div className="
+                    left
+                    flex gap-3 items-center 
+                    w-full p-3 px-6 
+                    "
+                    onClick={clickHandler}
+                >
                     <div className="profile">
                         <Image
                             width={50}
@@ -48,6 +67,14 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                     </div>
                 </div>
             </div>
+
+            <>
+                {
+                    open
+                        ? <CustomizedDialogs open={open} closeHandler={closeHandler} children={<h1 className="bg-red-400">this is a react node</h1>} />
+                        : null
+                }
+            </>
         </div>
     )
 }

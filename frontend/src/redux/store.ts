@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import completeInfoReducer from './features/completeInfoSlice'
+import popUpReducer from './features/popUpSlice'
 // ...
 export const store = configureStore({
   reducer: {
-    completeInfo: completeInfoReducer
+    popUp: popUpReducer
   },
 })
 

@@ -1,5 +1,7 @@
 import LeftSideMainPage from '../components/mainPage/leftSideMainPage'
 import RightSideMainPage from '../components/mainPage/rightSideMainPage'
+import ProfileInfo from '../components/profileInfo'
+import ChannelInfo from '../components/profileInfo/channelInfo'
 
 export default function Home() {
 
@@ -12,6 +14,7 @@ export default function Home() {
       <div className="col-span-12 rightSideMainPage">
         <RightSideMainPage />
       </div>
+      <ProfileInfo />
     </main>
   )
 }
