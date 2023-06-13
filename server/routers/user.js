@@ -5,5 +5,5 @@ const uploadFile = require('../utils/multer')
 
 const { setInfo } = require("../controllers/userController");
 
-router.post("/setInfo",uploadFile.single('profilePic'), setInfo);
+router.patch("/setInfo",uploadFile.single('profilePic'), setInfo);
 module.exports = router;

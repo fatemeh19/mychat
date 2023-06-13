@@ -4,42 +4,41 @@ const { StatusCodes } = require("http-status-codes");
 const Utils = require("../utils");
 const crypto = require("crypto");
 const ErrorMessages = require("../messages/errors.json");
-const ErrorFields = require("../messages/fields.json");
+const Fields = require("../messages/fields.json");
 
 const services = require("../services");
 
 const validators = require("../validators");
 const {
   RHCustomError,
-  RHValidationError,
   RHSendResponse,
-} = require("../middlewares/ResponseHandlerMiddleware");
-const { date } = require("yup");
+} = require("../middlewares/ResponseHandler");
 
 const register = async (req, res) => {
+  console.log(req.body);
   let data;
   try {
     data = await validators.registerUser.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (error) {
-    await RHValidationError(error);
+  } catch (err) {
+    
+    await RHCustomError({ err, errorClass: CustomError.ValidationError });
   }
   const emailAlreadyExists = await services.User.findUser({
     email: data.email,
   });
   if (emailAlreadyExists) {
-    
-    await RHCustomError(
-      CustomError.BadRequestError,
-      ErrorMessages.DuplicateError,
-      ErrorFields.email
-    );
+    await RHCustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.DuplicateError,
+      Field: Fields.email,
+    });
   }
 
   const verificationToken = crypto.randomBytes(40).toString("hex");
-  data.verificationToken = verificationToken
+  data.verificationToken = verificationToken;
   let user;
 
   try {
@@ -52,31 +51,35 @@ const register = async (req, res) => {
     }
   }
 
-  return RHSendResponse(res, StatusCodes.OK, "register", "confirm");
+  return RHSendResponse({ res, statusCode: StatusCodes.OK, title: "confirm" });
 };
 
 const verifyEmail = async (req, res) => {
   const { email, verificationToken } = req.body;
   const user = await services.User.findUser({ email: email });
   if (!user) {
-    await RHCustomError(
-      CustomError.UnauthenticatedError,
-      ErrorMessages.NotFoundError,
-      ErrorFields.email
-    );
+    await RHCustomError({
+      errorClass: CustomError.UnauthenticatedError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.email,
+    });
   }
   if (user.verificationToken != verificationToken) {
-    await RHCustomError(
-      CustomError.UnauthenticatedError,
-      ErrorMessages.CompareError,
-      ErrorFields.verificationToken
-    );
+    await RHCustomError({
+      errorClass: CustomError.UnauthenticatedError,
+      errorType: ErrorMessages.CompareError,
+      Field: Fields.verificationToken,
+    });
   }
 
   (user.isVerified = true), (user.verified = Date.now());
   user.verificationToken = "";
   await user.save();
-  return RHSendResponse(res, StatusCodes.OK, "verifyEmail", "confirmed");
+  return RHSendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "confirmed",
+  });
 };
 
 const login = async (req, res) => {
@@ -85,42 +88,50 @@ const login = async (req, res) => {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (error) {
-    await RHValidationError(error);
+  } catch (err) {
+    await RHCustomError({ err, errorClass: CustomError.ValidationError });
   }
   const user = await services.User.findUser({ email: data.email });
   if (!user) {
-    await RHCustomError(
-      CustomError.UnauthenticatedError,
-      ErrorMessages.NotFoundError,
-      ErrorFields.email
-    );
+    await RHCustomError({
+      errorClass: CustomError.UnauthenticatedError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.email,
+    });
   }
 
   const isCorrectPassword = await user.comparePassword(data.password);
 
   if (!isCorrectPassword) {
-    await RHCustomError(
-      CustomError.UnauthenticatedError,
-      ErrorMessages.CompareError,
-      ErrorFields.password
-    );
+    await RHCustomError({
+      errorClass: CustomError.UnauthenticatedError,
+      errorType: ErrorMessages.CompareError,
+      Field: Fields.password,
+    });
   }
   if (!user.isVerified) {
-    await RHCustomError(
-      CustomError.UnauthenticatedError,
-      ErrorMessages.ConfirmError,
-      ErrorFields.verificationToken
-    );
+    await RHCustomError({
+      errorClass: CustomError.UnauthenticatedError,
+      errorType: ErrorMessages.ConfirmError,
+      
+    });
   }
   const token = Utils.jwt.createJWT({ userId: user._id });
-  let isFirstTimeLogin = user.isFirstTimeLogin
-  if(user.isFirstTimeLogin){
-    user.isFirstTimeLogin = false
-    user.save()
+  let isFirstTimeLogin = user.isFirstTimeLogin;
+  if (user.isFirstTimeLogin) {
+    user.isFirstTimeLogin = false;
+    user.save();
   }
 
-  return RHSendResponse(res, StatusCodes.OK, "login", "success", { token, isFirstTimeLogin });
+  return RHSendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "successLogin",
+    value: {
+      token,
+      isFirstTimeLogin,
+    },
+  });
 };
 module.exports = {
   register,

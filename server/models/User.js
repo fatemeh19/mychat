@@ -5,18 +5,15 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      //   required: [true, "please provide name"],
-      minLength: [4, "name must be more than 4 characters"],
-      maxLength: [20, "name must be less than 20 characters"],
+      // required: true,
+      // minLength: [4, "name must be more than 4 characters"],
+      // maxLength: [2, "name must be less than 20 characters"],
+      
     },
     email: {
       type: String,
       required: [true, "please provide email"],
-      validate: {
-        validator: validator.isEmail,
-        message: 'Please provide valid email',
-      },
-      // unique: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -24,7 +21,7 @@ const UserSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      //   required: [true, "please provide phoneNumber"],
+    //   required: [true, "please provide phoneNumber"],
       // validate: {
       //   validator: validator.isMobilePhone('ir-IR'),
       // },
@@ -77,12 +74,12 @@ UserSchema.pre("save",async function(){
 })
 
 // UserSchema.methods.hashPassowrd = async function(){
-
+  
 // }
 // UserSchema.methods.comparePassowrd = async function(password){
 //   const isMatch = await bcrypt.compare(password,this.password)
 //   return isMatch 
-
+  
 // }
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
@@ -90,6 +87,4 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
 
 
 };
-
-
 module.exports = mongoose.model('User', UserSchema)
