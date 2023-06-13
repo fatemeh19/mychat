@@ -1,13 +1,10 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -48,56 +45,31 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     );
 }
 
-export default function CustomizedDialogs(
-    { children, open, closeHandler }:
-        { children: React.ReactNode, open: boolean, closeHandler: () => void }) {
-    //   const [open, setOpen] = React.useState(false);
+interface CustomizedDialogsProps {
+    children: React.ReactNode,
+    open: boolean,
+    title: string,
+    handelOpen : () => void
+}
 
-
-
-    const handleClickOpen = () => {
-        // setOpen(true);
-    };
-    const handleClose = () => {
-
-        // setOpen(false);
-    };
+const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen }) => {
 
     return (
-        <div>
-            {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
+        <div >
             <BootstrapDialog
-                onClose={() => closeHandler()}
+                onClose={() => handelOpen()}
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={() => closeHandler()}>
-                    Modal title
+                <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
+                    <h1 className='mr-8'>{title}</h1>
                 </BootstrapDialogTitle>
-                <DialogContent dividers>
-                    <Typography gutterBottom>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-                        consectetur ac, vestibulum at eros.
-                    </Typography>
-                    <Typography gutterBottom>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                        Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                    </Typography>
-                    <Typography gutterBottom>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-                        magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-                        ullamcorper nulla non metus auctor fringilla.
-                    </Typography>
+                <DialogContent dividers className='w-96'>
+                    {children}
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
-                        Save changes
-                    </Button>
-                </DialogActions>
             </BootstrapDialog>
         </div>
     );
 }
+
+export default CustomizedDialogs

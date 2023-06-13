@@ -13,7 +13,6 @@ export default function Home() {
       <div className="col-span-12 rightSideMainPage">
         <RightSideMainPage />
       </div>
-      <ProfileInfo />
     </main>
   )
 }

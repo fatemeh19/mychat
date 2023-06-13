@@ -12,6 +12,7 @@ import { setOpen } from '@/src/redux/features/popUpSlice'
 import ProfileInfo from '@/src/components/profileInfo'
 import ChannelInfo from '@/src/components/profileInfo/channelInfo'
 import CustomizedDialogs from '@/src/components/popUp'
+import AddContactForm from '@/src/components/contact/addContactForm'
 
 
 interface ChatHeaderProps {
@@ -29,9 +30,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
         else setInfoState(true)
     }
 
-
-    let clickHandler = () => setOpen(true)
-    let closeHandler = () => setOpen(false)
+    let handelOpenDialog = () => {
+        setOpen(!open)
+    }
 
     return (
         <div
@@ -47,7 +48,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                     flex gap-3 items-center 
                     w-full p-3 px-6 
                     "
-                    onClick={clickHandler}
+                    onClick={() => setOpen(true)}
                 >
                     <div className="profile">
                         <Image
@@ -71,7 +72,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
             <>
                 {
                     open
-                        ? <CustomizedDialogs open={open} closeHandler={closeHandler} children={<h1 className="bg-red-400">this is a react node</h1>} />
+                        ? <CustomizedDialogs 
+                            open={open} 
+                            title={'contact profile'} 
+                            children={<AddContactForm />} 
+                            handelOpen={handelOpenDialog}
+                        />
                         : null
                 }
             </>
