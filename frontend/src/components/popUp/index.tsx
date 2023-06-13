@@ -7,8 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-root ': {
+        borderRadius: 10,
+        width: 390,
+    },
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
+        paddingTop : 0,
+        border : 'none'
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
@@ -25,7 +31,12 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        <DialogTitle 
+            sx={{ 
+                m: 0, p: 2,
+                fontFamily: 'vazir',
+                fontWeight: 500, fontSize: 17 
+            }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -49,13 +60,13 @@ interface CustomizedDialogsProps {
     children: React.ReactNode,
     open: boolean,
     title: string,
-    handelOpen : () => void
+    handelOpen: () => void
 }
 
 const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen }) => {
 
     return (
-        <div >
+        <div>
             <BootstrapDialog
                 onClose={() => handelOpen()}
                 aria-labelledby="customized-dialog-title"
@@ -64,7 +75,7 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
                     <h1 className='mr-8'>{title}</h1>
                 </BootstrapDialogTitle>
-                <DialogContent dividers className='w-96'>
+                <DialogContent dividers>
                     {children}
                 </DialogContent>
             </BootstrapDialog>
