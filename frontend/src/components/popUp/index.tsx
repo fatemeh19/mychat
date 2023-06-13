@@ -12,9 +12,14 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         width: 390,
     },
     '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-        paddingTop : 0,
-        border : 'none'
+        // padding: theme.spacing(2),
+        paddingTop: 0,
+        border: 'none',
+        padding: 0,
+        gap: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        webkitScrollbarWidth: 5,
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
@@ -31,11 +36,11 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle 
-            sx={{ 
-                m: 0, p: 2,
+        <DialogTitle
+            sx={{
+                m: 0, p: 2, mr: 8,
                 fontFamily: 'vazir',
-                fontWeight: 500, fontSize: 17 
+                fontWeight: 500, fontSize: 17
             }} {...other}>
             {children}
             {onClose ? (
@@ -73,9 +78,9 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                 open={open}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
-                    <h1 className='mr-8'>{title}</h1>
+                    {title}
                 </BootstrapDialogTitle>
-                <DialogContent dividers>
+                <DialogContent dividers className='no-scrollbar'>
                     {children}
                 </DialogContent>
             </BootstrapDialog>

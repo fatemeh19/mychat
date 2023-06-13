@@ -13,6 +13,7 @@ import ProfileInfo from '@/src/components/profileInfo'
 import ChannelInfo from '@/src/components/profileInfo/channelInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import AddContactForm from '@/src/components/contact/addContactForm'
+import UserInfo from '@/src/components/profileInfo/userInfo'
 
 
 interface ChatHeaderProps {
@@ -74,8 +75,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                     open
                         ? <CustomizedDialogs 
                             open={open} 
-                            title={'contact profile'} 
-                            children={<AddContactForm />} 
+                            title={'User Info'} 
+                            children={<UserInfo />} 
                             handelOpen={handelOpenDialog}
                         />
                         : null
