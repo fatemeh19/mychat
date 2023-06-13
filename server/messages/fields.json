@@ -1,17 +1,22 @@
 {
-    "email": {
-      "name":"email",
-      "value":"ایمیل"
-    },
-    "password": {
-      "name":"password",
-      "value":"پسورد"
-
-    },
-    "verificationToken": {
-      "name":"verificationToken",
-      "value":"توکن"
-
-    }
-  
+  "email": {
+    "name": "email",
+    "value": "ایمیل"
+  },
+  "password": {
+    "name": "password",
+    "value": "پسورد"
+  },
+  "verificationToken": {
+    "name": "verificationToken",
+    "value": "توکن"
+  },
+  "user": {
+    "name": "user",
+    "value": "کاربر"
+  },
+  "phoneNumber":{
+    "name":"phoneNumber",
+    "value":"شماره موبایل"
+  }
 }

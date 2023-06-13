@@ -1,23 +1,54 @@
 const User = require("../models/User");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
-const path = require('path')
-
-
+const services = require("../services");
+const ErrorMessages = require("../messages/errors.json");
+const Fields = require("../messages/fields.json");
+const validators = require("../validators");
+const {
+  RHCustomError,
+  RHSendResponse,
+} = require("../middlewares/ResponseHandler");
 const setInfo = async (req, res) => {
-  console.log(req.file);
+  console.log(req.body);
   const {
-    file: { path: url },
     user: { userId },
-    body: { name },
+    body: { name, phoneNumber },
   } = req;
-  const update = { name: name,'profilePic.url':url};
-  const user = await User.findByIdAndUpdate(userId, update);
+  // try {
+  //   data = validators.setInfo.validate(req.body, {
+  //     abortEarly: false,
+  //     stripUnknown: true,
+  //   });
+  // } catch (err) {
+  //    console.log("err")
+  //   // await RHCustomError({ err, errorClass: CustomError.ValidationError });
+  // }
+  let url = "";
+  if (req.file) {
+    url = req.file.path;
+  }
+  
+  const update = {
+    name: name,
+    phoneNumber: phoneNumber,
+    "profilePic.url": url,
+  };
+  const user = await services.User.findAndUpdateUser(userId, update);
+
   if (!user) {
-    throw new CustomError.NotFoundError("No user found");
+    await RHCustomError({
+      errorClass: CustomError.NotFoundError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.user,
+    });
   }
 
-  res.status(StatusCodes.OK).json();
+  await RHSendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
 };
 
 module.exports = { setInfo };

@@ -1,8 +1,8 @@
 const { StatusCodes } = require('http-status-codes')
-class ValidationError extends Error{
+const BadRequestError = require('./BadRequest')
+class ValidationError extends BadRequestError{
     constructor(message, errors){
-        super(message)
-        this.errors = errors
+        super(message, errors)
         this.statusCode = StatusCodes.BAD_REQUEST
         
     }
