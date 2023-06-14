@@ -13,7 +13,9 @@ interface inputProps {
     icon?: IconType,
     show?: boolean,
     setShow?: Dispatch<SetStateAction<boolean>>,
-    keyHandler?: (e: any) => void
+    keyHandler?: (e: any) => void,
+    placeholder?:string,
+    labelClassName?: string
 }
 
 const Input: FC<inputProps> = ({
@@ -25,27 +27,26 @@ const Input: FC<inputProps> = ({
     icon: Icon,
     setShow,
     show,
-    keyHandler
+    keyHandler,
+    placeholder,
+    labelClassName
 }) => {
 
     return (
-        <div className="my-4 relative inputBox">
-            <label htmlFor={name} className="text-zinc-600 font-[500]">{label}</label>
+        <div className="py-4 relative w-full inputBox">
+             
             <Field
                 id={name}
                 name={name}
                 type={type}
                 className={
                     `w-full
-                    border
-                    border-zinc-300 
-                    px-3 py-2 
-                    outline-none 
-                    rounded-lg
+                    py-2 
+                    outline-none
                     peer
-                    ${inputClassName ?? ''}`}
+                    ${inputClassName ?? 'border border-zinc-300 px-3 rounded-lg'}`}
                 onKeyUp={keyHandler}
-                
+                placeholder={placeholder ?? ''}
             />
 
 
@@ -55,7 +56,7 @@ const Input: FC<inputProps> = ({
                     !!Icon &&
                     (
                         < Icon className={`
-                                absolute top-9 right-3 
+                                absolute top-7 right-3 
                                 text-xl text-gray-500
                                 ${show && 'text-red-400'}
                                 peer-focus-visible:text-blue-500
@@ -70,6 +71,7 @@ const Input: FC<inputProps> = ({
             <p className={`text-cyan-600 text-sm rtl ${errorClassName ?? ''}`}>
                 <ErrorMessage name={name} />
             </p>
+            <label htmlFor={name} className={`absolute top-0 ${labelClassName ?? 'text-zinc-600 font-[500] mt-[-10px]'}`}>{label}</label>
         </div>
     )
 }

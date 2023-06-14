@@ -12,7 +12,7 @@ import { setOpen } from '@/src/redux/features/popUpSlice'
 import ProfileInfo from '@/src/components/profileInfo'
 import ChannelInfo from '@/src/components/profileInfo/channelInfo'
 import CustomizedDialogs from '@/src/components/popUp'
-import AddContactForm from '@/src/components/contact/addContactForm'
+import AddContactForm from '@/src/components/contact/addContact/addContactForm'
 import UserInfo from '@/src/components/profileInfo/userInfo'
 
 

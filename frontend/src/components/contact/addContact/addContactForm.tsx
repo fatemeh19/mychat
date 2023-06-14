@@ -1,39 +1,49 @@
 import { Form, withFormik } from "formik";
 import * as yup from 'yup'
-import Input from "../auth/input";
+import { BiUser } from "react-icons/bi";
+import { BiPhone } from "react-icons/bi";
 import { createRef } from "react";
+import InputField from "./inputField";
 
 
 interface addContactFormProps {
     name: string,
     lastName:string,
-    phone: string
+    phone: string,
+    handelOpen?:()=>void
 }
 
-let btn: any;
+let addBtn: any;
+let cancelBtn: any;
 let add: () => void
 
 const AddContactFormInner = (props: any) => {
-    btn = createRef<HTMLButtonElement>()
-
+    const {handelOpen} =props;
+    addBtn = createRef<HTMLButtonElement>()
+    cancelBtn = createRef<HTMLButtonElement>()
     add = () => {}
 
     return (
 
-          <Form className=" w-full">
-
-                 <Input name='name' label="name" />
-                 <Input name='last-name' label="last name" />
-                 <Input name="phone" label="phone number" />
-
-                 <div className="my-5">
+          <Form className=" w-full px-5">
+                <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
+                <InputField name='last-name' label="Last name" />
+                <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />}/>
+                 <div className="my-5 gap-1 flex justify-end">
+                    {/* <button
+                         ref={cancelBtn}
+                         id="cancel"
+                         name="cancel"
+                         onClick={handelOpen}
+                        className="font-bold cursor-pointer bg-white hover:bg-gray-500 transition-all duration-150 text-sky-500 p-3 outline-none rounded-lg "
+                     >Cancel</button> */}
                      <button
-                         ref={btn}
+                         ref={addBtn}
                          id="add-contact"
                          name="add contact"
                          type='submit'
-                        className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
-                     >Add</button>
+                        className="font-bold cursor-pointer bg-white hover:text-sky-700 transition-all duration-150 text-sky-500  outline-none "
+                     >Create</button>
                  </div>
           </Form>
        
@@ -51,7 +61,6 @@ interface addContactFormValue {
     name?: string,
     lastName?:string,
     phone?: Number | '',
-
 }
 
 const AddContactForm = withFormik<addContactFormValue,addContactFormProps>({
@@ -66,7 +75,7 @@ const AddContactForm = withFormik<addContactFormValue,addContactFormProps>({
     handleSubmit: async (values, { props }) => {
         try {
             if (true) {
-                btn.addEventListener('onClick', add());
+                addBtn.addEventListener('onClick', add());
             }
         } catch (error) {
             console.log(error)

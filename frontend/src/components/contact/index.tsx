@@ -1,35 +1,46 @@
-'use client'
+"use client"
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Box,
-  IconButton,
-} from '@mui/material';
-import { BiX } from "react-icons/bi";
-import AddContactForm from "./addContactForm";
+import { FC, useState } from "react";
+import AddContactForm from "./addContact/addContactForm";
+import CustomizedDialogs from "../popUp";
+import ContactList from "./contactList/contactList";
 
-const Contact = (props: any) => {
-    const {open,handleOpen} =props;
-    return (
-      <Dialog open={open} maxWidth="sm" fullWidth>
-        <DialogTitle>Add Contact</DialogTitle>
-        <Box position="absolute" top={0} right={0} 
-          onClick={handleOpen}
-        >
-          <IconButton >
-            <BiX  />
-          </IconButton>
-        </Box>
-        <DialogContent>
-            <AddContactForm />
-        </DialogContent>
-        
-      </Dialog>
-    );
-
-
+interface  ContactsProps{
+    open: boolean,
+    handelOpen: () => void
 }
 
-export default Contact;
+const Contacts:FC<ContactsProps> = ({
+    open,
+    handelOpen
+}) => {
+    const [addContact,setAddContact]=useState(false)
+    const handle=()=>{
+        setAddContact(!addContact)
+    }
+    return (
+        <>
+            {
+                addContact ? ( open ? <CustomizedDialogs open={open} title="New Contact" 
+                                        handelOpen={handelOpen} 
+                                        children={<AddContactForm 
+                                            // handleOpen={handelOpen}
+
+                                        />} /> :null
+                            )
+                            : ( open ? <CustomizedDialogs open={open} title="Contacts" 
+                            handelOpen={handelOpen} 
+                            children={<ContactList
+                                handleOpen={handelOpen}
+                                handleAddContact={handle}
+                            />} /> :null
+                )
+            
+            
+            }
+        
+        </>
+    )
+}
+
+export default Contacts;
