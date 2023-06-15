@@ -19,7 +19,8 @@ interface LoginFormValue {
     password: string,
     captcha : string,
     msg : string,
-    token : string
+    token : string,
+    handleRedo:()=>void
 }
 
 const InnerLoginForm = (props: any) => {
@@ -27,9 +28,9 @@ const InnerLoginForm = (props: any) => {
     const { values } = props
     const router = useRouter()
     btn = document.querySelector('#Login')
-    const handleRedo = () => {
-        values.captcha=GenerateString()
-    }
+    // const handleRedo = () => {
+    //     values.captcha=GenerateString()
+    // }
     btnHandler = () => {
         // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
@@ -57,7 +58,7 @@ const InnerLoginForm = (props: any) => {
             <div className="flex relative w-full   py-2 outline-none " >
                 <Image src={'/images/captcha_img.jpg'}  width={20} height={40} alt=""  className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic "/>
                 <div className="select-none absolute w-4/5 top-[1rem] text-center tracking-[2rem] italic font-bold">{values.captcha}</div>
-                <div onClick={handleRedo} className="rounded w-[40px] h-[39px] cursor-pointer absolute right-0 bg-mainColor"><BiRedo className="text-white ml-[5px] mt-[3px] text-3xl" /></div>
+                <div onClick={values.handleRedo} className="rounded w-[40px] h-[39px] cursor-pointer absolute right-0 bg-mainColor"><BiRedo className="text-white ml-[5px] mt-[3px] text-3xl" /></div>
             </div>
             <input
                 id="captchaInput"
@@ -78,7 +79,7 @@ interface LoginFormProps {
 
     email?: string,
     password?: string,
-    // captcha?: string,
+    captcha?: string
     // msg? : string
 }
 
@@ -89,7 +90,10 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             password: "",
             captcha: GenerateString(),
             msg : '',
-            token : ''
+            token : '',
+            handleRedo:()=>{
+                props.captcha= GenerateString()
+            }
         }
     },
     handleSubmit: async (values, { setFieldError }) => {

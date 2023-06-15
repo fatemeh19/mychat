@@ -80,7 +80,9 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
                     {title}
                 </BootstrapDialogTitle>
-                <DialogContent dividers className='no-scrollbar'>
+                <DialogContent dividers 
+                // className='no-scrollbar'
+                >
                     {children}
                 </DialogContent>
             </BootstrapDialog>

@@ -10,7 +10,7 @@ import { IoIosMoon } from "react-icons/io";
 import { IoIosSunny } from "react-icons/io";
 import { BiCog } from "react-icons/bi";
 import {useState} from 'react';
-import Contact from "../../contact";
+import Contacts from "../../contact";
 
 export  function CalenderIcon(){
 
@@ -46,7 +46,9 @@ export  function ContactsIcon(){
         
         <div className="flex justify-center home-icons py-5">
             <BiUser className="text-white h-icon cursor-pointer opacity-[.5] w-[30px] h-[30px]" onClick={()=>{setOpen(true)}} />
-            <Contact open={open} handleOpen={handleOpen} />
+
+            {open ? <Contacts open={open} handelOpen={handleOpen} /> 
+            :null}
         </div>
         
     )
