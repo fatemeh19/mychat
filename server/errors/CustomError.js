@@ -1,9 +1,9 @@
 
 class CustomError extends Error{
-    constructor(message, type, field){
+    constructor(message,errors){
         super(message)
-        this.type = type
-        this.field = field
+        this.errors = errors
+       
     }
 }
 

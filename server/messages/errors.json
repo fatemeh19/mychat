@@ -21,7 +21,16 @@
   },
   "FormatError":{
     "name":"FormatError",
-    "message": "فرمت نباید به این شکل باشد"
+    "message": "در فرمت صحیحی نیست"
 
+  },
+  "UnauthorizedError":{
+    "name":"UnauthorizedError",
+    "message":"شما اجازه دسترسی به این بخش را ندارید"
+  },
+  "NoTokenProvided":{
+    "name":"NoTokenProvided",
+    "message":"توکنی برای احراز هویت ارائه نشده"
   }
+  
 }
