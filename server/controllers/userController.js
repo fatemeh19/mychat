@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const services = require("../services");
@@ -52,84 +51,5 @@ const setInfo = async (req, res) => {
   });
 };
 
-const addContact = async (req, res) => {
-  const { userId } = req.user;
-  let data;
-  try {
-    data = await validators.addContact.validate(req.body, {
-      stripUnknown: true,
-      abortEarly: false,
-    });
-  } catch (err) {
-    await RHCustomError({ err, errorClass: CustomError.ValidationError });
-  }
-  const contact = await services.User.findUser({
-    phoneNumber: data.phoneNumber,
-  });
-  if (!contact) {
-    await RHCustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotSignUpYet,
-    });
-  }
-  data.userId = contact._id;
 
-  const user = await services.User.findUser({ _id: userId });
-  if (user.phoneNumber == contact.phoneNumber) {
-    await RHCustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.notAllowedError,
-    });
-  }
-  const { contactExists, contactNameExists } = await user.hasThisContactOrName(
-    data
-  );
-  if (contactExists) {
-    await RHCustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.DuplicateError,
-      Field: Fields.phoneNumber,
-    });
-  }
-  if (contactNameExists) {
-    await RHCustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.DuplicateError,
-      Field: Fields.name,
-    });
-  }
-
-  // await services.User.addNewContact(user, {
-  //   userId: contact._id,
-  //   name: data.name,
-  // });
-  const newContact = {
-    userId: contact._id,
-    name: data.name,
-  };
-  await services.User.findAndUpdateUser(user._id, {
-    $push: { contacts: newContact },
-  });
-
-  await RHSendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
-};
-
-const getContacts = async (req, res) => {
-  const { userId } = req.user;
-  const user = await services.User.findUser({ _id: userId });
-  let contactIds = user.contacts;
-
-  contactIds = contactIds.map((contact) => contact.userId);
-  const contacts = await services.User.findUsers(
-    { _id: { $in: contactIds } },
-    "name phoneNumber profilePic",
-    "name"
-  );
-  await RHSendResponse({ res, statusCode: 200, title: "ok" ,value:{contacts}});
-};
-
-module.exports = { setInfo, addContact, getContacts };
+module.exports = { setInfo };

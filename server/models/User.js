@@ -89,7 +89,8 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
  
-
+};
+UserSchema.methods.hasThisContactOrName = async function(contact){
   this.contacts.forEach((value, index)=>{
     // console.log("value.name = ",value.name)
     // console.log("contact.name = ",contact.name)
@@ -108,5 +109,8 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
 
   })
   return {contactExists,contactNameExists}
-};
+
+}
+
+
 module.exports = mongoose.model("User", UserSchema);

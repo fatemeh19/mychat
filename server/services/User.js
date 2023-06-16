@@ -4,8 +4,21 @@ const ErrorMessages = require("../messages/errors.json");
 const { RHCustomError } = require("../middlewares/ResponseHandler");
 const mongooseErrorExtractor = require("../utils/mongooseErrorExtractor");
 const CustomError = require("../errors");
-const findUser = async (filter) => {
-  const user = await User.findOne(filter);
+const findUser = async (filter, select="") => {
+  let user;
+  try {
+    user = await User.findOne(filter).select(select);
+  } catch (err) {
+    const { errorType, field } = await mongooseErrorExtractor(err);
+    console.log(field)
+      await RHCustomError({
+        errorClass: CustomError.BadRequestError,
+        errorType,
+        Field: Fields[field],
+      });
+    
+  }
+
   return user;
 };
 
@@ -20,11 +33,8 @@ const findAndUpdateUser = async (id, updateQuery) => {
   try {
     user = await User.findByIdAndUpdate(id, updateQuery);
   } catch (err) {
-    let field;
-    for (var key in err.keyPattern) {
-      field = key;
-    }
-    const errorType = await mongooseErrorExtractor(err);
+   
+    const { errorType, field } = await mongooseErrorExtractor(err);
     return await RHCustomError({
       errorClass: CustomError.BadRequestError,
       errorType,
