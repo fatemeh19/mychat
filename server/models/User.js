@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require('bcryptjs')
+const bcrypt = require("bcryptjs");
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -8,7 +8,6 @@ const UserSchema = new mongoose.Schema(
       // required: true,
       // minLength: [4, "name must be more than 4 characters"],
       // maxLength: [2, "name must be less than 20 characters"],
-      
     },
     email: {
       type: String,
@@ -42,35 +41,43 @@ const UserSchema = new mongoose.Schema(
       lastseen: Date,
     },
     contacts: [],
-    profilePic:{
-        type:String,
-        url:String
+    profilePic: {
+      type: String,
+      url: String,
     },
-    isVerified: {
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    isFirstTimeLogin: {
       type: Boolean,
-      default: false
+      default: true,
     },
-    isFirstTimeLogin:{
-      type:Boolean,
-      default:true
-    },
-    verificationToken:String,
-    verified:Date,
+    verificationToken: String,
+    verified: Date,
     passwordToken: {
       type: String,
     },
     passwordTokenExpirationDate: {
       type: Date,
     },
-    
+    contacts: [
+      {
+        userId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+        name: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
-
 UserSchema.pre("save",async function(){
   if (!this.isModified('password')) return
   this.password = await bcrypt.hash(this.password, 10);
-
 })
 
 // UserSchema.methods.hashPassowrd = async function(){
@@ -84,7 +91,25 @@ UserSchema.pre("save",async function(){
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
+ 
 
+  this.contacts.forEach((value, index)=>{
+    // console.log("value.name = ",value.name)
+    // console.log("contact.name = ",contact.name)
+    // console.log("value.userId = ",value.userId)
+    // console.log("contact.userId = ",contact.userId)
+    // console.log("contactNameExists = ",contactNameExists)
+    // console.log("contactExists = ",contactExists)
+    if(value.name==contact.name){
+      
+      contactNameExists = true
+    }
 
+    if(value.userId.equals(contact.userId)){
+      contactExists = true
+    }
+
+  })
+  return {contactExists,contactNameExists}
 };
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model("User", UserSchema);

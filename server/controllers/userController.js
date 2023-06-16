@@ -28,7 +28,7 @@ const setInfo = async (req, res) => {
   if (req.file) {
     url = req.file.path;
   }
-  
+
   const update = {
     name: name,
     phoneNumber: phoneNumber,
@@ -51,4 +51,70 @@ const setInfo = async (req, res) => {
   });
 };
 
-module.exports = { setInfo };
+const addContact = async (req, res) => {
+  const { userId } = req.user;
+  let data;
+  try {
+    data = await validators.addContact.validate(req.body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RHCustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  const contact = await services.User.findUser({
+    phoneNumber: data.phoneNumber,
+  });
+  if (!contact) {
+    await RHCustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotSignUpYet,
+    });
+  }
+  data.userId = contact._id;
+
+  const user = await services.User.findUser({ _id: userId });
+  if(user.phoneNumber == contact.phoneNumber){
+    await RHCustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.notAllowedError,
+    });
+  }
+  const { contactExists, contactNameExists } = await user.hasThisContactOrName(
+    data
+  );
+  if (contactExists) {
+    await RHCustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.DuplicateError,
+      Field:Fields.phoneNumber
+    });
+  }
+  if (contactNameExists) {
+    await RHCustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.DuplicateError,
+      Field: Fields.name,
+    });
+  }
+
+  // await services.User.addNewContact(user, {
+  //   userId: contact._id,
+  //   name: data.name,
+  // });
+  const newContact = {
+    userId: contact._id,
+    name: data.name,
+  };
+  await services.User.findAndUpdateUser(user._id, {
+    $push: { contacts: newContact },
+  });
+
+  await RHSendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
+};
+
+module.exports = { setInfo, addContact };

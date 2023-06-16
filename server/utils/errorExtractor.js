@@ -13,7 +13,7 @@ module.exports = async (err) => {
         field: "",
       };
       validationError.name = err.inner[i].errors[j];
-      console.log(Fields[err.inner[i].path].value);
+      console.log(err.inner[i].path);
       validationError.message = await ErrorMessageCreator(
         Fields[err.inner[i].path].value,
         ErrorMessages[err.inner[i].errors[j]].message
