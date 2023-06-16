@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -70,6 +72,15 @@ interface CustomizedDialogsProps {
 
 const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen }) => {
 
+    // let scrollWrap = React.createRef<HTMLDivElement>()
+    // setTimeout(() => {
+    //     console.log(scrollWrap.current)
+    //     scrollWrap.current?.addEventListener('scroll', () => {
+    //         console.log('scroll')
+    //     })
+    // }, 50);
+
+
     return (
         <div>
             <BootstrapDialog
@@ -80,8 +91,8 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
                     {title}
                 </BootstrapDialogTitle>
-                <DialogContent dividers 
-                // className='no-scrollbar'
+                <DialogContent dividers
+                    className='no-scrollbar'
                 >
                     {children}
                 </DialogContent>

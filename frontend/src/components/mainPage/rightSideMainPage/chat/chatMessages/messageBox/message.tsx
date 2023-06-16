@@ -14,8 +14,6 @@ interface messageProps {
 
 const Message: FC<messageProps> = ({ type, isText }) => {
 
-    console.log(type)
-
     switch (type) {
         case messageTypes.text:
             return (<TextMessage />)

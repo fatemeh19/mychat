@@ -76,7 +76,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                         ? <CustomizedDialogs 
                             open={open} 
                             title={'User Info'} 
-                            children={<UserInfo />} 
+                            children={<ProfileInfo />} 
                             handelOpen={handelOpenDialog}
                         />
                         : null

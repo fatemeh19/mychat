@@ -4,7 +4,6 @@ import SideBar from "./sidebar"
 import ChatList from "./chatList"
 
 export default function LeftSideMainPage(){
-    console.log(localStorage.getItem('token'))
     return (
         <div className="grid grid-cols-6">
             
