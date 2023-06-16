@@ -5,6 +5,7 @@ const services = require("../services");
 const ErrorMessages = require("../messages/errors.json");
 const Fields = require("../messages/fields.json");
 const validators = require("../validators");
+const path = require("path");
 const {
   RHCustomError,
   RHSendResponse,
@@ -26,13 +27,13 @@ const setInfo = async (req, res) => {
   // }
   let url = "";
   if (req.file) {
-    url = req.file.path;
+    url = path.join(process.cwd(), "../", req.file.path);
   }
 
   const update = {
     name: name,
     phoneNumber: phoneNumber,
-    "profilePic.url": url,
+    profilePic: url,
   };
   const user = await services.User.findAndUpdateUser(userId, update);
 
@@ -74,7 +75,7 @@ const addContact = async (req, res) => {
   data.userId = contact._id;
 
   const user = await services.User.findUser({ _id: userId });
-  if(user.phoneNumber == contact.phoneNumber){
+  if (user.phoneNumber == contact.phoneNumber) {
     await RHCustomError({
       errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.notAllowedError,
@@ -87,7 +88,7 @@ const addContact = async (req, res) => {
     await RHCustomError({
       errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.DuplicateError,
-      Field:Fields.phoneNumber
+      Field: Fields.phoneNumber,
     });
   }
   if (contactNameExists) {
@@ -117,4 +118,18 @@ const addContact = async (req, res) => {
   });
 };
 
-module.exports = { setInfo, addContact };
+const getContacts = async (req, res) => {
+  const { userId } = req.user;
+  const user = await services.User.findUser({ _id: userId });
+  let contactIds = user.contacts;
+
+  contactIds = contactIds.map((contact) => contact.userId);
+  const contacts = await services.User.findUsers(
+    { _id: { $in: contactIds } },
+    "name phoneNumber profilePic",
+    "name"
+  );
+  await RHSendResponse({ res, statusCode: 200, title: "ok" ,value:{contacts}});
+};
+
+module.exports = { setInfo, addContact, getContacts };

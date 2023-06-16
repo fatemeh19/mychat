@@ -41,10 +41,7 @@ const UserSchema = new mongoose.Schema(
       lastseen: Date,
     },
     contacts: [],
-    profilePic: {
-      type: String,
-      url: String,
-    },
+    profilePic: String,
     isVerified:{
         type:Boolean,
         default:false

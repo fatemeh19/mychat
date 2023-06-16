@@ -16,7 +16,7 @@ const createUser = async (body) => {
 
 const findAndUpdateUser = async (id, updateQuery) => {
   let user;
-  
+
   try {
     user = await User.findByIdAndUpdate(id, updateQuery);
   } catch (err) {
@@ -36,7 +36,17 @@ const findAndUpdateUser = async (id, updateQuery) => {
 };
 
 const addNewContact = async (user, contact) => {
-    User.findByIdAndUpdate({ "_id": user._id},{ "$push": { "contacts": contact } });
+  User.findByIdAndUpdate({ _id: user._id }, { $push: { contacts: contact } });
+};
+const findUsers = async (Query, select = "", sort = "") => {
+  const users = await User.find(Query).select(select).sort(sort);
+  return users;
 };
 
-module.exports = { findUser, createUser, findAndUpdateUser, addNewContact };
+module.exports = {
+  findUsers,
+  findUser,
+  createUser,
+  findAndUpdateUser,
+  addNewContact,
+};
