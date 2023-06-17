@@ -1,9 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const uploadFile = require('../utils/multer')
+const contactRouter = require("./contact");
 
-const { setInfo } = require("../controllers/userController");
+const uploadFile = require("../utils/multer");
 
-router.patch("/setInfo",uploadFile.single('profilePic'), setInfo);
+const {
+  setInfo,
+  addContact,
+  getContacts,
+} = require("../controllers/userController");
+router.use("/contact", contactRouter);
+
+router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
 module.exports = router;

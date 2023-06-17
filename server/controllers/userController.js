@@ -1,10 +1,10 @@
-const User = require("../models/User");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const services = require("../services");
 const ErrorMessages = require("../messages/errors.json");
 const Fields = require("../messages/fields.json");
 const validators = require("../validators");
+const path = require("path");
 const {
   RHCustomError,
   RHSendResponse,
@@ -26,13 +26,13 @@ const setInfo = async (req, res) => {
   // }
   let url = "";
   if (req.file) {
-    url = req.file.path;
+    url = path.join(process.cwd(), "../", req.file.path);
   }
-  
+
   const update = {
     name: name,
     phoneNumber: phoneNumber,
-    "profilePic.url": url,
+    profilePic: url,
   };
   const user = await services.User.findAndUpdateUser(userId, update);
 
@@ -50,5 +50,6 @@ const setInfo = async (req, res) => {
     title: "ok",
   });
 };
+
 
 module.exports = { setInfo };
