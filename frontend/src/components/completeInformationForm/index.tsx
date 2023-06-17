@@ -10,7 +10,7 @@ interface CompleteInformationFormProps {
 
 const CompleteInformationForm: FC<CompleteInformationFormProps> = ({ }) => {
 
-    const [img, setImg] = useState<string | ArrayBuffer | null>('')
+    const [img, setImg] = useState<string>('')
 
 
     return (

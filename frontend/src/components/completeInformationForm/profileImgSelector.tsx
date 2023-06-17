@@ -4,18 +4,17 @@ import { HiOutlinePlus } from 'react-icons/hi'
 
 
 interface profileImgSelector {
-    setImage : Dispatch<SetStateAction<string | ArrayBuffer | null>>
+    setImage: Dispatch<SetStateAction<string>>
 }
 
-const ProfileImgSelector: FC<profileImgSelector> = ({setImage}) => {
+const ProfileImgSelector: FC<profileImgSelector> = ({ setImage }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
 
-    const changeHandler = () => {
+    const changeHandler = (e: any) => {
         // @ts-ignore
         const file = defaultBtn.current?.files[0]
-        console.log(!!file)
         const reader = new FileReader()
         if (file) {
             reader.onload = () => {
@@ -23,7 +22,7 @@ const ProfileImgSelector: FC<profileImgSelector> = ({setImage}) => {
 
                 // @ts-ignore
                 profileImg.current.src = result
-                setImage(result)
+                setImage(e.target.files[0])
             }
             reader.readAsDataURL(file)
 
@@ -49,7 +48,9 @@ const ProfileImgSelector: FC<profileImgSelector> = ({setImage}) => {
                 rounded-full
                 flex flex-col items-center justify-center
                 border-2 border-dashed border-blue-500
+                hover:border-blue-900
                 cursor-pointer
+                group
                 relative
             ">
                 <img
@@ -64,10 +65,11 @@ const ProfileImgSelector: FC<profileImgSelector> = ({setImage}) => {
                         border-4
                         border-white
                         rounded-full
+                        group-[:hover]:opacity-50
                         "
                     onClick={() => defaultBtn.current?.click()}
                 />
-                <HiOutlinePlus className=" text-[100px] text-blue-500 " />
+                <HiOutlinePlus className=" text-[100px] group-[:hover]:text-blue-900 text-blue-500" />
             </div>
         </div>
     );

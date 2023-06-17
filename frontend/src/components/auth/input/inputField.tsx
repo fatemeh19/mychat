@@ -6,19 +6,23 @@ interface inputFieldProps {
     name: string,
     label: string,
     children?: React.ReactNode,
+    inputClassName?: string,
+    containerClassName?: string,
 }
 
 const InputField: FC<inputFieldProps> = ({
     name,
     label,
-    children
+    children,
+    inputClassName,
+    containerClassName
 }) => {
 
     return (
-        <div className="flex gap-2">
-            <div className="w-8 flex ">{children}</div>
+        <div className={`${containerClassName} flex gap-2 ml-8`}>
+            {/* <div className="w-8 flex ">{children}</div> */}
             <Input name={name} label={label} placeholder={' '}
-                inputClassName="border-b border-gray-200 focus:border-sky-500 inputField "
+                inputClassName={`${inputClassName} border-b border-gray-200 focus:border-sky-500 inputField`}
                 // labelClassName='w-full invisible text-cyan-600 text-sm  peer-focus:visible !peer-placeholder-shown:visible'
                 labelClassName='
                     w-full 

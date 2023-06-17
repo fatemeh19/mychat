@@ -5,11 +5,11 @@ import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
-import {GenerateString} from '@/src/helper/captcha';
+import { GenerateString } from '@/src/helper/captcha';
 import { BiRedo } from "react-icons/bi";
 import Image from "next/image"
-import {BsFingerprint} from 'react-icons/bs'
-import {MdAlternateEmail} from 'react-icons/md'
+import { BsFingerprint } from 'react-icons/bs'
+import { MdAlternateEmail } from 'react-icons/md'
 
 let btn: any;
 let btnHandler: () => void
@@ -17,10 +17,11 @@ let btnHandler: () => void
 interface LoginFormValue {
     email: string,
     password: string,
-    captcha : string,
-    msg : string,
-    token : string,
-    handleRedo:()=>void
+    captcha: string,
+    msg: string,
+    token: string,
+    ID: string,
+    handleRedo: () => void
 }
 
 const InnerLoginForm = (props: any) => {
@@ -35,35 +36,35 @@ const InnerLoginForm = (props: any) => {
         // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
         console.log(inputData)
-        if(values.captcha == inputData){
-            values.msg='Successful, wait to Login ..'
+        if (values.captcha == inputData) {
+            values.msg = 'Successful, wait to Login ..'
             console.log(values.token)
-            localStorage.setItem('token',values.token)
+            localStorage.setItem('token', values.token)
             router.push('/')
             console.log("login")
         }
-        else{
-            values.msg="Captcha Code is wrong try again"
-            values.captcha=GenerateString()
-            
+        else {
+            values.msg = "Captcha Code is wrong try again"
+            values.captcha = GenerateString()
+
         }
-        
+
     }
 
     return (
         <Form className=" w-full">
 
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
-            <Input name="password" type="password" label="password" icon={BsFingerprint}/>
+            <Input name="password" type="password" label="password" icon={BsFingerprint} />
             <div className="flex relative w-full   py-2 outline-none " >
-                <Image src={'/images/captcha_img.jpg'}  width={20} height={40} alt=""  className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic "/>
+                <Image src={'/images/captcha_img.jpg'} width={20} height={40} alt="" className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic " />
                 <div className="select-none absolute w-4/5 top-[1rem] text-center tracking-[2rem] italic font-bold">{values.captcha}</div>
                 <div onClick={values.handleRedo} className="rounded w-[40px] h-[39px] cursor-pointer absolute right-0 bg-mainColor"><BiRedo className="text-white ml-[5px] mt-[3px] text-3xl" /></div>
             </div>
             <input
                 id="captchaInput"
                 type="text"
-                className={`w-full border border-zinc-300 px-3 py-2 outline-none tracking-[2rem] rounded-lg`}/>
+                className={`w-full border border-zinc-300 px-3 py-2 outline-none tracking-[2rem] rounded-lg`} />
             <p className={`text-cyan-600 text-sm rtl `}>
                 {values.msg}
             </p>
@@ -89,10 +90,11 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             email: "",
             password: "",
             captcha: GenerateString(),
-            msg : '',
-            token : '',
-            handleRedo:()=>{
-                props.captcha= GenerateString()
+            msg: '',
+            token: '',
+            ID: '',
+            handleRedo: () => {
+                props.captcha = GenerateString()
             }
         }
     },
@@ -100,28 +102,37 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
         try {
             console.log('submit')
             const res = await callApi().post('/auth/login', values)
-            console.log(res)
+            console.log('login res : ', res)
             if (res.statusText && res.statusText === 'OK') {
-                values.token=res.data.value.token;
+                console.log(res)
+                values.token = res.data.value.token;
+                // values.ID = res.data.values.id;
                 btn.addEventListener('onclick', btnHandler());
             }
-            
-            
+
+
         } catch (error) {
             if (error instanceof ValidationError) {
-                console.log('error : ', error)
-                let spliteArr = error.message.split(' ')
-                spliteArr.forEach(item => {
-                    if(item === 'email' || item === 'Email')
-                    {
-                        // @ts-ignore
-                        setFieldError('email', error.message)
-                    }
-                    else if(item === 'password' || item === 'Password') {
-                        // @ts-ignore
-                        setFieldError('password', error.message)
-                    }
-                })
+                // console.log('error : ', error)
+                if (error instanceof ValidationError) {
+                    const err = error.Error.errors;
+                    err.map((e: any) => {
+                        setFieldError(e.field, e.message)
+                    });
+
+                }
+                // let spliteArr = error.message.split(' ')
+                // spliteArr.forEach(item => {
+                //     if(item === 'email' || item === 'Email')
+                //     {
+                //         // @ts-ignore
+                //         setFieldError('email', error.message)
+                //     }
+                //     else if(item === 'password' || item === 'Password') {
+                //         // @ts-ignore
+                //         setFieldError('password', error.message)
+                //     }
+                // })
             }
         }
 

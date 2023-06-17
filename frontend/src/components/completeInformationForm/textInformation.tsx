@@ -1,12 +1,16 @@
 import { Form, withFormik } from "formik";
 import * as yup from 'yup'
-import Input from "../auth/input";
 import { createRef } from "react";
+import callApi from "@/src/helper/callApi";
+import { useRouter } from "next/navigation";
+import InputField from "../auth/input/inputField";
+import ValidationError from "@/src/errors/validationError";
 
 
 interface textInformationFormProps {
     name: string,
-    phone: string
+    phone: string,
+    msg: string
 }
 
 let btn: any;
@@ -15,17 +19,21 @@ let apply: () => void
 const TextInformationForm = (props: any) => {
 
     btn = createRef<HTMLButtonElement>()
+    const router = useRouter()
 
     apply = () => {
         //   go to anothe page
+        router.push('/')
     }
 
     return (
         <div className="flex items-center justify-center flex-col gap-5">
-            <Form className=" w-full">
+            <Form className="w-80">
 
-                <Input name='name' label="name" />
-                <Input name="phone" label="phone number" />
+                {/* <Input name='name' label="name" inputClassName="w-96" /> */}
+                {/* <Input name="phone" label="phone number" /> */}
+                <InputField name="name" label="name" containerClassName="ml-0" />
+                <InputField name="phone" label="phone number" containerClassName="ml-0" />
 
                 <div className="my-5">
                     {/* <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p> */}
@@ -37,6 +45,7 @@ const TextInformationForm = (props: any) => {
                         className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                     >Apply</button>
                 </div>
+                <div className="errMessage w-full text-red-500">{props.values.msg}</div>
             </Form>
         </div>
     );
@@ -52,7 +61,7 @@ const textInformationFormValidationSchema = yup.object().shape({
 interface registerFormProps {
     name?: string,
     phone?: Number | '',
-    image: string | ArrayBuffer | null
+    image: string
 }
 
 const textInformation = withFormik<registerFormProps, textInformationFormProps>({
@@ -67,20 +76,27 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
     handleSubmit: async (values, { props }) => {
         try {
 
-            const info = {
-                img: props.image,
-                name: values.name,
-                phone: values.phone
-            }
+            let formData = new FormData()
+            formData.append('profilePic', props.image)
+            formData.append('name', values.name)
+            formData.append('phoneNumber', values.phone)
 
-            // const res = await callApi().post('/main/user/setInfo', info)
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            };
 
-            // if (res.status === 200) {
-            if (true) {
+            const res = await callApi().patch('/main/user/setInfo', formData, config)
+            console.log(res)
+            if (res.status === 200) {
                 btn.addEventListener('onClick', apply());
             }
         } catch (error) {
-            console.log(error)
+            console.log('error in catch text info : ', error)
+            if (error instanceof ValidationError) {
+                values.msg = error.Error.errors[0].message
+            }
         }
     }
 

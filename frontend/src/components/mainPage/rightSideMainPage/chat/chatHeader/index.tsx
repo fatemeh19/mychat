@@ -14,6 +14,7 @@ import ChannelInfo from '@/src/components/profileInfo/channelInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import AddContactForm from '@/src/components/contact/addContact/addContactForm'
 import UserInfo from '@/src/components/profileInfo/userInfo'
+import callApi from '@/src/helper/callApi'
 
 
 interface ChatHeaderProps {
@@ -31,9 +32,22 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
         else setInfoState(true)
     }
 
+    let getData = async () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+        // const resId = await callApi().get(`/main/user/contact/`, config)
+        // const res = await callApi().get(`/main/user/contact/`, config)
+        // console.log('profile resId  : ', resId)
+    }
+
     let handelOpenDialog = () => {
         setOpen(!open)
+        getData()
     }
+
 
     return (
         <div
@@ -73,12 +87,16 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
             <>
                 {
                     open
-                        ? <CustomizedDialogs 
-                            open={open} 
-                            title={'User Info'} 
-                            children={<ProfileInfo />} 
-                            handelOpen={handelOpenDialog}
-                        />
+                        ? (
+                            <>
+                                <CustomizedDialogs
+                                    open={open}
+                                    title={'User Info'}
+                                    children={<ProfileInfo />}
+                                    handelOpen={handelOpenDialog}
+                                />
+                            </>
+                        )
                         : null
                 }
             </>

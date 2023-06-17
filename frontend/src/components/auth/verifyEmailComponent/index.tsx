@@ -9,19 +9,10 @@ interface VerifyEmailComponentProps {
 }
 
 const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) => {
-    const [verified, setVerified] = useState(true)
+    const [verified, setVerified] = useState(false)
     const [second, setSecond] = useState<number>(10)
 
     const router = useRouter()
-
-    setTimeout(() => {
-        setSecond(second-1)
-    }, 1000)
-    
-    setTimeout(() => {
-        router.push('/auth/login')
-    }, 10000)
-    
 
     const verifyEmailHandler = async () => {
         console.log('search params in verify components : ', searchParams)
@@ -32,6 +23,14 @@ const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) =
         // اینجا باید کدی اضاف بشه که چک کنه اگه استاتوس رسپانس 200 بود یا اوکی بود اونموقع وریفای رو ترو کنه
         if (res.statusText === "OK") setVerified(true)
         console.log('verified')
+
+        setTimeout(() => {
+            setSecond(second - 1)
+        }, 1000)
+
+        setTimeout(() => {
+            router.push('/auth/login')
+        }, 10000)
     }
 
     console.log('how')
@@ -64,7 +63,7 @@ const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) =
                                 <h1 className="font-[700] text-3xl">Your Email Verified!!!!</h1>
 
                                 <p className="mt-5 text-gray-600">after <span className="text-blue-500">{second}</span> second you will translate to login page</p>
-                                
+
                             </div>
                         </div>
                     )}

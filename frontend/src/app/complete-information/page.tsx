@@ -13,7 +13,7 @@ const CompleteInformation: FC<CompleteInformationProps> = () => {
     
 
     return (
-        <main className="md:grid w-full h-screen md:grid-cols-4 bg-bgColorLight dark:bg-bgColorDark">
+        <main className="md:grid w-full h-screen md:grid-cols-4">
             <div className="
                 hidden 
                 col-span-2 
