@@ -38,6 +38,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         };
+        console.log(localStorage.getItem('userId'))
         // const resId = await callApi().get(`/main/user/contact/`, config)
         // const res = await callApi().get(`/main/user/contact/`, config)
         // console.log('profile resId  : ', resId)

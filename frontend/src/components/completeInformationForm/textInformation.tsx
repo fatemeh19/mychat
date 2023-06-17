@@ -81,17 +81,22 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
             formData.append('name', values.name)
             formData.append('phoneNumber', values.phone)
 
+            let localStorageArrayString = localStorage.getItem('items')
+            console.log(localStorageArrayString)
+            let localStorageArray = localStorageArrayString?.split(',')
+            console.log(localStorageArray[0])
+
             const config = {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             };
 
-            const res = await callApi().patch('/main/user/setInfo', formData, config)
-            console.log(res)
-            if (res.status === 200) {
-                btn.addEventListener('onClick', apply());
-            }
+            // const res = await callApi().patch('/main/user/setInfo', formData, config)
+            // console.log(res)
+            // if (res.status === 200) {
+            //     btn.addEventListener('onClick', apply());
+            // }
         } catch (error) {
             console.log('error in catch text info : ', error)
             if (error instanceof ValidationError) {

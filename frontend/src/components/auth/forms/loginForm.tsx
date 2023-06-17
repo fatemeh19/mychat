@@ -20,7 +20,7 @@ interface LoginFormValue {
     captcha: string,
     msg: string,
     token: string,
-    ID: string,
+    userId: string,
     handleRedo: () => void
 }
 
@@ -33,13 +33,14 @@ const InnerLoginForm = (props: any) => {
     //     values.captcha=GenerateString()
     // }
     btnHandler = () => {
+        console.log('in')
         // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
-        console.log(inputData)
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            console.log(values.token)
-            localStorage.setItem('token', values.token)
+            let items = [values.token, values.userId]
+            localStorage.setItem('items', JSON.stringify(items))
+            console.log('localhost items : ' , typeof localStorage.getItem('items'))
             router.push('/')
             console.log("login")
         }
@@ -92,7 +93,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             captcha: GenerateString(),
             msg: '',
             token: '',
-            ID: '',
+            userId: '',
             handleRedo: () => {
                 props.captcha = GenerateString()
             }
@@ -102,11 +103,10 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
         try {
             console.log('submit')
             const res = await callApi().post('/auth/login', values)
-            console.log('login res : ', res)
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
-                values.token = res.data.value.token;
-                // values.ID = res.data.values.id;
+                values.token = res.data.value.token
+                values.userId = res.data.value.userId
                 btn.addEventListener('onclick', btnHandler());
             }
 
