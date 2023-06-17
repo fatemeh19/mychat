@@ -38,7 +38,7 @@ const InnerLoginForm = (props: any) => {
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            let items = [values.token, values.userId]
+            let items =`${values.token},${values.userId}`
             localStorage.setItem('items', JSON.stringify(items))
             console.log('localhost items : ' , typeof localStorage.getItem('items'))
             router.push('/')
