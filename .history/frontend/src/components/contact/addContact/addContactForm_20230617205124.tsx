@@ -5,7 +5,6 @@ import { BiPhone } from "react-icons/bi";
 import { createRef } from "react";
 import InputField from "../../auth/input/inputField";
 import callApi from "@/src/helper/callApi";
-import ValidationError from "@/src/errors/validationError";
 
 
 interface addContactFormProps {
@@ -14,8 +13,7 @@ interface addContactFormProps {
     phone: string,
     handelOpen?: () => void,
     token: string,
-    userId: string,
-    msg: string
+    userId: string
 }
 
 let addBtn: any;
@@ -32,9 +30,8 @@ const AddContactFormInner = (props: any) => {
 
         <Form className=" w-full px-5">
             <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
-            <InputField name='lastName' label="Last name" />
+            <InputField name='last-name' label="Last name" />
             <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />} />
-            <div className="errMessage w-full text-red-500">{props.values.msg}</div>
             <div className="my-5 gap-1 flex justify-end">
                 {/* <button
                          ref={cancelBtn}
@@ -51,7 +48,6 @@ const AddContactFormInner = (props: any) => {
                     className="font-bold cursor-pointer bg-white hover:text-sky-700 transition-all duration-150 text-sky-500  outline-none "
                 >Create</button>
             </div>
-            
         </Form>
 
     );
@@ -61,12 +57,13 @@ const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2
 
 const addContactFormValidationSchema = yup.object().shape({
     name: yup.string().required().min(3, 'Atleast enter 3 words'),
-    // phone: yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
+    phone: yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
 })
 
 interface addContactFormValue {
     name?: string,
-    phone?: Number | ''
+    lastName?: string,
+    phone?: Number | '',
 }
 
 const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
@@ -75,44 +72,25 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             name: '',
             lastName: '',
             phone: '',
-            token: '',
-            userId: '',
-            msg: ''
         }
     },
     validationSchema: addContactFormValidationSchema,
     handleSubmit: async (values, { props }) => {
         try {
-            let localStorageString = localStorage.getItem('items')
-            let localStorageArray = localStorageString?.split(',')
-            // @ts-ignore
-            let token = localStorageArray[0].slice(1, localStorageArray[0].length)
-            // @ts-ignore
-            let userId = localStorageArray[1].slice(0, localStorageArray[1].length-1)
-            console.log(token)
-            console.log(userId)
+            console.log('submit')
+            const res = await callApi().post('/auth/login', values)
+            if (res.statusText && res.statusText === 'OK') {
+                console.log(res)
+                values.token = res.data.value.token
+                values.userId = res.data.value.userId
+                btn.addEventListener('onclick', btnHandler());
+            }
 
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            const contact = {
-                name:values.name+" "+values.lastName,
-                phoneNumber:values.phone
-            };
-            console.log(contact)
-            // values.name=values.name+" "+values.lastName;
-            const res = await callApi().post('/main/user/contact', contact, config)
-            console.log(res)
-            if (res.status === 200) {
-                addBtn.addEventListener('onClick', add());
-            }
+            // if (true) {
+            //     addBtn.addEventListener('onClick', add());
+            // }
         } catch (error) {
-            console.log('error in catch text info : ', error)
-            if (error instanceof ValidationError) {
-                values.msg = error.Error.errors[0].message
-            }
+            console.log(error)
         }
     }
 
