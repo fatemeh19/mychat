@@ -130,6 +130,7 @@ const login = async (req, res) => {
     value: {
       token,
       isFirstTimeLogin,
+      userId:user._id
     },
   });
 };
