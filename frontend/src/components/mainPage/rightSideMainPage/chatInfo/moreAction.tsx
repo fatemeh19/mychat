@@ -13,7 +13,7 @@ export default function MoreAction() {
                     Block user
                 </p>
             </div> */}
-            <div className='flex gap-7 text-red-500'>
+            <div className='flex gap-7 text-red-500 cursor-pointer'>
                 <HiOutlineHandRaised className='text-2xl' />
                 <p className='text-sm'>
                     Block user

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './features/counterSlice'
+import popUpReducer from './features/popUpSlice'
 // ...
 export const store = configureStore({
   reducer: {
-    counterReducer
+    popUp: popUpReducer
   },
 })
 

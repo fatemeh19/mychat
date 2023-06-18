@@ -1,9 +1,10 @@
 export default class ValidationError {
 
-    message : string
+    // message : string
+    Error : {}
 
-    constructor(message : string){
-        this.message = message
+    constructor(Error : {}){
+        this.Error = Error
     }
 
 }

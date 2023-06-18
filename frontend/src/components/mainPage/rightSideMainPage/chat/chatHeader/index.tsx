@@ -1,11 +1,20 @@
 "use client"
 
 import Image from 'next/image'
+import { useState } from 'react'
 
 import { CgMoreO } from 'react-icons/cg'
 import { FiPhone } from 'react-icons/fi'
 import { HiOutlineVideoCamera } from 'react-icons/hi'
 import { Dispatch, FC, SetStateAction } from "react";
+import { useAppDispatch } from '@/src/redux/hooks'
+import { setOpen } from '@/src/redux/features/popUpSlice'
+import ProfileInfo from '@/src/components/profileInfo'
+import ChannelInfo from '@/src/components/profileInfo/channelInfo'
+import CustomizedDialogs from '@/src/components/popUp'
+import AddContactForm from '@/src/components/contact/addContact/addContactForm'
+import UserInfo from '@/src/components/profileInfo/userInfo'
+import callApi from '@/src/helper/callApi'
 
 
 interface ChatHeaderProps {
@@ -15,21 +24,48 @@ interface ChatHeaderProps {
 
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
 
+    const [open, setOpen] = useState(false)
+
     let closeInfoSide = () => {
         console.log('close')
         if (infoState) setInfoState(false)
         else setInfoState(true)
     }
 
+    let getData = async () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+        console.log(localStorage.getItem('userId'))
+        // const resId = await callApi().get(`/main/user/contact/`, config)
+        // const res = await callApi().get(`/main/user/contact/`, config)
+        // console.log('profile resId  : ', resId)
+    }
+
+    let handelOpenDialog = () => {
+        setOpen(!open)
+        getData()
+    }
+
+
     return (
-        <div className="w-full mx-auto bg-white dark:bg-bgColorDark2">
-            <div className="flex justify-between flex-row-reverse p-3 px-6">
-                <div className="righ flex flex-row-reverse gap-4 items-center">
+        <div
+            className=" w-full mx-auto bg-white cursor-pointer dark:bg-bgColorDark2">
+            <div className="flex justify-between flex-row-reverse">
+                <div className="righ flex flex-row-reverse gap-4 items-center pr-6">
                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
                 </div>
-                <div className="left flex gap-3 items-center">
+                <div className="
+                    left
+                    flex gap-3 items-center 
+                    w-full p-3 px-6 
+                    "
+                    onClick={() => setOpen(true)}
+                >
                     <div className="profile">
                         <Image
                             width={50}
@@ -48,6 +84,23 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
                     </div>
                 </div>
             </div>
+
+            <>
+                {
+                    open
+                        ? (
+                            <>
+                                <CustomizedDialogs
+                                    open={open}
+                                    title={'User Info'}
+                                    children={<ProfileInfo />}
+                                    handelOpen={handelOpenDialog}
+                                />
+                            </>
+                        )
+                        : null
+                }
+            </>
         </div>
     )
 }

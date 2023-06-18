@@ -110,9 +110,15 @@ body
 }
 
 /* style scrollbar in chatSection */
-.chat-scrollbar::-webkit-scrollbar {width: 7px;padding-right: 5rem;}
-.chat-scrollbar::-webkit-scrollbar-thumb {background-color: #778bb7 ;border-radius: 10rem;}
-.chat-scrollbar::-webkit-scrollbar-track{background-color: #c8c8c8;border-radius: 10rem;margin-top: 3px;margin-bottom: 3px;}
+.chat-scrollbar::-webkit-scrollbar {width: 5px;padding-right: 5rem;}/* #778bb7 */
+.chat-scrollbar::-webkit-scrollbar-thumb {background-color: rgba(81, 98, 136, 0.1) ;border-radius: 10rem;}
+.chat-scrollbar::-webkit-scrollbar-track{background-color: #f1f1f1;border-radius: 10rem;margin-top: 3px;margin-bottom: 3px;}
+
+.scroll-wrap {
+  border: none;
+  border-bottom: 1px solid black;
+}
+
 
 @media  (max-width:1024px) {
   .closeInfoTab{
@@ -120,4 +126,7 @@ body
     
   }
 
+}
+.inputField:focus::placeholder{
+  opacity:0;
 }

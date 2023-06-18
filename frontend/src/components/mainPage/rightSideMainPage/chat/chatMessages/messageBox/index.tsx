@@ -2,9 +2,9 @@
 
 import Image from "next/image"
 import Message from "./message"
-import { messageTypes } from "@/src/interfaces/enum"
+import { messageTypes } from "@/src/models/enum"
 
-import { MessageBoxProps } from "@/src/interfaces/enum"
+import { MessageBoxProps } from "@/src/models/enum"
 
 const MessageBox = ({ dir }: { dir: MessageBoxProps }) => {
 

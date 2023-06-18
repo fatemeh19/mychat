@@ -1,3 +1,4 @@
+import { Providers } from '../redux/provider'
 import './globals.css'
 // import { Inter } from 'next/font/google'
 
@@ -13,8 +14,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <Providers >
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </Providers>
   )
 }

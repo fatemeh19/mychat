@@ -1,10 +1,8 @@
 "use client"
-import PasswordStrengthBar from 'react-password-strength-bar';
 
 import { Form, withFormik } from "formik"
 import * as yup from 'yup'
 
-import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
 
 // implement of yup for password checking the requirement like lowerCase & UperCase & etc.
@@ -16,52 +14,54 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import PasswordStrengthMeter from '../inputPassword/passwordStrengthMeter';
+import Link from "next/link"
 
 let btn: any;
 let btnHandler: () => void
 
 interface RegisterFormValue {
-    // name?: string,
-    // phone?: Number | '',
     email: string,
-    password: string
+    password: string,
+    msg: string
 }
 
 const InnerRegisterForm = (props: any) => {
     const router = useRouter()
 
+    const { values } = props
+    console.log(values)
     // this code for navigate to varifiy email page after register
     btn = document.querySelector('#register')
 
     btnHandler = () => {
-        router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
+        setTimeout(() => {
+            router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
+        }, 3000);
 
     }
 
     return (
         <Form className=" w-full">
-
-            {/* <Input name='name' label="name" /> */}
-            {/* <Input name="phone" label="phone number" /> */}
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             <PasswordStrengthMeter name="password" />
             <div className="my-5">
+                <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p>
                 <button
                     id="register"
                     name="register"
                     type='submit'
                     className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                 >Register</button>
-                {/* <h1 id='notif' className='text-red-400 my-2 hidden'>please go to your Email and press the link to verify your Email </h1> */}
+            </div>
+            <div className="text-sm text-gray-500 text-center mb-2">
+                Do you have account already?
+                <Link href={'/auth/login'} className="text-blue-500 font-semibold"> Login </Link>
             </div>
         </Form>
     )
 }
 
-// name : we will recieve 
 const registerFormValidationSchema = yup.object().shape({
-    // name: yup.string().required('وارد کردن این فیلد الزامی است').min(3, 'حداقل 3 کاراکتر وارد کنید'),
-    // phone: yup.string().required(),
     email: yup.string().required().email(),
     password: yup
         .string()
@@ -74,8 +74,6 @@ const registerFormValidationSchema = yup.object().shape({
 })
 
 interface registerFormProps {
-    // name?: string,
-    // phone?: Number | '',
     email?: string,
     password?: string
 }
@@ -83,10 +81,9 @@ interface registerFormProps {
 const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     mapPropsToValues: props => {
         return {
-            // name: '',
             email: "",
-            // phone: '',
-            password: ""
+            password: "",
+            msg: ''
         }
     },
     validationSchema: registerFormValidationSchema,
@@ -94,12 +91,20 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
         try {
             const res = await callApi().post('/auth/register', values)
             console.log(res)
-            if (res.statusText && res.statusText === 'OK') {
+            if (res.statusText === 'OK') {
+                values.msg = 'Successful, wait ..'
                 btn.addEventListener('onclick', btnHandler());
             }
+
+
+
         } catch (error) {
             if (error instanceof ValidationError) {
-                setFieldError('email', error.message)
+                // @ts-ignore
+                const err = error.Error.errors;
+                err.map((e: any) => {
+                    setFieldError(e.field, e.message)
+                });
             }
         }
     }

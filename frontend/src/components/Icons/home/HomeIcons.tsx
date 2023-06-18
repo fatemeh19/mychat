@@ -9,7 +9,8 @@ import { BiMessageRoundedDots } from "react-icons/bi";
 import { IoIosMoon } from "react-icons/io";
 import { IoIosSunny } from "react-icons/io";
 import { BiCog } from "react-icons/bi";
-
+import {useState} from 'react';
+import Contacts from "../../contact";
 
 export  function CalenderIcon(){
 
@@ -37,11 +38,17 @@ export  function ChatIcon(){
 
 
 export  function ContactsIcon(){
-
+    const [open,setOpen]=useState(false)
+    const handleOpen=()=>{
+        setOpen(!open)
+    }
     return (
         
         <div className="flex justify-center home-icons py-5">
-            <BiUser className="text-white h-icon cursor-pointer opacity-[.5] w-[30px] h-[30px]" />
+            <BiUser className="text-white h-icon cursor-pointer opacity-[.5] w-[30px] h-[30px]" onClick={()=>{setOpen(true)}} />
+
+            {open ? <Contacts open={open} handelOpen={handleOpen} /> 
+            :null}
         </div>
         
     )
