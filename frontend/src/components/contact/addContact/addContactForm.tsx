@@ -103,7 +103,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             };
             console.log(contact)
             // values.name=values.name+" "+values.lastName;
-            const res = await callApi().post('/main/user/contact', contact, config)
+            const res = await callApi().post('/main/user/contact/', contact, config)
             console.log(res)
             if (res.status === 200) {
                 addBtn.addEventListener('onClick', add());
