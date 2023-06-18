@@ -1,4 +1,4 @@
-const { StatusCodes } = require("http-status-codes");
+import { StatusCodes } from "http-status-codes";
 const { CustomError } = require("../errors");
 const ValidationError = require("../errors/ValidationError");
 const errorHandlerMiddleware = (err, req, res, next) => {
