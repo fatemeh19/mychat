@@ -47,7 +47,7 @@ const InnerLoginForm = (props: any) => {
                 router.push('/complete-information')
             }
             else{
-                router.push('/')
+                router.push('/home')
             }
             
             console.log("login")
