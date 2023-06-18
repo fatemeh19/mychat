@@ -1,13 +1,16 @@
-require('dotenv').config()
-require('express-async-errors')
+// require('dotenv').config()
+// require('express-async-errors')
+import dotenv from 'dotenv' 
+dotenv.config()
+import 'express-async-errors'
 
-const express = require('express')
+import express from 'express'
 const app = express()
 
-const morgan = require('morgan')
-const cors = require('cors')
-
-const notFound = require('./middlewares/notfound')
+import morgan from 'morgan'
+import cors from 'cors'
+// const notFound = require('./middlewares/notfound')
+import notFound from './middlewares/notfound.js'
 const errorHandlerMiddleware = require('./middlewares/error-handler')
 
 const authRouter = require('./routers/auth')
