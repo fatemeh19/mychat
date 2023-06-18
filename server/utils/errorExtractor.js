@@ -1,7 +1,7 @@
-const ErrorMessageCreator = require("./MessageCreator");
-const ErrorMessages = require("../messages/errors.json");
-const Fields = require("../messages/fields.json");
-module.exports = async (err) => {
+import ErrorMessageCreator from "./MessageCreator.js";
+import ErrorMessages from "../messages/errors.js"
+import Fields from "../messages/fields.js"
+export default  async (err) => {
   let validationErrors = [];
   let validationError;
   console.log(err)

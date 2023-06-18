@@ -1,3 +1,3 @@
-module.exports = async (field='', message) =>   field +' '+message
+export default  async (field='', message) =>   field +' '+message
 
 

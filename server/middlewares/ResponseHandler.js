@@ -1,17 +1,14 @@
-const MessageCreator = require("../utils/MessageCreator");
-const ErrorMessages = require("../messages/errors.json");
-const Fields = require("../messages/fields.json");
-const Messages = require("../messages/messages.json");
-const CustomError = require("../errors");
-
-const errorExtractor = require("../utils/errorExtractor");
+import MessageCreator from "../utils/MessageCreator.js"
+import Messages from "../messages/messages.js" 
+import { ValidationError}  from "../errors/index.js";
+import errorExtractor from "../utils/errorExtractor.js"
 
 const RHCustomError = async ({ err, errorClass, errorType, Field }) => {
   let errors = [];
   let error;
   console.log(err);
 
-  if (errorClass == CustomError.ValidationError) {
+  if (errorClass == ValidationError) {
     errors = await errorExtractor(err);
   } else if (Field) {
     const message = await MessageCreator(Field.value, errorType.message);
@@ -47,4 +44,5 @@ const RHSendResponse = async ({ res, statusCode, title, value, field }) => {
   }
   res.status(statusCode).json(response);
 };
-module.exports = { RHCustomError, RHSendResponse };
+export {
+ RHCustomError, RHSendResponse };

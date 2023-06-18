@@ -1,4 +1,6 @@
-module.exports = {
+import '../utils/loadEnv.js'
+const nodeMailerConfig = {
+
     service:'gmail',
     host:'stmp@gmail.com',
     secure:false,
@@ -7,3 +9,4 @@ module.exports = {
         pass: process.env.EMAIL_PASSWORD,
     },
 }
+export default nodeMailerConfig

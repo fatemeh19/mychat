@@ -1,37 +1,48 @@
-const User = require("../models/User");
-const CustomError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
-const Utils = require("../utils");
-const crypto = require("crypto");
-const ErrorMessages = require("../messages/errors.json");
-const Fields = require("../messages/fields.json");
+import User from "../models/User.js"
+import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
+import {StatusCodes} from "http-status-codes"
+import {createJWT,
+  sendEmail,
+  sendVerificationEmail,
+  sendVerificationCode} from "../utils/index.js"
+import crypto from "crypto"
+import ErrorMessages from "../messages/errors.js"
+import Fields from "../messages/fields.js" 
+import {findUsers,
+  findUser,
+  createUser,
+  findAndUpdateUser,} from "../services/User.js"
 
-const services = require("../services");
-
-const validators = require("../validators");
-const {
+ import {loginUserV,
+    registerUserV,
+    setInfoV,
+    addContactV} from "../validators/index.js"
+import {
   RHCustomError,
   RHSendResponse,
-} = require("../middlewares/ResponseHandler");
+} 
+from"../middlewares/ResponseHandler.js"
+
+
 
 const register = async (req, res) => {
   console.log(req.body);
   let data;
   try {
-    data = await validators.registerUser.validate(req.body, {
+    data = await  registerUserV.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
   } catch (err) {
     
-    await RHCustomError({ err, errorClass: CustomError.ValidationError });
+    await RHCustomError({ err, errorClass: ValidationError });
   }
-  const emailAlreadyExists = await services.User.findUser({
+  const emailAlreadyExists = await findUser({
     email: data.email,
   });
   if (emailAlreadyExists) {
     await RHCustomError({
-      errorClass: CustomError.BadRequestError,
+      errorClass: BadRequestError,
       errorType: ErrorMessages.DuplicateError,
       Field: Fields.email,
     });
@@ -42,8 +53,8 @@ const register = async (req, res) => {
   let user;
 
   try {
-    user = await services.User.createUser(data);
-    await Utils.sendVerificationEmail(data.email, verificationToken);
+    user = await createUser(data);
+    await  sendVerificationEmail(data.email, verificationToken);
   } catch (error) {
     if (user) {
       await User.findByIdAndDelete(user._id);
@@ -56,17 +67,17 @@ const register = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
   const { email, verificationToken } = req.body;
-  const user = await services.User.findUser({ email: email });
+  const user = await findUser({ email: email });
   if (!user) {
     await RHCustomError({
-      errorClass: CustomError.UnauthenticatedError,
+      errorClass: UnauthenticatedError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.email,
     });
   }
   if (user.verificationToken != verificationToken) {
     await RHCustomError({
-      errorClass: CustomError.UnauthenticatedError,
+      errorClass: UnauthenticatedError,
       errorType: ErrorMessages.CompareError,
       Field: Fields.verificationToken,
     });
@@ -83,18 +94,19 @@ const verifyEmail = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  let data
   try {
-    data = await validators.loginUser.validate(req.body, {
+    data = await  loginUserV.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
   } catch (err) {
-    await RHCustomError({ err, errorClass: CustomError.ValidationError });
+    await RHCustomError({ err, errorClass: ValidationError });
   }
-  const user = await services.User.findUser({ email: data.email });
+  const user = await findUser({ email: data.email });
   if (!user) {
     await RHCustomError({
-      errorClass: CustomError.UnauthenticatedError,
+      errorClass: UnauthenticatedError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.email,
     });
@@ -104,19 +116,19 @@ const login = async (req, res) => {
 
   if (!isCorrectPassword) {
     await RHCustomError({
-      errorClass: CustomError.UnauthenticatedError,
+      errorClass: UnauthenticatedError,
       errorType: ErrorMessages.CompareError,
       Field: Fields.password,
     });
   }
   if (!user.isVerified) {
     await RHCustomError({
-      errorClass: CustomError.UnauthenticatedError,
+      errorClass: UnauthenticatedError,
       errorType: ErrorMessages.ConfirmError,
       
     });
   }
-  const token = Utils.jwt.createJWT({ userId: user._id });
+  const token =  createJWT({ userId: user._id });
   let isFirstTimeLogin = user.isFirstTimeLogin;
   if (user.isFirstTimeLogin) {
     user.isFirstTimeLogin = false;
@@ -130,10 +142,11 @@ const login = async (req, res) => {
     value: {
       token,
       isFirstTimeLogin,
+      userId:user._id
     },
   });
 };
-module.exports = {
+export {
   register,
   verifyEmail,
   login,

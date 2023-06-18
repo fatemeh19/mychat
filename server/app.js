@@ -1,7 +1,6 @@
-// require('dotenv').config()
-// require('express-async-errors')
-import dotenv from 'dotenv' 
-dotenv.config()
+// import dotenv from 'dotenv' 
+// dotenv.config()
+import './utils/loadEnv.js'
 import 'express-async-errors'
 
 import express from 'express'
@@ -9,18 +8,20 @@ const app = express()
 
 import morgan from 'morgan'
 import cors from 'cors'
-// const notFound = require('./middlewares/notfound')
+// const notFound from './middlewares/notfound')
 import notFound from './middlewares/notfound.js'
-const errorHandlerMiddleware = require('./middlewares/error-handler')
+import errorHandlerMiddleware from './middlewares/error-handler.js'
+// const errorHandlerMiddleware from './middlewares/error-handler')
 
-const authRouter = require('./routers/auth')
-const mainRouter = require('./routers/main')
+
+import authRouter from './routers/auth.js'
+import mainRouter from './routers/main.js'
 
 app.use(express.json())
 app.use(morgan('common'))
 
 // db
-const connectDB = require('./db/connect')
+import connectDB from './db/connect.js'
 
 app.use(cors({
     origin: '*',

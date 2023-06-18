@@ -1,5 +1,5 @@
-const { StatusCodes } = require('http-status-codes')
-const BadRequestError = require('./BadRequest')
+import { StatusCodes } from "http-status-codes";
+import BadRequestError from "./BadRequest.js";
 class ValidationError extends BadRequestError{
     constructor(message, errors){
         super(message, errors)
@@ -8,4 +8,4 @@ class ValidationError extends BadRequestError{
     }
 }
 
-module.exports = ValidationError
+export default ValidationError

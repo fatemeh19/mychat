@@ -1,4 +1,4 @@
-{
+export default{
   "email": {
     "name": "email",
     "value": "ایمیل"
