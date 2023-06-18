@@ -91,6 +91,8 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
  
 };
 UserSchema.methods.hasThisContactOrName = async function(contact){
+  const contactNameExists = false
+  const contactExists = false
   this.contacts.forEach((value, index)=>{
     // console.log("value.name = ",value.name)
     // console.log("contact.name = ",contact.name)
