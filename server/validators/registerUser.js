@@ -1,9 +1,9 @@
 // import * as yup from 'yup'
-const yup = require('yup')
+import yup from 'yup'
 
-const registerUser = yup.object({
+const registerUserV = yup.object({
     email:yup.string().email('FormatError').required('EmptyError'),
     password:yup.string().required('EmptyError')
 })
 
-module.exports = registerUser
+export default  registerUserV

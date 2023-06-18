@@ -1,8 +1,8 @@
-const yup = require('yup')
+import yup from 'yup'
 
-const loginUser = yup.object({
+const loginUserV = yup.object({
     email:yup.string().email('FormatError').required('EmptyError'),
     password:yup.string().required('EmptyError')
 })
 
-module.exports = loginUser
+export default  loginUserV

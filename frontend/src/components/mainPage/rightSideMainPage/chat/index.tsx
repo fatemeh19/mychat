@@ -7,15 +7,15 @@ import ChatSendBox from "./chatSendBox"
 
 interface chatProps {
     infoState: boolean,
-    setInfoState: Dispatch<SetStateAction<boolean>>;
+    setInfoVState: Dispatch<SetStateAction<boolean>>;
 }
 
-const Chat: FC<chatProps> = ({ infoState, setInfoState }) => {
+const Chat: FC<chatProps> = ({ infoState, setInfoVState }) => {
 
     return (
         // <div className="">
         <div className="flex flex-col w-full h-screen relative min-w-fit">
-            <ChatHeader infoState={infoState} setInfoState={setInfoState} />
+            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} />
             <ChatMessages />
             <ChatSendBox />
         </div>

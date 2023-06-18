@@ -1,5 +1,5 @@
-const { StatusCodes } = require('http-status-codes')
-const CustomError = require('./CustomError')
+import { StatusCodes } from "http-status-codes";
+import CustomError from "./CustomError.js";
 class UnauthorizedError extends CustomError{
     constructor(message, errors){
         super(message, errors)
@@ -7,4 +7,4 @@ class UnauthorizedError extends CustomError{
     }
 }
 
-module.exports = UnauthorizedError
+export default UnauthorizedError

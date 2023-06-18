@@ -1,9 +1,9 @@
-const jwt = require('./jwt')
-const sendEmail = require('./sendEmail')
-const {sendVerificationEmail,sendVerificationCode} = require('./sendVerification')
+import createJWT from './jwt.js'
+import sendEmail from './sendEmail.js'
+import {sendVerificationEmail,sendVerificationCode} from './sendVerification.js'
 
-module.exports = {
-    jwt,
+export {
+    createJWT,
     sendEmail,
     sendVerificationEmail,
     sendVerificationCode

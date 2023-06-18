@@ -1,9 +1,8 @@
-const User = require("../models/User");
-const Fields = require("../messages/fields.json");
-const ErrorMessages = require("../messages/errors.json");
-const { RHCustomError } = require("../middlewares/ResponseHandler");
-const mongooseErrorExtractor = require("../utils/mongooseErrorExtractor");
-const CustomError = require("../errors");
+import User from "../models/User.js"
+import Fields from "../messages/fields.js" 
+import { RHCustomError } from "../middlewares/ResponseHandler.js"
+import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js"
+import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
 const findUser = async (filter, select="") => {
   let user;
   try {
@@ -12,7 +11,7 @@ const findUser = async (filter, select="") => {
     const { errorType, field } = await mongooseErrorExtractor(err);
     console.log(field)
       await RHCustomError({
-        errorClass: CustomError.BadRequestError,
+        errorClass: BadRequestError,
         errorType,
         Field: Fields[field],
       });
@@ -36,7 +35,7 @@ const findAndUpdateUser = async (id, updateQuery) => {
    
     const { errorType, field } = await mongooseErrorExtractor(err);
     return await RHCustomError({
-      errorClass: CustomError.BadRequestError,
+      errorClass: BadRequestError,
       errorType,
       Field: Fields[field],
     });
@@ -45,18 +44,19 @@ const findAndUpdateUser = async (id, updateQuery) => {
   return user;
 };
 
-const addNewContact = async (user, contact) => {
-  User.findByIdAndUpdate({ _id: user._id }, { $push: { contacts: contact } });
-};
+// const addNewContact = async (user, contact) => {
+//   User.findByIdAndUpdate({ _id: user._id }, { $push: { contacts: contact } });
+// };
 const findUsers = async (Query, select = "", sort = "") => {
   const users = await User.find(Query).select(select).sort(sort);
   return users;
 };
 
-module.exports = {
+export {
+
   findUsers,
   findUser,
   createUser,
   findAndUpdateUser,
-  addNewContact,
+  // addNewContact,
 };
