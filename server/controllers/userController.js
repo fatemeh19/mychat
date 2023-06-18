@@ -1,14 +1,19 @@
-const CustomError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
-const services = require("../services");
-const ErrorMessages = require("../messages/errors.json");
-const Fields = require("../messages/fields.json");
-const validators = require("../validators");
-const path = require("path");
-const {
+ import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
+import {StatusCodes} from "http-status-codes"
+import {findUsers,
+  findUser,
+  createUser,
+  findAndUpdateUser,} from "../services/User.js"
+import ErrorMessages from "../messages/errors.js" 
+import Fields from "../messages/fields.js"
+import path from "path"
+import {
   RHCustomError,
   RHSendResponse,
-} = require("../middlewares/ResponseHandler");
+} 
+from"../middlewares/ResponseHandler.js"
+
+
 const setInfo = async (req, res) => {
   console.log(req.body);
   const {
@@ -16,13 +21,13 @@ const setInfo = async (req, res) => {
     body: { name, phoneNumber },
   } = req;
   // try {
-  //   data = validators.setInfo.validate(req.body, {
+  //   data =  setInfoV.validate(req.body, {
   //     abortEarly: false,
   //     stripUnknown: true,
   //   });
   // } catch (err) {
   //    console.log("err")
-  //   // await RHCustomError({ err, errorClass: CustomError.ValidationError });
+  //   // await RHCustomError({ err, errorClass: ValidationError });
   // }
   let url = "";
   if (req.file) {
@@ -34,11 +39,11 @@ const setInfo = async (req, res) => {
     phoneNumber: phoneNumber,
     profilePic: url,
   };
-  const user = await services.User.findAndUpdateUser(userId, update);
+  const user = await findAndUpdateUser(userId, update);
 
   if (!user) {
     await RHCustomError({
-      errorClass: CustomError.NotFoundError,
+      errorClass:   NotFoundError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.user,
     });
@@ -52,4 +57,5 @@ const setInfo = async (req, res) => {
 };
 
 
-module.exports = { setInfo };
+export {
+ setInfo };

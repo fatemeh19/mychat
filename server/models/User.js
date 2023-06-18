@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
+import mongoose from 'mongoose'
+import validator from 'validator'
+import bcrypt from 'bcryptjs'
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -91,8 +91,8 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
  
 };
 UserSchema.methods.hasThisContactOrName = async function(contact){
-  const contactNameExists = false
-  const contactExists = false
+  let contactNameExists = false
+  let contactExists = false
   this.contacts.forEach((value, index)=>{
     // console.log("value.name = ",value.name)
     // console.log("contact.name = ",contact.name)
@@ -115,4 +115,4 @@ UserSchema.methods.hasThisContactOrName = async function(contact){
 }
 
 
-module.exports = mongoose.model("User", UserSchema);
+export default mongoose.model("User", UserSchema);

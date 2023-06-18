@@ -19,17 +19,17 @@ import callApi from '@/src/helper/callApi'
 
 interface ChatHeaderProps {
     infoState: boolean,
-    setInfoState: Dispatch<SetStateAction<boolean>>;
+    setInfoVState: Dispatch<SetStateAction<boolean>>;
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     const [open, setOpen] = useState(false)
 
     let closeInfoSide = () => {
         console.log('close')
-        if (infoState) setInfoState(false)
-        else setInfoState(true)
+        if (infoState) setInfoVState(false)
+        else setInfoVState(true)
     }
 
     let getData = async () => {

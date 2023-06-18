@@ -104,6 +104,7 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
         } catch (error) {
             console.log('error in catch text info : ', error)
             if (error instanceof ValidationError) {
+                // @ts-ignore
                 values.msg = error.Error.errors[0].message
             }
         }

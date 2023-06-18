@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import PasswordStrengthMeter from '../inputPassword/passwordStrengthMeter';
+import Link from "next/link"
 
 let btn: any;
 let btnHandler: () => void
@@ -44,13 +45,17 @@ const InnerRegisterForm = (props: any) => {
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
             <PasswordStrengthMeter name="password" />
             <div className="my-5">
-            <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p>
+                <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p>
                 <button
                     id="register"
                     name="register"
                     type='submit'
                     className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg "
                 >Register</button>
+            </div>
+            <div className="text-sm text-gray-500 text-center mb-2">
+                Do you have account already?
+                <Link href={'/auth/login'} className="text-blue-500 font-semibold"> Login </Link>
             </div>
         </Form>
     )
@@ -90,9 +95,16 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
                 values.msg = 'Successful, wait ..'
                 btn.addEventListener('onclick', btnHandler());
             }
+
+
+
         } catch (error) {
             if (error instanceof ValidationError) {
-                setFieldError('email', error.message)
+                // @ts-ignore
+                const err = error.Error.errors;
+                err.map((e: any) => {
+                    setFieldError(e.field, e.message)
+                });
             }
         }
     }

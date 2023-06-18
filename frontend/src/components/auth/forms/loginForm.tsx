@@ -10,6 +10,7 @@ import { BiRedo } from "react-icons/bi";
 import Image from "next/image"
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
+import Link from "next/link";
 
 let btn: any;
 let btnHandler: () => void
@@ -39,7 +40,7 @@ const InnerLoginForm = (props: any) => {
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            let items =`${values.token},${values.userId}`
+            let items = `${values.token},${values.userId}`
             localStorage.setItem('items', JSON.stringify(items))
             console.log('localhost items : ' , typeof localStorage.getItem('items'))
             if(values.firstLogin){
@@ -78,6 +79,10 @@ const InnerLoginForm = (props: any) => {
             </p>
             <div className="my-5">
                 <button id="Login" name="Login" type='submit' className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg ">Login</button>
+            </div>
+            <div className="text-sm text-gray-500 text-center mb-2">
+                You don't have an account?
+                <Link href={'/auth/register'} className="text-blue-500 font-semibold"> Register </Link>
             </div>
         </Form>
     )
@@ -124,26 +129,11 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
 
         } catch (error) {
             if (error instanceof ValidationError) {
-                // console.log('error : ', error)
-                if (error instanceof ValidationError) {
-                    const err = error.Error.errors;
-                    err.map((e: any) => {
-                        setFieldError(e.field, e.message)
-                    });
-
-                }
-                // let spliteArr = error.message.split(' ')
-                // spliteArr.forEach(item => {
-                //     if(item === 'email' || item === 'Email')
-                //     {
-                //         // @ts-ignore
-                //         setFieldError('email', error.message)
-                //     }
-                //     else if(item === 'password' || item === 'Password') {
-                //         // @ts-ignore
-                //         setFieldError('password', error.message)
-                //     }
-                // })
+                // @ts-ignore
+                const err = error.Error.errors;
+                err.map((e: any) => {
+                    setFieldError(e.field, e.message)
+                });
             }
         }
 

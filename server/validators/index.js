@@ -1,10 +1,11 @@
-const loginUser = require('./loginUser')
-const registerUser = require('./registerUser')
-const setInfo = require('./setInfo')
-const addContact = require('./addContact')
-module.exports = {
-    loginUser,
-    registerUser,
-    setInfo,
-    addContact
+import loginUserV from './loginUser.js'
+import registerUserV from './registerUser.js'
+import setInfoV from './setInfo.js'
+import addContactV from './addContact.js'
+export {
+
+    loginUserV,
+    registerUserV,
+    setInfoV,
+    addContactV
 }
