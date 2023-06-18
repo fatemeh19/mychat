@@ -1,4 +1,5 @@
-const sendEmail = require("./sendEmail");
+import '../utils/loadEnv.js'
+import sendEmail  from "./sendEmail.js";
 const sendVerificationEmail = async (email, verificationToken) => {
   const verificationLink =
     process.env.ORIGIN + `/verify-email?email=${email}&verificationToken=${verificationToken}`;
@@ -17,7 +18,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
 
 const sendVerificationCode = async () => {};
 
-module.exports = {
+export {
+
   sendVerificationCode,
   sendVerificationEmail,
 };

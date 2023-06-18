@@ -1,8 +1,7 @@
-const ErrorMessageCreator = require("./MessageCreator");
-const ErrorMessages = require("../messages/errors.json");
-const Fields = require("../messages/fields.json");
-const CustomError = require("../errors");
-module.exports = async (err) => {
+import ErrorMessageCreator from "./MessageCreator.js"
+import ErrorMessages from "../messages/errors.js"
+import Fields from "../messages/fields.js" 
+export default  async (err) => {
   let field
   let errorType
   if (err.code == 11000) {

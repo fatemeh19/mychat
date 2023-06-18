@@ -1,17 +1,16 @@
-const CustomError = require('./CustomError')
-const NotFoundError = require('./not-found')
-const UnauthenticatedError = require('./Unauthenticated')
-const UnauthorizedError = require('./Unauthorized')
-const BadRequestError = require('./BadRequest')
-const ValidationError = require('./ValidationError')
-const OperationalError = require('./Operational')
+import CustomError from "./CustomError.js";
+import NotFoundError from './not-found.js'
+import UnauthenticatedError from './Unauthenticated.js'
+import UnauthorizedError from './Unauthorized.js'
+import BadRequestError from './BadRequest.js'
+import ValidationError from './ValidationError.js'
+// import OperationalError from './Operational')
 
-module.exports ={
+export {
     CustomError,
     NotFoundError,
     UnauthenticatedError,
     UnauthorizedError,
     BadRequestError,
     ValidationError,
-    OperationalError
 }

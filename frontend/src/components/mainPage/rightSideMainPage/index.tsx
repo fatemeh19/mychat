@@ -7,7 +7,7 @@ import ChatInfo from "./chatInfo"
 
 export default function RightSideMainPage() {
 
-    const [infoState, setInfoState] = useState(true)
+    const [infoState, setInfoVState] = useState(true)
 
     return (
         <>
@@ -16,7 +16,7 @@ export default function RightSideMainPage() {
                     ? (
                         <div className="flex gap-[1px]">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoState={setInfoState} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -25,7 +25,7 @@ export default function RightSideMainPage() {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoState={setInfoState} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} />
                         </div>
                     )
             }

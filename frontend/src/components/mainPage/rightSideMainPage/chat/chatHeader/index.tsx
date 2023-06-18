@@ -10,15 +10,15 @@ import { Dispatch, FC, SetStateAction } from "react";
 
 interface ChatHeaderProps {
     infoState: boolean,
-    setInfoState: Dispatch<SetStateAction<boolean>>;
+    setInfoVState: Dispatch<SetStateAction<boolean>>;
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoState }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     let closeInfoSide = () => {
         console.log('close')
-        if (infoState) setInfoState(false)
-        else setInfoState(true)
+        if (infoState) setInfoVState(false)
+        else setInfoVState(true)
     }
 
     return (

@@ -1,4 +1,4 @@
-{
+export default{
   "NotFoundError": {
     "name":"NotFoundError",
     "message": "یافت نشد"
