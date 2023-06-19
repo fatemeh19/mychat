@@ -12,10 +12,8 @@ const io = new Server(server)
 
 import morgan from 'morgan'
 import cors from 'cors'
-// const notFound from './middlewares/notfound')
 import notFound from './middlewares/notfound.js'
 import errorHandlerMiddleware from './middlewares/error-handler.js'
-// const errorHandlerMiddleware from './middlewares/error-handler')
 
 
 import authRouter from './routers/auth.js'

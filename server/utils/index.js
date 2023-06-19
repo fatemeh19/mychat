@@ -7,5 +7,4 @@ export {
     sendEmail,
     sendVerificationEmail,
     sendVerificationCode
-
 }

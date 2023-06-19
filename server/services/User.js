@@ -1,8 +1,8 @@
 import User from "../models/User.js"
 import Fields from "../messages/fields.js" 
-import { RHCustomError } from "../middlewares/ResponseHandler.js"
+import * as RH from "../middlewares/ResponseHandler.js"
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js"
-import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
+import * as CustomError from "../errors/index.js";
 const findUser = async (filter, select="") => {
   let user;
   try {
@@ -10,8 +10,8 @@ const findUser = async (filter, select="") => {
   } catch (err) {
     const { errorType, field } = await mongooseErrorExtractor(err);
     console.log(field)
-      await RHCustomError({
-        errorClass: BadRequestError,
+      await RH.CustomError({
+        errorClass: CustomError.BadRequestError,
         errorType,
         Field: Fields[field],
       });
@@ -34,8 +34,8 @@ const findAndUpdateUser = async (id, updateQuery) => {
   } catch (err) {
    
     const { errorType, field } = await mongooseErrorExtractor(err);
-    return await RHCustomError({
-      errorClass: BadRequestError,
+    return await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
       errorType,
       Field: Fields[field],
     });
@@ -53,10 +53,8 @@ const findUsers = async (Query, select = "", sort = "") => {
 };
 
 export {
-
   findUsers,
   findUser,
   createUser,
   findAndUpdateUser,
-  // addNewContact,
 };

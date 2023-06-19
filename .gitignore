@@ -35,8 +35,9 @@
 # typescript
 /frontend/*.tsbuildinfo
 /frontend/next-env.d.ts
+
+/frontend/public/uploads
 # ----------------------------------------------- END frontend ignore
 # backend gitignore
 /server/node_modules
 /server/.env
-/server/uploads

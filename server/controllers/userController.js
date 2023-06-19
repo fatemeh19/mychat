@@ -1,17 +1,10 @@
- import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
+import * as CustomError  from "../errors/index.js";
 import {StatusCodes} from "http-status-codes"
-import {findUsers,
-  findUser,
-  createUser,
-  findAndUpdateUser,} from "../services/User.js"
+import * as Services from "../services/index.js"
 import ErrorMessages from "../messages/errors.js" 
 import Fields from "../messages/fields.js"
 import path from "path"
-import {
-  RHCustomError,
-  RHSendResponse,
-} 
-from"../middlewares/ResponseHandler.js"
+import * as RH from"../middlewares/ResponseHandler.js"
 
 
 const setInfo = async (req, res) => {
@@ -21,13 +14,13 @@ const setInfo = async (req, res) => {
     body: { name, phoneNumber },
   } = req;
   // try {
-  //   data =  setInfoV.validate(req.body, {
+  //   data =  setInfo.validate(req.body, {
   //     abortEarly: false,
   //     stripUnknown: true,
   //   });
   // } catch (err) {
   //    console.log("err")
-  //   // await RHCustomError({ err, errorClass: ValidationError });
+  //   // await RH.CustomError({ err, errorClass: ValidationError });
   // }
   let url = "";
   if (req.file) {
@@ -39,17 +32,17 @@ const setInfo = async (req, res) => {
     phoneNumber: phoneNumber,
     profilePic: url,
   };
-  const user = await findAndUpdateUser(userId, update);
+  const user = await Services.User.findAndUpdateUser(userId, update);
 
   if (!user) {
-    await RHCustomError({
-      errorClass:   NotFoundError,
+    await RH.CustomError({
+      errorClass: CustomError.NotFoundError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.user,
     });
   }
 
-  await RHSendResponse({
+  await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",

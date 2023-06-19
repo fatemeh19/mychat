@@ -1,14 +1,14 @@
 import '../utils/loadEnv.js'
-import {NotFoundError,UnauthorizedError,UnauthenticatedError,ValidationError,BadRequestError}  from "../errors/index.js";
+import * as CustomError  from "../errors/index.js";
 import ErrorMessages from "../messages/errors.js"
 import jwt from "jsonwebtoken";
-import { RHCustomError } from "./ResponseHandler.js";
+import * as RH from "./ResponseHandler.js";
 const authMiddleware = async (req, res, next) => {
   const { authorization: authHeader } = req.headers;
   
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    await RHCustomError({
-      errorClass: UnauthenticatedError,
+    await RH.CustomError({
+      errorClass: CustomError.UnauthenticatedError,
       errorType: ErrorMessages.NoTokenProvided,
     });
   }
@@ -23,8 +23,8 @@ const authMiddleware = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err)
-    await RHCustomError({
-      errorClass: UnauthenticatedError,
+    await RH.CustomError({
+      errorClass: CustomError.UnauthenticatedError,
       errorType: ErrorMessages.UnauthorizedError,
     });
 
