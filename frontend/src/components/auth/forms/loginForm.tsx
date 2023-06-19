@@ -49,7 +49,7 @@ const InnerLoginForm = (props: any) => {
                 router.push('/complete-information')
             }
             else{
-                router.push('/home')
+                router.push('/chat')
             }
             
             console.log("login")
