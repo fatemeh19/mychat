@@ -5,6 +5,7 @@ import { BiSearch } from "react-icons/bi";
 import ContactBox from "./contactBox";
 import ContactListBtn from "./contactListBtn";
 import callApi from "@/src/helper/callApi";
+import Link from "next/link";
 
 interface  ContactsProps{
     handleAddContact: () => void,
@@ -43,18 +44,20 @@ const ContactList:FC<ContactsProps> = ({
     },[])
     return (
         <>
-            <div className="overflow-hidden contacts-list w-full h-[80vh] relative">
+            <div className="overflow-hidden contacts-list w-full h-[80vh] relative select-none">
                 <div className="search-contacts flex pl-[15px]">
                         <BiSearch className="text-xl text-gray-400  mt-[15px]" />
                         <input type="text" className='outline-none bg-transparent w-full border-none p-3' placeholder='Search..' />
                 </div>
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <div className="no-scrollbar h-full overflow-y-auto pl-[15px] pb-[30%]">
+                <div className="no-scrollbar h-full overflow-y-auto pb-[30%]">
                     {
                         contacts.map((contact,index,arr)=>(
                             (arr.length==0) ? <h1>no contact</h1> 
                             : 
-                            <ContactBox key={contact._id} contact={contact}/>
+                            <Link key={contact._id} href={`/chat/${contact._id}`} >
+                                <ContactBox key={contact._id} contact={contact}/>
+                            </Link>
                         ))
                     }
                     

@@ -5,7 +5,7 @@ import { useState } from "react"
 import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 
-export default function RightSideMainPage() {
+    export default function RightSideMainPage({userId} : {userId : any}) {
 
     const [infoState, setInfoVState] = useState(true)
 
@@ -16,7 +16,7 @@ export default function RightSideMainPage() {
                     ? (
                         <div className="flex gap-[1px]">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} userId={userId}/>
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -25,7 +25,7 @@ export default function RightSideMainPage() {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} userId={userId}/>
                         </div>
                     )
             }

@@ -11,6 +11,7 @@ import Image from "next/image"
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
 import Link from "next/link";
+import { useState } from "react";
 
 let btn: any;
 let btnHandler: () => void
@@ -27,6 +28,7 @@ interface LoginFormValue {
 }
 
 const InnerLoginForm = (props: any) => {
+    const [show, setShow] = useState(false)
 
     const { values } = props
     const router = useRouter()
@@ -64,7 +66,7 @@ const InnerLoginForm = (props: any) => {
         <Form className=" w-full">
 
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
-            <Input name="password" type="password" label="password" icon={BsFingerprint} />
+            <Input name="password" type={show ? 'text' : 'password'} label="password" icon={BsFingerprint} setShow={setShow} show={show} />
             <div className="flex relative w-full   py-2 outline-none " >
                 <Image src={'/images/captcha_img.jpg'} width={20} height={40} alt="" className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic " />
                 <div className="select-none absolute w-4/5 top-[1rem] text-center tracking-[2rem] italic font-bold">{values.captcha}</div>
