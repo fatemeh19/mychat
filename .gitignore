@@ -3,10 +3,10 @@
 
 # dependencies
 /frontend/node_modules
-/frontend/.history
+/.history
 /frontend/.pnp
 /frontend/.pnp.js
-
+/frontend/public/uploads
 # testing
 /frontend/coverage
 
@@ -39,4 +39,4 @@
 # backend gitignore
 /server/node_modules
 /server/.env
-/server/uploads
+

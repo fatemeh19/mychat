@@ -24,7 +24,7 @@ const TextInformationForm = (props: any) => {
 
     apply = () => {
         //   go to anothe page
-        router.push('/')
+        router.push('/home')
     }
 
     return (

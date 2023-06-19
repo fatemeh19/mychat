@@ -34,7 +34,7 @@ const AddContactFormInner = (props: any) => {
             <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
             <InputField name='lastName' label="Last name" />
             <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />} />
-            <div className="errMessage w-full text-red-500">{props.values.msg}</div>
+            <div className="errMessage ml-8 w-auto text-red-500 text-sm">{props.values.msg}</div>
             <div className="my-5 gap-1 flex justify-end">
                 {/* <button
                          ref={cancelBtn}
@@ -103,7 +103,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             };
             console.log(contact)
             // values.name=values.name+" "+values.lastName;
-            const res = await callApi().post('/main/user/contact', contact, config)
+            const res = await callApi().post('/main/user/contact/', contact, config)
             console.log(res)
             if (res.status === 200) {
                 addBtn.addEventListener('onClick', add());
@@ -111,6 +111,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
         } catch (error) {
             console.log('error in catch text info : ', error)
             if (error instanceof ValidationError) {
+                // @ts-ignore
                 values.msg = error.Error.errors[0].message
             }
         }

@@ -1,38 +1,30 @@
 "use client"
 
 import Image from "next/image"
+import { type } from "os";
 import { FC } from "react"
+type Contact={
+    name: string;
+    _id: string;
+    profilePic: string;
+}
 interface ContactBoxProps {
-    // status: Boolean,
-    // lastMessage: string,
-    // ContactSeen: Boolean,
-    // lastMessageTime: string,
-    // numberOfUnSeen: string,
-    // recivedMessage:Boolean,
-    // lastMessegeByContact:Boolean,
-    // isTyping:Boolean,
-    // ContactName:string,
-    // chatOpenned:Boolean
+   contact:Contact;
 }
 
 const ContactBox: FC<ContactBoxProps> = ({
-    // status,
-    // lastMessage,
-    // ContactSeen,
-    // lastMessageTime,
-    // numberOfUnSeen,
-    // recivedMessage,
-    // lastMessegeByContact,
-    // isTyping,
-    // ContactName,
-    // chatOpenned
+    contact
 }) => {
-
+    
+    const profilePicName=(contact.profilePic).split(`\\`);
+    
     return (
-                    <div className='w-full flex gap-2   mt-3'>
-                        <Image src={'/images/girl-profile3.jpg'} className="w-[50px] h-[50px] rounded-full " width={50} height={50} alt="contact-profile" />
+                    <div key={contact._id} className='w-full flex gap-2   mt-3'>
+                        <Image src={`/uploads/${profilePicName[profilePicName.length-1]}`} 
+                            className="w-[50px] h-[50px] object-cover rounded-full " 
+                            width={50} height={50} alt="contact-profile" />
                         <div className="contact-details h-full pt-1 gap-1 grid w-full">
-                            <p className="contact-name font-bold text-sm">Contact Name</p>
+                            <p className="contact-name font-bold text-sm">{contact.name}</p>
                             <p className="status text-xs text-sky-500">Online</p>
                         </div>
                     </div>
