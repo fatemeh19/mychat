@@ -24,8 +24,6 @@ const Contacts:FC<ContactsProps> = ({
                 addContact ? ( open ? <CustomizedDialogs open={open} title="New Contact" 
                                         handelOpen={handelOpen} 
                                         children={<AddContactForm 
-                                            // handleOpen={handelOpen}
-
                                         />} /> :null
                             )
                             : ( open ? <CustomizedDialogs open={open} title="Contacts" 
