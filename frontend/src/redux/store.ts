@@ -1,9 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, applyMiddleware  } from '@reduxjs/toolkit'
 import popUpReducer from './features/popUpSlice'
+import localStorageReducer from './features/localStorageSlice'
 // ...
 export const store = configureStore({
   reducer: {
-    popUp: popUpReducer
+    popUp: popUpReducer,
+    localStorage : localStorageReducer
   },
 })
 
