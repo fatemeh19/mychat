@@ -20,9 +20,10 @@ import callApi from '@/src/helper/callApi'
 interface ChatHeaderProps {
     infoState: boolean,
     setInfoVState: Dispatch<SetStateAction<boolean>>;
+    User: any
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => {
 
     const [open, setOpen] = useState(false)
 
@@ -32,22 +33,14 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         else setInfoVState(true)
     }
 
-    let getData = async () => {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        };
-        console.log(localStorage.getItem('userId'))
-        // const resId = await callApi().get(`/main/user/contact/`, config)
-        // const res = await callApi().get(`/main/user/contact/`, config)
-        // console.log('profile resId  : ', resId)
-    }
-
     let handelOpenDialog = () => {
         setOpen(!open)
-        getData()
     }
+    // name: "فاطمه ویسی"
+    // phoneNumber:"09919947327"
+    // profilePic:"D:\\workspace\\team-project\\frontend\\public\\uploads\\1687171518494.jpg"
+    // _id:"648d5b001a77b1f3fa184c90"
+    const profilePicName = (User.profilePic).split(`\\`);
 
 
     return (
@@ -68,18 +61,20 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                 >
                     <div className="profile">
                         <Image
-                            width={50}
-                            height={50}
-                            src={'/images/girl-profile3.jpg'}
+                            width={500}
+                            height={500}
+                            // src={'/images/girl-profile3.jpg'}
+                            src={`/uploads/${profilePicName[profilePicName.length - 1]}`}
                             alt='chat profile'
-                            className='rounded-full '
+                            className='rounded-full w-[50px] h-[50px] object-cover'
                         />
                     </div>
                     <div className="profile-info">
-                        <h2 className='font-bold whitespace-nowrap dark:text-white'>Design Team</h2>
-                        <p className='text-xs text-gray-400 font-medium whitespace-nowrap'>
-                            <span>12</span> member,&nbsp;
-                            <span>5</span> online
+                        <h2 className='font-bold whitespace-nowrap dark:text-white'>{User.name}</h2>
+                        <p className='text-xs text-gray-400 whitespace-nowrap'>
+                            {/* <span>12</span> member,&nbsp;
+                            <span>5</span> online */}
+                            <span>last seen recently</span>
                         </p>
                     </div>
                 </div>
@@ -93,7 +88,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                 <CustomizedDialogs
                                     open={open}
                                     title={'User Info'}
-                                    children={<ProfileInfo />}
+                                    children={<ProfileInfo User={User}/>}
                                     handelOpen={handelOpenDialog}
                                 />
                             </>

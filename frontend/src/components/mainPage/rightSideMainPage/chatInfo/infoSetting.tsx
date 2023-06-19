@@ -1,10 +1,13 @@
 "use client"
 
+import {FC} from 'react'
 import Link from 'next/link'
 import { BiInfoCircle } from 'react-icons/bi'
 import { BiBell } from 'react-icons/bi'
-
-export default function InfoSetting() {
+interface InfoSettingProps {
+    User: any
+}
+const InfoSetting:FC<InfoSettingProps> = ({User}) => {
 
     return (
         <div className="flex flex-col gap-5 items-start p-5 bg-white
@@ -18,7 +21,7 @@ export default function InfoSetting() {
                         how much user have info we can show them
                      */}
                     <div>
-                        <h2 className='value text-sm'>Hidden</h2>
+                        <h2 className='value text-sm'>{User ? User?.phoneNumber : 'Hidden'}</h2>
                         <p className='describe text-sm text-gray-500 font-thin'>Mobile</p>
                     </div>
                     <div>
@@ -42,3 +45,6 @@ export default function InfoSetting() {
         </div>
     )
 }
+
+
+export default InfoSetting

@@ -17,8 +17,8 @@ const Page = async ({ params }: { params: any }) => {
 
     return (
         <>
-            my chat
-            <h1>params :::::: {params.userId}</h1>
+            {/* my chat
+            <h1>params :::::: {params.userId}</h1> */}
             <RightSideMainPage userId={params.userId} />
         </>
     );

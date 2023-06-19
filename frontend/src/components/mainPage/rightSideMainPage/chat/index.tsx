@@ -13,7 +13,7 @@ interface chatProps {
     userId: any
 }
 
-async function getUser(id: string) {
+const getUser = async (id: string) => {
     const { token } = UseLocalStorage()
     const config = {
         headers: {
@@ -22,18 +22,30 @@ async function getUser(id: string) {
     };
 
     const res = await callApi().get(`/main/user/contact/${id}`, config)
-    console.log('res in user : ', res)
+    // console.log('res in user : ', res)
+    // contact
+    // :
+    // name: "فاطمه ویسی"
+    // phoneNumber:"09919947327"
+    // profilePic:"D:\\workspace\\team-project\\frontend\\public\\uploads\\1687171518494.jpg"
+    // _id:"648d5b001a77b1f3fa184c90"
+    return res.data
 
 }
 
-const Chat:FC<chatProps> = ({ infoState, setInfoVState, userId }) => {
+const Chat = async ({ infoState, setInfoVState, userId } : chatProps) => {
     // const User = await getUser(params.userId)
     // console.log('User : ', User)
+    // const [message, contact] = getUser(userId)
+    const data = await getUser(userId)
+    // console.log('data : ', data)
+    const User = data.value.contact
+    console.log('chat')
 
     return (
         // <div className="">
         <div className="flex flex-col w-full h-screen relative min-w-fit">
-            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} />
+            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} User={User}/>
             <ChatMessages />
             <ChatSendBox />
         </div>
