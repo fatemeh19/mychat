@@ -1,10 +1,14 @@
-// import dotenv from 'dotenv' 
-// dotenv.config()
 import './utils/loadEnv.js'
 import 'express-async-errors'
 
 import express from 'express'
 const app = express()
+
+import http from 'http'
+const server = http.createServer(app)
+
+import { Server } from 'socket.io'
+const io = new Server(server)
 
 import morgan from 'morgan'
 import cors from 'cors'
@@ -46,8 +50,7 @@ const port = process.env.PORT || 5000
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URL)
-        app.listen(port, () => console.log(`app is running on port ${port}`))
-
+        server.listen(port,()=> console.log(`app is running on port ${port}`))
 
     } catch (error) {
         console.log(error)
