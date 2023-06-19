@@ -22,7 +22,8 @@ interface LoginFormValue {
     msg: string,
     token: string,
     userId: string,
-    handleRedo: () => void
+    handleRedo: () => void,
+    firstLogin:Boolean
 }
 
 const InnerLoginForm = (props: any) => {
@@ -41,8 +42,14 @@ const InnerLoginForm = (props: any) => {
             values.msg = 'Successful, wait to Login ..'
             let items = `${values.token},${values.userId}`
             localStorage.setItem('items', JSON.stringify(items))
-            console.log('localhost items : ', typeof localStorage.getItem('items'))
-            router.push('/home')
+            console.log('localhost items : ' , typeof localStorage.getItem('items'))
+            if(values.firstLogin){
+                router.push('/complete-information')
+            }
+            else{
+                router.push('/')
+            }
+            
             console.log("login")
         }
         else {
@@ -101,7 +108,8 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             userId: '',
             handleRedo: () => {
                 props.captcha = GenerateString()
-            }
+            },
+            firstLogin:true
         }
     },
     handleSubmit: async (values, { setFieldError }) => {
@@ -112,6 +120,9 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
                 console.log(res)
                 values.token = res.data.value.token
                 values.userId = res.data.value.userId
+                if(!res.data.value.isFirstTimeLogin){
+                        values.firstLogin=false;                   
+                }
                 btn.addEventListener('onclick', btnHandler());
             }
 
