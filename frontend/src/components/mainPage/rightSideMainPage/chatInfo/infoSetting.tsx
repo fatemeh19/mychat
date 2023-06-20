@@ -24,7 +24,7 @@ const InfoSetting: FC<InfoSettingProps> = () => {
                         how much user have info we can show them
                      */}
                     <div>
-                        <h2 className='value text-sm'>{User ? User?.phoneNumber : 'Hidden'}</h2>
+                        <h2 className='value text-sm'>{User.phoneNumber ? User?.phoneNumber : 'Hidden'}</h2>
                         <p className='describe text-sm text-gray-500 font-thin'>Mobile</p>
                     </div>
                     <div>
