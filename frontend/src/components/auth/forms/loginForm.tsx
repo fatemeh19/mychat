@@ -1,17 +1,19 @@
 "use client"
 
+import Link from "next/link";
+import Image from "next/image"
 import { Form, withFormik } from "formik"
 import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
+import { useState } from "react";
+
+// icons
 import { BiRedo } from "react-icons/bi";
-import Image from "next/image"
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
-import Link from "next/link";
-import { useState } from "react";
 
 let btn: any;
 let btnHandler: () => void

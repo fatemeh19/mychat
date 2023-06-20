@@ -1,53 +1,38 @@
 "use client"
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, Dispatch, FC, SetStateAction } from 'react'
 
+// icons
 import { CgMoreO } from 'react-icons/cg'
 import { FiPhone } from 'react-icons/fi'
 import { HiOutlineVideoCamera } from 'react-icons/hi'
-import { Dispatch, FC, SetStateAction } from "react";
-import { useAppDispatch } from '@/src/redux/hooks'
-import { setOpen } from '@/src/redux/features/popUpSlice'
+
+// components
 import ProfileInfo from '@/src/components/profileInfo'
-import ChannelInfo from '@/src/components/profileInfo/channelInfo'
 import CustomizedDialogs from '@/src/components/popUp'
-import AddContactForm from '@/src/components/contact/addContact/addContactForm'
-import UserInfo from '@/src/components/profileInfo/userInfo'
-import callApi from '@/src/helper/callApi'
 
 
 interface ChatHeaderProps {
     infoState: boolean,
-    setInfoVState: Dispatch<SetStateAction<boolean>>;
+    setInfoVState: Dispatch<SetStateAction<boolean>>,
+    User: any
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => {
 
     const [open, setOpen] = useState(false)
 
     let closeInfoSide = () => {
-        console.log('close')
         if (infoState) setInfoVState(false)
         else setInfoVState(true)
     }
 
-    let getData = async () => {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        };
-        console.log(localStorage.getItem('userId'))
-        // const resId = await callApi().get(`/main/user/contact/`, config)
-        // const res = await callApi().get(`/main/user/contact/`, config)
-        // console.log('profile resId  : ', resId)
-    }
-
     let handelOpenDialog = () => {
         setOpen(!open)
-        getData()
     }
+
+    const profilePicName = User ? (User.profilePic).split(`\\`) : '/images/girl-profile3.jpg';
 
 
     return (
@@ -68,18 +53,19 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                 >
                     <div className="profile">
                         <Image
-                            width={50}
-                            height={50}
-                            src={'/images/girl-profile3.jpg'}
+                            width={500}
+                            height={500}
+                            src={`/uploads/${profilePicName[profilePicName.length - 1]}`}
                             alt='chat profile'
-                            className='rounded-full '
+                            className='rounded-full w-[50px] h-[50px] object-cover'
                         />
                     </div>
                     <div className="profile-info">
-                        <h2 className='font-bold whitespace-nowrap dark:text-white'>Design Team</h2>
-                        <p className='text-xs text-gray-400 font-medium whitespace-nowrap'>
-                            <span>12</span> member,&nbsp;
-                            <span>5</span> online
+                        <h2 className='font-bold whitespace-nowrap dark:text-white'>{User ? User.name : 'user name'}</h2>
+                        <p className='text-xs text-gray-400 whitespace-nowrap'>
+                            {/* <span>12</span> member,&nbsp;
+                            <span>5</span> online */}
+                            <span>last seen recently</span>
                         </p>
                     </div>
                 </div>
