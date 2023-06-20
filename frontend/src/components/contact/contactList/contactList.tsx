@@ -50,11 +50,10 @@ const ContactList:FC<ContactsProps> = ({
                 <div className="no-scrollbar h-full overflow-y-auto pb-[30%]">
                     {
                         // @ts-ignore
-                        
-                            contacts.map((contact,index,arr)=>(
-                                (arr.length==0 ) ? <NoContact />
+                        (contacts.length===0 ) ? <NoContact />
+                           : contacts.map((contact,index,arr)=>(
                                 // @ts-ignore
-                                : <Link key={contact._id} href={`/chat/${contact._id}`} >
+                                <Link key={contact._id} href={`/chat/${contact._id}`} >
                                     {/* @ts-ignore */}
                                     <ContactBox key={contact._id} contact={contact}/>
                                 </Link>

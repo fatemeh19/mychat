@@ -58,7 +58,8 @@ const addContactFormValidationSchema = yup.object().shape({
 
 interface addContactFormValue {
     name?: string,
-    phone?: Number | ''
+    phone?: Number | '',
+    handelOpen?:()=>void
 }
 
 const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
@@ -87,8 +88,8 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             console.log(res)
             if (res.status === 200) {
                 values.msg="با موفقیت ایجاد شد"
-                values.handelOpen;
-                addBtn.addEventListener('onClick', add());
+                
+                addBtn.addEventListener('onClick', props.handelOpen);
             }
         } catch (error) {
             console.log('error in catch text info : ', error)
