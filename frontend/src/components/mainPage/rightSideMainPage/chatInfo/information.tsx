@@ -1,14 +1,18 @@
 "use client"
 import { FC } from 'react'
 import Image from "next/image"
+import { useAppSelector } from '@/src/redux/hooks'
 
 interface InformatinProps {
-    User: any
 }
 
-const Informatin: FC<InformatinProps> = ({ User }) => {
-    console.log('user info : ', User)
-    const profilePicName = (User?.profilePic)?.split(`\\`);
+const Informatin: FC<InformatinProps> = () => {
+
+    const selector = useAppSelector(state => state.User)
+    const User = selector.User
+    console.log('user from redux : ', User)
+
+    const profilePicName = User.profilePic? (User.profilePic).split(`\\`) : '/images/girl-profile3.jpg';
 
     return (
         <div className="w-full flex gap-5 items-center p-5 bg-white
@@ -16,13 +20,12 @@ const Informatin: FC<InformatinProps> = ({ User }) => {
             <Image
                 width={500}
                 height={0}
-                // src={'/images/girl-profile3.jpg'}
                 src={User ? `/uploads/${profilePicName[profilePicName?.length - 1]}` : ''}
                 alt=""
                 className="w-[70px] h-[70px] object-cover rounded-full"
             />
             <div>
-                <h1 className="font-semibold">{User?.name}</h1>
+                <h1 className="font-semibold">{User ? User.name : 'user name'}</h1>
                 <p className="whitespace-nowrap text-gray-400 text-sm">last seen within a week</p>
             </div>
         </div>

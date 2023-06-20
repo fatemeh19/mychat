@@ -1,16 +1,17 @@
 "use client"
 import { FC } from "react";
 import UserInfo from "./userInfo";
+import { useAppSelector } from "@/src/redux/hooks";
 
 interface ProfileInfoProps {
-    User : any
 }
-const ProfileInfo: FC<ProfileInfoProps> = ({User}) => {
-    console.log('ProfileInfo User : ', User)
+const ProfileInfo: FC<ProfileInfoProps> = () => {
+
+    
 
     return (
         <div>
-            <UserInfo User={User}/>
+            <UserInfo/>
         </div>
     );
 }

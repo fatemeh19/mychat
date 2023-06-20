@@ -1,13 +1,16 @@
 "use client"
 
-import {FC} from 'react'
+import { FC } from 'react'
 import Link from 'next/link'
 import { BiInfoCircle } from 'react-icons/bi'
 import { BiBell } from 'react-icons/bi'
+import { useAppSelector } from '@/src/redux/hooks'
 interface InfoSettingProps {
-    User: any
 }
-const InfoSetting:FC<InfoSettingProps> = ({User}) => {
+const InfoSetting: FC<InfoSettingProps> = () => {
+
+    const selector = useAppSelector(state => state.User)
+    const User = selector.User
 
     return (
         <div className="flex flex-col gap-5 items-start p-5 bg-white
