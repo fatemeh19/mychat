@@ -3,7 +3,7 @@ import Messages from "../messages/messages.js";
 import { ValidationError } from "../errors/index.js";
 import errorExtractor from "../utils/errorExtractor.js";
 
-const CustomError = async ({ err, errorClass, errorType, Field }) => {
+const CustomError = async ({ err, errorClass, errorType, Field, socket = false }) => {
   let errors = [];
   let error;
   console.log(err);
@@ -25,8 +25,13 @@ const CustomError = async ({ err, errorClass, errorType, Field }) => {
     };
     errors.push(error);
   }
+  if(socket){
+    return socket.emit('socketError',{Error:errors})
 
-  throw new errorClass("err.message", errors);
+  }else{
+    throw new errorClass("err.message", errors);
+  }
+  
 };
 
 const SendResponse = async ({ res, statusCode, title, value, field }) => {
