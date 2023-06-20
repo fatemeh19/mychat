@@ -32,7 +32,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => 
         setOpen(!open)
     }
 
-    const profilePicName = User ? (User.profilePic).split(`\\`) : '/images/girl-profile3.jpg';
+    const profilePicName = User ? (User.profilePic).split(`\\`) : '';
+    // '/images/girl-profile3.jpg'
 
 
     return (
@@ -55,7 +56,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => 
                         <Image
                             width={500}
                             height={500}
-                            src={`/uploads/${profilePicName[profilePicName.length - 1]}`}
+                            src={User ? `/uploads/${profilePicName[profilePicName.length - 1]}` : '/uploads/1687155573913.jpg'}
                             alt='chat profile'
                             className='rounded-full w-[50px] h-[50px] object-cover'
                         />

@@ -12,7 +12,7 @@ const Informatin: FC<InformatinProps> = () => {
     const User = selector.User
     console.log('user from redux : ', User)
 
-    const profilePicName = User.profilePic? (User.profilePic).split(`\\`) : '/images/girl-profile3.jpg';
+    const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
 
     return (
         <div className="w-full flex gap-5 items-center p-5 bg-white
@@ -20,12 +20,12 @@ const Informatin: FC<InformatinProps> = () => {
             <Image
                 width={500}
                 height={0}
-                src={User ? `/uploads/${profilePicName[profilePicName?.length - 1]}` : ''}
+                src={User.profilePic ? `/uploads/${profilePicName[profilePicName.length - 1]}` : '/uploads/1687155573913.jpg'}
                 alt=""
                 className="w-[70px] h-[70px] object-cover rounded-full"
             />
             <div>
-                <h1 className="font-semibold">{User ? User.name : 'user name'}</h1>
+                <h1 className="font-semibold">{User.name ? User.name : 'user name'}</h1>
                 <p className="whitespace-nowrap text-gray-400 text-sm">last seen within a week</p>
             </div>
         </div>
