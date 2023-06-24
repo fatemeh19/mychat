@@ -1,6 +1,5 @@
 "use client"
 
-
 import SearchBox from './searchBox';
 import { BiPin } from "react-icons/bi";
 import { BiEdit } from "react-icons/bi";
@@ -14,12 +13,7 @@ export default function ChatList(){
     console.log('user from redux : ', User)
     const profilePic = User.profilePic ? (User.profilePic).split(`\\`) : '';
     const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : '1687155573913.jpg';
-    // function getTime(){
-    //     let currentTime='';
-    //     var today=new Date();
-    //     currentTime=today.getHours()+":"+today.getMinutes();
-    //     return currentTime;
-    // }
+
     return (
         <div className="h-screen resize-x  bg-white  charListContainer overflow-none  min-w-full dark:bg-[rgb(36,36,36)]">
             <div className="flex relative px-8 pt-5">
@@ -31,10 +25,7 @@ export default function ChatList(){
             <SearchBox  />
             
             <div className="no-scrollbar h-[80%] overflow-auto">
-                <div className="flex gap-2 text-gray-500 pb-2 px-8 pt-8 dark:text-white">
-                    <BiMessageRoundedDetail className="text-2xl " />
-                    <span className="semiBold">ALL MESSAGE</span>
-                </div>
+                
                 {(Object.keys(User).length==0) ? null
                 : <ChatContactBox profilePicName={profilePicName} chatOpenned={true} lastMessegeByContact={false} ContactName={User.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
                 
@@ -44,10 +35,10 @@ export default function ChatList(){
                     <BiPin className="text-2xl " />
                     <span>PINNED</span>
                 </div>
-                
-                <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact nameeeeeeee'} status={true} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={'2'} recivedMessage={false} isTyping={true}  />
-                <ChatContactBox  chatOpenned={true} lastMessegeByContact={false} ContactName={'Contact name2'} status={false} lastMessage={'hi, how you doin?'} ContactSeen={true} lastMessageTime={'9:36 AM'} numberOfUnSeen={''} recivedMessage={false} isTyping={false}  />
-                <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact name3'} status={false} lastMessage={'Wow really cool'} ContactSeen={false} lastMessageTime={'1:15 AM'} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  /> */}
+                */}
+                {/* <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact nameeeeeeee'} status={true} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={'2'} recivedMessage={false} isTyping={true}  />
+                <ChatContactBox  chatOpenned={false} lastMessegeByContact={false} ContactName={'Contact name2'} status={false} lastMessage={'hi, how you doin?'} ContactSeen={true} lastMessageTime={'9:36 AM'} numberOfUnSeen={''} recivedMessage={false} isTyping={false}  />
+                <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact name3'} status={false} lastMessage={'Wow really cool'} ContactSeen={false} lastMessageTime={'1:15 AM'} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />  */}
 
                 
                 {/* <ChatContactBox  chatOpenned={false} lastMessegeByContact={true} ContactName={'Contact name'} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={''} recivedMessage={true} isTyping={true}  />
