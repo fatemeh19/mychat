@@ -30,5 +30,18 @@ export default{
   "_id":{
     "name":"_id",
     "value":"آی دی"
+  },
+  "chat":{
+    "name":"chat",
+    "value":"چت"
+  },
+  "senderId":{
+    "name":"senderId",
+    "value":"آی دی فرستنده"
+  },
+  "content.contentType":{
+    "name":"content.contentType",
+    "value":"نوع پیام"
   }
+  
 }

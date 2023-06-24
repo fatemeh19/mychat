@@ -43,6 +43,10 @@ export default{
   "notAllowedError":{
     "name":"notAllowedError",
     "message":"شما اجازه انجام این کار را ندارید"
+  },
+  "EnumError":{
+    "name":"EnumError",
+    "message":" معتبر نیست"
   }
   
 }

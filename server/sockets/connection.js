@@ -1,12 +1,24 @@
 import { Server } from "socket.io";
 import * as Services from "../services/index.js";
+import Room from "../models/room.js";
 
 export default async (server) => {
   const io = new Server(server);
+  const onChat = io.of("/onChat");
+
+  onChat.on("connection", (socket) => {
+    console.log("a user is on chat");
+    socket.on("onChat", async (userId, contactId) => {
+      let roomName =
+      userId > contactId ? userId + "" + contactId : contactId + "" + userId;
+      socket.join(roomName)
+      // onChat.to(roomName).emit("onlineOnChat", userId);
+      socket.to(roomName).emit("onlineOnChat", userId)
+    });
+    
+  });
 
   io.on("connection", (socket) => {
-    // console.log("user connected");
-
     socket.on("online", (userId) => {
       Services.User.findAndUpdateUser(
         userId,
@@ -18,7 +30,10 @@ export default async (server) => {
         },
         socket
       );
+
+      socket.broadcast.emit("onlineContact",userId)
     });
+    
 
     socket.on("offline", (userId) => {
       Services.User.findAndUpdateUser(userId, {
