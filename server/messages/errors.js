@@ -47,6 +47,14 @@ export default{
   "EnumError":{
     "name":"EnumError",
     "message":" معتبر نیست"
+  },
+  "ContentError":{
+    "name":"ContentError",
+    "message":"نوع پیام مشخص شده با پیام ارسال شده مطابقت ندارد"
+  },
+  "FileContentError":{
+    "name":"FileContentError",
+    "message":"لطفا نوع فایل را به درستی مشخص کنید"
   }
   
 }

@@ -13,7 +13,7 @@ const createChat = async (req, res) => {
   const chatExists = await Services.Chat.getChat({
     memberIds: { $size: 2, $all: memberIds },
   });
-  
+
   if (chatExists) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -31,5 +31,9 @@ const createChat = async (req, res) => {
     },
   });
 };
+
+const getChat = async(req, res) =>{
+  
+}
 
 export { createChat };

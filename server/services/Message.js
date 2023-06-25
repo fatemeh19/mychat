@@ -6,7 +6,7 @@ import * as CustomError from "../errors/index.js";
 const createMessage = async (message) => {
 //   try {
     const newMessage = await Message.create(message);
-    return newMessage._id;
+    return newMessage;
 //   } catch (err) {
     // console.log(err.errors)
     // console.log("errName=",err.errors)

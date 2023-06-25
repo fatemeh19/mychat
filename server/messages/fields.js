@@ -42,6 +42,10 @@ export default{
   "content.contentType":{
     "name":"content.contentType",
     "value":"نوع پیام"
+  },
+  "file":{
+    "name":"file",
+    "value":"فایل"
   }
   
 }

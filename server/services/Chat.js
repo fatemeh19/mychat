@@ -7,7 +7,19 @@ const createChat = async (memberIds) => {
   const chat = await Chat.create({ memberIds });
   return chat;
 };
-
+const findAndUpdateChat = async (id, updateQuery) => {
+  try {
+    const chat = await Chat.findByIdAndUpdate(id, updateQuery);
+    return chat;
+  } catch (err) {
+    const { errorType, field } = await mongooseErrorExtractor(err);
+    return await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType,
+      Field: Fields[field],
+    });
+  }
+};
 const getChat = async (Query) => {
   try {
     const chat = await Chat.findOne(Query);
@@ -19,11 +31,8 @@ const getChat = async (Query) => {
       errorClass: CustomError.BadRequestError,
       errorType,
       Field: Fields[field],
-      
     });
   }
 };
 
-
-
-export { getChat, createChat };
+export { getChat, createChat, findAndUpdateChat };
