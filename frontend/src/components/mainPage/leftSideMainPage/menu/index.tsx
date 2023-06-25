@@ -11,13 +11,15 @@ import { IoIosMoon} from "react-icons/io";
 import { FC } from "react";
 import Image  from 'next/image'
 interface MenuProps {
-    handleMenu: ()  => void ,
-    contactListOpenHandler:  ()  => void
+    handleMenu: ()  => void,
+    contactListOpenHandler:  ()  => void,
+    settingOpenHandler:  ()  => void
 }
 
 const Menu: FC<MenuProps> = ({
     handleMenu,
-    contactListOpenHandler
+    contactListOpenHandler,
+    settingOpenHandler
 }) => {
     
     return (
@@ -49,7 +51,11 @@ const Menu: FC<MenuProps> = ({
                 <BiSave className="text-gray-500 text-2xl"/>
                 <span className="text-base">Saved Message</span>
             </div>
-            <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100">
+            <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100"
+                onClick={()=>{
+                    handleMenu();
+                    settingOpenHandler();
+                }}>
                 <BiCog className="text-gray-500 text-2xl"/>
                 <span className="text-base">Setting</span>
             </div>

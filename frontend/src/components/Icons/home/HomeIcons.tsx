@@ -9,6 +9,7 @@ import {useState} from 'react';
 import Contacts from "../../contact";
 import CustomizedDialogs from "../../popUp";
 import Menu from "../../mainPage/leftSideMainPage/menu";
+import EditProfile from "../../setting/editProfile";
 
 export  function AllMessageIcon(){
 
@@ -36,6 +37,10 @@ export  function MenuIcon(){
     const contactListOpenHandler=()=>{
         setContactListOpen(!contactListOpen)
     }
+    const [settingOpen,setSettingOpen]=useState(false)
+    const settingOpenHandler=()=>{
+        setSettingOpen(!settingOpen)
+    }
     return (
         
             <div className="flex justify-center logo-icon mb-10">
@@ -46,11 +51,17 @@ export  function MenuIcon(){
                                         children={<Menu
                                         handleMenu={handleOpen}
                                         contactListOpenHandler={contactListOpenHandler}
+                                        settingOpenHandler={settingOpenHandler}
                         />} /> 
                 :null
                 }
                 {contactListOpen ? <Contacts  open={contactListOpen}  handelOpen={contactListOpenHandler} /> 
                 :null}
+                {settingOpen ? <CustomizedDialogs open={settingOpen} title="Info" 
+                                        handelOpen={settingOpenHandler} 
+                                        children={<EditProfile />} /> 
+                :null
+                }
             </div>
         
     )
