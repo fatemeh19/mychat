@@ -1,6 +1,7 @@
 "use client"
 
 import callApi from "@/src/helper/callApi"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { FC, useState } from "react"
 import { SiMinutemailer } from 'react-icons/si'
@@ -68,6 +69,47 @@ const VerifyEmailComponent: FC<VerifyEmailComponentProps> = ({ searchParams }) =
                         </div>
                     )}
         </>
+
+        // <>
+        //     <div className="bg-gray-100 w-full h-screen flex items-center justify-center font-[vazir]">
+        //         <div className="box flex items-center flex-col w-[400px] h-aut p-3 bg-white rounded-lg relative">
+        //             {/* <svg width="130" height="50" className="absolute top-0">
+        //                 <path d="M10,0 a65,70 0 0,0 115,0" fill="#f3f4f6" />
+        //             </svg>
+        //             <Image 
+        //                 width={500}
+        //                 height={0}
+        //                 src={'/images/logo2.png'}
+        //                 alt=""
+        //                 className="w-20 my-2 mt-6 absolute top-[-55px] right-[150px]"
+        //                 /> */}
+
+        //             <Image
+        //                 width={500}
+        //                 height={0}
+        //                 src={'/images/tik3.png'}
+        //                 alt=""
+        //                 className="w-20 mb-3"
+        //             />
+        //             <h1 className="font-bold" > Please verify your email </h1>
+
+        //             <p className="text-center opacity-75 leading-5 text-xs my-5">
+        //                 <span className=""> Just click on the below link to complete your signup</span>
+        //                 <br />
+        //                 <span> and start chatting your friends.</span>
+
+        //             </p>
+
+        //             <button className="
+        //                 bg-blue-500 rounded-lg py-3 px-8 text-white
+        //                 transition-all duration-300 outline-none active:bg-blue-500
+        //                 hover:bg-blue-700
+        //                 "
+        //                 // onClick={verifyEmailHandler}
+        //             > verify email</button>
+        //         </div>
+        //     </div>
+        // </>
     )
 }
 
