@@ -33,7 +33,31 @@ const createChat = async (req, res) => {
 };
 
 const getChat = async(req, res) =>{
+  // const { memberIds } = req.body;
+  const {userId, contactId} = req.params
+  const memberIds = [userId, contactId]
   
+  // const data = await Validators.createChat.validate({ memberIds });
+ 
+  const chat = await Services.Chat.getChat({
+    memberIds: { $size: 2, $all: memberIds },
+  });
+
+  if (!chat) {
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: fields.chat,
+    });
+  }
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      chat,
+    },
+  });
 }
 
-export { createChat };
+export { createChat , getChat};
