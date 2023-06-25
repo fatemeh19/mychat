@@ -13,7 +13,7 @@ export default  async (err) => {
         field: "",
       };
       validationError.name = err.inner[i].errors[j];
-      console.log(err.inner[i].path);
+      console.log("err= ",err.inner[i].errors[j]);
       validationError.message = await ErrorMessageCreator(
         Fields[err.inner[i].path].value,
         ErrorMessages[err.inner[i].errors[j]].message
@@ -21,7 +21,7 @@ export default  async (err) => {
       validationError.field = err.inner[i].path;
 
       validationErrors.push(validationError);
-      console.log(validationErrors);
+      
     }
   }
 

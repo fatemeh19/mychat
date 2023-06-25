@@ -1,46 +1,37 @@
-import {
-  NotFoundError,
-  UnauthorizedError,
-  UnauthenticatedError,
-  ValidationError,
-  BadRequestError,
-} from "../errors/index.js";
+import * as CustomError  from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import { findUsers, findUser, findAndUpdateUser } from "../services/User.js";
+import * as Services from "../services/index.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
-import { addContactV } from "../validators/index.js";
-import {
-  RHCustomError,
-  RHSendResponse,
-} from "../middlewares/ResponseHandler.js";
+import * as Validators from "../validators/index.js";
+import * as RH from"../middlewares/ResponseHandler.js"
 
 const addContact = async (req, res) => {
   const { userId } = req.user;
   let data;
   try {
-    data = await addContactV.validate(req.body, {
+    data = await Validators.addContact.validate(req.body, {
       stripUnknown: true,
       abortEarly: false,
     });
   } catch (err) {
-    await RHCustomError({ err, errorClass: ValidationError });
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  const contact = await findUser({
+  const contact = await Services.User.findUser({
     phoneNumber: data.phoneNumber,
   });
   if (!contact) {
-    await RHCustomError({
-      errorClass: BadRequestError,
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.NotSignUpYet,
     });
   }
   data.userId = contact._id;
 
-  const user = await findUser({ _id: userId });
+  const user = await Services.User.findUser({ _id: userId });
   if (user.phoneNumber == contact.phoneNumber) {
-    await RHCustomError({
-      errorClass: BadRequestError,
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.notAllowedError,
     });
   }
@@ -48,15 +39,15 @@ const addContact = async (req, res) => {
     data
   );
   if (contactExists) {
-    await RHCustomError({
-      errorClass: BadRequestError,
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.DuplicateError,
       Field: Fields.phoneNumber,
     });
   }
   if (contactNameExists) {
-    await RHCustomError({
-      errorClass: BadRequestError,
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.DuplicateError,
       Field: Fields.name,
     });
@@ -66,11 +57,11 @@ const addContact = async (req, res) => {
     userId: contact._id,
     name: data.name,
   };
-  await findAndUpdateUser(user._id, {
+  await Services.User.findAndUpdateUser(user._id, {
     $push: { contacts: newContact },
   });
 
-  await RHSendResponse({
+  await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",
@@ -79,16 +70,16 @@ const addContact = async (req, res) => {
 
 const getContacts = async (req, res) => {
   const { userId } = req.user;
-  const user = await findUser({ _id: userId });
+  const user = await Services.User.findUser({ _id: userId });
   let contactIds = user.contacts;
 
   contactIds = contactIds.map((contact) => contact.userId);
-  const contacts = await findUsers(
+  const contacts = await Services.User.findUsers(
     { _id: { $in: contactIds } },
     "name profilePic",
     "name"
   );
-  await RHSendResponse({
+  await RH.SendResponse({
     res,
     statusCode: 200,
     title: "ok",
@@ -100,28 +91,28 @@ const getContact = async (req, res) => {
     params: { id: contactId },
     user: { userId },
   } = req;
-  //   const user = await User.findUser({_id:userId})
+  //   const user = await User.Services.User.findUser({_id:userId})
   //   const contacts = user.contacts.map((contact)=> contact.userId)
   //   if(!contacts.includes(contactId)){
-  //     await RHCustomError({
+  //     await RH.CustomError({
   //         errorClass:   NotFoundError,
   //         errorType: ErrorMessages.NotFoundError,
   //         Field: Fields.name,
   //       });
   //   }
 
-  const contact = await findUser(
+  const contact = await Services.User.findUser(
     { _id: contactId },
     "name phoneNumber profilePic bio"
   );
   if (!contact) {
-    return await RHCustomError({
-      errorClass: NotFoundError,
+    return await RH.CustomError({
+      errorClass: CustomError.NotFoundError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.contact,
     });
   }
-  await RHSendResponse({
+  await RH.SendResponse({
     res,
     statusCode: 200,
     title: "ok",

@@ -43,6 +43,18 @@ export default{
   "notAllowedError":{
     "name":"notAllowedError",
     "message":"شما اجازه انجام این کار را ندارید"
+  },
+  "EnumError":{
+    "name":"EnumError",
+    "message":" معتبر نیست"
+  },
+  "ContentError":{
+    "name":"ContentError",
+    "message":"نوع پیام مشخص شده با پیام ارسال شده مطابقت ندارد"
+  },
+  "FileContentError":{
+    "name":"FileContentError",
+    "message":"لطفا نوع فایل را به درستی مشخص کنید"
   }
   
 }

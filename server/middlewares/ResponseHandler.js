@@ -1,12 +1,12 @@
-import MessageCreator from "../utils/MessageCreator.js"
-import Messages from "../messages/messages.js" 
-import { ValidationError}  from "../errors/index.js";
-import errorExtractor from "../utils/errorExtractor.js"
+import MessageCreator from "../utils/MessageCreator.js";
+import Messages from "../messages/messages.js";
+import { ValidationError } from "../errors/index.js";
+import errorExtractor from "../utils/errorExtractor.js";
 
-const RHCustomError = async ({ err, errorClass, errorType, Field }) => {
+const CustomError = async ({ err, errorClass, errorType, Field, socket = false }) => {
   let errors = [];
   let error;
-  console.log(err);
+  console.log("err");
 
   if (errorClass == ValidationError) {
     errors = await errorExtractor(err);
@@ -25,11 +25,16 @@ const RHCustomError = async ({ err, errorClass, errorType, Field }) => {
     };
     errors.push(error);
   }
+  if(socket){
+    return socket.emit('socketError',{Error:errors})
 
-  throw new errorClass("err.message", errors);
+  }else{
+    throw new errorClass("err.message", errors);
+  }
+  
 };
 
-const RHSendResponse = async ({ res, statusCode, title, value, field }) => {
+const SendResponse = async ({ res, statusCode, title, value, field }) => {
   let response;
   if (field) {
     response = {
@@ -44,5 +49,4 @@ const RHSendResponse = async ({ res, statusCode, title, value, field }) => {
   }
   res.status(statusCode).json(response);
 };
-export {
- RHCustomError, RHSendResponse };
+export { CustomError, SendResponse };

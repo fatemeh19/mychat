@@ -7,15 +7,15 @@ const app = express()
 import http from 'http'
 const server = http.createServer(app)
 
-import { Server } from 'socket.io'
-const io = new Server(server)
+import socketConnection from './sockets/connection.js'
+
+socketConnection(server)
+
 
 import morgan from 'morgan'
 import cors from 'cors'
-// const notFound from './middlewares/notfound')
 import notFound from './middlewares/notfound.js'
 import errorHandlerMiddleware from './middlewares/error-handler.js'
-// const errorHandlerMiddleware from './middlewares/error-handler')
 
 
 import authRouter from './routers/auth.js'
@@ -33,12 +33,13 @@ app.use(cors({
 
 // routers
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/main', mainRouter)
+app.use('/api/v1/main',mainRouter)
 
 // middlewares
 app.use(notFound)
 app.use(errorHandlerMiddleware)
 
+// 
 
 
 

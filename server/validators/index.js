@@ -1,11 +1,15 @@
-import loginUserV from './loginUser.js'
-import registerUserV from './registerUser.js'
-import setInfoV from './setInfo.js'
-import addContactV from './addContact.js'
+import loginUser from './loginUser.js'
+import registerUser from './registerUser.js'
+import setInfo from './setInfo.js'
+import addContact from './addContact.js'
+import createChat from './createChat.js'
+import createMessage from './createMessage.js'
 export {
 
-    loginUserV,
-    registerUserV,
-    setInfoV,
-    addContactV
+    loginUser,
+    registerUser,
+    setInfo,
+    addContact,
+    createChat,
+    createMessage
 }
