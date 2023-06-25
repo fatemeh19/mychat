@@ -8,21 +8,17 @@ import {
 
 } from "react-icons/bi";
 import { IoIosMoon} from "react-icons/io";
-import { FC,useState } from "react";
-import Contacts from "@/src/components/contact";
+import { FC } from "react";
 import Image  from 'next/image'
 interface MenuProps {
-    handleMenu: ()  => void
+    handleMenu: ()  => void ,
+    contactListOpenHandler:  ()  => void
 }
 
 const Menu: FC<MenuProps> = ({
-    handleMenu
+    handleMenu,
+    contactListOpenHandler
 }) => {
-
-    const [contactListOpen,setContactListOpen]= useState(false)
-    const contactListOpenHandler= () => {
-        setContactListOpen(!contactListOpen)
-    }
     
     return (
         <>
@@ -42,13 +38,12 @@ const Menu: FC<MenuProps> = ({
             </div>
             <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100" 
                 onClick={()=>{
-                    
-                    setContactListOpen(true);
+                    handleMenu();
+                    contactListOpenHandler();
                 }}>
                 <BiUser className="text-gray-500 text-2xl"  />
                 <span className="text-base">Contacts</span>
-                {contactListOpen ? <Contacts  open={contactListOpen}  handelOpen={contactListOpenHandler} /> 
-                :null}
+                
             </div>
             <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100">
                 <BiSave className="text-gray-500 text-2xl"/>

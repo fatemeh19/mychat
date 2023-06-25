@@ -114,7 +114,7 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
     return (
         
         <div>
-            {menuDailog ? 
+            { menuDailog ? 
                     <BootstrapDialogMenu
                         onClose={() => handelOpen()}
                         aria-labelledby="customized-dialog-menu"
@@ -143,6 +143,7 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                     {children}
                 </DialogContent>
             </BootstrapDialog>
+
             }
             
         </div>
