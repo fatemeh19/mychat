@@ -13,7 +13,8 @@ interface chatContactProps {
     lastMessegeByContact:Boolean,
     isTyping:Boolean,
     ContactName:string,
-    chatOpenned:Boolean
+    chatOpenned:Boolean,
+    profilePicName:string
 }
 
 const ChatContactBox: FC<chatContactProps> = ({
@@ -26,7 +27,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     lastMessegeByContact,
     isTyping,
     ContactName,
-    chatOpenned
+    chatOpenned,
+    profilePicName
 }) => {
 
     return (
@@ -38,7 +40,9 @@ const ChatContactBox: FC<chatContactProps> = ({
                         <div className="rounded-full w-[10px] h-[10px]  bg-green-500"></div>
                     </div>
                     : null}
-                    <Image src={'/images/girl-profile3.jpg'} className="min-h-[50px] min-w-[50px] rounded-full " width={70} height={70} alt="contact-profile" />
+                    <Image
+                    src={`/uploads/${profilePicName}`}
+                    className="h-[50px] w-[50px] min-h-[50px] min-w-[50px]  object-cover rounded-full  " width={500} height={0} alt="contact-profile" />
                 </div>
                 <div className='contactMessageDetail w-full grid '>
                     <div className="relative   w-full">

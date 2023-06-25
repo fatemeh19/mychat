@@ -6,6 +6,8 @@ import ContactBox from "./contactBox";
 import ContactListBtn from "./contactListBtn";
 import callApi from "@/src/helper/callApi";
 import Link from "next/link";
+import UseLocalStorage from "@/src/helper/useLocalStorate";
+import NoContact from "./noContact";
 
 interface  ContactsProps{
     handleAddContact: () => void,
@@ -20,14 +22,7 @@ const ContactList:FC<ContactsProps> = ({
     useEffect(()=>{
         const fetchData=async () =>{
             console.log('get contacts')
-            let localStorageString = localStorage.getItem('items')
-            let localStorageArray = localStorageString?.split(',')
-            // @ts-ignore
-            let token = localStorageArray[0].slice(1, localStorageArray[0].length)
-            // @ts-ignore
-            let userId = localStorageArray[1].slice(0, localStorageArray[1].length-1)
-            console.log(token)
-            console.log(userId)
+            const {token}=UseLocalStorage();
 
             const config = {
                 headers: {
@@ -38,11 +33,13 @@ const ContactList:FC<ContactsProps> = ({
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 setContacts(res.data.value.contacts)
+                console.log(contacts.length)
             }
         }
         fetchData();
     },[])
     return (
+        
         <>
             <div className="overflow-hidden contacts-list w-full h-[80vh] relative select-none">
                 <div className="search-contacts flex pl-[15px]">
@@ -52,13 +49,17 @@ const ContactList:FC<ContactsProps> = ({
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
                 <div className="no-scrollbar h-full overflow-y-auto pb-[30%]">
                     {
-                        contacts.map((contact,index,arr)=>(
-                            (arr.length==0) ? <h1>no contact</h1> 
-                            : 
-                            <Link key={contact._id} href={`/chat/${contact._id}`} >
-                                <ContactBox key={contact._id} contact={contact}/>
-                            </Link>
-                        ))
+                        // @ts-ignore
+                        (contacts.length===0 ) ? <NoContact />
+                           : contacts.map((contact,index,arr)=>(
+                                // @ts-ignore
+                                <Link key={contact._id} href={`/chat/${contact._id}`} >
+                                    {/* @ts-ignore */}
+                                    <ContactBox key={contact._id} contact={contact}/>
+                                </Link>
+                                
+                            ))
+                            
                     }
                     
                 </div>
