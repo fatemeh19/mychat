@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface UserInterface {
     name: string,
     phoneNumber: string,
-    profilePic: string
+    profilePic: string,
 }
 interface initialStateInterface {
     User : UserInterface

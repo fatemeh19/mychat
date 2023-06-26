@@ -16,10 +16,11 @@ import CustomizedDialogs from '@/src/components/popUp'
 interface ChatHeaderProps {
     infoState: boolean,
     setInfoVState: Dispatch<SetStateAction<boolean>>,
-    User: any
+    User: any,
+    online : boolean
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User, online }) => {
 
     const [open, setOpen] = useState(false)
 
@@ -66,7 +67,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User }) => 
                         <p className='text-xs text-gray-400 whitespace-nowrap'>
                             {/* <span>12</span> member,&nbsp;
                             <span>5</span> online */}
-                            <span>last seen recently</span>
+                            <span>{online ? 'online' : 'offline'}</span>
                         </p>
                     </div>
                 </div>

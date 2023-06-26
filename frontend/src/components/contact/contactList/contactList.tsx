@@ -29,7 +29,8 @@ const ContactList:FC<ContactsProps> = ({
                     Authorization: `Bearer ${token}`
                 }
             };
-            const res = await callApi().get('/main/user/contact/', config)
+            const res = await callApi().get('/main/contact/', config)
+            console.log(res , 'from contactList')
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 setContacts(res.data.value.contacts)

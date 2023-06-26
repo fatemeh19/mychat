@@ -84,7 +84,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
                 name:values.name+" "+values.lastName,
                 phoneNumber:values.phone
             };
-            const res = await callApi().post('/main/user/contact/', contact, config)
+            const res = await callApi().post('/main/contact/', contact, config)
             console.log(res)
             if (res.status === 200) {
                 values.msg="با موفقیت ایجاد شد"
