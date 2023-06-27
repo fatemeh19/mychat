@@ -20,7 +20,11 @@ const Informatin: FC<InformatinProps> = () => {
             <Image
                 width={500}
                 height={0}
-                src={User.profilePic ? `/uploads/${profilePicName[profilePicName.length - 1]}` : '/uploads/1687155573913.jpg'}
+                src={
+                    User.profilePic
+                    ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                    : '/uploads/picture/defaultProfilePic.png'
+                }
                 alt=""
                 className="w-[70px] h-[70px] object-cover rounded-full"
             />
