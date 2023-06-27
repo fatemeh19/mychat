@@ -46,6 +46,10 @@ export default{
   "file":{
     "name":"file",
     "value":"فایل"
+  },
+  "message":{
+    "name":"message",
+    "value":"پیام"
   }
   
 }

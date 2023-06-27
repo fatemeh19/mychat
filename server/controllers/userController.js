@@ -121,7 +121,6 @@ const editProfile = async (req , res)=>{
   
 }
 
-
 export {
  setInfo,
  getProfile,
