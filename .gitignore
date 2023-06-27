@@ -6,6 +6,7 @@
 /frontend/.history
 /frontend/.pnp
 /frontend/.pnp.js
+/frontend/public/uploads
 
 # testing
 /frontend/coverage
