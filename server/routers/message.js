@@ -6,5 +6,4 @@ import { createMessage } from '../controllers/messageController.js'
 
 router.route('/:chatId').post(uploadFile.single('file'),createMessage)
 
-
 export default router

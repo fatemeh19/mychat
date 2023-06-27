@@ -8,6 +8,7 @@ import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import path from "path";
+import message from "../models/message.js";
 const createMessage = async (req, res) => {
   const {
     params: { chatId },
@@ -64,5 +65,7 @@ const createMessage = async (req, res) => {
     },
   });
 };
+
+
 
 export { createMessage };
