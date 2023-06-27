@@ -23,9 +23,8 @@ const Contacts:FC<ContactsProps> = ({
             {
                 addContact ? ( open ? <CustomizedDialogs open={open} title="New Contact" 
                                         handelOpen={handelOpen} 
-                                        children={<AddContactForm 
-                                            // handleOpen={handelOpen}
-
+                                        children={<AddContactForm
+                                            handleAddContact={handle} // after create contact run this function to close add contact popup and show contacts popup
                                         />} /> :null
                             )
                             : ( open ? <CustomizedDialogs open={open} title="Contacts" 

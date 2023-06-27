@@ -1,27 +1,17 @@
 "use client"
 
 import {
-    LogoIcon,
-    DashbordIcon,
-    ChatIcon,
-    ContactsIcon,
-    CalenderIcon,
-    SettingIcon
+    AllMessageIcon,
+    MenuIcon
+    // @ts-ignore
 } from "../../../icons/home/HomeIcons";
-
-import BottomIcons from "./bottomIcons";
-
 export default function SideBar() {
 
     return (
-        <div className="h-screen bg-mainColor relative pt-10 dark:bg-bgColorDark">
-            <LogoIcon />
-            <DashbordIcon />
-            <CalenderIcon />
-            <ChatIcon />
-            <ContactsIcon />
-            <SettingIcon />
-            <BottomIcons />
+        <div className="h-screen bg-mainColor relative pt-5 dark:bg-bgColorDark">
+            
+            <MenuIcon />
+            <AllMessageIcon />
         </div>
     )
 }

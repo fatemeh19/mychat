@@ -9,14 +9,15 @@ import ImageMessage from "./messages-type/imgMessage"
 
 interface messageProps {
     type: messageTypes
-    isText?: boolean
+    isText?: boolean,
+    dir : string
 }
 
-const Message: FC<messageProps> = ({ type, isText }) => {
+const Message: FC<messageProps> = ({ type, isText, dir }) => {
 
     switch (type) {
         case messageTypes.text:
-            return (<TextMessage />)
+            return (<TextMessage dir={dir}/>)
         case messageTypes.image:
             return (<ImageMessage isText={isText} />)
 

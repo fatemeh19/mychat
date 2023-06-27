@@ -19,8 +19,8 @@ const InputField: FC<inputFieldProps> = ({
 }) => {
 
     return (
-        <div className={`${containerClassName} flex gap-2 ml-8`}>
-            {/* <div className="w-8 flex ">{children}</div> */}
+        <div className={`${containerClassName} flex gap-2 mx-5`}>
+            <div className="w-8 flex ">{children}</div>
             <Input name={name} label={label} placeholder={' '}
                 inputClassName={`${inputClassName} border-b border-gray-200 focus:border-sky-500 inputField`}
                 // labelClassName='w-full invisible text-cyan-600 text-sm  peer-focus:visible !peer-placeholder-shown:visible'

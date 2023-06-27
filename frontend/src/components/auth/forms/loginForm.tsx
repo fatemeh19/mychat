@@ -1,16 +1,19 @@
 "use client"
 
+import Link from "next/link";
+import Image from "next/image"
 import { Form, withFormik } from "formik"
 import Input from "../input"
 import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
+import { useState } from "react";
+
+// icons
 import { BiRedo } from "react-icons/bi";
-import Image from "next/image"
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
-import Link from "next/link";
 
 let btn: any;
 let btnHandler: () => void
@@ -21,11 +24,13 @@ interface LoginFormValue {
     captcha: string,
     msg: string,
     token: string,
-    userId: string,
-    handleRedo: () => void
+    // userId: string,
+    handleRedo: () => void,
+    firstLogin:Boolean
 }
 
 const InnerLoginForm = (props: any) => {
+    const [show, setShow] = useState(false)
 
     const { values } = props
     const router = useRouter()
@@ -39,10 +44,17 @@ const InnerLoginForm = (props: any) => {
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            let items = `${values.token},${values.userId}`
-            localStorage.setItem('items', JSON.stringify(items))
-            console.log('localhost items : ', typeof localStorage.getItem('items'))
-            router.push('/home')
+            // let items = `${values.token},${values.userId}`
+            // localStorage.setItem('items', JSON.stringify(items))
+            localStorage.setItem('token', values.token)
+            // console.log('localhost items : ' , typeof localStorage.getItem('items'))
+            if(values.firstLogin){
+                router.push('/complete-information')
+            }
+            else{
+                router.push('/chat')
+            }
+            
             console.log("login")
         }
         else {
@@ -57,7 +69,7 @@ const InnerLoginForm = (props: any) => {
         <Form className=" w-full">
 
             <Input name="email" type="email" label="Email address" icon={MdAlternateEmail} />
-            <Input name="password" type="password" label="password" icon={BsFingerprint} />
+            <Input name="password" type={show ? 'text' : 'password'} label="password" icon={BsFingerprint} setShow={setShow} show={show} />
             <div className="flex relative w-full   py-2 outline-none " >
                 <Image src={'/images/captcha_img.jpg'} width={20} height={40} alt="" className="w-4/5 h-[40px] rounded  select-none tracking-[2rem] italic " />
                 <div className="select-none absolute w-4/5 top-[1rem] text-center tracking-[2rem] italic font-bold">{values.captcha}</div>
@@ -98,10 +110,11 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             captcha: GenerateString(),
             msg: '',
             token: '',
-            userId: '',
+            // userId: '',
             handleRedo: () => {
                 props.captcha = GenerateString()
-            }
+            },
+            firstLogin:true
         }
     },
     handleSubmit: async (values, { setFieldError }) => {
@@ -111,7 +124,10 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 values.token = res.data.value.token
-                values.userId = res.data.value.userId
+                // values.userId = res.data.value.userId
+                if(!res.data.value.isFirstTimeLogin){
+                        values.firstLogin=false;                   
+                }
                 btn.addEventListener('onclick', btnHandler());
             }
 

@@ -5,14 +5,13 @@ import InfoFiles from "../mainPage/rightSideMainPage/chatInfo/infoFiles";
 import MoreAction from "../mainPage/rightSideMainPage/chatInfo/moreAction";
 
 interface UserInfoProps {
-    
 }
  
 const UserInfo: FC<UserInfoProps> = () => {
     return ( 
         <>
-            <Informatin />
-            <InfoSetting />
+            <Informatin/>
+            <InfoSetting/>
             <InfoFiles />
             <MoreAction />
         </>
