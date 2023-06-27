@@ -4,6 +4,7 @@ import setInfo from './setInfo.js'
 import addContact from './addContact.js'
 import createChat from './createChat.js'
 import createMessage from './createMessage.js'
+import editProfile from './editProfile.js'
 export {
 
     loginUser,
@@ -11,5 +12,6 @@ export {
     setInfo,
     addContact,
     createChat,
-    createMessage
+    createMessage,
+    editProfile
 }

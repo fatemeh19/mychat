@@ -6,10 +6,12 @@ import uploadFile from "../utils/multer.js";
 
 import {
   setInfo,
-  getProfile
+  getProfile,
+  editProfile
 } from "../controllers/userController.js";
 
 
 router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
-router.get('/profile',getProfile)
+router.route('/profile').get(getProfile).patch(uploadFile.single("profilePic"),editProfile)
+
 export default router

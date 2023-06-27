@@ -15,15 +15,11 @@ var storage = multer.diskStorage({
       //     errorType: ErrorMessages.FileContentError,
       //   });
       // }
-      filePath = path.join(
-        consts.MEDIA_SAVE_PATH,
-        req.body.content.contentType
-      );
+      filePath =path.join(consts.MEDIA_SAVE_PATH,req.body.content.contentType) 
+      
     } else {
-      filePath = path.join(
-        consts.MEDIA_SAVE_PATH,
-        "/picture/"
-      );
+      filePath =path.join(consts.MEDIA_SAVE_PATH ,'/picture/') 
+
     }
     cb(null, filePath);
   },
