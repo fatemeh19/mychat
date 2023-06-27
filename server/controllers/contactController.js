@@ -1,10 +1,10 @@
-import * as CustomError  from "../errors/index.js";
+import * as CustomError from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import * as Services from "../services/index.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import * as Validators from "../validators/index.js";
-import * as RH from"../middlewares/ResponseHandler.js"
+import * as RH from "../middlewares/ResponseHandler.js";
 
 const addContact = async (req, res) => {
   const { userId } = req.user;
@@ -35,9 +35,7 @@ const addContact = async (req, res) => {
       errorType: ErrorMessages.notAllowedError,
     });
   }
-  const { contactExists, contactNameExists } = await user.hasThisContactOrName(
-    data
-  );
+  const { contactExists } = await user.hasThisContact(data);
   if (contactExists) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -45,17 +43,19 @@ const addContact = async (req, res) => {
       Field: Fields.phoneNumber,
     });
   }
-  if (contactNameExists) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.DuplicateError,
-      Field: Fields.name,
-    });
-  }
+  // if (contactNameExists) {
+  //   await RH.CustomError({
+  //     errorClass: CustomError.BadRequestError,
+  //     errorType: ErrorMessages.DuplicateError,
+  //     Field: Fields.name,
+  //   });
+  // }
 
   const newContact = {
     userId: contact._id,
     name: data.name,
+    lastname: data.lastname,
+    profilePic: data.profilePic,
   };
   await Services.User.findAndUpdateUser(user._id, {
     $push: { contacts: newContact },
@@ -72,13 +72,20 @@ const getContacts = async (req, res) => {
   const { userId } = req.user;
   const user = await Services.User.findUser({ _id: userId });
   let contactIds = user.contacts;
+  let userContacts = user.contacts
 
   contactIds = contactIds.map((contact) => contact.userId);
   const contacts = await Services.User.findUsers(
     { _id: { $in: contactIds } },
-    "name profilePic",
-    "name"
+    "name lastname profilePic",
+    "_id"
   );
+  contacts.forEach((contact, index) => {
+    contact.name = userContacts[index].name || contact.name;
+    contact.lastname = userContacts[index].lastname || contact.lastname;
+    contact.profilePic = userContacts[index].profilePic || contact.profilePic;
+  });
+  
   await RH.SendResponse({
     res,
     statusCode: 200,
@@ -91,7 +98,7 @@ const getContact = async (req, res) => {
     params: { id: contactId },
     user: { userId },
   } = req;
-  //   const user = await User.Services.User.findUser({_id:userId})
+    const user = await Services.User.findUser({_id:userId})
   //   const contacts = user.contacts.map((contact)=> contact.userId)
   //   if(!contacts.includes(contactId)){
   //     await RH.CustomError({
@@ -103,7 +110,7 @@ const getContact = async (req, res) => {
 
   const contact = await Services.User.findUser(
     { _id: contactId },
-    "name phoneNumber profilePic bio"
+    "name lastname phoneNumber profilePic bio"
   );
   if (!contact) {
     return await RH.CustomError({
@@ -112,6 +119,13 @@ const getContact = async (req, res) => {
       Field: Fields.contact,
     });
   }
+
+  const userContact= user.contacts.find((userContact) => userContact.userId.equals(contact._id));
+  
+  contact.name = userContact.name || contact.name;
+  contact.lastname = userContact.lastname || contact.lastname;
+  contact.profilePic = userContact.profilePic || contact.profilePic;
+
   await RH.SendResponse({
     res,
     statusCode: 200,
@@ -119,5 +133,6 @@ const getContact = async (req, res) => {
     value: { contact },
   });
 };
+
 
 export { addContact, getContacts, getContact };

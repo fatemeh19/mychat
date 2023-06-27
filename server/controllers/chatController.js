@@ -6,6 +6,7 @@ import ErrorMessages from "../messages/errors.js";
 import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
+import Chat from "../models/Chat.js";
 const createChat = async (req, res) => {
   const { memberIds } = req.body;
   const data = await Validators.createChat.validate({ memberIds });
@@ -59,5 +60,6 @@ const getChat = async(req, res) =>{
     },
   });
 }
+
 
 export { createChat , getChat};

@@ -25,23 +25,22 @@ const createUser = async (body) => {
   return user;
 };
 
-const findAndUpdateUser = async (id, updateQuery,socket = false) => {
+const findAndUpdateUser = async (id, updateQuery, socket = false) => {
   let user;
-  
-  try {
-    user = await User.findByIdAndUpdate(id, updateQuery);
-  } catch (err) {
 
+  try {
+    user = await User.findByIdAndUpdate(id, updateQuery, {
+      runValidators: true,
+    });
+  } catch (err) {
     const { errorType, field } = await mongooseErrorExtractor(err);
-    
+
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
       errorType,
       Field: Fields[field],
-      socket
+      socket,
     });
-    
-    
   }
 
   return user;
@@ -51,9 +50,5 @@ const findUsers = async (Query, select = "", sort = "") => {
   const users = await User.find(Query).select(select).sort(sort);
   return users;
 };
-
-
-
-
 
 export { findUsers, findUser, createUser, findAndUpdateUser };
