@@ -65,7 +65,7 @@ const getProfile = async (req, res)=>{
   console.log("resid")
   const {user:{userId}} = req
 
-  const user = await Services.User.findUser({_id:userId},"name lastname phoneNumber username profilePic")
+  const user = await Services.User.findUser({_id:userId},"name lastname phoneNumber username email profilePic")
   if(!user){
     await RH.CustomError({
       errorClass:CustomError.BadRequestError,
