@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens:{
+        'tablet':{
+          'min' :'640px',
+          'max' :'1023px'
+        } 
+      },
       backgroundColor: {
         // 'mainColor': '#166e48'
         'mainColor': '#2563eb',

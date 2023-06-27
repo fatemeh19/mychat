@@ -15,11 +15,24 @@ export default function Layout({
     children: React.ReactNode
 }) {
     return (
-        <div className="grid grid-cols-[repeat(16,_minmax(0,_1fr))] gap-[2px] bg-bgColorLight dark:bg-bgColorDark">
-            <div className="col-span-4 leftSideMainPage">
+        <div className="grid 
+        lg:grid-cols-[repeat(16,_minmax(0,_1fr))]  
+        md:grid-cols-[repeat(16,_minmax(0,_1fr))] 
+        grid-cols-12
+        bg-bgColorLight gap-[2px]
+        dark:bg-bgColorDark">
+            <div className="
+            md:col-span-4
+            sm:col-span-2
+            col-span-12
+            leftSideMainPage">
                 <LeftSideMainPage />
             </div>
-            <div className="col-span-12 rightSideMainPage">
+            <div className="
+            md:col-span-12
+            sm:col-span-14
+            col-span-12
+            rightSideMainPage">
                 {children}
             </div>
         </div>

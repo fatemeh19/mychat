@@ -100,7 +100,7 @@ body
   .charListContainer .last-mes-time {font-size:12px;}
   .charListContainer .check-mes-seen{font-size:20px;}
   .mess-detail2{margin-top: -5px;}
-  .logo-icon{margin-bottom:1rem;}
+  /* .logo-icon{margin-bottom:1rem;} */
   .logo-icon > *{width:30px;height:40px;}
   .home-icons{padding-bottom:5%;padding-bottom:5%;}
   .home-icons .h-icon{width:25px;height:25px;}

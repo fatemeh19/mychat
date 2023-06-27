@@ -8,7 +8,7 @@ import {
 export default function SideBar() {
 
     return (
-        <div className="h-screen bg-mainColor relative pt-5 dark:bg-bgColorDark">
+        <div className="h-screen bg-mainColor relative  dark:bg-bgColorDark">
             
             <MenuIcon />
             <AllMessageIcon />
