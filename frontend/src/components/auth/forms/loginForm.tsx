@@ -24,7 +24,7 @@ interface LoginFormValue {
     captcha: string,
     msg: string,
     token: string,
-    userId: string,
+    // userId: string,
     handleRedo: () => void,
     firstLogin:Boolean
 }
@@ -44,9 +44,10 @@ const InnerLoginForm = (props: any) => {
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            let items = `${values.token},${values.userId}`
-            localStorage.setItem('items', JSON.stringify(items))
-            console.log('localhost items : ' , typeof localStorage.getItem('items'))
+            // let items = `${values.token},${values.userId}`
+            // localStorage.setItem('items', JSON.stringify(items))
+            localStorage.setItem('token', values.token)
+            // console.log('localhost items : ' , typeof localStorage.getItem('items'))
             if(values.firstLogin){
                 router.push('/complete-information')
             }
@@ -109,7 +110,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             captcha: GenerateString(),
             msg: '',
             token: '',
-            userId: '',
+            // userId: '',
             handleRedo: () => {
                 props.captcha = GenerateString()
             },
@@ -123,7 +124,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 values.token = res.data.value.token
-                values.userId = res.data.value.userId
+                // values.userId = res.data.value.userId
                 if(!res.data.value.isFirstTimeLogin){
                         values.firstLogin=false;                   
                 }

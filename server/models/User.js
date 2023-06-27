@@ -9,6 +9,9 @@ const UserSchema = new mongoose.Schema(
       // minLength: [4, "name must be more than 4 characters"],
       // maxLength: [2, "name must be less than 20 characters"],
     },
+    lastname:{
+      type:String
+    },
     email: {
       type: String,
       required: [true, "please provide email"],
@@ -24,13 +27,13 @@ const UserSchema = new mongoose.Schema(
       // validate: {
       //   validator: validator.isMobilePhone('ir-IR'),
       // },
-      // unique: true,
+      unique: true,
     },
     username: {
       type: String,
-      // unique: true,
-      minLength: [10, "username must be more than 10 characters"],
-      maxLength: [20, "username must be less than 20 characters"],
+      unique: true,
+      // minLength: [10, "username must be more than 10 characters"],
+      // maxLength: [20, "username must be less than 20 characters"],
     },
     bio: {
       type: String,
@@ -67,6 +70,12 @@ const UserSchema = new mongoose.Schema(
         name: {
           type: String,
         },
+        lastname: {
+          type:String
+        },
+        profilePic:{
+          type:String
+        }
       },
     ],
   },
@@ -90,8 +99,8 @@ UserSchema.methods.comparePassword = async function (canditatePassword) {
   return isMatch;
  
 };
-UserSchema.methods.hasThisContactOrName = async function(contact){
-  let contactNameExists = false
+UserSchema.methods.hasThisContact = async function(contact){
+  // let contactNameExists = false
   let contactExists = false
   this.contacts.forEach((value, index)=>{
     // console.log("value.name = ",value.name)
@@ -100,17 +109,17 @@ UserSchema.methods.hasThisContactOrName = async function(contact){
     // console.log("contact.userId = ",contact.userId)
     // console.log("contactNameExists = ",contactNameExists)
     // console.log("contactExists = ",contactExists)
-    if(value.name==contact.name){
+    // if(value.name==contact.name){
       
-      contactNameExists = true
-    }
+    //   contactNameExists = true
+    // }
 
     if(value.userId.equals(contact.userId)){
       contactExists = true
     }
 
   })
-  return {contactExists,contactNameExists}
+  return {contactExists}
 
 }
 

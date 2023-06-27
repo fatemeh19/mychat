@@ -10,7 +10,7 @@ const Informatin: FC<InformatinProps> = () => {
 
     const selector = useAppSelector(state => state.User)
     const User = selector.User
-    console.log('user from redux : ', User)
+    // console.log('user from redux : ', User)
 
     const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
 

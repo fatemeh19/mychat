@@ -11,7 +11,7 @@ import ChatListHeader from './chatListHeader';
 export default function ChatList(){
     const selector = useAppSelector(state => state.User)
     const User = selector.User
-    console.log('user from redux : ', User)
+    // console.log('user from redux : ', User)
     const profilePic = User.profilePic ? (User.profilePic).split(`\\`) : '';
     const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : '1687155573913.jpg';
     const selector2 = useAppSelector(state => state.openChat)

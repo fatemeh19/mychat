@@ -82,7 +82,9 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
             formData.append('name', values.name)
             formData.append('phoneNumber', values.phone)
 
-            const {token} = UseLocalStorage()
+            // const {token} = UseLocalStorage()
+            const token = localStorage.getItem('token')
+
 
             const config = {
                 headers: {
