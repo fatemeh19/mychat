@@ -1,12 +1,20 @@
+"use client"
+
 import { Form, withFormik } from "formik";
 import * as yup from 'yup'
-import { BiUser } from "react-icons/bi";
+import { BiMenu, BiUser } from "react-icons/bi";
 import { BiPhone } from "react-icons/bi";
 import { createRef } from "react";
 import InputField from "../../auth/input/inputField";
 import callApi from "@/src/helper/callApi";
 import ValidationError from "@/src/errors/validationError";
 import UseLocalStorage from "@/src/helper/useLocalStorate";
+import CustomizedDialogs from "../../popUp";
+import ContactList from "../contactList/contactList";
+import Contacts from "..";
+
+import { useState } from 'react'
+import Menu from "../../mainPage/leftSideMainPage/menu";
 
 
 interface addContactFormProps {
@@ -21,10 +29,11 @@ let addBtn: any;
 let add: () => void
 
 const AddContactFormInner = (props: any) => {
-    const { handelOpen,values } = props;
+    const {handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
+
     add = () => {
-        // handelOpen
+        handleAddContact()
     }
 
     return (
@@ -59,7 +68,7 @@ const addContactFormValidationSchema = yup.object().shape({
 interface addContactFormValue {
     name?: string,
     phone?: Number | '',
-    handelOpen?:()=>void
+    handleAddContact?: () => void
 }
 
 const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
@@ -74,25 +83,24 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
     validationSchema: addContactFormValidationSchema,
     handleSubmit: async (values, { props }) => {
         try {
-            const {token}=UseLocalStorage();
+            const { token } = UseLocalStorage();
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             };
             const contact = {
-                name:values.name+" "+values.lastName,
-                phoneNumber:values.phone
+                name: values.name + " " + values.lastName,
+                phoneNumber: values.phone
             };
             const res = await callApi().post('/main/contact/', contact, config)
             console.log(res)
             if (res.status === 200) {
-                values.msg="با موفقیت ایجاد شد"
-                
-                addBtn.addEventListener('onClick', props.handelOpen);
+                values.msg = "با موفقیت ایجاد شد"
+                addBtn.addEventListener('onClick', add())
             }
         } catch (error) {
-            console.log('error in catch text info : ', error)
+            console.log('error in catch add contact form : ', error)
             if (error instanceof ValidationError) {
                 // @ts-ignore
                 values.msg = error.Error.errors[0].message
