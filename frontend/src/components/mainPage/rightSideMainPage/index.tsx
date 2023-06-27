@@ -12,7 +12,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     const [infoState, setInfoVState] = useState(true)
     // const [socket, setSocket] = useState(null);
-    const { userId } = UseLocalStorage()
+    // const { userId } = UseLocalStorage()
 
     // let newSocket: any;
     // let socketOnChat: any;
@@ -35,9 +35,14 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     // }, [])
     // setTimeout(() => {
         console.log('socket on chat ', socket)
-        console.log('userId : ', userId)
+        // console.log('userId : ', userId)
         console.log('contactId : ', contactId)
-        socket.emit('onChat', userId, contactId)
+
+        // ************* SO IMPORTENT
+        // this emit should be : but userId should get from getUserProfile and place in hear *CAS* we change the userId from saving in localStorage and got in login (((we don't get userId in login anymove))) *SOOOOOO* after take all user info from getUserProfile and save them in redux we can access to userId from redux.
+        // socket.emit('onChat', userId, contactId)
+        // ************* SO IMPORTENT
+
         socket.on('onlineOnChat', (contactId: any) => {
             console.log('online on chat in client')
             console.log(contactId)

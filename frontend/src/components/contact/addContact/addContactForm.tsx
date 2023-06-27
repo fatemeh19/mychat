@@ -29,7 +29,7 @@ let addBtn: any;
 let add: () => void
 
 const AddContactFormInner = (props: any) => {
-    const {handleAddContact, values } = props;
+    const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
 
     add = () => {
@@ -52,7 +52,7 @@ const AddContactFormInner = (props: any) => {
                     className="font-bold cursor-pointer bg-white hover:text-sky-700 transition-all duration-150 text-sky-500  outline-none "
                 >Create</button>
             </div>
-            
+
         </Form>
 
     );
@@ -83,7 +83,9 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
     validationSchema: addContactFormValidationSchema,
     handleSubmit: async (values, { props }) => {
         try {
-            const { token } = UseLocalStorage();
+            // const { token } = UseLocalStorage();
+            const token = localStorage.getItem('token')
+
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`

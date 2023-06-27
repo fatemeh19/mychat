@@ -17,7 +17,8 @@ interface chatProps {
 }
 
 const getUser = async (id: string) => {
-    const { token } = UseLocalStorage()
+    // const { token } = UseLocalStorage()
+    const token = localStorage.getItem('token')
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
