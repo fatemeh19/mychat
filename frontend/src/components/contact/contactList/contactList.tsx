@@ -56,7 +56,7 @@ const ContactList:FC<ContactsProps> = ({
                                 // @ts-ignore
                                 <Link key={contact._id} href={`/chat/${contact._id}`} >
                                     {/* @ts-ignore */}
-                                    <ContactBox key={contact._id} contact={contact}/>
+                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen}/>
                                 </Link>
                                 
                             ))
