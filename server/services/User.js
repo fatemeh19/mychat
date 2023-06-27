@@ -51,4 +51,29 @@ const findUsers = async (Query, select = "", sort = "") => {
   return users;
 };
 
-export { findUsers, findUser, createUser, findAndUpdateUser };
+const findAndUpdateBySave = async (findQuery, data) => {
+  let user;
+  try {
+    user = await User.findOne(findQuery);
+    user.set(data);
+    user = await user.save();
+  } catch (err) {
+    const { errorType, field } = await mongooseErrorExtractor(err);
+
+    return await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType,
+      Field: Fields[field],
+      
+    });
+  }
+  return user
+};
+
+export {
+  findUsers,
+  findUser,
+  createUser,
+  findAndUpdateUser,
+  findAndUpdateBySave,
+};
