@@ -15,13 +15,13 @@ const createMessage = async (req, res) => {
     body: message,
     file,
   } = req;
-  console.log(message.content.contentType)
-  let url =
-    file && message.content.contentType != "text"
-      ? path.join(process.cwd(), "../", file.path)
-      : "";
+  let url = file && message.content.contentType != "text" ? file.path : "";
 
   let newMessage = {
+    reply: {
+      isReplied: message?.reply?.isReplied,
+      messageId: message?.reply?.messageId,
+    },
     content: {
       contentType: message.content.contentType,
       text: message.content.text,
@@ -43,7 +43,18 @@ const createMessage = async (req, res) => {
     // threw Error
     // console.log(file)
   }
-
+  if (newMessage.reply.messageId) {
+    const repliedMessage = await Services.Message.findMessage({
+      _id: newMessage.reply.messageId,
+    });
+    if(!repliedMessage){
+      return await RH.CustomError({
+        errorClass: CustomError.BadRequestError,
+        errorType: ErrorMessages.NotFoundError,
+        Field: fields.message,
+      });
+    }
+  }
   const Message = await Services.Message.createMessage(newMessage);
   const chat = await Services.Chat.findAndUpdateChat(chatId, {
     $push: { messages: Message._id },
@@ -60,12 +71,9 @@ const createMessage = async (req, res) => {
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      message:Message,
-      
+      message: Message,
     },
   });
 };
-
-
 
 export { createMessage };
