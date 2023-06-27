@@ -4,10 +4,11 @@ import { BiCamera } from 'react-icons/bi'
 
 
 interface ImgSelector {
-    setImage: Dispatch<SetStateAction<string>>
+    setImage: Dispatch<SetStateAction<string>>,
+    imageName :string
 }
 
-const ImageSelector: FC<ImgSelector> = ({ setImage }) => {
+const ImageSelector: FC<ImgSelector> = ({ setImage,imageName }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
@@ -52,7 +53,7 @@ const ImageSelector: FC<ImgSelector> = ({ setImage }) => {
                 relative
             ">
                 <img
-                    src=""
+                    src={`/uploads/${imageName}`}
                     ref={profileImg}
                     alt=""
                     className="

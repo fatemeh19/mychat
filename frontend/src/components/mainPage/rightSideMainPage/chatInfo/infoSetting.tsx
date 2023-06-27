@@ -9,7 +9,7 @@ interface InfoSettingProps {
 }
 const InfoSetting: FC<InfoSettingProps> = () => {
 
-    const selector = useAppSelector(state => state.User)
+    const selector = useAppSelector(state => state.userContact)
     const User = selector.User
 
     return (

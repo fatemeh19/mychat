@@ -6,8 +6,9 @@ import ContactBox from "./contactBox";
 import ContactListBtn from "./contactListBtn";
 import callApi from "@/src/helper/callApi";
 import Link from "next/link";
-import UseLocalStorage from "@/src/helper/useLocalStorate";
 import NoContact from "./noContact";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { addContact, addContactsList } from "@/src/redux/features/userContactListSlice";
 
 interface ContactsProps {
     handleAddContact: () => void,
@@ -18,29 +19,10 @@ const ContactList: FC<ContactsProps> = ({
     handleAddContact,
     handleOpen
 }) => {
-    const [contacts, setContacts] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            console.log('get contacts')
-            // const {token}=UseLocalStorage();
-            const token = localStorage.getItem('token')
+    const selector = useAppSelector(state => state.userContactsList)
+    const userContactsList = selector.contacts
+    // const [contacts, setContacts] = useState([]);
 
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            const res = await callApi().get('/main/contact/', config)
-            console.log(res, 'from contactList')
-            if (res.statusText && res.statusText === 'OK') {
-                console.log(res)
-                setContacts(res.data.value.contacts)
-                console.log(contacts.length)
-            }
-        }
-        fetchData();
-    }, [])
     return (
 
         <>
@@ -53,8 +35,8 @@ const ContactList: FC<ContactsProps> = ({
                 <div className="no-scrollbar h-full overflow-y-auto pb-[30%]">
                     {
                         // @ts-ignore
-                        (contacts.length === 0) ? <NoContact />
-                            : contacts.map((contact, index, arr) => (
+                        (userContactsList.length === 0) ? <NoContact />
+                            : userContactsList.map((contact) => (
                                 // @ts-ignore
                                 <Link key={contact._id} href={`/chat/${contact._id}`} >
                                     {/* @ts-ignore */}

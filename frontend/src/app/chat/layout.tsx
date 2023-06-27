@@ -17,20 +17,19 @@ export default function Layout({
     return (
         <div className="grid 
         lg:grid-cols-[repeat(16,_minmax(0,_1fr))]  
-        md:grid-cols-[repeat(16,_minmax(0,_1fr))] 
         grid-cols-12
         bg-bgColorLight gap-[2px]
         dark:bg-bgColorDark">
             <div className="
-            md:col-span-4
-            sm:col-span-2
+            lg:col-span-4
+            tablet:col-span-2
             col-span-12
             leftSideMainPage">
                 <LeftSideMainPage />
             </div>
             <div className="
-            md:col-span-12
-            sm:col-span-14
+            lg:col-span-12
+            tablet:col-span-10
             col-span-12
             rightSideMainPage">
                 {children}

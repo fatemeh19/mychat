@@ -15,6 +15,8 @@ import Contacts from "..";
 
 import { useState } from 'react'
 import Menu from "../../mainPage/leftSideMainPage/menu";
+import { useAppDispatch } from "@/src/redux/hooks";
+import { addContact } from "@/src/redux/features/userContactListSlice";
 
 
 interface addContactFormProps {
@@ -26,14 +28,17 @@ interface addContactFormProps {
 }
 
 let addBtn: any;
-let add: () => void
+let add: (contact:any) => void
 
 const AddContactFormInner = (props: any) => {
     const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
-
-    add = () => {
+    const dispatch = useAppDispatch()
+    add = (contact:any) => {
+        dispatch(addContact(contact))
+        console.log("contact : "+contact)
         handleAddContact()
+
     }
 
     return (
@@ -92,14 +97,15 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
                 }
             };
             const contact = {
-                name: values.name + " " + values.lastName,
+                name: values.name ,
+                lastname: values.lastName,
                 phoneNumber: values.phone
             };
             const res = await callApi().post('/main/contact/', contact, config)
             console.log(res)
             if (res.status === 200) {
                 values.msg = "با موفقیت ایجاد شد"
-                addBtn.addEventListener('onClick', add())
+                addBtn.addEventListener('onClick', add(contact))
             }
         } catch (error) {
             console.log('error in catch add contact form : ', error)

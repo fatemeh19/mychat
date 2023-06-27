@@ -7,7 +7,7 @@ import ChatSendBox from "./chatSendBox"
 import UseLocalStorage from "@/src/helper/useLocalStorate";
 import callApi from "@/src/helper/callApi";
 import { useAppDispatch } from "@/src/redux/hooks";
-import { addUser } from "@/src/redux/features/userSlice";
+import { addUserContact } from "@/src/redux/features/userContactSlice";
 
 interface chatProps {
     infoState: boolean,
@@ -43,7 +43,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online }) =>
             let UserDB = await getUser(contactId)
             
             setUser(UserDB)
-            dispatch(addUser(UserDB))
+            dispatch(addUserContact(UserDB))
             console.log('user in effect : ', User)
         })()
     }, [])

@@ -18,14 +18,15 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
 
-    const profilePicName = (contact.profilePic).split(`\\`);
+    const profilePic =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
+    const profilePicName=contact.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     console.log('profilePicName : ', profilePicName)
 
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
             onClick={ () => handleOpen() }>
             <Image
-                src={contact.profilePic ? `/uploads/${profilePicName[profilePicName.length - 1]}`
+                src={contact.profilePic ? `/uploads/${profilePicName}`
                     : '/uploads/1687155573913.jpg'}
                 className="w-[50px] h-[50px] object-cover rounded-full "
                 width={500} height={50} alt="contact-profile" />

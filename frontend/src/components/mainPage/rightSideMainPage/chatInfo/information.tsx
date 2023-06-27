@@ -8,7 +8,7 @@ interface InformatinProps {
 
 const Informatin: FC<InformatinProps> = () => {
 
-    const selector = useAppSelector(state => state.User)
+    const selector = useAppSelector(state => state.userContact)
     const User = selector.User
     // console.log('user from redux : ', User)
 

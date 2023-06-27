@@ -3,17 +3,17 @@
 import SearchBox from './searchBox';
 import { BiPin } from "react-icons/bi";
 import { BiEdit } from "react-icons/bi";
-import { BiMessageRoundedDetail } from "react-icons/bi";
+import { BiArrowBack } from "react-icons/bi";
 import ChatContactBox from './chatContactBox';
 import { useAppSelector } from '@/src/redux/hooks';
 import { useState } from 'react';
 import ChatListHeader from './chatListHeader';
 export default function ChatList(){
-    const selector = useAppSelector(state => state.User)
+    const selector = useAppSelector(state => state.userContact)
     const User = selector.User
     // console.log('user from redux : ', User)
     const profilePic = User.profilePic ? (User.profilePic).split(`\\`) : '';
-    const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : '1687155573913.jpg';
+    const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     const selector2 = useAppSelector(state => state.openChat)
     const openChat = selector2.openChat
     return (
@@ -31,6 +31,7 @@ export default function ChatList(){
 
             <SearchBox />
             <ChatListHeader />
+            {/* <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  /> */}
             <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen

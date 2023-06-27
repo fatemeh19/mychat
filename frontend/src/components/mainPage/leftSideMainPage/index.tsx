@@ -2,26 +2,35 @@
 
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
+import { useEffect } from "react"
+import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
+import { useAppDispatch } from "@/src/redux/hooks"
+
 
 export default function LeftSideMainPage(){
+    const dispatch=useAppDispatch()
+    useEffect(() => {
+        fetchUserContactsListData(dispatch);
+        fetchUserProfileData(dispatch);
+    }, [])
     return (
         <div className="
         grid 
         lg:grid-cols-6
-        sm:grid-cols-4
+        tablet:grid-cols-2
         grid-cols-12
         ">
             
             <div className="
-            lg:col-span-1
-            sm:col-span-2 sm:block
+            tablet:col-span-1 
+            sm:block
             hidden
             ">
                 <SideBar />
             </div>
             <div className="
             lg:col-span-5
-            sm:col-span-2
+            tablet:col-span-1
             col-span-12
             ">
                 <ChatList />
