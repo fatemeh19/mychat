@@ -1,7 +1,9 @@
 "use client"
 
+import { setOpenChat } from "@/src/redux/features/openChatSlice";
+import { useAppDispatch } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
 interface chatContactProps {
     status: Boolean,
@@ -13,7 +15,7 @@ interface chatContactProps {
     lastMessegeByContact:Boolean,
     isTyping:Boolean,
     ContactName:string,
-    chatOpenned:Boolean,
+    chatOpennedP?:Boolean,
     profilePicName:string
 }
 
@@ -27,26 +29,57 @@ const ChatContactBox: FC<chatContactProps> = ({
     lastMessegeByContact,
     isTyping,
     ContactName,
-    chatOpenned,
+    chatOpennedP,
     profilePicName
 }) => {
-
+    const dispatch = useAppDispatch()
+            
+    const handler=()=>{
+        // setChatOpenned(true);
+        // dispatch(setOpenChat(true))
+    }
+    const [chatOpenned,setChatOpenned]=useState(false)
     return (
         
-        <div className={"container cursor-pointer w-full flex py-5 gap-5 px-8 pt-8 container-chatbox "+ (chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]":"" )}>
+        <div 
+        onClick={handler}
+        className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox  
+        lg:gap-5  lg:p-5 lg:justify-normal 
+        tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center 
+        ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
+        (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": '') }`}>
                 <div className='relative contactProfile h-full'>
                     {status ? 
-                    <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 dark:bg-[rgb(36,36,36)]">
+                    <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
+                    dark:bg-[rgb(36,36,36)]
+                    tablet:top-0">
                         <div className="rounded-full w-[10px] h-[10px]  bg-green-500"></div>
                     </div>
                     : null}
+                    {lastMessegeByContact ?
+                        (recivedMessage ? null :
+                        (<span className='hidden right-0 bottom-0 text-center text-xs 
+                        font-bold absolute rounded-full px-[7px] py-[2px]  bg-mainColor text-white
+                        tablet:block'>
+                            {numberOfUnSeen}</span>)
+                        )
+                        :null
+                        
+                    }
                     <Image
                     src={`/uploads/${profilePicName}`}
-                    className="h-[50px] w-[50px] min-h-[50px] min-w-[50px]  object-cover rounded-full  " width={500} height={0} alt="contact-profile" />
+                    className="
+                    
+                    h-[50px] w-[50px] min-h-[50px] min-w-[50px]
+                    object-cover rounded-full  " width={500} height={0} alt="contact-profile" />
                 </div>
-                <div className='contactMessageDetail w-full grid '>
+                <div className='contactMessageDetail w-full 
+                    lg:grid 
+                    tablet:hidden
+                    grid
+                    '>
                     <div className="relative   w-full">
-                        <span className='text-lg font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
+                        <span className='text-md font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
                         <div className="right-0 font-semibold text-sm top-[3px] absolute messageTimeSent text-gray-400">
                             <span className="last-mes-time">{lastMessageTime}</span>
                             
@@ -54,12 +87,12 @@ const ChatContactBox: FC<chatContactProps> = ({
                     </div>
                     <div className="relative mess-detail2 w-full">
                         {isTyping ?
-                        <span className='text-md text-green-500'>Typing...</span>
-                        : <span className={"text-md truncate last-mes w-5/6 inline-block "+(recivedMessage ? "text-gray-400" : (ContactSeen ? (chatOpenned ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>{lastMessage}</span>
+                        <span className='text-sm text-green-500'>Typing...</span>
+                        : <span className={"text-sm truncate last-mes w-5/6 inline-block "+(recivedMessage ? "text-gray-400" : (ContactSeen ? (chatOpenned ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>{lastMessage}</span>
                         }
                         {lastMessegeByContact ?
                         (recivedMessage ? null :
-                        (<div className=" right-0 top-[3px] text-center text-sm font-bold absolute rounded-full w-[20px] h-[20px] bg-red-500 "><span className='text-md text-white'>{numberOfUnSeen}</span></div>)
+                        (<span className=' right-0 top-[3px] text-center text-xs font-bold absolute rounded-full px-[7px] py-[2px]  bg-mainColor text-white'>{numberOfUnSeen}</span>)
                         )
                         :( ContactSeen ?
                             <BiCheckDouble className="check-mes-seen text-green-500 top-[3px] text-[25px] right-0 absolute" />

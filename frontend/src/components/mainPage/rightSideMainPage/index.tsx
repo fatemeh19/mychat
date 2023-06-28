@@ -7,6 +7,8 @@ import ChatInfo from "./chatInfo"
 import io from 'socket.io-client'
 import { Socket } from "socket.io-client"
 import UseLocalStorage from "@/src/helper/useLocalStorate"
+import callApi from "@/src/helper/callApi"
+import { useAppSelector } from "@/src/redux/hooks"
 
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
@@ -51,6 +53,26 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         // socket.emit('online', userId)
     // }, 5000);
 
+    const selector = useAppSelector(state => state.userInfo)
+    const userInfo = selector.User
+    const [chat,setChat]=useState()
+    useEffect(()=>{
+        const fetchChat = async (userInfo) => {
+            const token = localStorage.getItem('token')
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+            console.log('get chat')
+            const res = await callApi().get(`/main/chat/${userInfo._id}/${contactId}`, config)
+            if (res.statusText && res.statusText === 'OK') {
+                console.log(res)
+                setChat(res.data.value)
+            }
+        }
+        fetchChat(userInfo);
+    },[])
     return (
         <>
             {

@@ -18,7 +18,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
 
-    const profilePicName = (contact.profilePic).split(`\\`);
+    const profilePic =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
+    const profilePicName=contact.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     console.log('profilePicName : ', profilePicName)
     console.log('contact : ', contact)
 
