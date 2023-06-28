@@ -20,13 +20,13 @@ const ContactBox: FC<ContactBoxProps> = ({
 }) => {
 
     const profilePicName =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
-    const { current: socket } = useRef(io('http://localhost:3000/'))
+    const socket= useRef(io('http://localhost:3000/'))
     const [online , setOnline] = useState(false)
     console.log('socket on chat ', socket)
     const contactId=contact._id;
-    socket.on('onlineContact', (contactId: string) => {
-        console.log('online contact')
-        console.log(contactId)
+    socket.current.on('onlineContact', (contactId: string,callback) => {
+        console.log('online contact : ' + contactId)
+        callback("contact online")
         setOnline(true)
     });
     return (

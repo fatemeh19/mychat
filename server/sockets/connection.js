@@ -31,6 +31,7 @@ export default async (server) => {
     console.log("user connected to general socket");
 
     socket.on("online", (userId) => {
+    console.log("contact online")
       Services.User.findAndUpdateUser(
         userId,
         {

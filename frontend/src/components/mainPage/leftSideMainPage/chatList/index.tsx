@@ -11,7 +11,6 @@ import ChatListHeader from './chatListHeader';
 export default function ChatList(){
     const selector = useAppSelector(state => state.userContact)
     const User = selector.User
-    // console.log('user from redux : ', User)
     const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
     // const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     const selector2 = useAppSelector(state => state.openChat)
@@ -31,7 +30,9 @@ export default function ChatList(){
 
             <SearchBox />
             <ChatListHeader />
-            <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  />
+            <div className="tablet:block hidden py-4 text-center">
+                <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  />
+            </div>
             <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen

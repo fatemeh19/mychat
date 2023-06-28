@@ -35,8 +35,8 @@ interface LoginFormValue {
 const InnerLoginForm = (props: any) => {
     const [show, setShow] = useState(false);
     const { values } = props;
-    const router = useRouter();
     btn = createRef<HTMLButtonElement>();
+    const router = useRouter();
     // const handleRedo = () => {
     //     values.captcha=GenerateString()
     // }
@@ -51,8 +51,6 @@ const InnerLoginForm = (props: any) => {
                 router.push('/complete-information')
             }
             else{
-                
-                
                 router.push('/chat')
             }
             

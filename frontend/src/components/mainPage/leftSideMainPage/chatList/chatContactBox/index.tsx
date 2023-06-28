@@ -41,13 +41,14 @@ const ChatContactBox: FC<chatContactProps> = ({
         // dispatch(setOpenChat(true))
     }
     const [chatOpenned,setChatOpenned]=useState(false)
-    const { current: socket } = useRef(io('http://localhost:3000/'))
+    const socket = useRef(io('http://localhost:3000/'))
     const [online , setOnline] = useState(false)
     console.log('socket on chat ', socket)
     // console.log('contactId : ', contactId)
-    socket.on('onlineContact', (contactId: any) => {
+    socket.current.on('onlineContact', (contactId: any,callback) => {
         console.log('online contact')
         console.log(contactId)
+        callback('got it')
         setOnline(true)
     });
     return (

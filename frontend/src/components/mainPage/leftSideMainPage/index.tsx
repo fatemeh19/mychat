@@ -7,18 +7,22 @@ import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/us
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { io } from "socket.io-client";
 
+
 export default function LeftSideMainPage(){
     const dispatch=useAppDispatch()
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
-    const { current: socket } = useRef(io('http://localhost:3000/'))
+    // const { current: socket } = useRef(io('http://localhost:3000/'))
+    const socket=useRef(io('http://localhost:3000/'))
+    const socketInitializer=async ()=>{
+            socket.current.emit('online', userInfo._id,(response :any)=>{
+                console.log(response)
+            })
+    }
     useEffect(() => {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-        const socketConect=async ()=>{
-             await socket.emit('online', userInfo._id)
-        }
-        socketConect();
+        socketInitializer();
     }, [])
     return (
         <div className="
