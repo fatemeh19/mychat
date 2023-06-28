@@ -19,13 +19,14 @@ const EditProfile: FC<EditProfileProps> = ({
     const [img, setImg] = useState<string>('')
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
-    const profilePic =userInfo.profilePic ? userInfo.profilePic.split(`\\`) : '';
-    const profilePicName=userInfo.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
+    const profilePicName =userInfo.profilePic ? userInfo.profilePic.split(`\\`) : '';
     return (
         <>
             <div className="p-5 w-full">
                 <div className="profile grid mb-10">
-                    <ImageSelector imageName={profilePicName} setImage={setImg} />
+                    <ImageSelector imageName={userInfo.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                    : '/uploads/picture/defaultProfilePic.png'} 
+                     setImage={setImg} />
                     <div className="grid justify-center pt-2">
                         <p className="font-bold text-center">{userInfo.name}</p>
                         <p className="status text-center text-sky-500 text-xs">Online</p>
