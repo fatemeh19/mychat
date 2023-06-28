@@ -45,8 +45,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     const [online , setOnline] = useState(false)
     console.log('socket on chat ', socket)
     // console.log('contactId : ', contactId)
-    socket.on('online', (contactId: any) => {
-        console.log('online on chat in client')
+    socket.on('onlineContact', (contactId: any) => {
+        console.log('online contact')
         console.log(contactId)
         setOnline(true)
     });

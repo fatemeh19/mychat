@@ -53,7 +53,7 @@ const InnerLoginForm = (props: any) => {
                 router.push('/complete-information')
             }
             else{
-                const { current: socket } = useRef(io('http://localhost:3000'))
+                const { current: socket } = useRef(io('http://localhost:3000/'))
                 socket.emit('online', userInfo._id)
                 router.push('/chat')
             }
