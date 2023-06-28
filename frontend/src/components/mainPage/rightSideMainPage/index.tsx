@@ -57,7 +57,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const userInfo = selector.User
     const [chat,setChat]=useState()
     useEffect(()=>{
-        const fetchChat = async (userInfo) => {
+        const fetchChat = async (userInfo:any) => {
             const token = localStorage.getItem('token')
             const config = {
                 headers: {

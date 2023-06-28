@@ -8,12 +8,14 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // icons
 import { BiRedo } from "react-icons/bi";
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
+import { useAppSelector } from "@/src/redux/hooks";
+import { io } from "socket.io-client";
 
 let btn: any;
 let btnHandler: () => void
@@ -35,6 +37,8 @@ const InnerLoginForm = (props: any) => {
     const { values } = props
     const router = useRouter()
     btn = document.querySelector('#Login')
+    const selector = useAppSelector(state => state.userInfo)
+    const userInfo = selector.User
     // const handleRedo = () => {
     //     values.captcha=GenerateString()
     // }
@@ -44,14 +48,13 @@ const InnerLoginForm = (props: any) => {
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
             values.msg = 'Successful, wait to Login ..'
-            // let items = `${values.token},${values.userId}`
-            // localStorage.setItem('items', JSON.stringify(items))
             localStorage.setItem('token', values.token)
-            // console.log('localhost items : ' , typeof localStorage.getItem('items'))
             if(values.firstLogin){
                 router.push('/complete-information')
             }
             else{
+                const { current: socket } = useRef(io('http://localhost:3000'))
+                socket.emit('online', userInfo._id)
                 router.push('/chat')
             }
             
@@ -124,7 +127,6 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 values.token = res.data.value.token
-                // values.userId = res.data.value.userId
                 if(!res.data.value.isFirstTimeLogin){
                         values.firstLogin=false;                   
                 }

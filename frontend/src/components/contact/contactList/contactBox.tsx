@@ -1,7 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { FC } from "react"
+import { FC, useRef, useState } from "react"
+import { io } from "socket.io-client";
 
 type Contact = {
     name: string;
@@ -20,8 +21,15 @@ const ContactBox: FC<ContactBoxProps> = ({
 
     const profilePic =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
     const profilePicName=contact.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
-    console.log('profilePicName : ', profilePicName)
-
+    const { current: socket } = useRef(io('http://localhost:3000/'))
+    const [online , setOnline] = useState(false)
+    console.log('socket on chat ', socket)
+    const contactId=contact._id;
+    socket.on('online', (contactId: string) => {
+        console.log('online on chat in client')
+        console.log(contactId)
+        setOnline(true)
+    });
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
             onClick={ () => handleOpen() }>
@@ -32,7 +40,12 @@ const ContactBox: FC<ContactBoxProps> = ({
                 width={500} height={50} alt="contact-profile" />
             <div className="contact-details h-full pt-1 gap-1 grid w-full">
                 <p className="contact-name font-bold text-sm">{contact.name}</p>
-                <p className="status text-xs text-sky-500">Online</p>
+                <p className="status text-xs text-sky-500">
+                    {online ?
+                        'Online'
+                    : 'Offline'
+                    }
+                </p>
             </div>
         </div>
 

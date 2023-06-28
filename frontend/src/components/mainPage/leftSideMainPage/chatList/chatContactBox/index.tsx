@@ -3,10 +3,12 @@
 import { setOpenChat } from "@/src/redux/features/openChatSlice";
 import { useAppDispatch } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
+import io from 'socket.io-client'
+import { Socket } from "socket.io-client"
 interface chatContactProps {
-    status: Boolean,
+    status?: Boolean,
     lastMessage: string,
     ContactSeen: Boolean,
     lastMessageTime: string,
@@ -39,6 +41,15 @@ const ChatContactBox: FC<chatContactProps> = ({
         // dispatch(setOpenChat(true))
     }
     const [chatOpenned,setChatOpenned]=useState(false)
+    const { current: socket } = useRef(io('http://localhost:3000/'))
+    const [online , setOnline] = useState(false)
+    console.log('socket on chat ', socket)
+    // console.log('contactId : ', contactId)
+    socket.on('online', (contactId: any) => {
+        console.log('online on chat in client')
+        console.log(contactId)
+        setOnline(true)
+    });
     return (
         
         <div 
@@ -49,7 +60,7 @@ const ChatContactBox: FC<chatContactProps> = ({
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
         (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": '') }`}>
                 <div className='relative contactProfile h-full'>
-                    {status ? 
+                    {(status || online) ? 
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
                     dark:bg-[rgb(36,36,36)]
                     tablet:top-0">
