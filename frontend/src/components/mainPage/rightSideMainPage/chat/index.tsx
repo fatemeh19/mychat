@@ -34,24 +34,22 @@ const getUser = async (id: string) => {
 
 const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online }) => {
 
-    const [User, setUser] = useState()
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         (async () => {
-            console.log('effect')
-            let UserDB = await getUser(contactId)
+            // console.log('effect')
+            let userContact = await getUser(contactId)
             
-            setUser(UserDB)
-            dispatch(addUserContact(UserDB))
-            console.log('user in effect : ', User)
+            dispatch(addUserContact(userContact))
+            // console.log('user in effect : ', userContact)
         })()
     }, [])
 
-
     return (
         <div className="flex flex-col w-full h-screen relative min-w-fit">
-            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} User={User} online={online}/>
+            
+            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} online={online}/>
             <ChatMessages />
             <ChatSendBox />
         </div>

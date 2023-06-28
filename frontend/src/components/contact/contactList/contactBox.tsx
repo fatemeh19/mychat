@@ -27,7 +27,7 @@ const ContactBox: FC<ContactBoxProps> = ({
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
             onClick={() => handleOpen()}>
             <Image
-                src={contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                src={contact.profilePic ? `/uploads/picture/${profilePicName}`
                     : '/uploads/picture/defaultProfilePic.png'}
                 className="w-[50px] h-[50px] object-cover rounded-full "
                 width={500} height={50} alt="contact-profile" />

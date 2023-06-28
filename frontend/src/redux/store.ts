@@ -5,6 +5,7 @@ import userContactReducer from './features/userContactSlice';
 import openChatReducer from './features/openChatSlice';
 import userContactListReducer from './features/userContactListSlice';
 import userInfoReducer from './features/userInfoSlice';
+import messagesReducer from './features/messagesSlice'
 // ...
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     userContact : userContactReducer,
     openChat: openChatReducer,
     userContactsList : userContactListReducer,
-    userInfo: userInfoReducer
+    userInfo: userInfoReducer,
+    message : messagesReducer
   },
 })
 

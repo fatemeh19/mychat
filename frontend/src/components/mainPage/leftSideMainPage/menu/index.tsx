@@ -31,7 +31,7 @@ const Menu: FC<MenuProps> = ({
         <div className="overflow-hidden  w-full h-[80vh] relative select-none">
             <div className="bg-mainColor w-full h-auto px-2 pt-3 pb-1">
                 <Image
-                        src={`/uploads/${profilePicName}`}
+                        src={`/uploads/picture/${profilePicName}`}
                         className="mt-3 h-[50px] w-[50px] min-h-[70px] min-w-[70px]  object-cover rounded-full  "
                         width={500} height={0} alt="contact-profile" />
 

@@ -14,7 +14,7 @@ interface pageProps {
 
 const Page = async ({ params }: { params: any }) => {
 
-    console.log('params : ', params.contactId)
+    // console.log('params : ', params.contactId)
 
     return (
         <>
