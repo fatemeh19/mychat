@@ -15,15 +15,15 @@ export default function ChatMessages() {
              <div className="mx-10">
                 <DateLine date="Today" />
                 <div className="flex flex-col gap-5">
-                    //  if me set dir to rlt 
+                     //  if me set dir to rlt 
                     //     if others set dir to ltr 
                     // <MessageBox dir={MessageBoxProps.rtl} />
-                    // <MessageBox dir={MessageBoxProps.ltr} />
+                    // <MessageBox dir={MessageBoxProps.ltr} /> 
 
                 </div>
-            </div> 
+            </div> */}
 
-            */}
+
 
         </div>
     )

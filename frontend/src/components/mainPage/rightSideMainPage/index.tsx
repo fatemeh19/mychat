@@ -10,9 +10,18 @@ import UseLocalStorage from "@/src/helper/useLocalStorate"
 import callApi from "@/src/helper/callApi"
 import { useAppSelector } from "@/src/redux/hooks"
 
+
+interface IUserInfo {
+    name: string,
+    phoneNumber: string,
+    profilePic: string,
+    email :string,
+    _id:string
+}
+
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
-    const [infoState, setInfoVState] = useState(true)
+    const [infoState, setInfoVState] = useState(false)
     // const [socket, setSocket] = useState(null);
     // const { userId } = UseLocalStorage()
 
@@ -58,7 +67,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const [chat,setChat]=useState()
     const [firstChat,setFirstChat]=useState(true)
     useEffect(()=>{
-        const fetchChat = async (userInfo:any) => {
+        const fetchChat = async (userInfo : IUserInfo) => {
             const token = localStorage.getItem('token')
             const config = {
                 headers: {
@@ -67,6 +76,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             };
             console.log('get chat')
             const res = await callApi().get(`/main/chat/${userInfo._id}/${contactId}`, config)
+            console.log('res get chat ', res)
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
                 setFirstChat(false)

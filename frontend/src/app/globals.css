@@ -114,6 +114,9 @@ body
 .chat-scrollbar::-webkit-scrollbar-thumb {background-color: rgba(81, 98, 136, 0.1) ;border-radius: 10rem;}
 .chat-scrollbar::-webkit-scrollbar-track{background-color: #f1f1f1;border-radius: 10rem;margin-top: 3px;margin-bottom: 3px;}
 
+.untvisible-scrollbar::-webkit-scrollbar {width: 0;}/* #778bb7 */
+
+
 .scroll-wrap {
   border: none;
   border-bottom: 1px solid black;

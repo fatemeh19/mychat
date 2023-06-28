@@ -11,7 +11,8 @@ import { HiOutlineVideoCamera } from 'react-icons/hi'
 // components
 import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
-import { useAppSelector } from '@/src/redux/hooks';
+import { useAppSelector } from '@/src/redux/hooks'
+
 
 interface ChatHeaderProps {
     infoState: boolean,
@@ -22,8 +23,8 @@ interface ChatHeaderProps {
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) => {
 
     const [open, setOpen] = useState(false)
-    const selector = useAppSelector(state => state.userContact)
-    const User = selector.User
+    const userContact = useAppSelector(state => state.userContact).User
+
     let closeInfoSide = () => {
         if (infoState) setInfoVState(false)
         else setInfoVState(true)
@@ -33,7 +34,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) =
         setOpen(!open)
     }
 
-    const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
+    const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
 
     return (
         <div
@@ -56,7 +57,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) =
                             width={500}
                             height={500}
                             src={
-                                User.profilePic
+                                userContact.profilePic
                                 ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
                                 : '/uploads/picture/defaultProfilePic.png'
                             }
@@ -65,7 +66,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) =
                         />
                     </div>
                     <div className="profile-info">
-                        <h2 className='font-bold whitespace-nowrap dark:text-white'>{User ? User.name : 'user name'}</h2>
+                        <h2 className='font-bold whitespace-nowrap dark:text-white'>{userContact ? userContact.name : 'user name'}</h2>
                         <p className='text-xs text-gray-400 whitespace-nowrap'>
                             {/* <span>12</span> member,&nbsp;
                             <span>5</span> online */}

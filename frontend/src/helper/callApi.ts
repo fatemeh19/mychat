@@ -25,9 +25,9 @@ const callApi = () => {
         err => {
             const res = err.response
             console.log('error res : ', res)
-            if(res === undefined) console.log('error')
-            else if (res.status === 400 || res.status === 401) {
-                console.log('throw')
+            if(res === undefined) {
+                throw 'network error : connect to server ...'
+            } else if (res.status === 400 || res.status === 401) {
                 throw new ValidationError(res.data.Error)
             }
 
