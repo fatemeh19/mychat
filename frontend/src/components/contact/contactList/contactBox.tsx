@@ -19,8 +19,7 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
 
-    const profilePic =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
-    const profilePicName=contact.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
+    const profilePicName =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
     const { current: socket } = useRef(io('http://localhost:3000/'))
     const [online , setOnline] = useState(false)
     console.log('socket on chat ', socket)
@@ -32,10 +31,10 @@ const ContactBox: FC<ContactBoxProps> = ({
     });
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
-            onClick={ () => handleOpen() }>
+            onClick={() => handleOpen()}>
             <Image
-                src={contact.profilePic ? `/uploads/${profilePicName}`
-                    : '/uploads/1687155573913.jpg'}
+                src={contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                    : '/uploads/picture/defaultProfilePic.png'}
                 className="w-[50px] h-[50px] object-cover rounded-full "
                 width={500} height={50} alt="contact-profile" />
             <div className="contact-details h-full pt-1 gap-1 grid w-full">
