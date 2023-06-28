@@ -52,7 +52,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firs
 
     return (
         <div className="flex flex-col w-full h-screen relative min-w-fit">
-            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} User={User} online={online}/>
+            <ChatHeader infoState={infoState} setInfoVState={setInfoVState}  online={online}/>
             <ChatMessages />
             <ChatSendBox firstChat={firstChat} contactId={contactId} />
         </div>

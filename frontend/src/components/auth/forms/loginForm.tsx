@@ -8,12 +8,13 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
-import { useRef, useState } from "react";
+import { useRef, useState , createRef} from "react";
 
 // icons
 import { BiRedo } from "react-icons/bi";
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
+
 import { useAppSelector } from "@/src/redux/hooks";
 import { io } from "socket.io-client";
 
@@ -32,13 +33,10 @@ interface LoginFormValue {
 }
 
 const InnerLoginForm = (props: any) => {
-    const [show, setShow] = useState(false)
-
-    const { values } = props
-    const router = useRouter()
-    btn = document.querySelector('#Login')
-    const selector = useAppSelector(state => state.userInfo)
-    const userInfo = selector.User
+    const [show, setShow] = useState(false);
+    const { values } = props;
+    const router = useRouter();
+    btn = createRef<HTMLButtonElement>();
     // const handleRedo = () => {
     //     values.captcha=GenerateString()
     // }
@@ -53,8 +51,8 @@ const InnerLoginForm = (props: any) => {
                 router.push('/complete-information')
             }
             else{
-                const { current: socket } = useRef(io('http://localhost:3000/'))
-                socket.emit('online', userInfo._id)
+                
+                
                 router.push('/chat')
             }
             
@@ -79,6 +77,7 @@ const InnerLoginForm = (props: any) => {
                 <div onClick={values.handleRedo} className="rounded w-[40px] h-[39px] cursor-pointer absolute right-0 bg-mainColor"><BiRedo className="text-white ml-[5px] mt-[3px] text-3xl" /></div>
             </div>
             <input
+
                 id="captchaInput"
                 type="text"
                 className={`w-full border border-zinc-300 px-3 py-2 outline-none tracking-[2rem] rounded-lg`} />
@@ -86,7 +85,7 @@ const InnerLoginForm = (props: any) => {
                 {values.msg}
             </p>
             <div className="my-5">
-                <button id="Login" name="Login" type='submit' className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg ">Login</button>
+                <button ref={btn} id="Login" name="Login" type='submit' className="w-full cursor-pointer bg-blue-600 hover:bg-blue-800 transition-all duration-150 text-white border border-zinc-300 px-3 py-2 outline-none rounded-lg ">Login</button>
             </div>
             <div className="text-sm text-gray-500 text-center mb-2">
                 You don't have an account?

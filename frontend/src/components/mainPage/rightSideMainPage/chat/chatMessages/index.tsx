@@ -8,9 +8,9 @@ export default function ChatMessages() {
 
     return (
         <div className="w-full h-full overflow-auto overflow-x-hidden chat-scrollbar">
-            {/* <div className="w-full h-full flex justify-center">
-                <p className="p-2 bg-gray-100 text-gray-700">No Message</p>
-            </div> */}
+            <div className="w-full h-full flex justify-center items-center">
+                <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>
+            </div>
             {/*
              <div className="mx-10">
                 <DateLine date="Today" />

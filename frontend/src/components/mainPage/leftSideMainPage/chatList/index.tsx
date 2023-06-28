@@ -31,7 +31,7 @@ export default function ChatList(){
 
             <SearchBox />
             <ChatListHeader />
-            {/* <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  /> */}
+            <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  />
             <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen

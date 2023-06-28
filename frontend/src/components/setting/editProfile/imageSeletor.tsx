@@ -53,7 +53,7 @@ const ImageSelector: FC<ImgSelector> = ({ setImage,imageName }) => {
                 relative
             ">
                 <img
-                    src={`/uploads/picture/${imageName}`}
+                    src={imageName}
                     ref={profileImg}
                     alt=""
                     className="

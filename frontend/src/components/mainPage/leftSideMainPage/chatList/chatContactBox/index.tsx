@@ -78,7 +78,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                         
                     }
                     <Image
-                    src={`/uploads/picture/${profilePicName}`}
+                    src={profilePicName}
                     className="
                     
                     h-[50px] w-[50px] min-h-[50px] min-w-[50px]

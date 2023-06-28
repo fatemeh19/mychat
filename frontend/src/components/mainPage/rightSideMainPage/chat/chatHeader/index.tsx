@@ -11,19 +11,19 @@ import { HiOutlineVideoCamera } from 'react-icons/hi'
 // components
 import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
-
+import { useAppSelector } from '@/src/redux/hooks';
 
 interface ChatHeaderProps {
     infoState: boolean,
     setInfoVState: Dispatch<SetStateAction<boolean>>,
-    User: any,
     online : boolean
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, User, online }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) => {
 
     const [open, setOpen] = useState(false)
-
+    const selector = useAppSelector(state => state.userContact)
+    const User = selector.User
     let closeInfoSide = () => {
         if (infoState) setInfoVState(false)
         else setInfoVState(true)
