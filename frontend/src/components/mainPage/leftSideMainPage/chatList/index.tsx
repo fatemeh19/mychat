@@ -12,8 +12,8 @@ export default function ChatList(){
     const selector = useAppSelector(state => state.userContact)
     const User = selector.User
     // console.log('user from redux : ', User)
-    const profilePic = User.profilePic ? (User.profilePic).split(`\\`) : '';
-    const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
+    const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
+    // const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     const selector2 = useAppSelector(state => state.openChat)
     const openChat = selector2.openChat
     return (
@@ -31,14 +31,18 @@ export default function ChatList(){
 
             <SearchBox />
             <ChatListHeader />
-            {/* <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  /> */}
+            <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 my-2"  />
             <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen
             overflow-y-auto">
                 
                 {(Object.keys(User).length==0) ? null
-                : <ChatContactBox profilePicName={profilePicName} chatOpennedP={true} lastMessegeByContact={false} ContactName={User.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
+                : <ChatContactBox 
+                profilePicName=
+                {User.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                : '/uploads/picture/defaultProfilePic.png'} 
+                chatOpennedP={true} lastMessegeByContact={false} ContactName={User.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
                 
                 }
 

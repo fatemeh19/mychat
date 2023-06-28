@@ -24,14 +24,15 @@ const Menu: FC<MenuProps> = ({
 }) => {
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
-    const profilePic =userInfo.profilePic ? (userInfo.profilePic.split(`\\`)) : '';
-    const profilePicName=userInfo.profilePic ? profilePic[profilePic.length - 1] :'defaultProfilePic.png' ;
+    const profilePicName =userInfo.profilePic ? (userInfo.profilePic.split(`\\`)) : '';
+    // const profilePicName=userInfo.profilePic ? profilePic[profilePic.length - 1] :'defaultProfilePic.png' ;
     return (
         <>
         <div className="overflow-hidden  w-full h-[80vh] relative select-none">
             <div className="bg-mainColor w-full h-auto px-2 pt-3 pb-1">
                 <Image
-                        src={`/uploads/picture/${profilePicName}`}
+                        src={userInfo.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                        : '/uploads/picture/defaultProfilePic.png'}
                         className="mt-3 h-[50px] w-[50px] min-h-[70px] min-w-[70px]  object-cover rounded-full  "
                         width={500} height={0} alt="contact-profile" />
 

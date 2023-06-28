@@ -65,6 +65,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
     const [chat,setChat]=useState()
+    const [firstChat,setFirstChat]=useState(true)
     useEffect(()=>{
         const fetchChat = async (userInfo : IUserInfo) => {
             const token = localStorage.getItem('token')
@@ -78,6 +79,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             console.log('res get chat ', res)
             if (res.statusText && res.statusText === 'OK') {
                 console.log(res)
+                setFirstChat(false)
                 setChat(res.data.value)
             }
         }
@@ -90,7 +92,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     ? (
                         <div className="flex gap-[1px]">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} firstChat={firstChat} />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -99,7 +101,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} firstChat={firstChat} />
                         </div>
                     )
             }

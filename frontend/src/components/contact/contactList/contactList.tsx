@@ -1,15 +1,12 @@
 "use client"
 
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { BiSearch } from "react-icons/bi";
 import ContactBox from "./contactBox";
 import ContactListBtn from "./contactListBtn";
-import callApi from "@/src/helper/callApi";
 import Link from "next/link";
 import NoContact from "./noContact";
-import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { addContact, addContactsList } from "@/src/redux/features/userContactListSlice";
-
+import {useAppSelector } from "@/src/redux/hooks";
 interface ContactsProps {
     handleAddContact: () => void,
     handleOpen: () => void
@@ -21,8 +18,6 @@ const ContactList: FC<ContactsProps> = ({
 }) => {
     const selector = useAppSelector(state => state.userContactsList)
     const userContactsList = selector.contacts
-    // const [contacts, setContacts] = useState([]);
-
     return (
 
         <>
