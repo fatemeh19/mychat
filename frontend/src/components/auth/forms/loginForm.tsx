@@ -9,7 +9,7 @@ import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
 import { useRef, useState , createRef} from "react";
-
+import dynamic from "next/dynamic";
 // icons
 import { BiRedo } from "react-icons/bi";
 import { BsFingerprint } from 'react-icons/bs'
@@ -146,4 +146,5 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
 
 })(InnerLoginForm)
 
-export default LoginForm
+// export default LoginForm
+export default dynamic (() => Promise.resolve(LoginForm), {ssr: false})
