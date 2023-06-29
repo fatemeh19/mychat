@@ -8,6 +8,8 @@ import * as RH from"../middlewares/ResponseHandler.js"
 import User from "../models/User.js"
 import fields from "../messages/fields.js";
 import * as consts from '../utils/consts.js'
+import * as Validators from '../validators/index.js'
+import * as fileController from '../utils/file.js'
 const setInfo = async (req, res) => {
   console.log(req.body);
   const {
@@ -35,7 +37,8 @@ const setInfo = async (req, res) => {
   let url = consts.DEFAULT_PROFILE_PICTURE
   
   if (req.file) {
-    url = path.join(process.cwd(), "../", req.file.path);
+    url = req.file.path
+    // path.join(process.cwd(), "../", req.file.path);
   }
 
   const update = {
@@ -84,9 +87,42 @@ const getProfile = async (req, res)=>{
 
 }
 
+const editProfile = async (req , res)=>{
+  const {user:{userId}} = req
+  console.log(req.body)
+  const User = await Services.User.findUser({_id:userId})
+  
+  let data
+  try {
+    data = await Validators.editProfile.validate(req.body)
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  if(req.file){
+    if(User.profilePic!=consts.DEFAULT_PROFILE_PICTURE){
+      await fileController.deleteFile(User.profilePic)
+    }
+    data.profilePic = req.file.path
+  }
+  const user = await Services.User.findAndUpdateBySave({_id:userId},data)
+  if(!user){
+    await RH.CustomError({
+      errorClass:CustomError.BadRequestError,
+      errorType:ErrorMessages.NotFoundError,
+      Field:fields.user
+    })
+  }
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
+
+  
+}
 
 export {
  setInfo,
- getProfile
-
+ getProfile,
+ editProfile
 };

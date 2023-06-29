@@ -3,10 +3,11 @@
 
 # dependencies
 /frontend/node_modules
-/.history
+/frontend/.history
 /frontend/.pnp
 /frontend/.pnp.js
 /frontend/public/uploads
+
 # testing
 /frontend/coverage
 

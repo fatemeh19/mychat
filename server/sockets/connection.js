@@ -4,7 +4,8 @@ import * as Services from "../services/index.js";
 export default async (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "http://127.0.0.1:3001",
+      credentials:true
     },
   });
   const onChat = io.of("/onChat");

@@ -23,5 +23,9 @@ const createMessage = async (message) => {
 
   
 };
+const findMessage = async (query)=>{
+    const message = await Message.findOne(query)
+    return message
 
-export { createMessage };
+}
+export { createMessage,findMessage };

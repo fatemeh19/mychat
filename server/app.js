@@ -28,8 +28,9 @@ app.use(morgan('common'))
 import connectDB from './db/connect.js'
 
 app.use(cors({
-    origin: '*',
-}));
+    origin: "http://127.0.0.1:3001",
+    credentials:true
+}))
 
 // routers
 app.use('/api/v1/auth', authRouter)
