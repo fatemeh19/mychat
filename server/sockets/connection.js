@@ -1,62 +1,56 @@
 import { Server } from "socket.io";
 import * as Services from "../services/index.js";
-
+import statusHandler from "./statusHanlder.js";
+import chatHandler from "./chatHandler.js";
+import authMiddleware from './authorization.js'
+// const { createOrder, readOrder } = require("./orderHandler")(io);
 export default async (server) => {
   const io = new Server(server, {
     cors: {
       origin: "http://127.0.0.1:3001",
-      credentials:true
+      credentials: true,
     },
   });
-  const onChat = io.of("/onChat");
+  const { online, offline } = statusHandler(io);
+  const { onChat,sendMessage,deleteMessage } = chatHandler(io);
 
-  onChat.on("connection", (socket) => {
-    console.log("user connected to onChat namespace");
-    socket.on("onChat", async (userId, contactId) => {
-      console.log("user connected to onChat namespace");
+  // const onChat = io.of("/onChat");
+  // onChat.on("connection", (socket) => {
+  //   console.log("user connected to onChat namespace");
+  //   socket.on("onChat", async (userId, contactId) => {
+  //     console.log("user connected to onChat namespace");
 
-      let roomName =
-        userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-      socket.join(roomName);
-      // onChat.to(roomName).emit("onlineOnChat", userId);
-      socket.to(roomName).emit("onlineOnChat", userId);
-    });
-    socket.on("sendMessage", async (userId, contactId, message) => {
-      let roomName =
-        userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-      socket.to(roomName).emit("sendMessage", message);
-    });
-  });
+  //     let roomName =
+  //       userId > contactId ? userId + "" + contactId : contactId + "" + userId;
+  //     socket.join(roomName);
+  //     // onChat.to(roomName).emit("onlineOnChat", userId);
+  //     socket.to(roomName).emit("onlineOnChat", userId);
+  //   });
+  //   socket.on("sendMessage", async (userId, contactId, message) => {
+  //     let roomName =
+  //       userId > contactId ? userId + "" + contactId : contactId + "" + userId;
+  //     socket.to(roomName).emit("sendMessage", message);
+  //   });
+  // });
 
-  io.on("connection", (socket) => {
+  const onConnection = (socket) => {
+    
     console.log("user connected to general socket");
+    socket.on("online", online);
+    socket.on("offline", offline);
 
-    socket.on("online", (userId) => {
-    console.log("contact online")
-      Services.User.findAndUpdateUser(
-        userId,
-        {
-          status: {
-            online: true,
-            lastseen: Date.now(),
-          },
-        },
-        socket
-      );
+    socket.on("onChat", onChat);
+    socket.on("sendMessage",sendMessage)
 
-      socket.broadcast.emit("onlineContact", userId);
-    });
+    socket.on("deleteMessage",deleteMessage)
 
-    socket.on("offline", (userId) => {
-      Services.User.findAndUpdateUser(userId, {
-        status: {
-          online: false,
-          lastseen: Date.now(),
-        },
-      });
-    });
+    
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });
-  });
+    
+  };
+  io.use(authMiddleware)
+  
+  io.on("connection", onConnection);
 };

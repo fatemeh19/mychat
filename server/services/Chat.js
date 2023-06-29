@@ -3,6 +3,7 @@ import Fields from "../messages/fields.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js";
 import * as CustomError from "../errors/index.js";
+import { Query } from "mongoose";
 const createChat = async (memberIds) => {
   const chat = await Chat.create({ memberIds });
   return chat;
@@ -34,5 +35,7 @@ const getChat = async (Query) => {
     });
   }
 };
+
+
 
 export { getChat, createChat, findAndUpdateChat };
