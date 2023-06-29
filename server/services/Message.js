@@ -28,4 +28,9 @@ const findMessage = async (query)=>{
     return message
 
 }
-export { createMessage,findMessage };
+const deleteMessage = async (Query)=>{
+    const indexs =await Message.deleteMany(Query)
+    return indexs
+  
+  }
+export { createMessage,findMessage,deleteMessage };

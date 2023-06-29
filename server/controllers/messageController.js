@@ -9,6 +9,7 @@ import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import path from "path";
 import message from "../models/message.js";
+import { deleteMessages } from "./devController.js";
 const createMessage = async (req, res) => {
   const {
     params: { chatId },
@@ -47,7 +48,7 @@ const createMessage = async (req, res) => {
     const repliedMessage = await Services.Message.findMessage({
       _id: newMessage.reply.messageId,
     });
-    if(!repliedMessage){
+    if (!repliedMessage) {
       return await RH.CustomError({
         errorClass: CustomError.BadRequestError,
         errorType: ErrorMessages.NotFoundError,
@@ -75,5 +76,38 @@ const createMessage = async (req, res) => {
     },
   });
 };
+const deleteMessage = async (req, res) => {
+  const { chatId, messageIs, deleteAll } = req.body;
+  const { userId } = req.user;
+  let chat;
+  const deletedMessages = await Services.Message.deleteMessage({
+    _id: { $in: messageIs },
+  });
+  if (deleteAll.flag) {
+    await Services.Chat.findAndUpdateChat(chatId, {
+      $pullAll: {
+        messageIs: messageIs,
+      },
+    });
+  } else {
+    chat = await Services.Chat.getChat({ _id: chatId });
+    // const chatMessages = chat.messageIs;
+    messageIs.forEach(element, (index) => {
+      
+      // if(messageIs.includes(element)){
+      //   element.deletedIds.push(userId)
+      // }
+    });
+  }
+  // db.collection.update(
+  //   { answer: { $elemMatch: { id: ObjectId("584e6c496c9b4252733ea6fb") } } },
+  //   { $inc: { "answer.$.votes": 1 } }
+  // );
 
-export { createMessage };
+  //   $pullAll: {
+  //     favorites: [{_id: req.params.deleteUid}],
+  // },
+
+  res.status(200).json({ deletedMessages });
+};
+export { createMessage, deleteMessage };
