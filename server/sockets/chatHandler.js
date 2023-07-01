@@ -27,13 +27,14 @@ export default function (io) {
     DeleteMessage(userId, deleteInfo);
     const chat = await Services.Chat.getChat({ _id: chatId });
     const memberIds = chat.memberIds;
-    deleteInfo.userId = userId;
-    console.log(deleteInfo)
+    
     let roomName =
       memberIds[0] > memberIds[1]
         ? memberIds[0] + "" + memberIds[1]
         : memberIds[1] + "" + memberIds[0];
-    io.to(roomName).emit("deleteMessage", deleteInfo);
+    if(deleteAll){
+      io.to(roomName).emit("deleteMessage", deleteInfo);
+    }
 
     // const { chatId, messageIs, deleteAll } = deleteInfo;
   };
