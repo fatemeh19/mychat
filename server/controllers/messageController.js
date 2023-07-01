@@ -10,6 +10,9 @@ import { StatusCodes } from "http-status-codes";
 import path from "path";
 import message from "../models/message.js";
 import { deleteMessages } from "./devController.js";
+import mongoose from "mongoose";
+import { updateMessages } from "../services/Message.js";
+import { object } from "yup";
 const createMessage = async (req, res) => {
   const {
     params: { chatId },
@@ -17,6 +20,7 @@ const createMessage = async (req, res) => {
     file,
   } = req;
   let url = file && message.content.contentType != "text" ? file.path : "";
+  console.log(message.content.contentType);
 
   let newMessage = {
     reply: {
@@ -76,38 +80,27 @@ const createMessage = async (req, res) => {
     },
   });
 };
-const deleteMessage = async (req, res) => {
-  const { chatId, messageIs, deleteAll } = req.body;
-  const { userId } = req.user;
-  let chat;
-  const deletedMessages = await Services.Message.deleteMessage({
-    _id: { $in: messageIs },
-  });
-  if (deleteAll.flag) {
+const DeleteMessage = async (userId, deleteInfo) => {
+  const { chatId, messageIds, deleteAll } = deleteInfo;
+  // let { userId } = req.user;
+  if (deleteAll) {
+    await Services.Message.deleteMessage({
+      _id: { $in: messageIds },
+    });
+
     await Services.Chat.findAndUpdateChat(chatId, {
       $pullAll: {
-        messageIs: messageIs,
+        messages: messageIds,
       },
     });
   } else {
-    chat = await Services.Chat.getChat({ _id: chatId });
-    // const chatMessages = chat.messageIs;
-    messageIs.forEach(element, (index) => {
-      
-      // if(messageIs.includes(element)){
-      //   element.deletedIds.push(userId)
-      // }
-    });
+    await Services.Message.updateMessages(
+      { _id: { $in: messageIds } },
+      { $push: { deletedIds: userId } }
+    );
   }
-  // db.collection.update(
-  //   { answer: { $elemMatch: { id: ObjectId("584e6c496c9b4252733ea6fb") } } },
-  //   { $inc: { "answer.$.votes": 1 } }
-  // );
 
-  //   $pullAll: {
-  //     favorites: [{_id: req.params.deleteUid}],
-  // },
-
-  res.status(200).json({ deletedMessages });
+  // res.status(200).send("OK");
 };
-export { createMessage, deleteMessage };
+
+export { createMessage, DeleteMessage };

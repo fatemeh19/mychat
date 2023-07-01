@@ -4,6 +4,8 @@ import uploadFile from "../utils/multer.js";
 
 import { createMessage } from '../controllers/messageController.js'
 
-router.route('/:chatId').post(uploadFile.single('file'),createMessage)
+router.route('/:chatId')
+.post(uploadFile.single('file'),createMessage)
+// .delete(deleteMessage)
 
 export default router

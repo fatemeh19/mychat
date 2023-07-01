@@ -35,7 +35,7 @@ const createChat = async (req, res) => {
 
 const getChat = async(req, res) =>{
   // const { memberIds } = req.body;
-  const {userId, contactId} = req.params
+  const {user:{userId}, params:{contactId}} = req
   const memberIds = [userId, contactId]
   
   // const data = await Validators.createChat.validate({ memberIds });

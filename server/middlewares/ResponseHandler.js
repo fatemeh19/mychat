@@ -6,7 +6,7 @@ import errorExtractor from "../utils/errorExtractor.js";
 const CustomError = async ({ err, errorClass, errorType, Field, socket = false }) => {
   let errors = [];
   let error;
-  console.log("err");
+  console.log(err);
 
   if (errorClass == ValidationError) {
     errors = await errorExtractor(err);
