@@ -1,6 +1,5 @@
 // "use client"
 
-import UseLocalStorage from "./useLocalStorate" 
 
 
 
@@ -12,9 +11,6 @@ export function denyLogin() {
     // console.log(l)
 
     // console.log('type of window im middleware : ', typeof window)
-
-    const { token } = UseLocalStorage()
-    console.log(token)
 
 
     // const isAuth = token

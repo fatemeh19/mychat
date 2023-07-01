@@ -5,8 +5,6 @@ import callApi from "@/src/helper/callApi";
 import { useRouter } from "next/navigation";
 import InputField from "../auth/input/inputField";
 import ValidationError from "@/src/errors/validationError";
-import UseLocalStorage from "@/src/helper/useLocalStorate";
-
 
 interface textInformationFormProps {
     name: string,
@@ -82,10 +80,7 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
             formData.append('name', values.name)
             formData.append('phoneNumber', values.phone)
 
-            // const {token} = UseLocalStorage()
             const token = localStorage.getItem('token')
-
-
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -93,7 +88,7 @@ const textInformation = withFormik<registerFormProps, textInformationFormProps>(
             };
 
             const res = await callApi().patch('/main/user/setInfo', formData, config)
-            console.log(res)
+            console.log('set info res : ', res)
             if (res.status === 200) {
                 btn.addEventListener('onClick', apply());
             }

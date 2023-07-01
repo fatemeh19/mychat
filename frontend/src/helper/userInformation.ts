@@ -2,7 +2,6 @@
 
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
-import { useAppDispatch } from "../redux/hooks"
 import callApi from "./callApi"
 
 

@@ -2,7 +2,6 @@
 
 import { NextResponse } from "next/server"
 import type { NextRequest } from 'next/server'
-import UseLocalStorage from "./helper/useLocalStorate"
 import { useAppSelector } from "./redux/hooks"
 
 
@@ -15,7 +14,6 @@ export function middleware(request: NextRequest) {
 
     // console.log('type of window im middleware : ', typeof window)
 
-    // const { token } = UseLocalStorage()
     // console.log(token)
 
 

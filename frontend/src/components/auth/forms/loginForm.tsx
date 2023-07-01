@@ -8,15 +8,12 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
-import { useRef, useState , createRef} from "react";
+import { useState , createRef} from "react";
 import dynamic from "next/dynamic";
 // icons
 import { BiRedo } from "react-icons/bi";
 import { BsFingerprint } from 'react-icons/bs'
 import { MdAlternateEmail } from 'react-icons/md'
-
-import { useAppSelector } from "@/src/redux/hooks";
-import { io } from "socket.io-client";
 
 let btn: any;
 let btnHandler: () => void
@@ -27,7 +24,6 @@ interface LoginFormValue {
     captcha: string,
     msg: string,
     token: string,
-    // userId: string,
     handleRedo: () => void,
     firstLogin:Boolean
 }
@@ -41,7 +37,6 @@ const InnerLoginForm = (props: any) => {
     //     values.captcha=GenerateString()
     // }
     btnHandler = () => {
-        console.log('in')
         // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
@@ -53,8 +48,6 @@ const InnerLoginForm = (props: any) => {
             else{
                 router.push('/chat')
             }
-            
-            console.log("login")
         }
         else {
             values.msg = "Captcha Code is wrong try again"
@@ -99,7 +92,6 @@ interface LoginFormProps {
     email?: string,
     password?: string,
     captcha?: string
-    // msg? : string
 }
 
 const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
@@ -110,7 +102,6 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             captcha: GenerateString(),
             msg: '',
             token: '',
-            // userId: '',
             handleRedo: () => {
                 props.captcha = GenerateString()
             },
@@ -122,7 +113,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             console.log('submit')
             const res = await callApi().post('/auth/login', values)
             if (res.statusText && res.statusText === 'OK') {
-                console.log(res)
+                console.log('login res : ', res)
                 values.token = res.data.value.token
                 if(!res.data.value.isFirstTimeLogin){
                         values.firstLogin=false;                   

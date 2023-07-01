@@ -15,6 +15,7 @@ const UseLocalStorage = () => {
     let userId = localStorageArray[1].slice(0, localStorageArray[1].length - 1)
     console.log(token)
     console.log(userId)
+    
 
 
     return { token, userId }

@@ -37,7 +37,7 @@ const MessageBox = ({ dir }: { dir: MessageBoxProps }) => {
                         </div>
                         <div className="gap-3 flex flex-col">
                             <Message type={messageTypes.text} dir={dir} />
-                            <Message type={messageTypes.image} isText={true} dir={dir} />
+                            {/* <Message type={messageTypes.image} isText={true} dir={dir} /> */}
                         </div>
                     </div>
                 </div>

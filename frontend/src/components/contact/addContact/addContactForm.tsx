@@ -2,19 +2,13 @@
 
 import { Form, withFormik } from "formik";
 import * as yup from 'yup'
-import { BiMenu, BiUser } from "react-icons/bi";
+import { BiUser } from "react-icons/bi";
 import { BiPhone } from "react-icons/bi";
 import { createRef } from "react";
 import InputField from "../../auth/input/inputField";
 import callApi from "@/src/helper/callApi";
 import ValidationError from "@/src/errors/validationError";
-import UseLocalStorage from "@/src/helper/useLocalStorate";
-import CustomizedDialogs from "../../popUp";
-import ContactList from "../contactList/contactList";
-import Contacts from "..";
 
-import { useState } from 'react'
-import Menu from "../../mainPage/leftSideMainPage/menu";
 import { useAppDispatch } from "@/src/redux/hooks";
 import { addContact } from "@/src/redux/features/userContactListSlice";
 
@@ -28,15 +22,15 @@ interface addContactFormProps {
 }
 
 let addBtn: any;
-let add: (contact:any) => void
+let add: (contact: any) => void
 
 const AddContactFormInner = (props: any) => {
     const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
     const dispatch = useAppDispatch()
-    add = (contact:any) => {
+    add = (contact: any) => {
         dispatch(addContact(contact))
-        console.log("contact : "+contact)
+        console.log("contact : " + contact)
         handleAddContact()
 
     }
@@ -88,7 +82,6 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
     validationSchema: addContactFormValidationSchema,
     handleSubmit: async (values, { props }) => {
         try {
-            // const { token } = UseLocalStorage();
             const token = localStorage.getItem('token')
 
             const config = {
@@ -97,7 +90,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
                 }
             };
             const contact = {
-                name: values.name ,
+                name: values.name,
                 lastname: values.lastName,
                 phoneNumber: values.phone
             };

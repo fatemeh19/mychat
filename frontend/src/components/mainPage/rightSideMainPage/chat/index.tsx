@@ -4,9 +4,8 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import ChatHeader from "./chatHeader"
 import ChatMessages from "./chatMessages"
 import ChatSendBox from "./chatSendBox"
-import UseLocalStorage from "@/src/helper/useLocalStorate";
 import callApi from "@/src/helper/callApi";
-import { useAppDispatch } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { addUserContact } from "@/src/redux/features/userContactSlice";
 
 interface chatProps {
@@ -14,11 +13,11 @@ interface chatProps {
     setInfoVState: Dispatch<SetStateAction<boolean>>;
     contactId: any,
     online : boolean,
-    firstChat:boolean
+    firstChat:boolean,
+    setFirstChat:Dispatch<SetStateAction<boolean>>
 }
 
-const getUser = async (id: string) => {
-    // const { token } = UseLocalStorage()
+const getContact = async (id: string) => {
     const token = localStorage.getItem('token')
     const config = {
         headers: {
@@ -26,32 +25,31 @@ const getUser = async (id: string) => {
         }
     };
     const res = await callApi().get(`/main/contact/${id}`, config)
-    
-    console.log('res from get user : ', res)
+    console.log('res - getContact in chat component : ', res)
     
     return res.data.value.contact
-
 }
 
-const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firstChat }) => {
+const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firstChat, setFirstChat }) => {
 
     const dispatch = useAppDispatch()
+    const Chat = useAppSelector(state => state.chat)
 
     useEffect(() => {
         (async () => {
-            // console.log('effect')
-            let userContact = await getUser(contactId)
-            
+            let userContact = await getContact(contactId)
             dispatch(addUserContact(userContact))
-            // console.log('user in effect : ', userContact)
         })()
+
+    console.log('chat info in chat component : ', Chat)
+
     }, [])
 
     return (
         <div className="flex flex-col w-full h-screen relative min-w-fit">
             <ChatHeader infoState={infoState} setInfoVState={setInfoVState}  online={online}/>
             <ChatMessages />
-            <ChatSendBox firstChat={firstChat} contactId={contactId} />
+            <ChatSendBox firstChat={firstChat} setFirstChat={setFirstChat} contactId={contactId} />
         </div>
     )
 }

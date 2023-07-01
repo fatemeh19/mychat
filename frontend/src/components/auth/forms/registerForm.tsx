@@ -1,20 +1,19 @@
 "use client"
 
-import { Form, withFormik } from "formik"
 import * as yup from 'yup'
-
+import Link from "next/link"
+import { useRouter } from 'next/navigation';
+import { Form, withFormik } from "formik"
 import { MdAlternateEmail } from 'react-icons/md'
-
 // implement of yup for password checking the requirement like lowerCase & UperCase & etc.
 import YupPassword from 'yup-password'
 YupPassword(yup)
 
+// import components
 import Input from "../input"
-import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import PasswordStrengthMeter from '../inputPassword/passwordStrengthMeter';
-import Link from "next/link"
 
 let btn: any;
 let btnHandler: () => void
@@ -29,15 +28,13 @@ const InnerRegisterForm = (props: any) => {
     const router = useRouter()
 
     const { values } = props
-    console.log(values)
+
     // this code for navigate to varifiy email page after register
     btn = document.querySelector('#register')
-
     btnHandler = () => {
         setTimeout(() => {
             router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
         }, 3000);
-
     }
 
     return (
@@ -90,13 +87,11 @@ const RegisterForm = withFormik<registerFormProps, RegisterFormValue>({
     handleSubmit: async (values, { setFieldError }) => {
         try {
             const res = await callApi().post('/auth/register', values)
-            console.log(res)
+            console.log('register res : ', res)
             if (res.statusText === 'OK') {
                 values.msg = 'Successful, wait ..'
                 btn.addEventListener('onclick', btnHandler());
             }
-
-
 
         } catch (error) {
             if (error instanceof ValidationError) {

@@ -2,22 +2,20 @@
 
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
-import { useEffect,useRef } from "react"
+import { useEffect, useRef } from "react"
 import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { io } from "socket.io-client";
 
 
-export default function LeftSideMainPage(){
-    const dispatch=useAppDispatch()
+export default function LeftSideMainPage() {
+    const dispatch = useAppDispatch()
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
     // const { current: socket } = useRef(io('http://localhost:3000/'))
-    const socket=useRef(io('http://localhost:3000/'))
-    const socketInitializer=async ()=>{
-            socket.current.emit('online', userInfo._id,(response :any)=>{
-                console.log(response)
-            })
+    const { current: socket } = useRef(io('http://localhost:3000/'))
+    socket.emit('online', userInfo._id)
+    const socketInitializer = async () => {
     }
     useEffect(() => {
         fetchUserContactsListData(dispatch);
@@ -31,7 +29,7 @@ export default function LeftSideMainPage(){
         tablet:grid-cols-2
         grid-cols-12
         ">
-            
+
             <div className="
             tablet:col-span-1 
             sm:block

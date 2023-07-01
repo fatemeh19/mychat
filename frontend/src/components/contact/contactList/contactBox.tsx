@@ -19,16 +19,19 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
 
-    const profilePicName =contact.profilePic ? (contact.profilePic).split(`\\`) : '';
-    const socket= useRef(io('http://localhost:3000/'))
-    const [online , setOnline] = useState(false)
-    console.log('socket on chat ', socket)
-    const contactId=contact._id;
-    socket.current.on('onlineContact', (contactId: string,callback) => {
-        console.log('online contact : ' + contactId)
-        callback("contact online")
-        setOnline(true)
-    });
+    const token = localStorage.getItem('token')
+    let bearerToken = `Bearer ${token}`
+
+    const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
+    // const socket = useRef(io('http://localhost:3000/'))
+    const [online, setOnline] = useState(false)
+    // console.log('socket on chat ', socket)
+    const contactId = contact._id;
+    // socket.current.on('onlineContact', (contactId: string, callback) => {
+    //     console.log('online contact : ' + contactId)
+    //     callback("contact online")
+    //     setOnline(true)
+    // });
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
             onClick={() => handleOpen()}>
@@ -42,7 +45,7 @@ const ContactBox: FC<ContactBoxProps> = ({
                 <p className="status text-xs text-sky-500">
                     {online ?
                         'Online'
-                    : 'Offline'
+                        : 'Offline'
                     }
                 </p>
             </div>
