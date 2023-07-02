@@ -14,6 +14,7 @@ import Input from "../input"
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import PasswordStrengthMeter from '../inputPassword/passwordStrengthMeter';
+import { createRef } from 'react';
 
 let btn: any;
 let btnHandler: () => void
@@ -30,7 +31,7 @@ const InnerRegisterForm = (props: any) => {
     const { values } = props
 
     // this code for navigate to varifiy email page after register
-    btn = document.querySelector('#register')
+    btn = createRef<HTMLButtonElement>();
     btnHandler = () => {
         setTimeout(() => {
             router.push('/auth/register/notification?message=please go to your Email and press the link to verify your Email')
@@ -44,6 +45,7 @@ const InnerRegisterForm = (props: any) => {
             <div className="my-5">
                 <p className={`text-cyan-600 text-sm rtl `}>{values.msg}</p>
                 <button
+                    ref={btn}
                     id="register"
                     name="register"
                     type='submit'

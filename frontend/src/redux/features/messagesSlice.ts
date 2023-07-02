@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface messageInterface {
-    senderId: string,
-    contentType?: string,
-    content?: string,
-    file?: any,
-    // isReplied : boolean,
-    // replyId : string
+    content : {
+        contentType : string,
+        text : string
+    },
+    senderId : string
 }
+
 interface initialStateInterface {
-    messages: messageInterface[]
+    Messages: messageInterface[]
 }
 
 const initialState = {
-    messages: []
+    Messages: []
 } as initialStateInterface
 
 export const messageSlice = createSlice({
@@ -21,11 +21,11 @@ export const messageSlice = createSlice({
     initialState,
     reducers: {
         addMessage: (state, action: PayloadAction<messageInterface>) => {
-            state.messages.push(action.payload)
+            state.Messages.push(action.payload)
             console.log('action : ', action)
         },
         addAllMessages: (state, action: PayloadAction<any>) => {
-            state.messages = action.payload
+            state.Messages = action.payload
         }
     },
 });

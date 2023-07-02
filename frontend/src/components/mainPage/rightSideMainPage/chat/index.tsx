@@ -33,16 +33,13 @@ const getContact = async (id: string) => {
 const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firstChat, setFirstChat }) => {
 
     const dispatch = useAppDispatch()
-    const Chat = useAppSelector(state => state.chat)
 
     useEffect(() => {
         (async () => {
             let userContact = await getContact(contactId)
             dispatch(addUserContact(userContact))
         })()
-
-    console.log('chat info in chat component : ', Chat)
-
+        
     }, [])
 
     return (

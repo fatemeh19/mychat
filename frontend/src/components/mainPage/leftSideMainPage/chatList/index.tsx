@@ -9,9 +9,8 @@ import { useAppSelector } from '@/src/redux/hooks';
 import { useState } from 'react';
 import ChatListHeader from './chatListHeader';
 export default function ChatList(){
-    const selector = useAppSelector(state => state.userContact)
-    const User = selector.User
-    const profilePicName = User.profilePic ? (User.profilePic).split(`\\`) : '';
+    const Contact = useAppSelector(state => state.userContact).Contact
+    const profilePicName = Contact.profilePic ? (Contact.profilePic).split(`\\`) : '';
     // const profilePicName=User.profilePic ? profilePic[profilePic.length - 1] : 'defaultProfilePic.png';
     const selector2 = useAppSelector(state => state.openChat)
     const openChat = selector2.openChat
@@ -38,12 +37,12 @@ export default function ChatList(){
             tablet:h-screen
             overflow-y-auto">
                 
-                {(Object.keys(User).length==0) ? null
+                {(Object.keys(Contact).length==0) ? null
                 : <ChatContactBox 
                 profilePicName=
-                {User.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                {Contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
                 : '/uploads/picture/defaultProfilePic.png'} 
-                chatOpennedP={true} lastMessegeByContact={false} ContactName={User.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
+                chatOpennedP={true} lastMessegeByContact={false} ContactName={Contact.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false}  />
                 
                 }
 

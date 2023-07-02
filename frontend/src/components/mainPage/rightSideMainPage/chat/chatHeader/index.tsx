@@ -23,7 +23,7 @@ interface ChatHeaderProps {
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) => {
 
     const [open, setOpen] = useState(false)
-    const userContact = useAppSelector(state => state.userContact).User
+    const userContact = useAppSelector(state => state.userContact).Contact
 
     let closeInfoSide = () => {
         if (infoState) setInfoVState(false)

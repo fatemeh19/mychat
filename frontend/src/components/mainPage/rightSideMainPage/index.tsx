@@ -9,6 +9,7 @@ import { Socket } from "socket.io-client"
 import callApi from "@/src/helper/callApi"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
+import { addMessage } from "@/src/redux/features/messagesSlice"
 
 interface IUserInfo {
     name: string,
@@ -23,25 +24,14 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
 
     const [infoState, setInfoVState] = useState(false)
-    const token = localStorage.getItem('token')
-    let bearerToken = `Bearer ${token}`
-
-    // const [socket, setSocket] = useState(null);
-
-    // let newSocket: any;
-    // let socketOnChat: any;
-    // let socketRef = useRef()
-    // const { current: socket } = useRef(io('http://localhost:3000'))
     const [online, setOnline] = useState(false)
-    const selector = useAppSelector(state => state.userInfo)
-    const userInfo = selector.User
-
-    // console.log('socket on chat component ', socket)
-
+    const userInfo = useAppSelector(state => state.userInfo).User
+    const dispatch = useAppDispatch()
+    const socket = useAppSelector(state => state.socket).Socket
 
     // ************* SO IMPORTENT
     // this emit should be : but userId should get from getUserProfile and place in hear *CAS* we change the userId from saving in localStorage and got in login (((we don't get userId in login anymove))) *SOOOOOO* after take all user info from getUserProfile and save them in redux we can access to userId from redux.
-    // socket.emit('onChat',userInfo._id, contactId)
+    // socket.emit('onChat', userInfo._id, contactId)
     // ************* SO IMPORTENT
 
     // socket.on('onlineOnChat', (contactId: any) => {
@@ -52,31 +42,29 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     // socket.emit('online', userId)
     // }, 5000);
 
-    const dispatch = useAppDispatch()
+    console.log('socket in right after refresh : ', socket)
 
-    const [chat, setChat] = useState()
+
+
+    // const [chat, setChat] = useState()
     const [firstChat, setFirstChat] = useState<boolean>(true)
     useEffect(() => {
-        // const fetchChat = async (userInfo: IUserInfo) => {
-        //     const token = localStorage.getItem('token')
-        //     const config = {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`
-        //         }
-        //     };
-        //     console.log('get chat')
-        //     const res = await callApi().get(`/main/chat/${userInfo._id}/${contactId}`, config)
-        //     console.log('res get chat ', res)
-        //     if (res.statusText && res.statusText === 'OK') {
-        //         console.log(res)
-        //         setFirstChat(false)
-        //         setChat(res.data.value)
-        //     }
-        // }
-        // fetchChat(userInfo);
-
+        console.log('bulding right side ...')
         fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
+        console.log('socket connected to onChat in useEffect in rightSide .')
+        socket ? socket.emit('onChat', contactId) : null
     }, [])
+
+    if (socket) {
+        // console.log('sendMessage on in client')
+        socket.on('sendMessage', (message) => {
+            console.log('i got new Message: ', message)
+            dispatch(addMessage(message))
+        })
+    }
+
+    console.log('socket in slice in right : ', socket)
+
     return (
         <>
             {

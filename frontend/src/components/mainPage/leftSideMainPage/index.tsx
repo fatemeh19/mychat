@@ -2,26 +2,47 @@
 
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
+import { addSocket } from "@/src/redux/features/socketSlice"
 
 
 export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
-    const selector = useAppSelector(state => state.userInfo)
-    const userInfo = selector.User
-    // const { current: socket } = useRef(io('http://localhost:3000/'))
-    const { current: socket } = useRef(io('http://localhost:3000/'))
-    socket.emit('online', userInfo._id)
-    const socketInitializer = async () => {
-    }
+    
+    const userInfo = useAppSelector(state => state.userInfo).User
+    const contactId = useAppSelector(state => state.userContact).Contact._id
+    const socket = useAppSelector(state => state.socket).Socket
+    
+    const token = localStorage.getItem('token')
+    let barearToken = 'Bearer ' + token
+    // const [socket, setSocket] = useState<Socket>()
+    // socket.emit('online', userInfo._id)
+
+
     useEffect(() => {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-        socketInitializer();
+
+
+        const socketIO = io('http://localhost:3000', {
+            auth: {
+                token: barearToken
+            }
+        })
+        dispatch(addSocket(socketIO))
     }, [])
+    
+    console.log('socket in slice in left : ', socket)
+    
+    // if (socket) {
+    //     console.log('socket in if in leftSide', socket)
+    //     socket.emit('onChat', contactId)
+    // }
+
+
     return (
         <div className="
         grid 

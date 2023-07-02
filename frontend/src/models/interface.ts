@@ -5,4 +5,11 @@ interface infoFace {
     phone: string
 }
 
-export type { infoFace }
+interface messageInterface {
+    content : {
+        contentType : string,
+        text : string
+    },
+    senderId : string
+}
+export type { infoFace, messageInterface}

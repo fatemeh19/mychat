@@ -1,7 +1,15 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserInterface {
+// interface messageInterface {
+//     content : {
+//         contentType : string,
+//         text : string
+//     },
+//     senderId : string
+// }
+
+interface chatInterface {
     _id:string,
     memberIds : string[],
     messages : [],
@@ -9,7 +17,7 @@ interface UserInterface {
     __v : number
 }
 interface initialStateInterface {
-    Chat : UserInterface,
+    Chat : chatInterface,
 }
 
 const initialState = {

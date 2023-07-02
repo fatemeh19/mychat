@@ -4,6 +4,7 @@ import { ValidationError } from "yup";
 import callApi from "./callApi"
 import { addChat } from "../redux/features/chatSlice";
 import { Dispatch, SetStateAction } from "react";
+import { addMessage } from "../redux/features/messagesSlice";
 
 const token = localStorage.getItem('token')
 const config = {
@@ -39,6 +40,8 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
             if (error.Error.statusCode === 400 && err.errorType === 'NotFoundError') {
                 console.log('error message : ', err.message)
                 dispatch(setFirstChat(true))
+                const chatId = await createChat(userId, contactId)
+                return chatId
             }
         }
     }
@@ -86,7 +89,7 @@ interface messageInterface {
 
 }
 
-export const createMessage = async (chatId: string, newMessage: messageInterface) => {
+export const createMessage = async (chatId: string, newMessage: messageInterface,dispatch: any,) => {
     console.log('start create message')
     let res: any;
     // not found chat => create chat
@@ -94,6 +97,7 @@ export const createMessage = async (chatId: string, newMessage: messageInterface
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {
             console.log('message created.')
+            dispatch(addMessage(newMessage))
             // save message in messages redux
 
         }

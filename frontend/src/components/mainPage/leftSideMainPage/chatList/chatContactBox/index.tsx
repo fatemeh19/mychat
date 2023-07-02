@@ -6,7 +6,8 @@ import Image from "next/image"
 import { FC, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
 import io from 'socket.io-client'
-import { Socket } from "socket.io-client"
+// import { Socket } from "socket.io-client"
+
 interface chatContactProps {
     status?: Boolean,
     lastMessage: string,
@@ -40,14 +41,14 @@ const ChatContactBox: FC<chatContactProps> = ({
         // setChatOpenned(true);
         // dispatch(setOpenChat(true))
     }
-    const [chatOpenned,setChatOpenned]=useState(false)
-    const socket = useRef(io('http://localhost:3000'))
     const [online , setOnline] = useState(false)
-    socket.current.on('onlineContact', (contactId: any) => {
-        console.log('online contact',contactId)
-        console.log(contactId)
-        setOnline(true)
-    });
+    const [chatOpenned,setChatOpenned]=useState(false)
+    // const socket = useRef(io('http://localhost:3000'))
+    // socket.on('onlineContact', (contactId: any) => {
+    //     console.log('online contact',contactId)
+    //     console.log(contactId)
+    //     setOnline(true)
+    // });
 
     return (
         

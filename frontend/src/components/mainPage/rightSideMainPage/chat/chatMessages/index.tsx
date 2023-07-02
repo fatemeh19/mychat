@@ -7,6 +7,9 @@ import { MessageBoxProps } from "@/src/models/enum"
 
 export default function ChatMessages() {
 
+    const messages = useAppSelector(state => state.message).Messages
+    const UserId = useAppSelector(state => state.userInfo).User._id
+    console.log('messages from slice : ', messages)
 
     // message buld hear for SHow
 
@@ -15,13 +18,29 @@ export default function ChatMessages() {
             {/* <div className="w-full h-full flex justify-center items-center">
                 <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>
             </div> */}
-            
-             <div className="mx-10">
-                <DateLine date="Today" />
+
+            <div className="mx-10">
+                {/* <DateLine date="Today" /> */}
                 <div className="flex flex-col gap-5">
+                    <>
+                        {
+                            messages.map(msg => {
+                                // console.log(msg.content.text)
+                                return <MessageBox msg={msg}/>
+                                // console.log(msg)
+                                // <MessageBox/>
+
+                                // if (msg.senderId === UserId) {
+                                //     <MessageBox   />
+                                // }else {
+                                //     <MessageBox />
+                                // }
+                            })
+                        }
+                    </>
                     {/* if me set dir to rlt  */}
                     {/* if others set dir to ltr  */}
-                    <MessageBox dir={MessageBoxProps.rtl} />
+                    {/* <MessageBox dir={MessageBoxProps.rtl} /> */}
                     {/* <MessageBox dir={MessageBoxProps.ltr} />  */}
 
                 </div>

@@ -6,18 +6,20 @@ import style from './messageStyle.module.css'
 import Image from "next/image"
 import TextMessage from "./messages-type/textMessage"
 import ImageMessage from "./messages-type/imgMessage"
+import { messageInterface } from "@/src/models/interface"
 
 interface messageProps {
-    type: messageTypes
+    type: string
     isText?: boolean,
-    dir : string
+    dir : string,
+    msg : messageInterface
 }
 
-const Message: FC<messageProps> = ({ type, isText, dir }) => {
+const Message: FC<messageProps> = ({ type, isText, dir, msg }) => {
 
     switch (type) {
         case messageTypes.text:
-            return (<TextMessage dir={dir}/>)
+            return (<TextMessage dir={dir} msg={msg} />)
         case messageTypes.image:
             return (<ImageMessage isText={isText} />)
 

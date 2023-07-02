@@ -1,25 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserInterface {
+interface ContactInterface {
     _id : string,
     name: string,
     phoneNumber: string,
     profilePic: string,
 }
 interface initialStateInterface {
-    User : UserInterface
+    Contact : ContactInterface
 }
 
 const initialState = {
-    User : {}
+    Contact : {}
 } as initialStateInterface
 
 export const UserSlice = createSlice({
-    name: "User",
+    name: "Contact",
     initialState,
     reducers: {
         addUserContact: (state, action: PayloadAction<any>) => {
-            state.User = action.payload
+            state.Contact = action.payload
             console.log('action : ', action)
         },
     },
