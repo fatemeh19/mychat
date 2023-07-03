@@ -47,7 +47,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
 
     // const [chat, setChat] = useState()
-    const [firstChat, setFirstChat] = useState<boolean>(true)
+    const [firstChat, setFirstChat] = useState<boolean>(false)
     useEffect(() => {
         console.log('bulding right side ...')
         fetchChat(userInfo._id, contactId, dispatch, setFirstChat)

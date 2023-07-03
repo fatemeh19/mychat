@@ -17,7 +17,7 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
     console.log('start get chat')
     let res: any;
     try {
-        res = await callApi().get(`/main/chat/${userId}/${contactId}`, config)
+        res = await callApi().get(`/main/chat/${contactId}`, config)
         console.log('getChat res : ', res)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
