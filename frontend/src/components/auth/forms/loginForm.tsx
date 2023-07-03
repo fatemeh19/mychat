@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import callApi from '@/src/helper/callApi';
 import ValidationError from '@/src/errors/validationError';
 import { GenerateString } from '@/src/helper/captcha';
-import { useState , createRef} from "react";
+import { useState, createRef } from "react";
 import dynamic from "next/dynamic";
 // icons
 import { BiRedo } from "react-icons/bi";
@@ -17,6 +17,7 @@ import { MdAlternateEmail } from 'react-icons/md'
 
 let btn: any;
 let btnHandler: () => void
+let checkCaptcha: () => boolean
 
 interface LoginFormValue {
     email: string,
@@ -25,36 +26,33 @@ interface LoginFormValue {
     msg: string,
     token: string,
     handleRedo: () => void,
-    firstLogin:Boolean
+    firstLogin: Boolean
 }
 
 const InnerLoginForm = (props: any) => {
     const [show, setShow] = useState(false);
     const { values } = props;
-    btn = createRef<HTMLButtonElement>();
     const router = useRouter();
-    // const handleRedo = () => {
-    //     values.captcha=GenerateString()
-    // }
-    btnHandler = () => {
+    
+    btn = createRef<HTMLButtonElement>();
+
+    checkCaptcha = () => {
         // @ts-ignore
         var inputData = document.querySelector("#captchaInput").value;
         if (values.captcha == inputData) {
-            values.msg = 'Successful, wait to Login ..'
-            localStorage.setItem('token', values.token)
-            if(values.firstLogin){
-                router.push('/complete-information')
-            }
-            else{
-                router.push('/chat')
-            }
+            return true
+        } else return false
+    }
+
+    btnHandler = () => {
+        values.msg = 'Successful, wait to Login ..'
+        localStorage.setItem('token', values.token)
+        if (values.firstLogin) {
+            router.push('/complete-information')
         }
         else {
-            values.msg = "Captcha Code is wrong try again"
-            values.captcha = GenerateString()
-
+            router.push('/chat')
         }
-
     }
 
     return (
@@ -105,37 +103,43 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValue>({
             handleRedo: () => {
                 props.captcha = GenerateString()
             },
-            firstLogin:true
+            firstLogin: true
         }
     },
     handleSubmit: async (values, { setFieldError }) => {
-        try {
-            console.log('submit')
-            const res = await callApi().post('/auth/login', values)
-            if (res.statusText && res.statusText === 'OK') {
-                console.log('login res : ', res)
-                values.token = res.data.value.token
-                if(!res.data.value.isFirstTimeLogin){
-                        values.firstLogin=false;                   
+        const isCaptchaTrue = checkCaptcha()
+        
+        if (isCaptchaTrue) {
+            try {
+                console.log('submit')
+                const res = await callApi().post('/auth/login', values)
+                if (res.statusText && res.statusText === 'OK') {
+                    console.log('login res : ', res)
+                    values.token = res.data.value.token
+                    if (!res.data.value.isFirstTimeLogin) {
+                        values.firstLogin = false;
+                    }
+                    btn.addEventListener('onclick', btnHandler());
                 }
-                btn.addEventListener('onclick', btnHandler());
-            }
 
 
-        } catch (error) {
-            if (error instanceof ValidationError) {
-                // @ts-ignore
-                const err = error.Error.errors;
-                err.map((e: any) => {
-                    setFieldError(e.field, e.message)
-                });
+            } catch (error) {
+                if (error instanceof ValidationError) {
+                    // @ts-ignore
+                    const err = error.Error.errors;
+                    err.map((e: any) => {
+                        setFieldError(e.field, e.message)
+                    });
+                }
             }
         }
-
-
+        else {
+            values.msg = "Captcha Code is wrong try again"
+            values.captcha = GenerateString()
+        }
     }
 
 })(InnerLoginForm)
 
 // export default LoginForm
-export default dynamic (() => Promise.resolve(LoginForm), {ssr: false})
+export default dynamic(() => Promise.resolve(LoginForm), { ssr: false })
