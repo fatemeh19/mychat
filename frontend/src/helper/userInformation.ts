@@ -13,7 +13,7 @@ export const fetchUserContactsListData = async (dispatch:any) => {
             Authorization: `Bearer ${token}`
         }
     };
-    console.log('get contacts')
+    // console.log('get contacts')
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)
@@ -29,7 +29,7 @@ export const fetchUserProfileData = async (dispatch:any) => {
             Authorization: `Bearer ${token}`
         }
     };
-    console.log('get user info')
+    // console.log('get user info')
     const res = await callApi().get('/main/user/profile', config)
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)

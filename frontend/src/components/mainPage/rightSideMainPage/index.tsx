@@ -21,6 +21,7 @@ interface IUserInfo {
 
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
     console.log('window : ', window)
+    console.log('righside rerefreshed')
 
 
     const [infoState, setInfoVState] = useState(false)
@@ -28,11 +29,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const userInfo = useAppSelector(state => state.userInfo).User
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
-
-    // ************* SO IMPORTENT
-    // this emit should be : but userId should get from getUserProfile and place in hear *CAS* we change the userId from saving in localStorage and got in login (((we don't get userId in login anymove))) *SOOOOOO* after take all user info from getUserProfile and save them in redux we can access to userId from redux.
-    // socket.emit('onChat', userInfo._id, contactId)
-    // ************* SO IMPORTENT
 
     // socket.on('onlineOnChat', (contactId: any) => {
     //     console.log('online on chat in client')
@@ -42,28 +38,43 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     // socket.emit('online', userId)
     // }, 5000);
 
-    console.log('socket in right after refresh : ', socket)
+    // console.log('socket in right after refresh : ', socket)
 
-
-
-    // const [chat, setChat] = useState()
     const [firstChat, setFirstChat] = useState<boolean>(false)
     useEffect(() => {
-        console.log('bulding right side ...')
+        // console.log('bulding right side ...')
         fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
-        console.log('socket connected to onChat in useEffect in rightSide .')
-        socket ? socket.emit('onChat', contactId) : null
+        // console.log('socket connected to onChat in useEffect in rightSide .')
+        // console.log('socket : :', socket)
+        // socket ? socket.emit('onChat', contactId) : null
     }, [])
 
-    if (socket) {
-        // console.log('sendMessage on in client')
-        socket.on('sendMessage', (message) => {
+    useEffect(() => {
+        console.log('socket changed => call onChat emit')
+        console.log(socket)
+        socket?.emit('onChat', contactId)
+
+        socket?.on('sendMessage', (message) => {
+            console.log(socket)
             console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
-    }
+    }, [socket])
 
-    console.log('socket in slice in right : ', socket)
+    // if (window.performance) {
+    //     if (performance.navigation.type == 1) {
+    //         socket ? socket.disconnect() : null
+    //     //   alert( "This page is reloaded" );
+    //     } else {
+    //     //   alert( "This page is not reloaded");
+    //     }
+    //   }
+
+
+
+
+
+    // console.log('socket in slice in right : ', socket)
 
     return (
         <>

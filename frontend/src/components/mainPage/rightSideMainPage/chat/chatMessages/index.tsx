@@ -24,9 +24,9 @@ export default function ChatMessages() {
                 <div className="flex flex-col gap-5">
                     <>
                         {
-                            messages.map(msg => {
+                            messages.map((msg,index) => {
                                 // console.log(msg.content.text)
-                                return <MessageBox msg={msg}/>
+                                return <MessageBox key={index} msg={msg}/>
                                 // console.log(msg)
                                 // <MessageBox/>
 

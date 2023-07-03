@@ -22,7 +22,7 @@ export const messageSlice = createSlice({
     reducers: {
         addMessage: (state, action: PayloadAction<messageInterface>) => {
             state.Messages.push(action.payload)
-            console.log('action : ', action)
+            // console.log('action : ', action)
         },
         addAllMessages: (state, action: PayloadAction<any>) => {
             state.Messages = action.payload

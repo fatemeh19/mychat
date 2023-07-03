@@ -15,7 +15,7 @@ export const OpenChatSlice = createSlice({
     reducers: {
         setOpenChat: (state, action: PayloadAction<any>) => {
             state.openChat = action.payload
-            console.log('action : ', action)
+            // console.log('action : ', action)
         },
     },
 });

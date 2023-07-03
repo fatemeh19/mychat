@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
 import { FC, useRef, useState } from "react"
 import { io } from "socket.io-client";
@@ -32,9 +33,10 @@ const ContactBox: FC<ContactBoxProps> = ({
     //     callback("contact online")
     //     setOnline(true)
     // });
+
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
-            onClick={() => handleOpen()}>
+            onClick={() => {handleOpen()}}>
             <Image
                 src={contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
                     : '/uploads/picture/defaultProfilePic.png'}

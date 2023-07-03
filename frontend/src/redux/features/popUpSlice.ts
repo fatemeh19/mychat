@@ -11,7 +11,7 @@ export const PopUpSlice = createSlice({
     reducers: {
         setOpen: (state, action: PayloadAction<boolean>) => {
             state.open = action.payload
-            console.log('action : ', action)
+            // console.log('action : ', action)
         },
     },
 });

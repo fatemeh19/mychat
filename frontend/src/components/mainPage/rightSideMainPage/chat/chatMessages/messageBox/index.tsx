@@ -74,7 +74,7 @@ const MessageBox = ({ msg }: { msg: messageInterface }) => {
                             className="rounded-full absolute top-0 left-0 max-w-lg w-[50px] h-[50px] object-cover "
                         />
                     </div>
-                    <div className="content flex flex-col">
+                    <div className="content flex flex-col items-end">
                         <div className={`flex gap-2 items-end mb-2 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                             <h1 className="name font-bold text-sm text-center whitespace-nowrap dark:text-white">{information.name}</h1>
                             <p className="date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap ">9:12 AM</p>

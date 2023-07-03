@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
     reducers: {
         addUserInfo: (state, action: PayloadAction<any>) => {
             state.User = action.payload
-            console.log('action : ', action)
+            // console.log('action : ', action)
         },
     },
 });

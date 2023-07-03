@@ -17,7 +17,7 @@ export const completeInfoSlice = createSlice({
   initialState,
   reducers: {
     setInfo: (state, action: PayloadAction<{ img: string | ArrayBuffer | null, name: string, phone: string }>) => {
-      console.log('action : ', action)
+      // console.log('action : ', action)
 
       state.img = action.payload.img
       state.name = action.payload.name

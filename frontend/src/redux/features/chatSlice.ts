@@ -31,7 +31,7 @@ export const ChatSlice = createSlice({
         addChat: (state, action: PayloadAction<any>) => {
             state.Chat = action.payload
             
-            console.log('Chat action : ', action)
+            // console.log('Chat action : ', action)
         },
     },
 });

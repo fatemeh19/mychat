@@ -16,7 +16,7 @@ export const localStorageSlice = createSlice({
   initialState,
   reducers: {
     setStorage: (state, action: PayloadAction<storageFace>) => {
-      console.log('action : ', action)
+      // console.log('action : ', action)
 
       state.token = action.payload.token
       state.userId = action.payload.userId

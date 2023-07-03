@@ -6,7 +6,7 @@ interface socketInterface {
 }
 // @ts-ignore
 const initialState = {
-    Socket : undefined
+    Socket : io('http://localhost:3000')
 } as socketInterface
 
 

@@ -11,11 +11,11 @@ import { addSocket } from "@/src/redux/features/socketSlice"
 
 export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
-    
+
     const userInfo = useAppSelector(state => state.userInfo).User
     const contactId = useAppSelector(state => state.userContact).Contact._id
     const socket = useAppSelector(state => state.socket).Socket
-    
+
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
     // const [socket, setSocket] = useState<Socket>()
@@ -26,7 +26,7 @@ export default function LeftSideMainPage() {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
 
-
+        console.log('socket created in client')
         const socketIO = io('http://localhost:3000', {
             auth: {
                 token: barearToken
@@ -34,12 +34,11 @@ export default function LeftSideMainPage() {
         })
         dispatch(addSocket(socketIO))
     }, [])
-    
-    console.log('socket in slice in left : ', socket)
-    
+
+    // console.log('socket in slice in left : ', socket)
+
     // if (socket) {
     //     console.log('socket in if in leftSide', socket)
-    //     socket.emit('onChat', contactId)
     // }
 
 

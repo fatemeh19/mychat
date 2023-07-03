@@ -14,14 +14,12 @@ const config = {
 };
 
 export const fetchChat = async (userId: string, contactId: string, dispatch: any, setFirstChat: Dispatch<SetStateAction<boolean>>) => {
-    console.log('start get chat')
     let res: any;
     try {
         res = await callApi().get(`/main/chat/${contactId}`, config)
         console.log('getChat res : ', res)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
-            console.log('chat get')
             setFirstChat(false)
             const Chat = res.data.value.chat
             dispatch(addChat(Chat))
@@ -89,7 +87,7 @@ interface messageInterface {
 
 }
 
-export const createMessage = async (chatId: string, newMessage: messageInterface,dispatch: any,) => {
+export const createMessage = async (chatId: string, newMessage: messageInterface, dispatch: any,) => {
     console.log('start create message')
     let res: any;
     // not found chat => create chat
