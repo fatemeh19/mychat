@@ -23,16 +23,16 @@ export default function (io) {
   const deleteMessage = async function (deleteInfo) {
     const socket = this;
     const userId = socket.user.userId;
-    const { chatId, messageIs, deleteAll } = deleteInfo;
+    const { chatId, deleteAll } = deleteInfo;
     DeleteMessage(userId, deleteInfo);
     const chat = await Services.Chat.getChat({ _id: chatId });
     const memberIds = chat.memberIds;
-    
+
     let roomName =
       memberIds[0] > memberIds[1]
         ? memberIds[0] + "" + memberIds[1]
         : memberIds[1] + "" + memberIds[0];
-    if(deleteAll){
+    if (deleteAll) {
       io.to(roomName).emit("deleteMessage", deleteInfo);
     }
 

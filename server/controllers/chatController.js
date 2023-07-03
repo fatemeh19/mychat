@@ -33,13 +33,16 @@ const createChat = async (req, res) => {
   });
 };
 
-const getChat = async(req, res) =>{
+const getChat = async (req, res) => {
   // const { memberIds } = req.body;
-  const {user:{userId}, params:{contactId}} = req
-  const memberIds = [userId, contactId]
-  
+  const {
+    user: { userId },
+    params: { contactId },
+  } = req;
+  const memberIds = [userId, contactId];
+
   // const data = await Validators.createChat.validate({ memberIds });
- 
+
   const chat = await Services.Chat.getChat({
     memberIds: { $size: 2, $all: memberIds },
   });
@@ -51,6 +54,13 @@ const getChat = async(req, res) =>{
       Field: fields.chat,
     });
   }
+  const messages = await Services.Message.getMessages({
+    _id: { $in: chat.messages },
+  },"","-createdAt")
+
+  chat.messages.splice(0, chat.messages.length);
+  chat.messages = messages
+
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
@@ -59,7 +69,6 @@ const getChat = async(req, res) =>{
       chat,
     },
   });
-}
+};
 
-
-export { createChat , getChat};
+export { createChat, getChat };

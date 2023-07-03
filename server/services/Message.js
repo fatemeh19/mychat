@@ -41,8 +41,8 @@ const updateMessages = async (filterQuery, updateQuery) => {
   const updatedMessages = await Message.updateMany(filterQuery, updateQuery);
   return updatedMessages;
 };
-const getMessages = async (filterQuery = {}) => {
-  const messages = await Message.find(filterQuery);
+const getMessages = async (filterQuery = {},select ="", sort ="") => {
+  const messages = await Message.find(filterQuery).select(select).sort(sort);
   return messages;
 };
 export {
