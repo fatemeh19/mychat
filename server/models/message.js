@@ -13,10 +13,7 @@ const MessageSchema = new mongoose.Schema(
       },
     },
     content: {
-      contectType: {
-        type: String,
-        enum: messageType,
-      },
+      contentType:String,
       url: String,
       text: String,
     },
