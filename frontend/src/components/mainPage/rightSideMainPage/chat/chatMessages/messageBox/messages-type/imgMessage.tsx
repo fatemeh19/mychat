@@ -1,9 +1,11 @@
+import { messageInterface } from "@/src/models/interface"
 import Image from "next/image"
 
 
 
-const ImageMessage = ({ isText }: { isText: boolean | undefined }) => {
-
+const ImageMessage = ({ msg }: { msg:messageInterface }) => {
+    const isText = msg.content.text ? true : false
+    
     return (
         <>
 
@@ -18,7 +20,7 @@ const ImageMessage = ({ isText }: { isText: boolean | undefined }) => {
                             alt=""
                             className={`w-[32rem] ${isText ? 'rounded-t-lg' : 'rounded-lg'}`}
                         />
-                        {isText ? <p className="px-2 py-1 pb-2 break-all">Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis autem quod amet, obcaecati illum porro, error quos repellat inventore sed ullam mollitia praesentium cumque corporis placeat animi iusto! Laboriosam, at?</p> : null}
+                        {isText ? <p className="px-2 py-1 pb-2 break-all">{msg.content.text}</p> : null}
 
                     </div>
                 </div>

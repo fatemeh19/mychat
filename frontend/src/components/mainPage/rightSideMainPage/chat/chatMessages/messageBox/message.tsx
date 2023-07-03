@@ -10,18 +10,17 @@ import { messageInterface } from "@/src/models/interface"
 
 interface messageProps {
     type: string
-    isText?: boolean,
     dir : string,
     msg : messageInterface
 }
 
-const Message: FC<messageProps> = ({ type, isText, dir, msg }) => {
+const Message: FC<messageProps> = ({ type, dir, msg }) => {
 
     switch (type) {
         case messageTypes.text:
             return (<TextMessage dir={dir} msg={msg} />)
         case messageTypes.image:
-            return (<ImageMessage isText={isText} />)
+            return (<ImageMessage msg={msg} />)
 
     }
 

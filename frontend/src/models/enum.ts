@@ -11,4 +11,9 @@ enum MessageBoxProps {
     ltr = 'ltr'
 }
 
-export { messageTypes, MessageBoxProps }
+enum ChatType {
+    Private = 'Private',
+    Group = 'Group',
+    Channel = 'Channel'
+}
+export { messageTypes, MessageBoxProps, ChatType }

@@ -1,9 +1,7 @@
 "use client"
 
-import { useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, useRef, useState } from "react"
-import { io } from "socket.io-client";
+import { FC, useState } from "react"
 
 type Contact = {
     name: string;
@@ -20,13 +18,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
 
-    const token = localStorage.getItem('token')
-    let bearerToken = `Bearer ${token}`
-
     const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
-    // const socket = useRef(io('http://localhost:3000/'))
     const [online, setOnline] = useState(false)
-    // console.log('socket on chat ', socket)
     const contactId = contact._id;
     // socket.current.on('onlineContact', (contactId: string, callback) => {
     //     console.log('online contact : ' + contactId)

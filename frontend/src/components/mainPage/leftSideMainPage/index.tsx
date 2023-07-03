@@ -2,10 +2,10 @@
 
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
-import { useEffect, useRef, useState } from "react"
+import { useEffect } from "react"
 import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
-import { Socket, io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { addSocket } from "@/src/redux/features/socketSlice"
 
 
@@ -18,7 +18,6 @@ export default function LeftSideMainPage() {
 
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
-    // const [socket, setSocket] = useState<Socket>()
     // socket.emit('online', userInfo._id)
 
 
@@ -34,13 +33,6 @@ export default function LeftSideMainPage() {
         })
         dispatch(addSocket(socketIO))
     }, [])
-
-    // console.log('socket in slice in left : ', socket)
-
-    // if (socket) {
-    //     console.log('socket in if in leftSide', socket)
-    // }
-
 
     return (
         <div className="

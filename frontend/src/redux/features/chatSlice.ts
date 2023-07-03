@@ -1,4 +1,5 @@
 
+import { ChatType } from "@/src/models/enum";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // interface messageInterface {
@@ -18,10 +19,12 @@ interface chatInterface {
 }
 interface initialStateInterface {
     Chat : chatInterface,
+    chatType : ChatType
 }
 
 const initialState = {
     Chat : {},
+    chatType : ChatType.Private
 } as initialStateInterface
 
 export const ChatSlice = createSlice({
@@ -30,13 +33,15 @@ export const ChatSlice = createSlice({
     reducers: {
         addChat: (state, action: PayloadAction<any>) => {
             state.Chat = action.payload
-            
-            // console.log('Chat action : ', action)
+        },
+        setChatType: (state, action: PayloadAction<ChatType>) => {
+            state.chatType = action.payload
         },
     },
 });
 
 export const {
     addChat,
+    setChatType
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
