@@ -35,9 +35,8 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     // socket.emit('online', userId)
     // }, 5000);
 
-    const [firstChat, setFirstChat] = useState<boolean>(false)
     useEffect(() => {
-        fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
+        fetchChat(userInfo._id, contactId, dispatch)
     }, [])
 
     useEffect(() => {
@@ -57,7 +56,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     ? (
                         <div className="flex gap-[1px] justify-end">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} firstChat={firstChat} setFirstChat={setFirstChat} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -66,7 +65,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} firstChat={firstChat} setFirstChat={setFirstChat} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
                         </div>
                     )
             }

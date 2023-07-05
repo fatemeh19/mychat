@@ -13,8 +13,6 @@ interface chatProps {
     setInfoVState: Dispatch<SetStateAction<boolean>>;
     contactId: any,
     online : boolean,
-    firstChat:boolean,
-    setFirstChat:Dispatch<SetStateAction<boolean>>
 }
 
 const getContact = async (id: string) => {
@@ -30,7 +28,7 @@ const getContact = async (id: string) => {
     return res.data.value.contact
 }
 
-const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firstChat, setFirstChat }) => {
+const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online}) => {
 
     const dispatch = useAppDispatch()
 
@@ -46,7 +44,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online, firs
         <div className="flex flex-col w-full h-screen relative min-w-fit">
             <ChatHeader infoState={infoState} setInfoVState={setInfoVState}  online={online}/>
             <ChatMessages />
-            <ChatSendBox firstChat={firstChat} setFirstChat={setFirstChat} contactId={contactId} />
+            <ChatSendBox contactId={contactId} />
         </div>
     )
 }

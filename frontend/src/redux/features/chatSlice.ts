@@ -19,12 +19,14 @@ interface chatInterface {
 }
 interface initialStateInterface {
     Chat : chatInterface,
-    chatType : ChatType
+    chatType : ChatType,
+    firstChat : boolean
 }
 
 const initialState = {
     Chat : {},
-    chatType : ChatType.Private
+    chatType : ChatType.Private,
+    firstChat : true
 } as initialStateInterface
 
 export const ChatSlice = createSlice({
@@ -37,11 +39,15 @@ export const ChatSlice = createSlice({
         setChatType: (state, action: PayloadAction<ChatType>) => {
             state.chatType = action.payload
         },
+        setFirstChat : (state, action: PayloadAction<boolean>) => {
+            state.firstChat = action.payload
+        },
     },
 });
 
 export const {
     addChat,
-    setChatType
+    setChatType,
+    setFirstChat
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

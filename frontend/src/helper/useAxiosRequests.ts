@@ -1,8 +1,8 @@
 "use client"
 
-import { ValidationError } from "yup";
+import ValidationError  from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat } from "../redux/features/chatSlice";
+import { addChat, setFirstChat } from "../redux/features/chatSlice";
 import { Dispatch, SetStateAction } from "react";
 import { addMessage } from "../redux/features/messagesSlice";
 
@@ -13,7 +13,7 @@ const config = {
     }
 };
 
-export const fetchChat = async (userId: string, contactId: string, dispatch: any, setFirstChat: Dispatch<SetStateAction<boolean>>) => {
+export const fetchChat = async (userId: string, contactId: string, dispatch: any) => {
     let res: any;
     try {
         res = await callApi().get(`/main/chat/${contactId}`, config)
@@ -21,6 +21,7 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
             setFirstChat(false)
+            dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
             dispatch(addChat(Chat))
             // save Chat in redux
@@ -31,15 +32,19 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
         if (error instanceof ValidationError) {
             // @ts-ignore
             const err = error.Error.errors[0];
-            console.log('فرمت نادرست در getChat')
-            // @ts-ignore
+
+            if (err.errorType === 'FormatError') {
+                console.log(err.message)
+            }
 
             // check if chat is not availeble : creat chat
+            // @ts-ignore
             if (error.Error.statusCode === 400 && err.errorType === 'NotFoundError') {
                 console.log('error message : ', err.message)
+                setFirstChat(true)
                 dispatch(setFirstChat(true))
-                const chatId = await createChat(userId, contactId)
-                return chatId
+                // const chatId = await createChat(userId, contactId)
+                // return chatId
             }
         }
     }

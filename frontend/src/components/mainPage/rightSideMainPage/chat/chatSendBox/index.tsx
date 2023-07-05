@@ -8,31 +8,33 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import ChatInput from './chatInput'
 import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosRequests'
 import { Socket, io } from 'socket.io-client'
-
+import { setFirstChat } from '@/src/redux/features/chatSlice'
 interface chatSendProps {
     contactId: string,
-    firstChat: boolean,
-    setFirstChat: Dispatch<SetStateAction<boolean>>
 }
-const ChatSendBox: FC<chatSendProps> = ({ firstChat, setFirstChat, contactId }) => {
+const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const [input, setInput] = useState<string>('')
 
     const userInfo = useAppSelector(state => state.userInfo).User
     const socket = useAppSelector(state => state.socket).Socket
     const dispatch = useAppDispatch()
-    let newMessage : any
+    let newMessage: any
+    let chatId = useAppSelector(state => state.chat).Chat._id
+    let firstChat = useAppSelector(state => state.chat).firstChat
+
+    // ------- discription of reason for using useEffect :: -------- i add this CAS when there is no chat if send msg chat created and chatID back but when send the second message firstChat is make false and we dont have chatId because fetchChat is not in the sendMessage soooo i put fetchChatt in useEffect that is controlled by firstChat by this -> when firstChat turn to false at sending second chat fetchChat run and we access to chat Informaition and save it in redux and access it from redux in next sending msg annnnnd in opening this chat again in rightSideMainPage file we fetchChat and in fetchChat we save chat information in redux and every thing working so good --- so cool.
+    useEffect(() => {
+        (async () => {
+            chatId = await fetchChat(userInfo._id, contactId, dispatch)
+        })()
+    }, [firstChat])
 
     const sendHandler = async () => {
-        let chatId: string;
 
-        console.log(firstChat)
-        // if firstChat => createChat else Just getChat
-        console.log('checking if there is chat or not ...')
-        chatId = await fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
-        
+        firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
         // ------------------------
-         //اینجا اولش اینطور کار کردم اما وقتی صفحه رو رفرش میکنم فرست چت دوباره ترو میشه و به جای گت کردن چت میره میسازتش درنتیجه ارور وحود داشتن همچین چتی به وجود میاد و آی دی برای چت برنمیگرده برای همین بهترین راه حل اینه که وقتی که چت رو میره گت کنه اگه که پیداش نکنه همونجا یکی بسازه ------------ حالا اینجا یه مشکلی به وجود میاد که یه جایی چتو گت میکنه اما وجود نداره و چون پیامی داده نشده هم نمیخواد که بسازدش ولی ساخته میشه بعدا به این فکر میکنیم 😂
+        //اینجا اولش اینطور کار کردم اما وقتی صفحه رو رفرش میکنم فرست چت دوباره ترو میشه و به جای گت کردن چت میره میسازتش درنتیجه ارور وحود داشتن همچین چتی به وجود میاد و آی دی برای چت برنمیگرده برای همین بهترین راه حل اینه که وقتی که چت رو میره گت کنه اگه که پیداش نکنه همونجا یکی بسازه ------------ حالا اینجا یه مشکلی به وجود میاد که یه جایی چتو گت میکنه اما وجود نداره و چون پیامی داده نشده هم نمیخواد که بسازدش ولی ساخته میشه بعدا به این فکر میکنیم 😂
         // firstChat
         //     ? chatId = await createChat(userInfo._id, contactId)
         //     : chatId = await fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
@@ -55,14 +57,15 @@ const ChatSendBox: FC<chatSendProps> = ({ firstChat, setFirstChat, contactId }) 
         setInput('')
 
 
-        if(socket) {
-            socket.emit('sendMessage', contactId,newMessage)
+        if (socket) {
+            socket.emit('sendMessage', contactId, newMessage)
         }
-        
+
+        dispatch(setFirstChat(false))
     }
 
-    
-    
+
+
 
     return (
         <div className="bg-white w-full bottom-0 p-5 px-6 dark:bg-bgColorDark2">
