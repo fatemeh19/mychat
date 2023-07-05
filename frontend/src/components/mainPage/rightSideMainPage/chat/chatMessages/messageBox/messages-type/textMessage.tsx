@@ -2,9 +2,7 @@ import { messageInterface } from "@/src/models/interface"
 
 
 
-const TextMessage = ({ dir, msg }: { dir: string, msg: messageInterface }) => {
-
-    console.log(dir)
+const TextMessage = ({ dir, msg}: { dir: string, msg: messageInterface }) => {
 
     return (
         <div className="relative max-w-lg ">

@@ -2,18 +2,27 @@
 import { ChatType } from "@/src/models/enum";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// interface messageInterface {
-//     content : {
-//         contentType : string,
-//         text : string
-//     },
-//     senderId : string
-// }
+export interface recievedMessageInterface {
+    _id : string,
+    content : {
+        contentType : string,
+        url : string,
+        text : string
+    },
+    reply : {
+        isReplied : boolean
+    },
+    senderId : string,
+    seenIds : string[],
+    createdAt : string,
+    updatedAt : string,
+    __v : number
+}
 
 interface chatInterface {
     _id:string,
     memberIds : string[],
-    messages : [],
+    messages : recievedMessageInterface[],
     updatedAt : string,
     __v : number
 }
@@ -42,12 +51,17 @@ export const ChatSlice = createSlice({
         setFirstChat : (state, action: PayloadAction<boolean>) => {
             state.firstChat = action.payload
         },
+        addMessage: (state, action: PayloadAction<any>) => {
+            state.Chat.messages.push(action.payload)
+            // console.log('action : ', action)
+        },
     },
 });
 
 export const {
     addChat,
     setChatType,
-    setFirstChat
+    setFirstChat,
+    addMessage
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

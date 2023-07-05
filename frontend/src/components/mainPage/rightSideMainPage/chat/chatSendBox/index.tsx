@@ -19,7 +19,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const socket = useAppSelector(state => state.socket).Socket
     const dispatch = useAppDispatch()
     let newMessage: any
-    let chatId = useAppSelector(state => state.chat).Chat._id
+    const chat = useAppSelector(state => state.chat).Chat
+    let chatId = chat._id
     let firstChat = useAppSelector(state => state.chat).firstChat
 
     // ------- discription of reason for using useEffect :: -------- i add this CAS when there is no chat if send msg chat created and chatID back but when send the second message firstChat is make false and we dont have chatId because fetchChat is not in the sendMessage soooo i put fetchChatt in useEffect that is controlled by firstChat by this -> when firstChat turn to false at sending second chat fetchChat run and we access to chat Informaition and save it in redux and access it from redux in next sending msg annnnnd in opening this chat again in rightSideMainPage file we fetchChat and in fetchChat we save chat information in redux and every thing working so good --- so cool.
@@ -33,21 +34,13 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
-        // ------------------------
-        //اینجا اولش اینطور کار کردم اما وقتی صفحه رو رفرش میکنم فرست چت دوباره ترو میشه و به جای گت کردن چت میره میسازتش درنتیجه ارور وحود داشتن همچین چتی به وجود میاد و آی دی برای چت برنمیگرده برای همین بهترین راه حل اینه که وقتی که چت رو میره گت کنه اگه که پیداش نکنه همونجا یکی بسازه ------------ حالا اینجا یه مشکلی به وجود میاد که یه جایی چتو گت میکنه اما وجود نداره و چون پیامی داده نشده هم نمیخواد که بسازدش ولی ساخته میشه بعدا به این فکر میکنیم 😂
-        // firstChat
-        //     ? chatId = await createChat(userInfo._id, contactId)
-        //     : chatId = await fetchChat(userInfo._id, contactId, dispatch, setFirstChat)
-        // ------------------------
-
-        // console.log('chat Id : ', chatId)
-
         newMessage = {
             content: {
                 contentType: 'text',
                 text: input
             },
-            senderId: userInfo._id
+            senderId: userInfo._id,
+            createdAt : Date.now()
         }
 
         chatId
@@ -62,6 +55,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         }
 
         dispatch(setFirstChat(false))
+
+        console.log('chat message should update when sending message ', chat.messages)
     }
 
 

@@ -3,8 +3,7 @@
 import ValidationError  from '@/src/errors/validationError';
 import callApi from "./callApi"
 import { addChat, setFirstChat } from "../redux/features/chatSlice";
-import { Dispatch, SetStateAction } from "react";
-import { addMessage } from "../redux/features/messagesSlice";
+import { addMessage } from "../redux/features/chatSlice";
 
 const token = localStorage.getItem('token')
 const config = {

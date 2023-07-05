@@ -10,12 +10,13 @@ import { messageInterface } from "@/src/models/interface"
 const MessageBox = ({ msg }: { msg: messageInterface }) => {
     const User = useAppSelector(state => state.userInfo).User
     const Contact = useAppSelector(state => state.userContact).Contact
+    const chat = useAppSelector(state => state.chat).Chat
     const chatType = useAppSelector(state => state.chat).chatType
 
     let information = {
         dir: MessageBoxProps.rtl,
         name: '',
-        messageSendTime: '',
+        messageSendTime: msg.createdAt,
         profilePic: ''
     }
     if (msg.senderId === User._id) {
@@ -24,7 +25,7 @@ const MessageBox = ({ msg }: { msg: messageInterface }) => {
 
         information.dir = MessageBoxProps.rtl
         information.name = User.name
-        information.messageSendTime = ''
+        information.messageSendTime = msg.createdAt
         information.profilePic = profilePicName
     }
     else {
@@ -33,7 +34,7 @@ const MessageBox = ({ msg }: { msg: messageInterface }) => {
         const profilePicName = Contact.profilePic ? profilePic[profilePic.length - 1] : '';
         information.dir = MessageBoxProps.ltr
         information.name = Contact.name
-        information.messageSendTime = ''
+        information.messageSendTime = msg.createdAt
         information.profilePic = profilePicName
     }
 
