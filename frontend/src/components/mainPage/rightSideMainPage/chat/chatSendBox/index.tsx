@@ -80,6 +80,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             : null
 
         setInput('')
+        setFile(null)
 
 
         if (socket) {
