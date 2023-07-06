@@ -1,9 +1,9 @@
-import { messageInterface } from "@/src/models/interface"
+import { sendMessageInterface } from "@/src/models/interface"
 import Image from "next/image"
 
 
 
-const ImageMessage = ({ msg }: { msg:messageInterface }) => {
+const ImageMessage = ({ msg }: { msg:sendMessageInterface }) => {
     const isText = msg.content.text ? true : false
     
     return (

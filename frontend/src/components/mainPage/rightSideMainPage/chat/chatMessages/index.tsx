@@ -21,7 +21,7 @@ export default function ChatMessages() {
                     <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>
                 </div>
                 : <div className="mr-1 pr-2 overflow-auto overflow-x-hidden chat-scrollbar mt-1">
-                    {/* <DateLine date="Today" /> */}
+                    {/* <DateLine date={'Today'}/> */}
                     <div className="flex flex-col ">
                         <>
                             {

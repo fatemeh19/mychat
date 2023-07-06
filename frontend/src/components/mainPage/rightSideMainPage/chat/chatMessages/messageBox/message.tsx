@@ -2,16 +2,14 @@
 
 import { FC } from "react"
 import { messageTypes } from "@/src/models/enum"
-import style from './messageStyle.module.css'
-import Image from "next/image"
 import TextMessage from "./messages-type/textMessage"
 import ImageMessage from "./messages-type/imgMessage"
-import { messageInterface } from "@/src/models/interface"
+import { sendMessageInterface } from "@/src/models/interface"
 
 interface messageProps {
     type: string
     dir : string,
-    msg : messageInterface
+    msg : sendMessageInterface
 }
 
 const Message: FC<messageProps> = ({ type, dir, msg }) => {

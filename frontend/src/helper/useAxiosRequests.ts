@@ -4,6 +4,7 @@ import ValidationError  from '@/src/errors/validationError';
 import callApi from "./callApi"
 import { addChat, setFirstChat } from "../redux/features/chatSlice";
 import { addMessage } from "../redux/features/chatSlice";
+import { sendMessageInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -79,19 +80,7 @@ export const createChat = async (userId: string, contactId: string) => {
     console.log('res from createChat : ', res)
 }
 
-
-interface messageContentInterface {
-    contentType: string,
-    text: string
-}
-
-interface messageInterface {
-    content: messageContentInterface,
-    senderId: string
-
-}
-
-export const createMessage = async (chatId: string, newMessage: messageInterface, dispatch: any,) => {
+export const createMessage = async (chatId: string, newMessage: sendMessageInterface, dispatch: any,) => {
     console.log('start create message')
     let res: any;
     // not found chat => create chat

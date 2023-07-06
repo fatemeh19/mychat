@@ -1,24 +1,9 @@
 
-import { ChatType } from "@/src/models/enum";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ChatType } from "@/src/models/enum";
+import { recievedMessageInterface } from "@/src/models/interface";
 
-export interface recievedMessageInterface {
-    _id : string,
-    content : {
-        contentType : string,
-        url : string,
-        text : string
-    },
-    reply : {
-        isReplied : boolean
-    },
-    senderId : string,
-    seenIds : string[],
-    createdAt : string,
-    updatedAt : string,
-    __v : number
-}
-
+// باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 interface chatInterface {
     _id:string,
     memberIds : string[],
