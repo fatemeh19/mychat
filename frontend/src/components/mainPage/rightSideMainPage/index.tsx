@@ -4,9 +4,6 @@ import { useEffect, useState, useRef } from "react"
 
 import Chat from "./chat"
 import ChatInfo from "./chatInfo"
-import io from 'socket.io-client'
-import { Socket } from "socket.io-client"
-import callApi from "@/src/helper/callApi"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
 import { addMessage } from "@/src/redux/features/messagesSlice"
@@ -40,11 +37,10 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     }, [])
 
     useEffect(() => {
-        console.log('socket changed => call onChat emit')
         socket?.emit('onChat', contactId)
 
         socket?.on('sendMessage', (message) => {
-            console.log('i got new Message: ', message)
+            // console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
     }, [socket])

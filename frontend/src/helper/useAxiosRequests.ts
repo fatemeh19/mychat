@@ -17,7 +17,7 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
     let res: any;
     try {
         res = await callApi().get(`/main/chat/${contactId}`, config)
-        console.log('getChat res : ', res)
+        // console.log('getChat res : ', res)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
             setFirstChat(false)
@@ -40,18 +40,16 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
             // check if chat is not availeble : creat chat
             // @ts-ignore
             if (error.Error.statusCode === 400 && err.errorType === 'NotFoundError') {
-                console.log('error message : ', err.message)
+                // console.log('error message : ', err.message)
                 setFirstChat(true)
                 dispatch(setFirstChat(true))
-                // const chatId = await createChat(userId, contactId)
-                // return chatId
             }
         }
     }
 }
 
 export const createChat = async (userId: string, contactId: string) => {
-    console.log('start create chat')
+    // console.log('start create chat')
     const data = {
         memberIds: [userId, contactId]
     }
@@ -60,7 +58,7 @@ export const createChat = async (userId: string, contactId: string) => {
     try {
         res = await callApi().post('/main/chat/', data, config)
         if (res.statusText && res.statusText === 'Created') {
-            console.log('chat created.')
+            // console.log('chat created.')
             return res.data.value.chatId
 
 
@@ -77,17 +75,17 @@ export const createChat = async (userId: string, contactId: string) => {
     }
 
 
-    console.log('res from createChat : ', res)
+    // console.log('res from createChat : ', res)
 }
 
 export const createMessage = async (chatId: string, newMessage: sendMessageInterface, dispatch: any,) => {
-    console.log('start create message')
+    // console.log('start create message')
     let res: any;
     // not found chat => create chat
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {
-            console.log('message created.')
+            // console.log('message created.')
             dispatch(addMessage(newMessage))
             // save message in messages redux
 
@@ -96,5 +94,5 @@ export const createMessage = async (chatId: string, newMessage: sendMessageInter
         console.log(error)
     }
 
-    console.log('res from createMessage : ', res)
+    // console.log('res from createMessage : ', res)
 }

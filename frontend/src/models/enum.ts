@@ -1,8 +1,11 @@
 enum messageTypes {
     text = 'text',
-    image = 'image',
+    picture = 'picture',
+    video = 'video',
     voice = 'voice',
-    video = 'video'
+    gif = 'gif',
+    music = 'music',
+    file = 'file'
 
 }
 

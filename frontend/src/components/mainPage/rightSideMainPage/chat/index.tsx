@@ -5,7 +5,7 @@ import ChatHeader from "./chatHeader"
 import ChatMessages from "./chatMessages"
 import ChatSendBox from "./chatSendBox"
 import callApi from "@/src/helper/callApi";
-import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { useAppDispatch } from "@/src/redux/hooks";
 import { addUserContact } from "@/src/redux/features/userContactSlice";
 
 interface chatProps {
@@ -22,9 +22,7 @@ const getContact = async (id: string) => {
             Authorization: `Bearer ${token}`
         }
     };
-    const res = await callApi().get(`/main/contact/${id}`, config)
-    console.log('res - getContact in chat component : ', res)
-    
+    const res = await callApi().get(`/main/contact/${id}`, config)    
     return res.data.value.contact
 }
 

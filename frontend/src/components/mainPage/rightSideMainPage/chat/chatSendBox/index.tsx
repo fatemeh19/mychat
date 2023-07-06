@@ -10,6 +10,7 @@ import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosReque
 import { Socket, io } from 'socket.io-client'
 import { setFirstChat } from '@/src/redux/features/chatSlice'
 import { sendMessageInterface } from '@/src/models/interface'
+import { messageTypes } from '@/src/models/enum'
 interface chatSendProps {
     contactId: string,
 }
@@ -21,7 +22,7 @@ interface chatSendProps {
 // }
 const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const [input, setInput] = useState<string>('')
-    const [file, setFile] = useState<File>()
+    const [file, setFile] = useState<any>()
 
     const userInfo = useAppSelector(state => state.userInfo).User
     const socket = useAppSelector(state => state.socket).Socket
@@ -47,6 +48,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             let formData = new FormData()
             formData.append('file', file)
             console.log(formData.get('file'))
+            setFile(formData.get('file'))
         }
 
     }
@@ -55,9 +57,14 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
+        let type = messageTypes.text
+        type = file ? file.type.split('/')[0] === 'audio' ? messageTypes.music : messageTypes.text : messageTypes.text
+        type = file ? file.type.split('/')[0] === 'application' ? messageTypes.file : messageTypes.text : messageTypes.text
+
+        console.log('type : ', type)
         newMessage = {
             content: {
-                contentType: file ? file.type : 'text',
+                contentType: file ? type : 'text',
                 text: input ? input : ''
             },
             file: file ? file : null,
@@ -79,9 +86,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             socket.emit('sendMessage', contactId, newMessage)
         }
 
+        console.log('new message : ', newMessage)
         dispatch(setFirstChat(false))
-
-        console.log('chat message should update when sending message ', chat.messages)
     }
 
 
