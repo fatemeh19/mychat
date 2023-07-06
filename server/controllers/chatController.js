@@ -56,7 +56,7 @@ const getChat = async (req, res) => {
   }
   const messages = await Services.Message.getMessages({
     _id: { $in: chat.messages },
-  },"","-createdAt")
+  })
 
   chat.messages.splice(0, chat.messages.length);
   chat.messages = messages
