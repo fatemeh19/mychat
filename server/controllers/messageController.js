@@ -19,7 +19,8 @@ const createMessage = async (req, res) => {
     body: message,
     file,
   } = req;
-  let url = file && message.content.contentType != "text" ? file.path : "";
+  let url = file && message.content.contentType != "text" ? file.path : undefined
+  let originalName = file && message.content.contentType != "text" ? req.file.originalname  : undefined
   console.log(message.content.contentType);
 
   let newMessage = {
@@ -31,6 +32,7 @@ const createMessage = async (req, res) => {
       contentType: message.content.contentType,
       text: message.content.text,
       url: url,
+      originalName
     },
     senderId: message.senderId,
   };
