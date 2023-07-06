@@ -16,6 +16,7 @@ interface sendMessageInterface {
         isReplied: boolean,
         messageId?: string
     },
+    createdAt : number
 }
 
 interface recievedMessageInterface {

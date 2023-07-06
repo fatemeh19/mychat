@@ -65,6 +65,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             reply: {
                 isReplied: false
             },
+            createdAt : Date.now()
         }
 
         chatId

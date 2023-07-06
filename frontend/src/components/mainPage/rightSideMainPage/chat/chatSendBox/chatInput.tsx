@@ -47,7 +47,10 @@ const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
                         snedMessage()
                     }
                 }}
-                onChange={e => setInput(e.target.value)}
+                onChange={e => {
+                    console.log(e.target.value)
+                    setInput(e.target.value)
+                }}
                 value={input}
             />
         </div>
