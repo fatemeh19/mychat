@@ -18,6 +18,7 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
         name: '',
         profilePic: ''
     }
+    console.log('msg:', msg)
 
     msg.senderId === User._id
         ? sender = User

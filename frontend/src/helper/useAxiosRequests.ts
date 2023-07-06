@@ -84,12 +84,13 @@ export const createMessage = async (chatId: string, newMessage:any, dispatch: an
     // not found chat => create chat
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
+        console.log('createMessage res : ', res)
         if (res.statusText && res.statusText === 'OK') {
             return res.data.value.message
 
         }
     } catch (error) {
-        console.log(error)
+        console.log('createMessage error : ', error)
     }
 
     // console.log('res from createMessage : ', res)

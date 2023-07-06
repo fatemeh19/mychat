@@ -44,13 +44,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const attachmentHandler = (e: any) => {
         // @ts-ignore
         const file = fileRef.current?.files[0]
-        if (file) {
-            // let formData = new FormData()
-            // formData.append('file', file)
-            // console.log(formData.get('file'))
-            // setFile(formData.get('file'))
-            setFile(file)
-        }
+        file ? setFile(file) : null
 
     }
 
@@ -58,39 +52,28 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
-        // let type = messageTypes.text
-        // type = file.type.split('/')[0] === 'audio' ? messageTypes.music : messageTypes.text
-        // type = file.type.split('/')[0] === 'application' ? messageTypes.file : messageTypes.text
+        let type = messageTypes.text
+        switch (file?.type.split('/')[0]) {
+            case 'audio':
+                type = messageTypes.music
+                break;
+            case 'application':
+                type = messageTypes.file
+                break;
+            case 'image':
+                type = messageTypes.picture
+                break;
+            default:
 
-        // console.log('type : ', type)
+                break;
+        }
+        console.log('type : ', type)
         let newMessage = new FormData()
-        newMessage.append('content[contentType]', messageTypes.text)
+        newMessage.append('content[contentType]', type)
         newMessage.append('content[text]', input)
         file ? newMessage.append('file', file) : null
         newMessage.append('senderId', userInfo._id)
-        console.log('input : ', input)
 
-
-
-        // newMessage = {
-        //     content: {
-        //         // contentType: file ? type : 'text',
-        //         contentType: messageTypes.music,
-        //         text: input ? input : ''
-        //     },
-        //     file: file ? file : null,
-        //     senderId: userInfo._id,
-        //     reply: {
-        //         isReplied: false
-        //     },
-        //     createdAt: Date.now()
-        // }
-
-        // let content = {
-        //     // contentType: file ? type : 'text',
-        //     contentType: messageTypes.music,
-        //     text: input
-        // }
         let message = ''
         chatId
             ? message = await createMessage(chatId, newMessage, dispatch)
