@@ -12,11 +12,11 @@ interface sendMessageInterface {
     },
     file?: any,
     senderId : string,
-    reply: {
-        isReplied: boolean,
-        messageId?: string
-    },
-    createdAt : number
+    // reply: {
+    //     isReplied: boolean,
+    //     messageId?: string
+    // },
+    // createdAt : number
 }
 
 interface recievedMessageInterface {

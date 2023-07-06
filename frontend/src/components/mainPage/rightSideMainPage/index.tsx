@@ -6,7 +6,7 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage } from "@/src/redux/features/messagesSlice"
+import { addMessage } from "@/src/redux/features/chatSlice"
 
 interface IUserInfo {
     name: string,
@@ -40,7 +40,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         socket?.emit('onChat', contactId)
 
         socket?.on('sendMessage', (message) => {
-            // console.log('i got new Message: ', message)
+            console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
     }, [socket])

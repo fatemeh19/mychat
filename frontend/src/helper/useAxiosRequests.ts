@@ -78,16 +78,14 @@ export const createChat = async (userId: string, contactId: string) => {
     // console.log('res from createChat : ', res)
 }
 
-export const createMessage = async (chatId: string, newMessage: sendMessageInterface, dispatch: any,) => {
+export const createMessage = async (chatId: string, newMessage:any, dispatch: any,) => {
     // console.log('start create message')
     let res: any;
     // not found chat => create chat
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {
-            // console.log('message created.')
-            dispatch(addMessage(newMessage))
-            // save message in messages redux
+            return res.data.value.message
 
         }
     } catch (error) {

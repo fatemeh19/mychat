@@ -27,7 +27,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const userInfo = useAppSelector(state => state.userInfo).User
     const socket = useAppSelector(state => state.socket).Socket
     const dispatch = useAppDispatch()
-    let newMessage: sendMessageInterface
+    // let newMessage: sendMessageInterface
     const chat = useAppSelector(state => state.chat).Chat
     let chatId = chat._id
     let firstChat = useAppSelector(state => state.chat).firstChat
@@ -45,10 +45,11 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         // @ts-ignore
         const file = fileRef.current?.files[0]
         if (file) {
-            let formData = new FormData()
-            formData.append('file', file)
-            console.log(formData.get('file'))
-            setFile(formData.get('file'))
+            // let formData = new FormData()
+            // formData.append('file', file)
+            // console.log(formData.get('file'))
+            // setFile(formData.get('file'))
+            setFile(file)
         }
 
     }
@@ -57,33 +58,51 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
-        let type = messageTypes.text
-        type = file ? file.type.split('/')[0] === 'audio' ? messageTypes.music : messageTypes.text : messageTypes.text
-        type = file ? file.type.split('/')[0] === 'application' ? messageTypes.file : messageTypes.text : messageTypes.text
+        // let type = messageTypes.text
+        // type = file.type.split('/')[0] === 'audio' ? messageTypes.music : messageTypes.text
+        // type = file.type.split('/')[0] === 'application' ? messageTypes.file : messageTypes.text
 
-        console.log('type : ', type)
-        newMessage = {
-            content: {
-                contentType: file ? type : 'text',
-                text: input ? input : ''
-            },
-            file: file ? file : null,
-            senderId: userInfo._id,
-            reply: {
-                isReplied: false
-            },
-            createdAt : Date.now()
-        }
+        // console.log('type : ', type)
+        let newMessage = new FormData()
+        newMessage.append('content[contentType]', messageTypes.text)
+        newMessage.append('content[text]', input)
+        file ? newMessage.append('file', file) : null
+        newMessage.append('senderId', userInfo._id)
+        console.log('input : ', input)
 
+
+
+        // newMessage = {
+        //     content: {
+        //         // contentType: file ? type : 'text',
+        //         contentType: messageTypes.music,
+        //         text: input ? input : ''
+        //     },
+        //     file: file ? file : null,
+        //     senderId: userInfo._id,
+        //     reply: {
+        //         isReplied: false
+        //     },
+        //     createdAt: Date.now()
+        // }
+
+        // let content = {
+        //     // contentType: file ? type : 'text',
+        //     contentType: messageTypes.music,
+        //     text: input
+        // }
+        let message = ''
         chatId
-            ? createMessage(chatId, newMessage, dispatch)
+            ? message = await createMessage(chatId, newMessage, dispatch)
             : null
 
         setInput('')
 
 
         if (socket) {
-            socket.emit('sendMessage', contactId, newMessage)
+            newMessage.forEach(item => console.log(item))
+            console.log('res from create message : ', message)
+            socket.emit('sendMessage', contactId, message)
         }
 
         console.log('new message : ', newMessage)
