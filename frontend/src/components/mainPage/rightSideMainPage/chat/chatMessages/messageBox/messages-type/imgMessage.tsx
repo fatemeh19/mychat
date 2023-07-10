@@ -3,7 +3,7 @@ import Image from "next/image"
 
 
 
-const ImageMessage = ({ msg }: { msg: recievedMessageInterface }) => {
+const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface }) => {
     const isText = msg.content.text ? true : false
 
     const fileFullUrl = msg.content.url.split('\\')
@@ -15,16 +15,15 @@ const ImageMessage = ({ msg }: { msg: recievedMessageInterface }) => {
     return (
         <>
 
-            <div className="relative max-w-[32rem]">
-
-                <div className={"w-fit bg-gray-200 rounded-lg rounded-tl-sm dark:bg-bgColorDark2 dark:text-white"}>
-                    <div className="flex flex-col">
+            <div className="relative max-w-[32rem] rounded-3xl">
+                <div className={`w-fit rounded-3xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                    <div className="flex flex-col rounded-3xl">
                         <Image
                             width={1000}
                             height={0}
                             src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
                             alt=""
-                            className={`w-[32rem] ${isText ? 'rounded-t-lg' : 'rounded-lg'}`}
+                            className={`w-[32rem] ${isText ? `rounded-t-lg  ${dir === 'rtl' ? 'rounded-tr-sm rounded-tl-3xl bg-white' : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'}` : `rounded-3xl rounded-tl-sm  ${dir === 'rtl' ? 'rounded-tr-sm rounded-tl-3xl bg-white' : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'}` }`}
                         />
                         <div className="relative">
 

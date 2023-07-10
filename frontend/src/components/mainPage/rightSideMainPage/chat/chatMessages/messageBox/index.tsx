@@ -18,7 +18,6 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
         name: '',
         profilePic: ''
     }
-    console.log('msg:', msg)
 
     msg.senderId === User._id
         ? sender = User
@@ -29,7 +28,6 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
     information.name = sender.name
     information.profilePic = sender.profilePic ? profilePic[profilePic.length - 1] : '';
 
-    console.log('message content type : ', msg)
     return (
         <div className="">
             <div className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>

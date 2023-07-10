@@ -2,47 +2,28 @@
 
 import { FC, useState } from "react";
 
-import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
+import Waveform from "./waveForm";
+import { recievedMessageInterface } from "@/src/models/interface";
 
 interface VoiceMessageProps {
-
+    dir : string,
+    msg : recievedMessageInterface
 }
 
-const VoiceMessage: FC<VoiceMessageProps> = () => {
-    const [play, setPlay] = useState<boolean>(false)
+const VoiceMessage: FC<VoiceMessageProps> = ({dir, msg}) => {
 
-    const Icon2 = play ? BsFillPauseCircleFill : BsFillPlayCircleFill
+    const fileFullUrl = msg.content.url.split('\\')
+    const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
+
+    
+    const date = new Date(msg.createdAt);
+    const time = date.getHours() + ":" + date.getMinutes()
+
     return (
-        <>
-            VoiceMessage
-            <div>
-                <div
-                    className={`
-                        control 
-                        cursor-pointer 
-                        w-12 h-12
-                        rounded-full
-                        flex
-                        items-center
-                        justify-center
-                        transition
-                        duration-500
-                        ${play ? '' : 'rotate-90'}
-                        ease-in-out
-                        `
-                    }
-                    onClick={() => setPlay(!play)}>
-                    <Icon2 className={`
-                        w-14
-                        h-14
-                         text-blue-500 
-                        ${play ? '' : 'rotate-[-90deg]'}
-                        `
-                    } />
-
-                </div>
-            </div>
-        </>
+        <div className={`px-3 pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
+            <Waveform url={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} dir={dir} time={time}/>
+            <p className={`date text-xs text-[#9a9a9a] mb-1 mt-2 whitespace-nowrap`}>{time}</p>
+        </div>
     );
 }
 
