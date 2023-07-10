@@ -24,7 +24,8 @@ interface recievedMessageInterface {
     content: {
         contentType: string ,
         url: string,
-        text: string
+        text: string,
+        originalName?: string,
     },
     reply: {
         isReplied: boolean
