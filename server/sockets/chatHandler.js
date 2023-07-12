@@ -39,5 +39,19 @@ export default function (io) {
     // const { chatId, messageIs, deleteAll } = deleteInfo;
   };
 
-  return { onChat, sendMessage, deleteMessage };
+  const seenMessage = async function (messageId) {
+    const socket = this;
+    const userId = socket.user.userId;
+    const chat = await Services.Chat.getChat({ messages: messageId });
+    await Services.Message.updateMessages({_id:messageId},{$push:{seenIds:userId}})
+    const memberIds = chat.memberIds;
+    let roomName =
+      memberIds[0] > memberIds[1]
+        ? memberIds[0] + "" + memberIds[1]
+        : memberIds[1] + "" + memberIds[0];
+
+    socket.to(roomName).emit("seenMessage", messageId,userId);
+  };
+
+  return { onChat, sendMessage, deleteMessage,seenMessage };
 }
