@@ -18,21 +18,23 @@ export default function LeftSideMainPage() {
 
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
-    // socket.emit('online', userInfo._id)
 
 
     useEffect(() => {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-
-        console.log('socket created in client')
-        const socketIO = io('http://localhost:3000', {
-            auth: {
-                token: barearToken
-            }
-        })
-        dispatch(addSocket(socketIO))
     }, [])
+    
+    useEffect(() => {
+        socket?.emit('online', userInfo._id)
+        console.log('user online')
+        // const socketIO = io('http://localhost:3000', {
+        //     auth: {
+        //         token: barearToken
+        //     }
+        // })
+        // dispatch(addSocket(socketIO))
+    }, [socket])
 
     return (
         <div className="
