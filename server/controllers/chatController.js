@@ -3,10 +3,9 @@ import * as Services from "../services/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import ErrorMessages from "../messages/errors.js";
-import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
-import Chat from "../models/Chat.js";
+import message from "../models/message.js";
 const createChat = async (req, res) => {
   const { memberIds } = req.body;
   const data = await Validators.createChat.validate({ memberIds });
@@ -56,10 +55,10 @@ const getChat = async (req, res) => {
   }
   const messages = await Services.Message.getMessages({
     _id: { $in: chat.messages },
-  })
+  });
 
   chat.messages.splice(0, chat.messages.length);
-  chat.messages = messages
+  chat.messages = messages;
 
   await RH.SendResponse({
     res,
@@ -71,4 +70,32 @@ const getChat = async (req, res) => {
   });
 };
 
-export { createChat, getChat };
+const getChats = async (req, res) => {
+  const {
+    user: { userId },
+  } = req;
+  const chats = await Services.Chat.getChats({ memberIds: userId },"","-updatedAt");
+  // res.send(chats);
+  const messageIds = chats.map((chat)=> chat.messages[chat.messages.length-1])
+  const messages = await Services.Message.getMessages({
+    _id: { $in: messageIds },
+  },"","-updatedAt");
+  await chats.forEach((chat,index) => {
+    chat.messages.splice(0, chat.messages.length);
+    // console.log(chat)
+    // console.log(messages[index])
+    
+    chat.messages.push(messages[index])
+
+  });
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      chats,
+    },
+  });
+};
+
+export { createChat, getChat, getChats };
