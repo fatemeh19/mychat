@@ -3,7 +3,7 @@
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
 import { useEffect } from "react"
-import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
+import { fetchUserChatList, fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { io } from "socket.io-client";
 import { addSocket } from "@/src/redux/features/socketSlice"
@@ -13,18 +13,18 @@ export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
 
     const userInfo = useAppSelector(state => state.userInfo).User
-    const contactId = useAppSelector(state => state.userContact).Contact._id
+    const contacts = useAppSelector(state => state.userContactsList).contacts
     const socket = useAppSelector(state => state.socket).Socket
-
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
 
 
     useEffect(() => {
-        fetchUserContactsListData(dispatch);
+        fetchUserContactsListData(dispatch,userInfo._id);
         fetchUserProfileData(dispatch);
+        fetchUserChatList(dispatch,userInfo._id,contacts)
     }, [])
-    
+
     useEffect(() => {
         socket?.emit('online', userInfo._id)
         console.log('user online')

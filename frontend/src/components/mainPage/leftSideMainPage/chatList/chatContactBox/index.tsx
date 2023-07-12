@@ -45,16 +45,10 @@ const ChatContactBox: FC<chatContactProps> = ({
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
     const contactId = useAppSelector(state => state.userContact).Contact._id
-    // const socket = useRef(io('http://localhost:3000'))
-    // socket.on('onlineContact', (contactId: any) => {
-    //     console.log('online contact',contactId)
-    //     console.log(contactId)
-    //     setOnline(true)
-    // });
     useEffect(() => {
         socket?.on('onlineContact', (contactId) => {
             console.log('online contact : ' + contactId)
-            setOnline(true)
+            setOnline(!online)
         });
     }, [socket])
     return (

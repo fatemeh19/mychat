@@ -25,8 +25,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     const socket = useAppSelector(state => state.socket).Socket
     useEffect(() => {
         socket?.on('onlineContact', (contactId) => {
-        console.log('online contact : ' + contactId)
-        setOnline(true)
+            console.log('online contact : ' + contactId)
+            setOnline(!online)
         });
     }, [socket])
 
