@@ -2,8 +2,8 @@ import express from 'express'
 const router = express.Router()
 
 
-import {createChat,getChat} from '../controllers/chatController.js'
-router.route('/').post(createChat)
+import {createChat,getChat,getChats} from '../controllers/chatController.js'
+router.route('/').post(createChat).get(getChats)
 router.get('/:contactId',getChat)
 
 
