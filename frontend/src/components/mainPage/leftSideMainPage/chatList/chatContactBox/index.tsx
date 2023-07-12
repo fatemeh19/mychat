@@ -1,9 +1,9 @@
 "use client"
 
 import { setOpenChat } from "@/src/redux/features/openChatSlice";
-import { useAppDispatch } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
 import io from 'socket.io-client'
 // import { Socket } from "socket.io-client"
@@ -35,7 +35,7 @@ const ChatContactBox: FC<chatContactProps> = ({
     chatOpennedP,
     profilePicName
 }) => {
-    const dispatch = useAppDispatch()
+    // const dispatch = useAppDispatch()
             
     const handler=()=>{
         // setChatOpenned(true);
@@ -43,13 +43,20 @@ const ChatContactBox: FC<chatContactProps> = ({
     }
     const [online , setOnline] = useState(false)
     const [chatOpenned,setChatOpenned]=useState(false)
+    const socket = useAppSelector(state => state.socket).Socket
+    const contactId = useAppSelector(state => state.userContact).Contact._id
     // const socket = useRef(io('http://localhost:3000'))
     // socket.on('onlineContact', (contactId: any) => {
     //     console.log('online contact',contactId)
     //     console.log(contactId)
     //     setOnline(true)
     // });
-
+    useEffect(() => {
+        socket?.on('onlineContact', (contactId) => {
+            console.log('online contact : ' + contactId)
+            setOnline(true)
+        });
+    }, [socket])
     return (
         
         <div 

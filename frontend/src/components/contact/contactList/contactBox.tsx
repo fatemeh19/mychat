@@ -1,7 +1,8 @@
 "use client"
 
+import { useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 
 type Contact = {
     name: string;
@@ -21,11 +22,13 @@ const ContactBox: FC<ContactBoxProps> = ({
     const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
     const [online, setOnline] = useState(false)
     const contactId = contact._id;
-    // socket.current.on('onlineContact', (contactId: string, callback) => {
-    //     console.log('online contact : ' + contactId)
-    //     callback("contact online")
-    //     setOnline(true)
-    // });
+    const socket = useAppSelector(state => state.socket).Socket
+    useEffect(() => {
+        socket?.on('onlineContact', (contactId) => {
+        console.log('online contact : ' + contactId)
+        setOnline(true)
+        });
+    }, [socket])
 
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
@@ -37,10 +40,11 @@ const ContactBox: FC<ContactBoxProps> = ({
                 width={500} height={50} alt="contact-profile" />
             <div className="contact-details h-full pt-1 gap-1 grid w-full">
                 <p className="contact-name font-bold text-sm">{contact.name}</p>
-                <p className="status text-xs text-sky-500">
+                <p className="status text-xs ">
                     {online ?
-                        'Online'
-                        : 'Offline'
+
+                       <span className="text-sky-500">Online</span> 
+                        : <span className="text-gray-500">Offline</span>
                     }
                 </p>
             </div>
