@@ -20,20 +20,20 @@ export default function LeftSideMainPage() {
 
 
     useEffect(() => {
-        fetchUserContactsListData(dispatch,userInfo._id);
+        fetchUserContactsListData(dispatch, userInfo._id);
         fetchUserProfileData(dispatch);
-        fetchUserChatList(dispatch,userInfo._id,contacts)
+        fetchUserChatList(dispatch, userInfo._id, contacts)
+        const socketIO = io('http://localhost:3000', {
+            auth: {
+                token: barearToken
+            }
+        })
+        dispatch(addSocket(socketIO))
     }, [])
 
     useEffect(() => {
         socket?.emit('online', userInfo._id)
         console.log('user online')
-        // const socketIO = io('http://localhost:3000', {
-        //     auth: {
-        //         token: barearToken
-        //     }
-        // })
-        // dispatch(addSocket(socketIO))
     }, [socket])
 
     return (
