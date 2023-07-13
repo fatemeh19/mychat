@@ -90,6 +90,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     );
 }
 const Transition=React.forwardRef(function Transition(props,ref){
+    // @ts-ignore
     return <Slide direction="left" mountOnEnter ref={ref}  {...props} />
 })
 interface CustomizedDialogsProps {
@@ -119,7 +120,8 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                         onClose={() => handelOpen()}
                         aria-labelledby="customized-dialog-menu"
                         open={open}
-                        transitionComponent={Transition}
+                        // @ts-ignore
+                        transitioncomponent={Transition}
                         keepMounted
                     >
                         <DialogContent dividers

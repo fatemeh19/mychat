@@ -50,7 +50,7 @@ export default function Waveform({ dir, url, time }: { dir: string, url: string,
     }
 
     return (
-        <div className=" flex items-center w-56 gap-2">
+        <div className=" flex items-center w-60 gap-2">
             <div className="controls">
                 <div className={` control bg-[#fafafa] cursor-pointer w-12 h-12 rounded-full flex items-center justify-center transition duration-500 ${playing ? '' : 'rotate-90'} ease-in-out `} onClick={handlePlayPause}>
                     <Icon2 className={`w-14 h-14 text-blue-500 ${playing ? '' : 'rotate-[-90deg]'}`} />

@@ -11,16 +11,16 @@ export default function ChatMessages() {
     // const messages = useAppSelector(state => state.chat).Chat.messages
 
     const chat = useAppSelector(state => state.chat).Chat
-    console.log('chat messages after fetchChat : ', chat.messages)
+    // console.log('chat messages after fetchChat : ', chat.messages)
 
     return (
-        <div className="w-full h-full overflow-hidden flex justify-end flex-col">
+        <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
 
             {(chat.messages?.length == 0)
                 ? <div className="w-full h-full flex justify-center items-center">
                     <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>
                 </div>
-                : <div className="mr-1 pr-2 overflow-auto overflow-x-hidden chat-scrollbar mt-1">
+                : <div className="mx-1 pr-2 overflow-auto overflow-x-hidden chat-scrollbar mt-1">
                     {/* <DateLine date={'Today'}/> */}
                     <div className="flex flex-col ">
                         <>

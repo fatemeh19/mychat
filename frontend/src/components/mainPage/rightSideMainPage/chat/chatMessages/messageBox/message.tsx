@@ -7,6 +7,7 @@ import ImageMessage from "./messages-type/imgMessage"
 import { recievedMessageInterface } from "@/src/models/interface"
 import VoiceMessage from "./messages-type/voiceMessage"
 import MusicMessage from "./messages-type/musicMessage"
+import FileMessage from "./messages-type/fileMessage"
 
 interface messageProps {
     type: string
@@ -25,7 +26,8 @@ const Message: FC<messageProps> = ({ type, dir, msg }) => {
             return (<VoiceMessage dir={dir} msg={msg} />)
         case messageTypes.music:
             return (<MusicMessage dir={dir} msg={msg} />)
-
+        case messageTypes.file:
+            return (<FileMessage dir={dir} msg={msg} />)
     }
 
     return (<></>)

@@ -88,8 +88,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             console.log('res from create message : ', message)
             socket.emit('sendMessage', contactId, message)
         }
-
-        console.log('new message : ', newMessage)
+        
         dispatch(setFirstChat(false))
     }
 

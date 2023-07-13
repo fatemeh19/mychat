@@ -16,8 +16,7 @@ export const fetchUserContactsListData = async (dispatch:any,userId:string) => {
     };
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log(res)
-        const contacts=res.data.value.contacts;
+        const contacts = res.data.value.contacts;
         dispatch(addContactsList(contacts))
         
     }
@@ -31,8 +30,7 @@ export const fetchUserProfileData = async (dispatch:any) => {
     };
     const res = await callApi().get('/main/user/profile', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log(res)
-        const user=res.data.value.profile;
+        const user = res.data.value.profile;
         dispatch(addUserInfo(user))
     }
 }

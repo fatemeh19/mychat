@@ -9,6 +9,14 @@ enum messageTypes {
 
 }
 
+enum fileType {
+    pdf = 'pdf',
+    docx = 'docx',
+    pptx = 'pptx',
+    zip = 'zip',
+    xlsx = 'xlsx',
+}
+
 enum MessageBoxProps {
     rtl = 'rtl',
     ltr = 'ltr'
@@ -19,4 +27,4 @@ enum ChatType {
     Group = 'Group',
     Channel = 'Channel'
 }
-export { messageTypes, MessageBoxProps, ChatType }
+export { messageTypes, MessageBoxProps, ChatType, fileType }
