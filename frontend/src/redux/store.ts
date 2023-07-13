@@ -9,7 +9,7 @@ import userInfoReducer from './features/userInfoSlice';
 import messagesReducer from './features/messagesSlice';
 import chatReducer from './features/chatSlice'
 import socketReducer from './features/socketSlice';
-
+import chatOpenInListReducer from './features/chatOpenInListSlice';
 // ...
 export const store = configureStore({
   reducer: {
@@ -17,6 +17,7 @@ export const store = configureStore({
     localStorage: localStorageReducer,
     userContact: userContactReducer,
     openChat: openChatReducer,
+    chatOpenInList: chatOpenInListReducer,
     userContactsList : userContactListReducer,
     userChatList : userChatListReducer,
     userInfo: userInfoReducer,

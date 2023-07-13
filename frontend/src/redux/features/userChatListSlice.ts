@@ -8,7 +8,8 @@ interface chatBoxInterface {
     _id: string,
     lastMessage: string,
     lastMessageTime: string,
-    contact:ContactInterface
+    contact:ContactInterface,
+    open:boolean
 }
 interface initialStateInterface {
     chatList : chatBoxInterface[]
@@ -28,11 +29,15 @@ export const contactSlice = createSlice({
         addChatList: (state, action: PayloadAction<any>) => {
             state.chatList = action.payload
         },
+        openHandle: (state, action: PayloadAction<any>) => {
+            state.chatList[action.payload].open = !(state.chatList[action.payload].open);
+        },
     },
 });
 
 export const {
     addChat,
-    addChatList
+    addChatList,
+    openHandle
 } = contactSlice.actions;
 export default contactSlice.reducer;

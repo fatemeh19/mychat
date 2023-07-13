@@ -5,21 +5,23 @@ import { BiPin } from "react-icons/bi";
 import { BiEdit } from "react-icons/bi";
 import { BiArrowBack } from "react-icons/bi";
 import ChatContactBox from './chatContactBox';
-import { useAppSelector } from '@/src/redux/hooks';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
+import { useEffect, useState } from 'react';
 import ChatListHeader from './chatListHeader';
 import Link from 'next/link';
+import { profilePicNameHandler } from '@/src/helper/userInformation';
 export default function ChatList() {
     const Contact = useAppSelector(state => state.userContact).Contact
-    
     const chatList = useAppSelector(state => state.userChatList).chatList
-    
-    console.log(chatList)
-    const profilePicName = Contact.profilePic ? (Contact.profilePic).split(`\\`) : '';
+    const userInfo = useAppSelector(state => state.userInfo).User
+    const socket = useAppSelector(state => state.socket).Socket
+    const chatOpenInList = useAppSelector(state => state.chatOpenInList).chatOpenInList
     const openChat = useAppSelector(state => state.openChat).openChat;
-    
-    
-    
+    useEffect(() => {
+        socket?.emit('online', userInfo._id)
+        console.log('user online: '+userInfo._id)
+    }, [socket])
+
     return (
 
         <div className={`h-screen resize-x  bg-white  charListContainer overflow-none  min-w-full
@@ -45,12 +47,14 @@ export default function ChatList() {
                 <div>
                         {
                             (Object.keys(Contact).length == 0) ? null
-                            : <ChatContactBox
-                                profilePicName=
-                                {Contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
-                                    : '/uploads/picture/defaultProfilePic.png'}
-                                chatOpennedP={true} lastMessegeByContact={false} ContactName={Contact.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
-                        
+                            : 
+                            (chatOpenInList? null : 
+                                        <ChatContactBox
+                                            profilePicName=
+                                            {Contact.profilePic ? `/uploads/picture/${profilePicNameHandler(Contact)}`
+                                                : '/uploads/picture/defaultProfilePic.png'}
+                                            chatOpennedP={true} lastMessegeByContact={false} ContactName={Contact.name} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
+                            )
                         }
                 </div>   
                 <div>
@@ -62,9 +66,9 @@ export default function ChatList() {
                                     {/* @ts-ignore */}
                                     <ChatContactBox
                                         profilePicName=
-                                        {chatBox.contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                                        {chatBox.contact.profilePic ? `/uploads/picture/${profilePicNameHandler(chatBox.contact)}`
                                             : '/uploads/picture/defaultProfilePic.png'}
-                                        chatOpennedP={false} lastMessegeByContact={false} ContactName={chatBox.contact.name} status={false} lastMessage={chatBox.lastMessage} ContactSeen={false} lastMessageTime={''} numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
+                                        chatOpennedP={chatBox.open} lastMessegeByContact={false} ContactName={chatBox.contact.name} status={false} lastMessage={chatBox.lastMessage} ContactSeen={false} lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
                                 </Link>
                             ))
                 }

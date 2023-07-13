@@ -1,13 +1,12 @@
 "use client"
 
-import { addChat, addChatList } from "../redux/features/userChatListSlice"
+import { addChat } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
-import { useAppSelector } from "../redux/hooks"
 import callApi from "./callApi"
 
 
-export const fetchUserContactsListData = async (dispatch:any,userId:string) => {
+export const fetchUserContactsListData = async (dispatch:any) => {
     const token = localStorage.getItem('token')
     const config = {
         headers: {
@@ -18,8 +17,8 @@ export const fetchUserContactsListData = async (dispatch:any,userId:string) => {
     if (res.statusText && res.statusText === 'OK') {
         const contacts = res.data.value.contacts;
         dispatch(addContactsList(contacts))
-        
     }
+
 }
 export const fetchUserProfileData = async (dispatch:any) => {
     const token = localStorage.getItem('token')
@@ -35,35 +34,46 @@ export const fetchUserProfileData = async (dispatch:any) => {
     }
 }
 
-export const fetchUserChatList = async (dispatch:any,userId:string,contactList:any) => {
-    console.log(contactList)
+export const fetchUserChatList = async (dispatch:any) => {
+    
     const token = localStorage.getItem('token')
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     };
-    const findContact=(contactId:any)=>{
+    
+    const findContact=async (contactId:any)=>{
         let contact={}
-        console.log(contactId)
+        let contactList=[]
+        const res1 = await callApi().get('/main/contact/', config)
+        if (res1.statusText && res1.statusText === 'OK') {
+            contactList= res1.data.value.contacts;
+            
+        }
         for(let i=0;i<contactList.length;i++){
             if(contactList[i]._id==contactId){
                 contact=contactList[i]
-                console.log(contact)
+                console.log("fond")
                 break;
             }
         }
         return contact;
+       
     }
-    const contactChatList=(chatBox:any)=>{
+    const contactChatList=async (chatBox:any)=>{
         let contact={}
+        let userId;
+        const res = await callApi().get('/main/user/profile', config)
+        if (res.statusText && res.statusText === 'OK') {
+            userId = res.data.value.profile._id;
+            
+        }
         if(chatBox.memberIds[0]==userId){
-            contact=findContact(chatBox.memberIds[1])
-            console.log(contact)
+            contact=await findContact(chatBox.memberIds[1])
         }
         else{
-            contact=findContact(chatBox.memberIds[0])
-            console.log(contact)
+            contact=await findContact(chatBox.memberIds[0])
         }
         
         return contact;
@@ -74,16 +84,23 @@ export const fetchUserChatList = async (dispatch:any,userId:string,contactList:a
         const chatList=res.data.value.chats;
         
         for(let i=0;i<chatList.length;i++){
-            let contact=contactChatList(chatList[i]);
+            let contact={}
+            contact=await contactChatList(chatList[i])
+            console.log(contact)
             let chat={
-                contact:contact,
+                contact: contact,
                 _id:chatList[i]._id,
                 lastMessage:chatList[i].messages[0].content.text,
-                lastMessageTime:chatList[i].updatedAt
+                lastMessageTime:chatList[i].updatedAt,
+                open:false
             }
             dispatch(addChat(chat))
+            
         }
-        // dispatch(addChatList(chatList))
     }
 }
 
+export const profilePicNameHandler=(user:any)=>{
+    const profilePicName = user.profilePic ? (user.profilePic).split(`\\`) : '';
+    return profilePicName[profilePicName.length - 1];
+}

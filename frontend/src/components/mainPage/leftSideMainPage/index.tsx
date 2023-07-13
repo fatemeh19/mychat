@@ -13,16 +13,14 @@ export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
 
     const userInfo = useAppSelector(state => state.userInfo).User
-    const contacts = useAppSelector(state => state.userContactsList).contacts
-    const socket = useAppSelector(state => state.socket).Socket
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
 
 
     useEffect(() => {
-        fetchUserContactsListData(dispatch, userInfo._id);
+        fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-        fetchUserChatList(dispatch, userInfo._id, contacts)
+        fetchUserChatList(dispatch)
         const socketIO = io('http://localhost:3000', {
             auth: {
                 token: barearToken
@@ -31,10 +29,7 @@ export default function LeftSideMainPage() {
         dispatch(addSocket(socketIO))
     }, [])
 
-    useEffect(() => {
-        socket?.emit('online', userInfo._id)
-        console.log('user online')
-    }, [socket])
+    
 
     return (
         <div className="

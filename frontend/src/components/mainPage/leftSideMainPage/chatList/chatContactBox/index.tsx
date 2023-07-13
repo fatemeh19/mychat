@@ -1,10 +1,13 @@
 "use client"
 
+import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { setOpenChat } from "@/src/redux/features/openChatSlice";
+import { openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
 import { FC, useEffect, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 import io from 'socket.io-client'
 // import { Socket } from "socket.io-client"
 
@@ -35,27 +38,37 @@ const ChatContactBox: FC<chatContactProps> = ({
     chatOpennedP,
     profilePicName
 }) => {
-    // const dispatch = useAppDispatch()
-            
-    const handler=()=>{
-        // setChatOpenned(true);
-        // dispatch(setOpenChat(true))
-    }
+    const dispatch = useAppDispatch()
+    const date = new Date(lastMessageTime);
+    const time = date.getHours() + ":" + date.getMinutes()
     const [online , setOnline] = useState(false)
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
     const contactId = useAppSelector(state => state.userContact).Contact._id
+    const chatList = useAppSelector(state => state.userChatList).chatList
     useEffect(() => {
         socket?.on('onlineContact', (contactId) => {
             console.log('online contact : ' + contactId)
             setOnline(!online)
         });
     }, [socket])
+    const handler=()=>{
+        
+        for(let i=0;i<chatList.length;i++){
+            if(chatList[i].open){
+                dispatch(openHandle(i))
+            }
+            if(chatList[i].contact._id==contactId){
+                dispatch(openHandle(i))
+            }
+        }
+    }
+    console.log(chatOpennedP)
     return (
         
         <div 
         onClick={handler}
-        className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox  
+        className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
         tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center 
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
@@ -93,7 +106,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                     <div className="relative   w-full">
                         <span className='text-md font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
                         <div className="right-0 font-semibold text-sm top-[3px] absolute messageTimeSent text-gray-400">
-                            <span className="last-mes-time">{lastMessageTime}</span>
+                            <span className="last-mes-time">{time}</span>
                             
                         </div>
                     </div>
