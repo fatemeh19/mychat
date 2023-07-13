@@ -5,7 +5,7 @@ import { addUserInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
 
 
-export const fetchUserContactsListData = async (dispatch:any) => {
+export const fetchUserContactsListData = async (dispatch: any) => {
     // const dispatch = useAppDispatch()
     const token = localStorage.getItem('token')
     const config = {
@@ -16,12 +16,11 @@ export const fetchUserContactsListData = async (dispatch:any) => {
     // console.log('get contacts')
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log(res)
-        const contacts=res.data.value.contacts;
+        const contacts = res.data.value.contacts;
         dispatch(addContactsList(contacts))
     }
 }
-export const fetchUserProfileData = async (dispatch:any) => {
+export const fetchUserProfileData = async (dispatch: any) => {
     // const dispatch = useAppDispatch()
     const token = localStorage.getItem('token')
     const config = {
@@ -32,8 +31,7 @@ export const fetchUserProfileData = async (dispatch:any) => {
     // console.log('get user info')
     const res = await callApi().get('/main/user/profile', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log(res)
-        const user=res.data.value.profile;
+        const user = res.data.value.profile;
         dispatch(addUserInfo(user))
     }
 }

@@ -1,5 +1,8 @@
+// "use client"
+
 import { Providers } from '../redux/provider'
 import './globals.css'
+// import {useState,useEffect} from 'react'
 // import { Inter } from 'next/font/google'
 
 
@@ -13,6 +16,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+  // const [mounted, setMounted] = useState(false);
+  // useEffect(() => setMounted(true), []);
   return (
     <Providers >
       <html lang="en">
