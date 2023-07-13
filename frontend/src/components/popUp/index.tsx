@@ -121,7 +121,7 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                         aria-labelledby="customized-dialog-menu"
                         open={open}
                         // @ts-ignore
-                        transitionComponent={Transition}
+                        transitioncomponent={Transition}
                         keepMounted
                     >
                         <DialogContent dividers
