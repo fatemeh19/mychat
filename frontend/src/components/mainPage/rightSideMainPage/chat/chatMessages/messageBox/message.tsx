@@ -6,7 +6,7 @@ import TextMessage from "./messages-type/textMessage"
 import ImageMessage from "./messages-type/imgMessage"
 import { recievedMessageInterface } from "@/src/models/interface"
 import VoiceMessage from "./messages-type/voiceMessage"
-import MusicMessage from "./messages-type/musicMessage"
+import MusicMessage from "./messages-type/musicMessage/musicMessage"
 import FileMessage from "./messages-type/fileMessage"
 
 interface messageProps {

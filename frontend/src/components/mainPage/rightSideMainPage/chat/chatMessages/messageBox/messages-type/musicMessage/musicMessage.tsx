@@ -1,7 +1,7 @@
 import { recievedMessageInterface } from "@/src/models/interface";
 import { FC, useState, createRef, useEffect } from "react";
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
-
+import style from './musicStyle.module.css'
 interface MusicMessageProps {
     dir: string,
     msg: recievedMessageInterface
@@ -52,18 +52,17 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
         // mySlider.style = `background: linear-gradient(90deg, rgba(230,126,34,1) ${music.current}%, #e1e1e1 0%);`
 
     }
-
     return (
-        <div className={`px-3 pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
-            <div className=" flex items-center w-60 gap-2">
+        <div className={`px-3 ${style.input} pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
+            <div className=" flex items-center w-72 gap-2">
                 <div className={` control bg-[#fafafa] cursor-pointer w-12 h-12 rounded-full flex items-center justify-center transition duration-500 ${playing ? '' : 'rotate-90'} ease-in-out `} onClick={handelPlayPause}>
                     <Icon2 className={`w-14 h-14 text-blue-500 ${playing ? '' : 'rotate-[-90deg]'}`} />
                 </div>
-                <div className="info flex flex-col w-full">
+                <div className="info flex flex-col w-full break-all">
                     <p className="font-semibold text-sm">{originalName}</p>
                     {
                         !playing
-                            ? <input type="range" id="my-slider" min={0} max={10} onInput={handelRange} />
+                            ? <input type="range" id="my-slider" min={0} max={200} onInput={handelRange} />
 
                             : <p className="author text-sm"> [unknown] </p>
                     }

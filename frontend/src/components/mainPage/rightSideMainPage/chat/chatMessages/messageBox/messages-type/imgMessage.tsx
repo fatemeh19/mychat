@@ -1,16 +1,25 @@
 import { recievedMessageInterface } from "@/src/models/interface"
 import Image from "next/image"
+import { useState } from 'react'
 
 
 
 const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface }) => {
     const isText = msg.content.text ? true : false
 
+    const [open, setOpen] = useState(false)
+    // const imageWidth = window;
+    console.log(window)
+
     const fileFullUrl = msg.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
     const date = new Date(msg.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
+
+    const openImage = () => {
+        setOpen(true)
+    }
 
     return (
         <>
@@ -38,6 +47,29 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                                     }`
                                 }`
                             }
+                            onClick={openImage}
+                        />
+                        <Image
+                            width={500}
+                            height={0}
+                            src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
+                            alt=""
+                            className={`
+                                w-[32rem] 
+                                ${isText
+                                    ? `rounded-t-lg  
+                                        ${dir === 'rtl'
+                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
+                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
+                                    }`
+                                    : `rounded-3xl
+                                        ${dir === 'rtl'
+                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
+                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
+                                    }`
+                                }`
+                            }
+                            onClick={openImage}
                         />
                         <div className="relative">
 
