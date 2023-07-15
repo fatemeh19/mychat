@@ -3,7 +3,7 @@
 
 # dependencies
 /frontend/node_modules
-/frontend/.history
+/.history
 /frontend/.pnp
 /frontend/.pnp.js
 /frontend/public/uploads

@@ -4,12 +4,12 @@ import localStorageReducer from './features/localStorageSlice';
 import userContactReducer from './features/userContactSlice';
 import openChatReducer from './features/openChatSlice';
 import userContactListReducer from './features/userContactListSlice';
+import userChatListReducer from './features/userChatListSlice';
 import userInfoReducer from './features/userInfoSlice';
 import messagesReducer from './features/messagesSlice';
 import chatReducer from './features/chatSlice'
 import socketReducer from './features/socketSlice';
-
-
+import chatOpenInListReducer from './features/chatOpenInListSlice';
 // ...
 export const store = configureStore({
   reducer: {
@@ -17,7 +17,9 @@ export const store = configureStore({
     localStorage: localStorageReducer,
     userContact: userContactReducer,
     openChat: openChatReducer,
-    userContactsList: userContactListReducer,
+    chatOpenInList: chatOpenInListReducer,
+    userContactsList : userContactListReducer,
+    userChatList : userChatListReducer,
     userInfo: userInfoReducer,
     message: messagesReducer,
     chat: chatReducer,
