@@ -8,6 +8,7 @@ import { recievedMessageInterface } from "@/src/models/interface"
 import VoiceMessage from "./messages-type/voiceMessage"
 import MusicMessage from "./messages-type/musicMessage/musicMessage"
 import FileMessage from "./messages-type/fileMessage"
+import VideoMessage from "./messages-type/videoMessages"
 
 interface messageProps {
     type: string
@@ -28,6 +29,8 @@ const Message: FC<messageProps> = ({ type, dir, msg }) => {
             return (<MusicMessage dir={dir} msg={msg} />)
         case messageTypes.file:
             return (<FileMessage dir={dir} msg={msg} />)
+        case messageTypes.video:
+            return (<VideoMessage dir={dir} msg={msg} />)
     }
 
     return (<></>)

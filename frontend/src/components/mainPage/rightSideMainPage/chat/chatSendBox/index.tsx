@@ -52,6 +52,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
+        console.log(file)
         let type = messageTypes.text
         switch (file?.type.split('/')[0]) {
             case 'audio':
@@ -62,6 +63,9 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 break;
             case 'image':
                 type = messageTypes.picture
+                break;
+            case 'video':
+                type = messageTypes.video
                 break;
             default:
 
@@ -88,7 +92,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             console.log('res from create message : ', message)
             socket.emit('sendMessage', contactId, message)
         }
-        
+
         dispatch(setFirstChat(false))
     }
 

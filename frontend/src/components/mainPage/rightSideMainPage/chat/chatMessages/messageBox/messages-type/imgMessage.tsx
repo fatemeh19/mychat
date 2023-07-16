@@ -54,7 +54,7 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                             onClick={openImage}
                         />
                         <div className="relative flex flex-col gap-1 items-end">
-                            <div className={`relative pr-[8px] flex items-end w-fit rounded-xl`}>
+                            <div className={`relative pr-[8px] flex items-end justify-between w-fit rounded-xl`}> {/* w-full for english : ltr ----- w-fit for farsi : rtl*/}
                                 {
                                     isText
                                         ?
