@@ -18,63 +18,64 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
     const time = date.getHours() + ":" + date.getMinutes()
 
     const openImage = () => {
-        setOpen(true)
+        console.log('clicked')
+        setOpen(!open)
+        console.log('open : ', open)
     }
 
     return (
         <>
 
-            <div className="relative max-w-[28rem] rounded-3xl">
-                <div className={`w-fit rounded-3xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
-                    <div className="flex flex-col rounded-3xl">
+            <div className="relative max-w-[22rem] rounded-xl">
+                <div className={`w-fit rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                    <div className="flex flex-col rounded-xl">
                         <Image
                             width={500}
                             height={0}
                             src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
                             alt=""
                             className={`
-                                w-[32rem] 
+                                w-[28rem] 
                                 ${isText
                                     ? `rounded-t-lg  
                                         ${dir === 'rtl'
-                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
-                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
+                                        ? 'rounded-tr-sm rounded-tl-xl bg-white'
+                                        : 'rounded-tl-sm rounded-tr-xl bg-yellow-200'
                                     }`
-                                    : `rounded-3xl
+                                    : `rounded-xl
                                         ${dir === 'rtl'
-                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
-                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
+                                        ? 'rounded-tr-sm rounded-tl-xl bg-white'
+                                        : 'rounded-tl-sm rounded-tr-xl bg-yellow-200'
                                     }`
-                                }`
+                                }
+                                ${open
+                                    ? `w-[${outerHeight}px]`
+                                    : ''
+                                }
+                                cursor-pointer
+                                `
                             }
                             onClick={openImage}
                         />
-                        <Image
-                            width={500}
-                            height={0}
-                            src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
-                            alt=""
-                            className={`
-                                w-[32rem] 
-                                ${isText
-                                    ? `rounded-t-lg  
-                                        ${dir === 'rtl'
-                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
-                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
-                                    }`
-                                    : `rounded-3xl
-                                        ${dir === 'rtl'
-                                        ? 'rounded-tr-sm rounded-tl-3xl bg-white'
-                                        : 'rounded-tl-sm rounded-tr-3xl bg-yellow-200'
-                                    }`
-                                }`
-                            }
-                            onClick={openImage}
-                        />
-                        <div className="relative">
-
-                            {isText ? <p className="px-2 py-1 pb-2 break-all">{msg.content.text}</p> : null}
-                            <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 ${isText ? '' : 'absolute bottom-0'} `}>{time}</p>
+                        <div className="relative flex flex-col gap-1 items-end">
+                            <div className={`relative pr-[8px] flex items-end w-fit rounded-xl`}>
+                                {
+                                    isText
+                                        ?
+                                        <>
+                                            <p className="px-2 py-2 pb-1 break-all whitespace-pre-line text-sm">{msg.content.text}</p>
+                                            <div className="w-20 h-2 relative">
+                                                <span className="absolute right-0 bottom-[-1px] date text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap">{time} AM
+                                                    <span className="pl-1 text-green-500"> \// </span>
+                                                </span>
+                                            </div>
+                                        </>
+                                        :
+                                        <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 ${isText ? '' : 'absolute bottom-[-5px]'} `}>{time} AM
+                                            <span className="pl-1 text-green-500"> \// </span>
+                                        </p>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

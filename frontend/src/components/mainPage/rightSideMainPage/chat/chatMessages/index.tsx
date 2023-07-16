@@ -1,18 +1,11 @@
 "use client"
 
 import { useAppSelector } from "@/src/redux/hooks"
-import DateLine from "./dateLine"
 import MessageBox from "./messageBox"
-import { useEffect } from 'react'
-import { recievedMessageInterface } from "@/src/models/interface"
 
 export default function ChatMessages() {
 
-    // const messages = useAppSelector(state => state.chat).Chat.messages
-
     const chat = useAppSelector(state => state.chat).Chat
-    // console.log('chat messages after fetchChat : ', chat.messages)
-
     return (
         <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
 
@@ -30,12 +23,6 @@ export default function ChatMessages() {
                                 })
                             }
                         </>
-
-                        {/* if me set dir to rlt  */}
-                        {/* if others set dir to ltr  */}
-                        {/* <MessageBox dir={MessageBoxProps.rtl} /> */}
-                        {/* <MessageBox dir={MessageBoxProps.ltr} />  */}
-
                     </div>
                 </div>
             }

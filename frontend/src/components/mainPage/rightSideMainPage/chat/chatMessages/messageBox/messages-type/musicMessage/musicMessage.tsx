@@ -29,7 +29,7 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
 
     const handelPlayPause = () => {
         setPlay(!playing)
-        console.log(playing)
+        console.log('playing',playing)
         playing ? music.current?.pause() : music.current?.play()
     }
     const handelTile = () => {
