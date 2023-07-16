@@ -8,8 +8,6 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
     const isText = msg.content.text ? true : false
 
     const [open, setOpen] = useState(false)
-    // const imageWidth = window;
-    console.log(window)
 
     const fileFullUrl = msg.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
@@ -18,9 +16,7 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
     const time = date.getHours() + ":" + date.getMinutes()
 
     const openImage = () => {
-        console.log('clicked')
         setOpen(!open)
-        console.log('open : ', open)
     }
 
     return (
@@ -71,7 +67,7 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                                             </div>
                                         </>
                                         :
-                                        <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 ${isText ? '' : 'absolute bottom-[-5px]'} `}>{time} AM
+                                        <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 absolute bottom-[-5px] right-0`}>{time} AM
                                             <span className="pl-1 text-green-500"> \// </span>
                                         </p>
                                 }
