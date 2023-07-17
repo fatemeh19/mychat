@@ -31,7 +31,7 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
         setValue(videoRef.current.currentTime)
     }
 
-    console.log('video message : ', msg)
+    // console.log('video message : ', msg)
     // return (
     //     <div className={` rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
     //         <div className=" flex flex-col items-center w-72 gap-2">
