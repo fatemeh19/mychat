@@ -44,7 +44,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     }
 
     const sendHandler = async () => {
-        console.log('firstChat in sendHandler : ', firstChat)
         firstChat ? chatId = await createChat(userInfo._id, contactId) : null
 
         let type = messageTypes.text
@@ -68,28 +67,34 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
                 break;
         }
-        console.log('type : ', type)
-        let newMessage = new FormData()
-        newMessage.append('content[contentType]', type)
-        newMessage.append('content[text]', input)
-        file ? newMessage.append('file', file) : null
-        newMessage.append('senderId', userInfo._id)
-        voice ? newMessage.append('file', voice) : null
+        if (type === messageTypes.text && input.length == 0) {
+            console.log('empty text')
+        } else {
+            console.log('type : ', type)
+            let newMessage = new FormData()
 
-        let message = ''
-        chatId
-            ? message = await createMessage(chatId, newMessage, dispatch)
-            : null
+            newMessage.append('content[contentType]', type)
+            newMessage.append('content[text]', input)
+            file ? newMessage.append('file', file) : null
+            newMessage.append('senderId', userInfo._id)
+            voice ? newMessage.append('file', voice) : null
 
-        setInput('')
-        setFile(null)
+            let message = ''
+            chatId
+                ? message = await createMessage(chatId, newMessage, dispatch)
+                : null
 
-        if (socket) {
-            newMessage.forEach(item => console.log(item))
-            socket.emit('sendMessage', contactId, message)
+            setInput('')
+            setFile(null)
+
+            if (socket) {
+                newMessage.forEach(item => console.log(item))
+                socket.emit('sendMessage', contactId, message)
+            }
+
+            dispatch(setFirstChat(false))
         }
 
-        dispatch(setFirstChat(false))
     }
 
     return (
