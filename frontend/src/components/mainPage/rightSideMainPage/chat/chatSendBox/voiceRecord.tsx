@@ -1,7 +1,7 @@
 "use client"
 
 import { Dispatch, FC, useEffect, useRef } from "react";
-import { FiMic, FiStopCircle, FiSend } from 'react-icons/fi'
+import { FiMic, FiStopCircle, FiSend, FiUpload } from 'react-icons/fi'
 
 interface VoiceRecordProps {
   voice: any,
@@ -27,14 +27,13 @@ const VoiceRecord: FC<VoiceRecordProps> = ({ voice, setVoice, sendHandler }) => 
         // Success callback
         .then((stream) => {
           const mediaRecorder = new MediaRecorder(stream);
-          console.log(recordRef.current)
           // @ts-ignore
           recordRef.current.onclick = () => recordHandler(mediaRecorder, stopRef.current, recordRef.current)
           let chunks: any[] = [];
 
           mediaRecorder.ondataavailable = (e: any) => {
             chunks.push(e.data);
-            const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+            const blob = new Blob(chunks, { type: "voice/ogg; codecs=opus" });
             setVoice(blob)
           };
           // @ts-ignore
@@ -58,35 +57,34 @@ const VoiceRecord: FC<VoiceRecordProps> = ({ voice, setVoice, sendHandler }) => 
 
 
   const recordHandler = (mediaRecorder: MediaRecorder, stopRef: any, recordRef: any) => {
+    // start record voice
     mediaRecorder.start();
-    console.log(mediaRecorder.state);
-    console.log("recorder started");
     stopRef.style.display = 'block'
     recordRef.style.display = 'none'
   }
   const stopHandler = (mediaRecorder: MediaRecorder, stopRef: any, sendRef: any) => {
+    // stop record voice
     sendRef.style.display = 'block'
     stopRef.style.display = 'none'
     mediaRecorder.stop();
-    console.log(mediaRecorder.state);
-    console.log("recorder stopped");
   }
   function send(sendRef: any, recordRef: any) {
-    sendHandler()
+    // send record to server
+    // sendHandler()
     sendRef.style.display = 'none'
     recordRef.style.display = 'block'
   }
 
   return (
     <div>
-      <div ref={recordRef} className='cursor-pointer' >
+      <div ref={recordRef} className=' cursor-pointer transition-all duration-300' >
         <FiMic />
       </div>
-      <div ref={stopRef} className="text-red-500 hidden" >
+      <div ref={stopRef} className=" cursor-pointer text-red-500 hidden transition-all duration-300" >
         <FiStopCircle />
       </div>
-      <div ref={sendRef} className="text-blue-500 hidden">
-        <FiSend />
+      <div ref={sendRef} className=" cursor-pointer text-blue-500 hidden transition-all duration-300">
+        <FiUpload />
       </div>
     </div>
   );
