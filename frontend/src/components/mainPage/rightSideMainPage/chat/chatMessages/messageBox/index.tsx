@@ -75,7 +75,7 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
                             : null
                     }
 
-                    <div className="gap-3 flex flex-col">
+                    <div className="gap-3 flex flex-col font-[vazir]">
                         <Message type={msg.content.contentType} dir={information.dir} msg={msg} />
                     </div>
                 </div>

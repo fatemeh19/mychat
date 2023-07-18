@@ -29,12 +29,12 @@ import connectDB from './db/connect.js'
 
 app.use(cors({
     origin: "http://localhost:3001",
-    credentials:true
+    credentials: true
 }))
 
 // routers
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/main',mainRouter)
+app.use('/api/v1/main', mainRouter)
 
 // middlewares
 app.use(notFound)

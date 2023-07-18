@@ -1,5 +1,7 @@
+"use client"
+
 import { recievedMessageInterface } from "@/src/models/interface";
-import { FC, useState, createRef, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
 import style from './musicStyle.module.css'
 interface MusicMessageProps {
@@ -10,6 +12,9 @@ interface MusicMessageProps {
 const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
 
     const [playing, setPlay] = useState(false);
+    const [value, setValue] = useState(0);
+    const [musicDuration, setMusicDuration] = useState(0);
+
     const Icon2 = playing ? BsFillPauseCircleFill : BsFillPlayCircleFill
 
     const date = new Date(msg.createdAt);
@@ -17,40 +22,50 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
 
     const fileFullUrl = msg.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
-
-
-    // console.log('msg : ', msg)
     const originalName = msg.content.originalName?.split('.')[0]
 
-    let music = createRef<HTMLAudioElement>();
-    useEffect(() => {
-        music = createRef<HTMLAudioElement>()
-    }, [])
+    let musicRef = useRef();
+    let rengeRef = useRef();
 
     const handelPlayPause = () => {
         setPlay(!playing)
-        console.log(playing)
-        playing ? music.current?.pause() : music.current?.play()
-    }
-    const handelTile = () => {
-        console.log(music.current?.currentTime)
+        // @ts-ignore
+        playing ? musicRef.current.pause() : musicRef.current.play()
+        // @ts-ignore
+        setValue(musicRef.current.currentTime)
     }
 
     const handelRange = (e: any) => {
-        console.log(e)
-        const mySlider = document.getElementById("my-slider");
+        setValue(e.target.value)
         // @ts-ignore
-        const valPercent = (mySlider?.value / mySlider.max) * 100;
+        musicRef.current.currentTime = e.target.value
+        const valPercent = (value / musicDuration) * 100;
         // @ts-ignore
-        mySlider.style.background = `linear-gradient(to right, #3264fe ${valPercent}%, #d5d5d5 ${valPercent}%)`;
-
+        rengeRef.current
+            // @ts-ignore
+            ? rengeRef.current.style.background = `linear-gradient(to right, #3264fe ${valPercent}%, #d5d5d5 ${valPercent}%)`
+            : null
     }
     const playHandler = () => {
-        console.log('play1')
-        const mySlider = document.getElementById("my-slider");
+        // @ts-ignore
+        setValue(musicRef.current.currentTime)
+        const valPercent = (value / musicDuration) * 100;
+        // @ts-ignore
+        rengeRef.current
+            // @ts-ignore
+            ? rengeRef.current.style.background = `linear-gradient(to right, #3264fe ${valPercent}%, #bebebe ${valPercent}%)`
+            : null
+    }
 
-        // mySlider.style = `background: linear-gradient(90deg, rgba(230,126,34,1) ${music.current}%, #e1e1e1 0%);`
+    // get music duration
+    const onDurationChangeHandler = () => {
+        // @ts-ignore
+        setMusicDuration(musicRef.current.duration)
+    }
 
+    const endHandler = () => {
+        setValue(0)
+        setPlay(false)
     }
     return (
         <div className={`px-3 ${style.input} pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
@@ -61,13 +76,13 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
                 <div className="info flex flex-col w-full break-all">
                     <p className="font-semibold text-sm">{originalName}</p>
                     {
-                        !playing
-                            ? <input type="range" id="my-slider" min={0} max={200} onInput={handelRange} />
+                        playing
+                            ? <input type="range" ref={rengeRef} id="my-slider" min={0} max={musicDuration} value={value} onInput={handelRange} />
 
                             : <p className="author text-sm"> [unknown] </p>
                     }
                 </div>
-                <audio ref={music} src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} onTimeUpdate={playHandler}></audio>
+                <audio ref={musicRef} src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} onTimeUpdate={playHandler} onDurationChange={onDurationChangeHandler} onEnded={endHandler} ></audio>
             </div>
             <p className={`date text-xs text-[#9a9a9a] mb-1 mt-2 whitespace-nowrap`}>{time}</p>
         </div>
