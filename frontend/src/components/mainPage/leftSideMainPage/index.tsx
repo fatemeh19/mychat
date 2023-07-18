@@ -11,8 +11,6 @@ import { addSocket } from "@/src/redux/features/socketSlice"
 
 export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
-
-    const userInfo = useAppSelector(state => state.userInfo).User
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
 

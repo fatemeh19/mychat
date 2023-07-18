@@ -1,11 +1,12 @@
 "use client"
 
+import { profilePicNameHandler,fetchUserChatList } from "@/src/helper/userInformation";
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
 import { FC, useEffect, useState } from "react"
-import { useDispatch } from "react-redux";
+
 
 type Contact = {
     name: string;
@@ -22,15 +23,17 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
     const dispatch = useAppDispatch()
-    const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
     const [online, setOnline] = useState(false)
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
     useEffect(() => {
-        socket?.on('onlineContact', (contactId) => {
-            console.log('online contact : ' + contactId)
-            setOnline(!online)
+        socket?.on('onlineContact', (CId) => {
+            console.log('online contact : ' + CId)
+            if(contactId==CId){
+                setOnline(!online)
+            }
+            
         });
     }, [socket])
     const handleClick=()=>{
@@ -42,9 +45,11 @@ const ContactBox: FC<ContactBoxProps> = ({
             if(chatList[i].contact._id==contactId){
                 dispatch(openHandle(i))
                 dispatch(setChatOpenInList(true))
+                break
             }
             else if(chatList.length-1==i ){
                 dispatch(setChatOpenInList(false))
+                fetchUserChatList(dispatch)
             }
             
         }
@@ -53,7 +58,7 @@ const ContactBox: FC<ContactBoxProps> = ({
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
             onClick={() => {handleOpen();handleClick();}}>
             <Image
-                src={contact.profilePic ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                src={contact.profilePic ? `/uploads/picture/${profilePicNameHandler(contact)}`
                     : '/uploads/picture/defaultProfilePic.png'}
                 className="w-[50px] h-[50px] object-cover rounded-full "
                 width={500} height={50} alt="contact-profile" />
