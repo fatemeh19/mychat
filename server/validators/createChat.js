@@ -1,7 +1,12 @@
 import yup from 'yup'
-import mongoose from 'mongoose'
-const createChat = yup.object({
-    memberIds:yup.array().required('EmptyError').length(2)
+import { chatType } from '../utils/enums.js'
+let createChat = yup.object({
+    chatType:yup.string().oneOf(chatType,'EnumError').required('EmptyError'),
+    memberIds:yup.array().required('EmptyError').length(2),
+    name:yup.string().when('chatType',{
+       is:'group',
+       then: (createChat) => createChat.required('EmptyError')
+    })
 })
 
 export default createChat
