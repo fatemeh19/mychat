@@ -6,7 +6,7 @@ import ErrorMessages from "../messages/errors.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import message from "../models/message.js";
-import { chatType } from "../utils/enums.js";
+import { chatSearchType, chatType } from "../utils/enums.js";
 import Group from "../models/Group.js";
 const createChat = async (req, res) => {
   const { body:body,user:{userId} } = req;
@@ -54,14 +54,16 @@ const getChat = async (req, res) => {
   const data = await Validators.getChat.validate(body);
   console.log(data)
   let findQuery
+// find by memberIds
+  if(data.findBy==chatSearchType[0]){
+    findQuery = { memberIds: { $size: 2, $all: data.memberIds }}
 
-  // if type of chat is group
-  if(data.chatType==chatType[0]){
-    findQuery = { _id:data.id}
 
   }
+  // find by chatId
   else{
-    findQuery = { memberIds: { $size: 2, $all: data.memberIds }}
+    findQuery = { _id:data.id}
+
   }
   const chat = await Services.Chat.getChat(findQuery);
 
