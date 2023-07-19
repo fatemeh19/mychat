@@ -8,14 +8,20 @@ import { StatusCodes } from "http-status-codes";
 import message from "../models/message.js";
 import { chatSearchType, chatType } from "../utils/enums.js";
 import Group from "../models/Group.js";
+import crypto from "crypto";
+import "../utils/loadEnv.js";
+import createInviteLink from "../utils/createInviteLink.js";
 const createChat = async (req, res) => {
-  const { body:body,user:{userId} } = req;
+  const {
+    body: body,
+    user: { userId },
+  } = req;
   const data = await Validators.createChat.validate(body);
   // if type of chat is group
   if (data.chatType == chatType[1]) {
     const chatExists = await Services.Chat.getChat({
       memberIds: { $size: 2, $all: data.memberIds },
-      chatType:chatType[1]
+      chatType: chatType[1],
     });
 
     if (chatExists) {
@@ -25,11 +31,17 @@ const createChat = async (req, res) => {
         Field: fields.chat,
       });
     }
-  }else{
-    
-    data.owner = userId
+  } else {
+    data.owner = userId;
+    let primaryLink = {
+      link: createInviteLink(),
+      creator: userId,
+      expireDate: new Date(2147483647 * 1000).toUTCString(),
+    };
+    data.inviteLinks = []
+    data.inviteLinks.push(primaryLink)
   }
-  console.log(data)
+  
 
   const chat = await Services.Chat.createChat(data);
   await RH.SendResponse({
@@ -43,7 +55,7 @@ const createChat = async (req, res) => {
 };
 
 const getChat = async (req, res) => {
-  const { body:body } = req;
+  const { body: body } = req;
 
   // const {
   //   user: { userId },
@@ -52,18 +64,15 @@ const getChat = async (req, res) => {
   // const memberIds = [userId, contactId];
 
   const data = await Validators.getChat.validate(body);
-  console.log(data)
-  let findQuery
-// find by memberIds
-  if(data.findBy==chatSearchType[0]){
-    findQuery = { memberIds: { $size: 2, $all: data.memberIds }}
-
-
+  console.log(data);
+  let findQuery;
+  // find by memberIds
+  if (data.findBy == chatSearchType[0]) {
+    findQuery = { memberIds: { $size: 2, $all: data.memberIds } };
   }
   // find by chatId
-  else{
-    findQuery = { _id:data.id}
-
+  else {
+    findQuery = { _id: data.id };
   }
   const chat = await Services.Chat.getChat(findQuery);
 

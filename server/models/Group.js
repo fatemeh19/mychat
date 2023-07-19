@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose, mongo } from "mongoose";
 import Chat from "./Chat.js";
 import { groupType } from "../utils/enums.js";
 import { string } from "yup";
@@ -23,11 +23,29 @@ const GroupChatSchema = new mongoose.Schema({
     ref: "User",
     required:true
   },
+  // inviteLink:{
+    
+  //   createdLinks:[
+  //     {
+  //       creator:{
+  //         type:mongoose.Types.ObjectId,
+  //         ref:'User'
+  //       },
+  //       link: String,
+  //       expireDate: Date,
+  //     },
+
+  //   ]
+  // },
   inviteLinks: [
-    {
-      link: String,
-      expireDate: Date,
-    },
+   {
+        creator:{
+          type:mongoose.Types.ObjectId,
+          ref:'User'
+        },
+        link: String,
+        expireDate: Date,
+      },
   ],
   adminRights: [
     {
