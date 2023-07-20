@@ -13,7 +13,6 @@ export default function (io) {
       },
       socket
     );
-    console.log(socket);
     // socket.data.userId = userId
     socket.broadcast.emit("onlineContact", userId);
   };
