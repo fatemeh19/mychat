@@ -67,6 +67,7 @@ export const fetchUserChatList = async (dispatch:any) => {
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)
         const chatList=res.data.value.chats;
+        console.log(chatList)
         dispatch(addChatList([]))
         console.log(chatList)
         for(let i=0;i<chatList.length;i++){
