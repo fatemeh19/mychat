@@ -6,12 +6,24 @@ import Message from "./message"
 import { ChatType, MessageBoxProps } from "@/src/models/enum"
 import { useAppSelector } from "@/src/redux/hooks"
 import { recievedMessageInterface } from "@/src/models/interface"
+import { MouseEvent, useEffect, useRef, useState } from "react"
+import RightClick from "@/src/components/rightClick"
+
+const initialContextMenu = {
+    show: false,
+    x: 0,
+    y: 0
+}
 
 const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
+    // const [showContextmenu, setShowContextmenu] = useState(false)
+    // const [event, setEvent] = useState()
     const User = useAppSelector(state => state.userInfo).User
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatType = useAppSelector(state => state.chat).chatType
     let sender;
+
+    const [contextMenu, setContextMenu] = useState(initialContextMenu)
 
     let information = {
         dir: MessageBoxProps.rtl,
@@ -28,8 +40,22 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
     information.name = sender.name
     information.profilePic = sender.profilePic ? profilePic[profilePic.length - 1] : '';
 
+    const messageBox = useRef<HTMLDivElement>(null)
+
+    const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+        e.preventDefault()
+
+        const { clientX, clientY } = e
+        console.log(e)
+        // access to currentTarget = currentTarget = div:messageBox
+        setContextMenu({ show: true, x: clientX, y: clientY })
+    }
+    const closeContextMenu = () => setContextMenu(initialContextMenu)
+
     return (
-        <div className="">
+        <div className="" ref={messageBox} onContextMenu={handleContextMenu} >
+
+            {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} />}
             <div className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                 {
                     chatType !== ChatType.Private
@@ -37,7 +63,6 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
                             <div className="profileImageBox relative">
                                 {/* this image for box width so the text dont go under the profile image and make the opacity - 0 so we can see the second image ... i use this method til find better way */}
                                 <Image
-                                    // src={'/images/girl-profile3.jpg'}
                                     src={
                                         information.profilePic
                                             ? `/uploads/picture/${information.profilePic}`
