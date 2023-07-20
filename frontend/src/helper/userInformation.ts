@@ -18,6 +18,7 @@ export const fetchUserContactsListData = async (dispatch:any) => {
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
         const contacts = res.data.value.contacts;
+        console.log(contacts)
         dispatch(addContactsList(contacts))
     }
 
@@ -51,9 +52,9 @@ export const fetchUserChatList = async (dispatch:any) => {
     }
     const contactChatList=async (chatBox:any)=>{
         let contact={}
-        let userId=await userHandler();
+        let user=await userHandler();
         
-        if(chatBox.memberIds[0]==userId._id){
+        if(chatBox.memberIds[0]==user._id){
             contact=await findContact(chatBox.memberIds[1])
         }
         else{
@@ -62,7 +63,7 @@ export const fetchUserChatList = async (dispatch:any) => {
         
         return contact;
     }
-    const res = await callApi().get('/main/chat/', config)
+    const res = await callApi().get('/main/chat/list', config)
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)
         const chatList=res.data.value.chats;

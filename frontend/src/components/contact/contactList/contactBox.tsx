@@ -29,13 +29,22 @@ const ContactBox: FC<ContactBoxProps> = ({
     const chatList = useAppSelector(state => state.userChatList).chatList
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
-            console.log('online contact : ' + CId)
+            console.log('contactId : ' + contactId)
             if(contactId==CId){
+                console.log('online contact : ' + CId)
                 setOnline(!online)
             }
             
         });
-    }, [socket])
+        socket?.on('offlineContact', (CId) => {
+            console.log('contactId : ' + contactId)
+            if(contactId==CId){
+                console.log('offline contact : ' + CId)
+                setOnline(!online)
+            }
+            
+        });
+    }, [socket,contactId])
     const handleClick=()=>{
         
         for(let i=0;i<chatList.length;i++){

@@ -3,6 +3,10 @@ interface ContactInterface {
     _id : string,
     name: string,
     profilePic: string,
+    status:{
+        online : boolean,
+        lastseen : string
+    },
 }
 interface chatBoxInterface {
     _id: string,

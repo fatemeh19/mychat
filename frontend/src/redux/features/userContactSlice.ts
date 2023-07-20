@@ -5,6 +5,10 @@ interface ContactInterface {
     name: string,
     phoneNumber: string,
     profilePic: string,
+    status:{
+        online : boolean,
+        lastseen : string
+    },
 }
 interface initialStateInterface {
     Contact : ContactInterface
