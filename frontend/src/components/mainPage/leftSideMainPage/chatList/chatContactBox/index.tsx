@@ -12,7 +12,10 @@ import io from 'socket.io-client'
 // import { Socket } from "socket.io-client"
 
 interface chatContactProps {
-    status?: Boolean,
+    status?: {
+        online:boolean,
+        lastseen:string
+    },
     lastMessage: string,
     ContactSeen: Boolean,
     lastMessageTime: string,
@@ -41,9 +44,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     contactId
 }) => {
     const dispatch = useAppDispatch()
-    
-    
-    const [online , setOnline] = useState(false)
+    const [online , setOnline] = useState(status?.online)
+    // const [lastSeen , setLastSeen] = useState(status?.lastseen)
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -114,7 +116,7 @@ const ChatContactBox: FC<chatContactProps> = ({
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
         (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": '') }`}>
                 <div className='relative contactProfile h-full'>
-                    {(status || online) ? 
+                    {(status?.online || online ) ? 
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
                     dark:bg-[rgb(36,36,36)]
                     tablet:top-0">

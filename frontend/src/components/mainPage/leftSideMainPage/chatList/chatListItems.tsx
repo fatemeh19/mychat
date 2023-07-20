@@ -27,7 +27,7 @@ export default function ChatListItems() {
                                             : '/uploads/picture/defaultProfilePic.png'}
                                         contactId={Contact._id} chatOpennedP={true} 
                                         lastMessegeByContact={false} 
-                                        ContactName={Contact.name} status={false} 
+                                        ContactName={Contact.name} status={Contact.status} 
                                         lastMessage={''} ContactSeen={false} lastMessageTime={''} 
                                         numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
                             </Link>
@@ -48,7 +48,7 @@ export default function ChatListItems() {
                                             : '/uploads/picture/defaultProfilePic.png'}
                                         contactId={chatBox.contact._id} chatOpennedP={chatBox.open} 
                                         lastMessegeByContact={false} 
-                                        ContactName={chatBox.contact.name} status={false} 
+                                        ContactName={chatBox.contact.name} status={chatBox.contact.status} 
                                         lastMessage={chatBox.lastMessage} ContactSeen={false} 
                                         lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''} 
                                         recivedMessage={true} isTyping={false} />
