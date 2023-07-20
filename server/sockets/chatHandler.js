@@ -50,7 +50,7 @@ export default function (io) {
         ? memberIds[0] + "" + memberIds[1]
         : memberIds[1] + "" + memberIds[0];
 
-    socket.to(roomName).emit("seenMessage", messageId);
+    socket.to(roomName).emit("seenMessage", messageId,userId);
   };
 
   return { onChat, sendMessage, deleteMessage,seenMessage };
