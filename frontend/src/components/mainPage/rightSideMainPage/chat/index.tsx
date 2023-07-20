@@ -40,7 +40,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online }) =>
     }, [])
 
     return (
-        <div className="flex flex-col w-full h-screen relative min-w-fit">
+        <div className="flex flex-col w-full h-screen min-w-fit">
             <ChatHeader infoState={infoState} setInfoVState={setInfoVState} online={online} />
             <Suspense fallback={<p>Loading chat ...</p>} >
                 <ChatMessages />

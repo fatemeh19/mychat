@@ -1,0 +1,172 @@
+.li
+{
+    list-style: none;
+}
+
+.p
+{
+    color: black;
+    font-weight: 900;
+    font-size: 50px;
+}
+
+.wrapper,
+.hidden_scroll
+{
+    width: max-content !important;
+    border-radius: 15px;
+    padding: .3rem 0;
+    position: absolute;
+    background: rgba(255, 255, 255);
+    box-shadow: 0px 9px 30px -7px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(10.3px);
+}
+
+.wrapper img
+{
+    width: 20px;
+}
+
+.menu .item
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: .5rem .7rem;
+    cursor: pointer;
+    opacity: 50;
+    filter: blur(10);
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0.3rem;
+}
+
+.item .icon
+{
+    width: 20px;
+    height: 20px;
+}
+
+.item:hover
+{
+    background-color: rgb(0, 0, 0, .1);
+}
+
+.extend_box
+{
+    background-color: red;
+    z-index: 10;
+}
+
+.extend_menu
+{
+    overflow: hidden;
+    overflow-y: scroll;
+    max-height: 290px;
+    scroll-margin-right: 50px;
+}
+
+.extend_menu .item
+{
+    padding: .5rem;
+    padding-right: 1rem;
+}
+
+/* custom scrollbar for extended menu */
+.extend_menu::-webkit-scrollbar
+{
+    width: 5px;
+    height: 80px;
+    display: block;
+}
+
+.extend_menu::-webkit-scrollbar-thumb
+{
+    background-color: #778bb7;
+    border-radius: 10rem;
+    border: 1px solid #778bb7;
+}
+
+.extend_menu::-webkit-scrollbar-track
+{
+    height: 80px;
+    margin: 10px;
+    background: transparent;
+}
+
+.extend_icon
+{
+    position: absolute;
+    right: 20px;
+    font-size: 16px;
+}
+
+.extend_menu span
+{
+    font-size: 14px;
+}
+
+.extend_menu img
+{
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    object-fit: cover;
+}
+
+.extend_box
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.extend:hover .extend_menu
+{
+    opacity: 1;
+    pointer-events: all;
+    visibility: visible;
+}
+
+/* hidden scroll JUST for apply margin right for extend's menu's scrollbar */
+.hidden_scroll
+{
+    position: absolute;
+    bottom: 30px;
+    right: -182px;
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s ease;
+    max-height: max-content;
+    overflow-y: scroll;
+}
+
+@-moz-document url-prefix()
+{
+    .hidden_scroll
+    {
+        /* right: -185px !important; */
+        overflow: hidden !important;
+    }
+}
+
+.hidden_scroll::-webkit-scrollbar
+{
+    visibility: hidden;
+    width: 5px;
+}
+
+.extend:hover .hidden_scroll
+{
+    opacity: 1;
+    pointer-events: all;
+    visibility: visible;
+}
+
+.rotateZ
+{
+    transform: rotateZ(180deg);
+    transform: rotateY(180deg);
+}

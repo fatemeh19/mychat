@@ -1,7 +1,10 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import { chatType } from "../utils/enums.js";
+import { boolean } from "yup";
 
 const ChatSchema = new mongoose.Schema(
   {
+    
     memberIds: [
       {
         type: mongoose.Types.ObjectId,
@@ -14,8 +17,16 @@ const ChatSchema = new mongoose.Schema(
         ref: "Message",
       },
     ],
+    chatType: {
+      type:String,
+      enum:chatType,
+    },
+    notifications: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Chat', ChatSchema)
+export default mongoose.model("Chat", ChatSchema);

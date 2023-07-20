@@ -77,7 +77,7 @@ const getContacts = async (req, res) => {
   contactIds = contactIds.map((contact) => contact.userId);
   const contacts = await Services.User.findUsers(
     { _id: { $in: contactIds } },
-    "name lastname profilePic",
+    "name lastname profilePic status",
     "_id"
   );
   contacts.forEach((contact, index) => {
@@ -110,7 +110,7 @@ const getContact = async (req, res) => {
 
   const contact = await Services.User.findUser(
     { _id: contactId },
-    "name lastname phoneNumber profilePic bio"
+    "name lastname phoneNumber profilePic bio status"
   );
   if (!contact) {
     return await RH.CustomError({
