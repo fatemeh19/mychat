@@ -12,6 +12,10 @@ type Contact = {
     name: string;
     _id: string;
     profilePic: string;
+    status:{
+        online : boolean,
+        lastseen : string | Date | number
+    };
 }
 interface ContactBoxProps {
     contact: Contact,
@@ -23,7 +27,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     handleOpen
 }) => {
     const dispatch = useAppDispatch()
-    const [online, setOnline] = useState(false)
+    const [online , setOnline] = useState(contact.status.online)
+    const [lastSeen , setLastSeen] = useState(contact.status.lastseen)
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -32,7 +37,7 @@ const ContactBox: FC<ContactBoxProps> = ({
             console.log('contactId : ' + contactId)
             if(contactId==CId){
                 console.log('online contact : ' + CId)
-                setOnline(!online)
+                setOnline(true)
             }
             
         });
@@ -40,7 +45,9 @@ const ContactBox: FC<ContactBoxProps> = ({
             console.log('contactId : ' + contactId)
             if(contactId==CId){
                 console.log('offline contact : ' + CId)
-                setOnline(!online)
+                setOnline(false)
+                const now=Date.now();
+                setLastSeen(now)
             }
             
         });
@@ -77,7 +84,7 @@ const ContactBox: FC<ContactBoxProps> = ({
                     {online ?
 
                        <span className="text-sky-500">Online</span> 
-                        : <span className="text-gray-500">Offline</span>
+                        : <span className="text-gray-500">{lastSeen? (new Date(lastSeen).getHours() +':' + new Date(lastSeen).getMinutes()) : ''}</span>
                     }
                 </p>
             </div>

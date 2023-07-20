@@ -12,8 +12,7 @@ import { Suspense } from 'react'
 interface chatProps {
     infoState: boolean,
     setInfoVState: Dispatch<SetStateAction<boolean>>;
-    contactId: any,
-    online: boolean,
+    contactId: any
 }
 
 const getContact = async (id: string) => {
@@ -27,7 +26,7 @@ const getContact = async (id: string) => {
     return res.data.value.contact
 }
 
-const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online }) => {
+const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId }) => {
 
     const dispatch = useAppDispatch()
 
@@ -41,7 +40,7 @@ const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId, online }) =>
 
     return (
         <div className="flex flex-col w-full h-screen min-w-fit">
-            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} online={online} />
+            <ChatHeader infoState={infoState} setInfoVState={setInfoVState} />
             <Suspense fallback={<p>Loading chat ...</p>} >
                 <ChatMessages />
 

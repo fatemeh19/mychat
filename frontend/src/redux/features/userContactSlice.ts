@@ -7,7 +7,7 @@ interface ContactInterface {
     profilePic: string,
     status:{
         online : boolean,
-        lastseen : string
+        lastseen : string | Date | number
     },
 }
 interface initialStateInterface {

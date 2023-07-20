@@ -14,7 +14,7 @@ import io from 'socket.io-client'
 interface chatContactProps {
     status?: {
         online:boolean,
-        lastseen:string
+        lastseen : string | Date
     },
     lastMessage: string,
     ContactSeen: Boolean,
@@ -74,7 +74,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             console.log('contactId : ' + contactId)
             if(contactId==CId){
                 console.log('online contact : ' + CId)
-                setOnline(!online)
+                setOnline(true)
             }
             
         });
@@ -82,7 +82,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             console.log('contactId : ' + contactId)
             if(contactId==CId){
                 console.log('offline contact : ' + CId)
-                setOnline(!online)
+                setOnline(false)
             }
             
         });
@@ -116,7 +116,7 @@ const ChatContactBox: FC<chatContactProps> = ({
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
         (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": '') }`}>
                 <div className='relative contactProfile h-full'>
-                    {(status?.online || online ) ? 
+                    {(online ) ? 
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
                     dark:bg-[rgb(36,36,36)]
                     tablet:top-0">

@@ -20,7 +20,7 @@ interface IUserInfo {
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     const [infoState, setInfoVState] = useState(false)
-    const [online, setOnline] = useState(false)
+    // const [online, setOnline] = useState(false)
     const userInfo = useAppSelector(state => state.userInfo).User
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
@@ -58,7 +58,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     ? (
                         <div className="flex gap-[1px] justify-end">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId}  />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -67,7 +67,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId}  />
                         </div>
                     )
             }

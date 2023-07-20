@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { useState, Dispatch, FC, SetStateAction } from 'react'
+import { useState,useEffect, Dispatch, FC, SetStateAction } from 'react'
 
 // icons
 import { CgMoreO } from 'react-icons/cg'
@@ -16,15 +16,37 @@ import { useAppSelector } from '@/src/redux/hooks'
 
 interface ChatHeaderProps {
     infoState: boolean,
-    setInfoVState: Dispatch<SetStateAction<boolean>>,
-    online : boolean
+    setInfoVState: Dispatch<SetStateAction<boolean>> ,
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     const [open, setOpen] = useState(false)
     const userContact = useAppSelector(state => state.userContact).Contact
-
+    const socket = useAppSelector(state => state.socket).Socket
+    const [online , setOnline] = useState(userContact.status.online)
+    const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
+    const contactId=userContact._id
+    useEffect(() => {
+        socket?.on('onlineContact', (CId) => {
+            console.log('contactId : ' + contactId)
+            if(contactId==CId){
+                console.log('online contact : ' + CId)
+                setOnline(true)
+            }
+            
+        });
+        socket?.on('offlineContact', (CId) => {
+            console.log('contactId : ' + contactId)
+            if(contactId==CId){
+                console.log('offline contact : ' + CId)
+                setOnline(false)
+                const now=Date.now();
+                setLastSeen(now)
+            }
+            
+        });
+    }, [socket,contactId])
     let closeInfoSide = () => {
         if (infoState) setInfoVState(false)
         else setInfoVState(true)
@@ -70,7 +92,13 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState, online }) =
                         <p className='text-xs text-gray-400 whitespace-nowrap'>
                             {/* <span>12</span> member,&nbsp;
                             <span>5</span> online */}
-                            <span>{online ? 'online' : 'offline'}</span>
+                            {/* <span>{online ? 'online' : 'offline'}</span> */}
+                            {online ?
+                            <span className="text-sky-500">Online</span> 
+                                : <span className="text-gray-500">
+                                    {lastSeen? (new Date(lastSeen).getHours() +':' 
+                                    + new Date(lastSeen).getMinutes()) : 'offline'}</span>
+                            }
                         </p>
                     </div>
                 </div>
