@@ -22,7 +22,8 @@ interface chatContactProps {
     isTyping:Boolean,
     ContactName:string,
     chatOpennedP?:Boolean,
-    profilePicName:string
+    profilePicName:string,
+    contactId?:string
 }
 
 const ChatContactBox: FC<chatContactProps> = ({
@@ -36,22 +37,44 @@ const ChatContactBox: FC<chatContactProps> = ({
     isTyping,
     ContactName,
     chatOpennedP,
-    profilePicName
+    profilePicName,
+    contactId
 }) => {
     const dispatch = useAppDispatch()
-    const date = new Date(lastMessageTime);
-    const time = date.getHours() + ":" + date.getMinutes()
+    
+    
     const [online , setOnline] = useState(false)
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
-    const contactId = useAppSelector(state => state.userContact).Contact._id
     const chatList = useAppSelector(state => state.userChatList).chatList
+    const [lastMesText,setLastMesText]=useState(lastMessage)
+    const [lastMesTime,setLastMesTime]=useState(lastMessageTime)
     useEffect(() => {
-        socket?.on('onlineContact', (contactId) => {
-            console.log('online contact : ' + contactId)
-            setOnline(!online)
+        socket?.on('sendMessage', (message) => {
+            console.log('chatOpenned : ',chatOpenned)
+            // if(chatOpennedP || chatOpenned){
+                console.log('i got new Message in chat box: ', message)
+                if(message.content.contentType!='text' && message.content.text==''){
+                    setLastMesText(message.content.originalName)
+                }
+                else{
+                    setLastMesText(message.content.text)
+                }
+                setLastMesTime(message.updatedAt)
+                console.log(lastMesText)
+            // }
+            
+        })
+        
+        socket?.on('onlineContact', (CId) => {
+            console.log('online contact : ' + CId)
+            if(contactId==CId){
+                setOnline(!online)
+            }
+            
         });
     }, [socket])
+    
     const handler=()=>{
         
         for(let i=0;i<chatList.length;i++){
@@ -60,10 +83,17 @@ const ChatContactBox: FC<chatContactProps> = ({
             }
             if(chatList[i].contact._id==contactId){
                 dispatch(openHandle(i))
+                setChatOpenned(true)
+                dispatch(setChatOpenInList(true))
+                break
+            }
+            else if(chatList.length-1==i ){
+                dispatch(setChatOpenInList(false))
+
             }
         }
     }
-    console.log(chatOpennedP)
+    
     return (
         
         <div 
@@ -106,14 +136,17 @@ const ChatContactBox: FC<chatContactProps> = ({
                     <div className="relative   w-full">
                         <span className='text-md font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
                         <div className="right-0 font-semibold text-sm top-[3px] absolute messageTimeSent text-gray-400">
-                            <span className="last-mes-time">{time}</span>
+                            <span className="last-mes-time">{lastMesTime!='' ? new Date(lastMesTime).getHours()+ " : "  +new Date(lastMesTime).getMinutes() : lastMesTime}</span>
                             
                         </div>
                     </div>
                     <div className="relative mess-detail2 w-full">
                         {isTyping ?
                         <span className='text-sm text-green-500'>Typing...</span>
-                        : <span className={"text-sm truncate last-mes w-5/6 inline-block "+(recivedMessage ? "text-gray-400" : (ContactSeen ? (chatOpenned ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>{lastMessage}</span>
+                        : <span className={"text-sm truncate last-mes w-5/6 inline-block "
+                        +(recivedMessage ? "text-gray-400" : (ContactSeen ? 
+                            (chatOpennedP ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>
+                            {lastMesText}</span>
                         }
                         {lastMessegeByContact ?
                         (recivedMessage ? null :

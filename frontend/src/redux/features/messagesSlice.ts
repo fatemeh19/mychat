@@ -5,7 +5,8 @@ interface messageInterface {
         contentType : string,
         text : string
     },
-    senderId : string
+    senderId : string,
+    updatedAt:string
 }
 
 interface initialStateInterface {

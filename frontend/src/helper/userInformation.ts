@@ -1,18 +1,20 @@
 "use client"
 
-import { addChat } from "../redux/features/userChatListSlice"
+import { addChat, addChatList } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
 
+const token = localStorage.getItem('token')
+const config = {
+    headers: {
+        Authorization: `Bearer ${token}`
+    }
+};
+
 
 export const fetchUserContactsListData = async (dispatch:any) => {
-    const token = localStorage.getItem('token')
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    };
+    
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
         const contacts = res.data.value.contacts;
@@ -20,29 +22,15 @@ export const fetchUserContactsListData = async (dispatch:any) => {
     }
 
 }
+
+
 export const fetchUserProfileData = async (dispatch:any) => {
-    const token = localStorage.getItem('token')
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    };
-    const res = await callApi().get('/main/user/profile', config)
-    if (res.statusText && res.statusText === 'OK') {
-        const user = res.data.value.profile;
-        dispatch(addUserInfo(user))
-    }
+    
+    dispatch(addUserInfo(await userHandler()))
+    
 }
 
 export const fetchUserChatList = async (dispatch:any) => {
-    
-    const token = localStorage.getItem('token')
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    };
-    
     const findContact=async (contactId:any)=>{
         let contact={}
         let contactList=[]
@@ -63,13 +51,9 @@ export const fetchUserChatList = async (dispatch:any) => {
     }
     const contactChatList=async (chatBox:any)=>{
         let contact={}
-        let userId;
-        const res = await callApi().get('/main/user/profile', config)
-        if (res.statusText && res.statusText === 'OK') {
-            userId = res.data.value.profile._id;
-            
-        }
-        if(chatBox.memberIds[0]==userId){
+        let userId=await userHandler();
+        
+        if(chatBox.memberIds[0]==userId._id){
             contact=await findContact(chatBox.memberIds[1])
         }
         else{
@@ -82,15 +66,20 @@ export const fetchUserChatList = async (dispatch:any) => {
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)
         const chatList=res.data.value.chats;
-        
+        dispatch(addChatList([]))
+        console.log(chatList)
         for(let i=0;i<chatList.length;i++){
             let contact={}
             contact=await contactChatList(chatList[i])
             console.log(contact)
+            let lastMessage=''
+            if(chatList[i].messages[0]!=null){
+                lastMessage=chatList[i].messages[0].content.text
+            }
             let chat={
                 contact: contact,
                 _id:chatList[i]._id,
-                lastMessage:chatList[i].messages[0].content.text,
+                lastMessage:lastMessage,
                 lastMessageTime:chatList[i].updatedAt,
                 open:false
             }
@@ -103,4 +92,13 @@ export const fetchUserChatList = async (dispatch:any) => {
 export const profilePicNameHandler=(user:any)=>{
     const profilePicName = user.profilePic ? (user.profilePic).split(`\\`) : '';
     return profilePicName[profilePicName.length - 1];
+}
+export const userHandler=async ()=>{
+    let user;
+    const res = await callApi().get('/main/user/profile', config)
+    if (res.statusText && res.statusText === 'OK') {
+        user = res.data.value.profile;
+            
+    }
+    return user;
 }
