@@ -7,6 +7,7 @@ import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
 import { addMessage } from "@/src/redux/features/chatSlice"
+import { ChatType } from "@/src/models/enum"
 
 interface IUserInfo {
     name: string,
@@ -28,9 +29,18 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         // fetchChat(userInfo._id, contactId, dispatch)
         // const memberIds = [userInfo._id, contactId]
-        chatList.map(cl => console.log(cl))
-        // fetchChat(chatId, dispatch,)
-    }, [])
+        console.log('chatList', chatList)
+        chatList.map(cl => {
+            console.log('cl : ', cl)
+            if (cl.contact._id === contactId) {
+                console.log('private')
+                console.log('chat is exist')
+                fetchChat(cl._id, dispatch)
+            } else {
+                console.log('chat not found')
+            }
+        })
+    }, [chatList])
 
     useEffect(() => {
         socket?.emit('onChat', contactId)
