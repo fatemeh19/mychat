@@ -4,9 +4,18 @@ import * as RH from "../middlewares/ResponseHandler.js";
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js";
 import * as CustomError from "../errors/index.js";
 import { Query } from "mongoose";
-const createChat = async (memberIds) => {
-  const chat = await Chat.create({ memberIds });
-  return chat;
+import { chatType } from "../utils/enums.js";
+import GroupChat from "../models/Group.js";
+import PrivateChat from "../models/privateChat.js";
+const createChat = async (chat) => {
+  let newChat;
+  if (chat.chatType == chatType[0]) {
+    newChat = await GroupChat.create(chat);
+    console.log("newChat")
+  } else {
+    newChat = await PrivateChat.create(chat);
+  }
+  return newChat;
 };
 const findAndUpdateChat = async (id, updateQuery) => {
   try {

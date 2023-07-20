@@ -37,7 +37,7 @@ export default async (server) => {
     
     console.log("user connected to general socket");
     socket.on("online", online);
-    socket.on("offline", offline);
+    // socket.on("offline", offline);
 
     socket.on("onChat", onChat);
 
@@ -45,7 +45,7 @@ export default async (server) => {
     socket.on("deleteMessage",deleteMessage)
     socket.on("seenMessage",seenMessage)
 
-    
+    socket.on("disconnecting",offline)
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });
