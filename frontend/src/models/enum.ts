@@ -27,4 +27,5 @@ enum ChatType {
     group = 'group',
     channel = 'channel'
 }
+
 export { messageTypes, MessageBoxProps, ChatType, fileType }

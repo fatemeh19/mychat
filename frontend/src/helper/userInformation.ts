@@ -63,6 +63,7 @@ export const fetchUserChatList = async (dispatch:any) => {
         return contact;
     }
     const res = await callApi().get('/main/chat/', config)
+    console.log(res)
     if (res.statusText && res.statusText === 'OK') {
         console.log(res)
         const chatList=res.data.value.chats;

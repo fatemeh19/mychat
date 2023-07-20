@@ -23,17 +23,13 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const userInfo = useAppSelector(state => state.userInfo).User
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
-
-    // socket.on('onlineOnChat', (contactId: any) => {
-    //     console.log('online on chat in client')
-    //     // console.log(contactId)
-    //     // setOnline(true)
-    // });
-    // socket.emit('online', userId)
-    // }, 5000);
+    const chatList = useAppSelector(state => state.userChatList).chatList
 
     useEffect(() => {
-        fetchChat(userInfo._id, contactId, dispatch)
+        // fetchChat(userInfo._id, contactId, dispatch)
+        // const memberIds = [userInfo._id, contactId]
+        chatList.map(cl => console.log(cl))
+        // fetchChat(chatId, dispatch,)
     }, [])
 
     useEffect(() => {

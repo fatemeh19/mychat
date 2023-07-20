@@ -33,7 +33,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     // ------- discription of reason for using useEffect :: -------- i add this CAS when there is no chat if send msg chat created and chatID back but when send the second message firstChat is make false and we dont have chatId because fetchChat is not in the sendMessage soooo i put fetchChatt in useEffect that is controlled by firstChat by this -> when firstChat turn to false at sending second chat fetchChat run and we access to chat Informaition and save it in redux and access it from redux in next sending msg annnnnd in opening this chat again in rightSideMainPage file we fetchChat and in fetchChat we save chat information in redux and every thing working so good --- so cool.
     useEffect(() => {
         (async () => {
-            chatId = await fetchChat(userInfo._id, contactId, dispatch)
+
+            // chatId = await fetchChat(chatId, dispatch)
         })()
     }, [firstChat])
 
