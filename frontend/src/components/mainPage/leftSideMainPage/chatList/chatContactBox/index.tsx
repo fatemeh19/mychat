@@ -14,7 +14,7 @@ import io from 'socket.io-client'
 interface chatContactProps {
     status?: {
         online:boolean,
-        lastseen : string | Date
+        lastseen : string | Date | number
     },
     lastMessage: string,
     ContactSeen: Boolean,
