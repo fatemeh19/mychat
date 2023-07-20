@@ -5,6 +5,7 @@ import callApi from "./callApi"
 import { addChat, setFirstChat } from "../redux/features/chatSlice";
 import { addMessage } from "../redux/features/chatSlice";
 import { sendMessageInterface } from '../models/interface';
+import { ChatType } from '../models/enum';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -48,10 +49,12 @@ export const fetchChat = async (userId: string, contactId: string, dispatch: any
     }
 }
 
-export const createChat = async (userId: string, contactId: string) => {
+export const createChat = async (userId: string,  membersIds:string[], chatType:string) => {
     // console.log('start create chat')
+    membersIds.push(userId)
     const data = {
-        memberIds: [userId, contactId]
+        chatType: chatType,
+        membersIds 
     }
     let res: any;
     // not found chat => create chat

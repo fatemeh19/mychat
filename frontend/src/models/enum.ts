@@ -23,8 +23,8 @@ enum MessageBoxProps {
 }
 
 enum ChatType {
-    Private = 'Private',
-    Group = 'Group',
-    Channel = 'Channel'
+    private = 'private',
+    group = 'group',
+    channel = 'channel'
 }
 export { messageTypes, MessageBoxProps, ChatType, fileType }

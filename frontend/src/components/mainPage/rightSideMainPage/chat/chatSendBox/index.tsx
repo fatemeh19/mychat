@@ -6,7 +6,7 @@ import { RiSendPlaneFill } from 'react-icons/ri'
 import { ImAttachment } from 'react-icons/im'
 
 import ChatInput from './chatInput'
-import { messageTypes } from '@/src/models/enum'
+import { ChatType, messageTypes } from '@/src/models/enum'
 import { setFirstChat } from '@/src/redux/features/chatSlice'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosRequests'
@@ -44,7 +44,9 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     }
 
     const sendHandler = async () => {
-        firstChat ? chatId = await createChat(userInfo._id, contactId) : null
+        // const membersIds: string[] = [contactId]
+        // firstChat ? chatId = await createChat(userInfo._id, contactId, membersIds) : null
+        firstChat ? chatId = await createChat(userInfo._id, [contactId], ChatType.private) : null
 
         let type = messageTypes.text
         voice
