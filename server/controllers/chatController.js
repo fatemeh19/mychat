@@ -55,26 +55,26 @@ const createChat = async (req, res) => {
 };
 
 const getChat = async (req, res) => {
-  const { body: body } = req;
+  const { params: {id:chatId} } = req;
 
-  // const {
-  //   user: { userId },
-  //   params: { contactId },
-  // } = req;
-  // const memberIds = [userId, contactId];
+  // // const {
+  // //   user: { userId },
+  // //   params: { contactId },
+  // // } = req;
+  // // const memberIds = [userId, contactId];
 
-  const data = await Validators.getChat.validate(body);
-  console.log(data);
-  let findQuery;
-  // find by memberIds
-  if (data.findBy == chatSearchType[0]) {
-    findQuery = { memberIds: { $size: 2, $all: data.memberIds } };
-  }
-  // find by chatId
-  else {
-    findQuery = { _id: data.id };
-  }
-  const chat = await Services.Chat.getChat(findQuery);
+  // const data = await Validators.getChat.validate(body);
+  // console.log(data);
+  // let findQuery;
+  // // find by memberIds
+  // if (data.findBy == chatSearchType[0]) {
+  //   findQuery = { memberIds: { $size: 2, $all: data.memberIds } };
+  // }
+  // // find by chatId
+  // else {
+  //   findQuery = { _id: data.id };
+  // }
+  const chat = await Services.Chat.getChat( { _id: chatId });
 
   if (!chat) {
     await RH.CustomError({
