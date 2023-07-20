@@ -1,13 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import Message from "./message"
+import { MouseEvent, useRef, useState } from "react"
 
-import { ChatType, MessageBoxProps } from "@/src/models/enum"
+import Message from "./message"
 import { useAppSelector } from "@/src/redux/hooks"
-import { recievedMessageInterface } from "@/src/models/interface"
-import { MouseEvent, useEffect, useRef, useState } from "react"
 import RightClick from "@/src/components/rightClick"
+import { ChatType, MessageBoxProps } from "@/src/models/enum"
+import { recievedMessageInterface } from "@/src/models/interface"
 
 const initialContextMenu = {
     show: false,
@@ -16,8 +16,6 @@ const initialContextMenu = {
 }
 
 const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
-    // const [showContextmenu, setShowContextmenu] = useState(false)
-    // const [event, setEvent] = useState()
     const User = useAppSelector(state => state.userInfo).User
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatType = useAppSelector(state => state.chat).chatType
@@ -46,12 +44,11 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
         e.preventDefault()
 
         const { clientX, clientY } = e
-        console.log(e)
         // access to currentTarget = currentTarget = div:messageBox
         setContextMenu({ show: true, x: clientX, y: clientY })
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
-
+    
     return (
         <div className="" ref={messageBox} onContextMenu={handleContextMenu} >
 

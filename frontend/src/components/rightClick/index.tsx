@@ -1,14 +1,16 @@
-
 "use client"
 
 import Image from 'next/image';
 import { FC, useEffect, useRef } from 'react'
-import style from './style.module.css'
-import { BsReply, BsLink45Deg, BsPinAngle, BsTrash3 } from 'react-icons/bs'
-import { FiEdit2, FiCopy } from 'react-icons/fi'
-import { PiSelection } from 'react-icons/pi'
+
 import { GoPeople } from 'react-icons/go'
+import { PiSelection } from 'react-icons/pi'
+import { FiEdit2, FiCopy } from 'react-icons/fi'
+import { BsReply, BsLink45Deg, BsPinAngle, BsTrash3 } from 'react-icons/bs'
+
+import style from './style.module.css'
 import { useOnClickOutside } from './useOnClickOutside';
+
 interface RightClickProps {
     x: number,
     y: number,
@@ -21,7 +23,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
     const hiddenScroll = useRef<HTMLDivElement>(null)
 
     // click out of contextMenu : close contextMenu
-    useOnClickOutside(contextMenuRef, closeContextMenu)
+    // useOnClickOutside(contextMenuRef, closeContextMenu)
 
     // set the contextMenu cordinate 
     useEffect(() => {
@@ -35,14 +37,17 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
         const distWidth = winWidth - cmWidth
         const distHeight = winHeight - cmHeight
 
-
         // @ts-ignore
         if (x > distWidth) {
+            console.log('x > distWidth')
             // @ts-ignore
             contextMenuRef.current.style.left = `${distWidth}px`
+            // @ts-ignore
+            hiddenScroll.current.style.right = '176px'
         } else {
             // @ts-ignore
             hiddenScroll.current.style.left = ''
+            // @ts-ignore
         }
 
         if (y > distHeight) {
@@ -52,16 +57,17 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
             // @ts-ignore
             hiddenScroll.current.style.top = ''
         }
+
+        return () => document.addEventListener('click', () => closeContextMenu())
+
     }, [x, y])
 
     return (
-        // <div className={`${style.wrapper} ${style.p} ${style.li} wrapper`}>
         <div
             className={`absolute z-20 ${style.wrapper} ${style.p} ${style.li}`}
             style={{ top: `${y}px`, left: `${x}px` }}
             ref={contextMenuRef}
         >
-            {/* contextMenu */}
             <div className={`${style.content}`}>
                 <ul className={`${style.menu}`}>
                     <li className={`${style.item}`}>

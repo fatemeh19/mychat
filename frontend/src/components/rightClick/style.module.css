@@ -147,7 +147,7 @@
 {
     .hidden_scroll
     {
-        right: -185px !important;
+        /* right: -185px !important; */
         overflow: hidden !important;
     }
 }
