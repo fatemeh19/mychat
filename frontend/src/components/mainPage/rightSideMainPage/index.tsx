@@ -42,14 +42,34 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         })
     }, [chatList])
 
+    let m = 0
     useEffect(() => {
         socket?.emit('onChat', contactId)
+        console.log('socket.id in useEffect: ', socket.id)
 
+        // socket?.on('sendMessage', (message) => {
+        //     console.log('contactId:', contactId)
+        //     console.log('m : ', m)
+        //     m = m + 1
+        //     console.log('socket.id: ', socket.id)
+        //     console.log('i got new Message: ', message)
+        //     dispatch(addMessage(message))
+        // })
+    }, [socket])
+
+    useEffect(() => {
         socket?.on('sendMessage', (message) => {
+            console.log('contactId:', contactId)
+            console.log('m : ', m)
+            m = m + 1
+            console.log('socket.id: ', socket.id)
             console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
-    }, [socket])
+        return () => {
+            socket.removeAllListeners('sendMessage')
+        }
+    }, [])
 
     return (
         <>

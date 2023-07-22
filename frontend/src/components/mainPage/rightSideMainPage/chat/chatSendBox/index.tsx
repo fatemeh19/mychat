@@ -92,6 +92,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
             if (socket) {
                 newMessage.forEach(item => console.log(item))
+                console.log('socket in sendBox')
                 socket.emit('sendMessage', contactId, message)
             }
 
