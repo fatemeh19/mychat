@@ -12,7 +12,10 @@ import io from 'socket.io-client'
 // import { Socket } from "socket.io-client"
 
 interface chatContactProps {
-    status?: Boolean,
+    status?: {
+        online:boolean,
+        lastseen : string | Date | number
+    },
     lastMessage: string,
     ContactSeen: Boolean,
     lastMessageTime: string,
@@ -41,18 +44,18 @@ const ChatContactBox: FC<chatContactProps> = ({
     contactId
 }) => {
     const dispatch = useAppDispatch()
-    
-    
-    const [online , setOnline] = useState(false)
+    const [online , setOnline] = useState(status?.online)
+    // const [lastSeen , setLastSeen] = useState(status?.lastseen)
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
+
     const [lastMesText,setLastMesText]=useState(lastMessage)
     const [lastMesTime,setLastMesTime]=useState(lastMessageTime)
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
-            console.log('chatOpenned : ',chatOpenned)
-            // if(chatOpennedP || chatOpenned){
+            console.log('chatOpennedP : ',chatOpennedP)
+            if(chatOpennedP || chatOpenned){
                 console.log('i got new Message in chat box: ', message)
                 if(message.content.contentType!='text' && message.content.text==''){
                     setLastMesText(message.content.originalName)
@@ -62,19 +65,28 @@ const ChatContactBox: FC<chatContactProps> = ({
                 }
                 setLastMesTime(message.updatedAt)
                 console.log(lastMesText)
-            // }
+            }
             
         })
-        
+    }, [socket,chatOpennedP])
+    useEffect(() => {
         socket?.on('onlineContact', (CId) => {
-            console.log('online contact : ' + CId)
+            console.log('contactId : ' + contactId)
             if(contactId==CId){
-                setOnline(!online)
+                console.log('online contact : ' + CId)
+                setOnline(true)
             }
             
         });
-    }, [socket])
-    
+        socket?.on('offlineContact', (CId) => {
+            console.log('contactId : ' + contactId)
+            if(contactId==CId){
+                console.log('offline contact : ' + CId)
+                setOnline(false)
+            }
+            
+        });
+    }, [socket,contactId])
     const handler=()=>{
         
         for(let i=0;i<chatList.length;i++){
@@ -104,7 +116,7 @@ const ChatContactBox: FC<chatContactProps> = ({
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": 
         (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]": '') }`}>
                 <div className='relative contactProfile h-full'>
-                    {(status || online) ? 
+                    {(online ) ? 
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
                     dark:bg-[rgb(36,36,36)]
                     tablet:top-0">

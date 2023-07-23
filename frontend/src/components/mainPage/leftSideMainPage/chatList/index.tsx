@@ -12,28 +12,19 @@ import callApi from '@/src/helper/callApi';
 export default function ChatList() {
     const socket = useAppSelector(state => state.socket).Socket
     const openChat = useAppSelector(state => state.openChat).openChat;
-    // const [userId,setUserId]=useState('')
+    const [userId,setUserId]=useState('')
 
     const userIdHandler=async ()=>{
-        const token = localStorage.getItem('token')
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-        const res = await callApi().get('/main/user/profile', config)
-        if (res.statusText && res.statusText === 'OK') {
-            let userId = res.data.value.profile._id;
-            // setUserId(user._id)
+            let user = await userHandler();
+            setUserId(user._id)
             socket?.emit('online', userId)
             console.log('user online: '+userId)
-        }
         
     }
     
     useEffect(() => {
         userIdHandler()
-    }, [socket])
+    }, [socket,userId])
 
     return (
 
