@@ -48,14 +48,14 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
         setContextMenu({ show: true, x: clientX, y: clientY })
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
-    
+
     return (
         <div className="" ref={messageBox} onContextMenu={handleContextMenu} >
 
             {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} />}
             <div className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                 {
-                    chatType !== ChatType.Private
+                    chatType !== ChatType.private
                         ? (
                             <div className="profileImageBox relative">
                                 {/* this image for box width so the text dont go under the profile image and make the opacity - 0 so we can see the second image ... i use this method til find better way */}
@@ -88,7 +88,7 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
 
                 <div className={`content flex flex-col ${information.dir === 'rtl' ? 'items-end' : 'items-start'} mb-2`}>
                     {
-                        chatType !== ChatType.Private
+                        chatType !== ChatType.private
                             ? (
                                 <div className={`flex gap-2 items-end mb-2 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                                     <h1 className="name font-bold text-sm text-center whitespace-nowrap dark:text-white">{information.name}</h1>

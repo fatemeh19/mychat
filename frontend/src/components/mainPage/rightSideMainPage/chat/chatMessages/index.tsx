@@ -5,11 +5,15 @@ import MessageBox from "./messageBox"
 
 export default function ChatMessages() {
 
-    const chat = useAppSelector(state => state.chat).Chat
+    const chatInfo = useAppSelector(state => state.chat)
+    const chat = chatInfo.Chat
+
+    console.log('chatInfo.chatCreated : ', chatInfo.chatCreated)
+
     return (
         <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
 
-            {(chat.messages?.length == 0)
+            {(chat.messages?.length == 0 || !chatInfo.chatCreated)
                 ? <div className="w-full h-full flex justify-center items-center">
                     <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>
                 </div>

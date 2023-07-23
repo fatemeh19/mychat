@@ -6,7 +6,7 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage } from "@/src/redux/features/chatSlice"
+import { addMessage, setChatCreated } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
 
 interface IUserInfo {
@@ -25,44 +25,28 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
+    let found = false
 
     useEffect(() => {
-        // fetchChat(userInfo._id, contactId, dispatch)
-        // const memberIds = [userInfo._id, contactId]
-        console.log('chatList', chatList)
+        console.log('in chatList useEffect')
+        found = false
         chatList.map(cl => {
-            console.log('cl : ', cl)
             if (cl.contact._id === contactId) {
-                console.log('private')
                 console.log('chat is exist')
                 fetchChat(cl._id, dispatch)
-            } else {
-                console.log('chat not found')
+                dispatch(setChatCreated(true))
+                found = true
             }
         })
+        found === false && dispatch(setChatCreated(false))
     }, [chatList])
 
-    let m = 0
     useEffect(() => {
         socket?.emit('onChat', contactId)
-        console.log('socket.id in useEffect: ', socket.id)
-
-        // socket?.on('sendMessage', (message) => {
-        //     console.log('contactId:', contactId)
-        //     console.log('m : ', m)
-        //     m = m + 1
-        //     console.log('socket.id: ', socket.id)
-        //     console.log('i got new Message: ', message)
-        //     dispatch(addMessage(message))
-        // })
     }, [socket])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
-            console.log('contactId:', contactId)
-            console.log('m : ', m)
-            m = m + 1
-            console.log('socket.id: ', socket.id)
             console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })

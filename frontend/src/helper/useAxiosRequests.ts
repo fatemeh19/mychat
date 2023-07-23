@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, setFirstChat } from "../redux/features/chatSlice";
+import { addChat, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
 import { addMessage } from "../redux/features/chatSlice";
 import { sendMessageInterface } from '../models/interface';
 
@@ -48,13 +48,14 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
     }
 }
 
-export const createChat = async (userId: string, membersIds: string[], chatType: string, groupName: string = '') => {
+export const createChat = async (userId: string, memberIds: string[], chatType: string, groupName: string = '', dispatch: any) => {
     // console.log('start create chat')
-    membersIds.push(userId)
-    console.log('createChat membersIds : ', membersIds)
+    memberIds.push(userId)
+    console.log('createChat membersIds : ', memberIds)
+    // chatType
     const data = {
         chatType: chatType,
-        membersIds,
+        memberIds,
         name: groupName
     }
     let res: any;
@@ -62,7 +63,10 @@ export const createChat = async (userId: string, membersIds: string[], chatType:
     try {
         res = await callApi().post('/main/chat/', data, config)
         if (res.statusText && res.statusText === 'Created') {
-            // console.log('chat created.')
+            console.log('chat created.', res)
+            const chatId = res.data.value.chatId
+            await fetchChat(chatId, dispatch)
+            dispatch(setChatCreated(true))
             return res.data.value.chatId
 
 
