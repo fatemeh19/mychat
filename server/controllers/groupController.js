@@ -84,8 +84,9 @@ const editGroupPermissions = async (req, res) => {
     },
     { new: true }
   );
-  console.log(req.body);
-  res.send(updated);
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+
+  
 };
 
 export { addMember, editGroupType, removeMember, editGroupPermissions };
