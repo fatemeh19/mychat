@@ -8,7 +8,7 @@ import { chatType } from "../utils/enums.js";
 import GroupChat from "../models/Group.js";
 import PrivateChat from "../models/privateChat.js";
 import Group from "../models/Group.js";
-
+import privateChat from "../models/privateChat.js";
 const createChat = async (chat) => {
   let newChat;
   if (chat.chatType == chatType[0]) {
@@ -19,18 +19,15 @@ const createChat = async (chat) => {
   }
   return newChat;
 };
-const findAndUpdateChat = async (
-  id,
-  updateQuery,
-  options,
-  chatType = "private"
-) => {
+const findAndUpdateChat = async (id, updateQuery, options) => {
+  const chatType = await Chat.findById(id, { chatType: 1 });
   try {
-    let chatModel = Chat;
+    
+    let chatModel = privateChat;
     if (chatType == "group") {
       chatModel = Group;
     }
-    const chat = await chatModel.findByIdAndUpdate(id, updateQuery,options);
+    const chat = await chatModel.findByIdAndUpdate(id, updateQuery, options);
 
     return chat;
   } catch (err) {

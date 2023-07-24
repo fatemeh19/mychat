@@ -30,18 +30,29 @@ const editGroupType = async (req, res) => {
   }
   console.log(data);
 
-  const updated = await Services.Chat.findAndUpdateChat(
+  await Services.Chat.findAndUpdateChat(
     groupId,
     {
       $set: { groupTypeSetting: data },
     },
     {
       new: true,
-    },
-    "group"
+    }
   );
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
+
+const removeMember = async (req, res) => {
+  const {
+    body: { memberId },
+    params: { groupId },
+  } = req;
+  const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
+    $pull: { memberIds: memberId },
+  });
+  console.log(removeFromGroupResult);
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 
 };
 
-export { addMember, editGroupType };
+export { addMember, editGroupType,removeMember };
