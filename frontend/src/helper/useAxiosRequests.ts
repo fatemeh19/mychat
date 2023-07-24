@@ -41,7 +41,6 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
             // @ts-ignore
             if (error.Error.statusCode === 400 && err.errorType === 'NotFoundError') {
                 // console.log('error message : ', err.message)
-                setFirstChat(true)
                 dispatch(setFirstChat(true))
             }
         }

@@ -9,9 +9,9 @@ interface VoiceRecordProps {
   sendHandler: () => void
 }
 const VoiceRecord: FC<VoiceRecordProps> = ({ voice, setVoice, sendHandler }) => {
-  const recordRef = useRef()
-  const stopRef = useRef()
-  const sendRef = useRef()
+  const recordRef = useRef<HTMLDivElement>(null)
+  const stopRef = useRef<HTMLDivElement>(null)
+  const sendRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -70,7 +70,7 @@ const VoiceRecord: FC<VoiceRecordProps> = ({ voice, setVoice, sendHandler }) => 
   }
   function send(sendRef: any, recordRef: any) {
     // send record to server
-    // sendHandler()
+    sendHandler()
     sendRef.style.display = 'none'
     recordRef.style.display = 'block'
   }
