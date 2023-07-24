@@ -2,6 +2,7 @@ import mongoose, { Mongoose, mongo } from "mongoose";
 import Chat from "./Chat.js";
 import { groupType } from "../utils/enums.js";
 import { string } from "yup";
+import permissions from "./permissions.js";
 const GroupChatSchema = new mongoose.Schema({
   groupTypeSetting: {
     groupType: {
@@ -34,20 +35,21 @@ const GroupChatSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  // inviteLink:{
-
-  //   createdLinks:[
-  //     {
-  //       creator:{
-  //         type:mongoose.Types.ObjectId,
-  //         ref:'User'
-  //       },
-  //       link: String,
-  //       expireDate: Date,
-  //     },
-
-  //   ]
-  // },
+  userPermissionsAndExceptions: {
+    permissions: permissions,
+    exceptions: [
+      {
+        userId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+        restrictUntil: {
+          type: Date,
+        },
+        permissions: permissions,
+      },
+    ],
+  },
   inviteLinks: [
     {
       creator: {
@@ -58,8 +60,12 @@ const GroupChatSchema = new mongoose.Schema({
       expireDate: Date,
     },
   ],
-  adminRights: [
+  adminsAndRights: [
     {
+      customTitle: {
+        type: String,
+        default: "admin",
+      },
       adminId: {
         type: mongoose.Types.ObjectId,
         ref: "User",

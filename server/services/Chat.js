@@ -22,11 +22,13 @@ const createChat = async (chat) => {
 const findAndUpdateChat = async (id, updateQuery, options) => {
   const chatType = await Chat.findById(id, { chatType: 1 });
   try {
-    
-    let chatModel = privateChat;
-    if (chatType == "group") {
+    let chatModel 
+    if (chatType.chatType == "group") {
       chatModel = Group;
+    }else{
+      chatModel = privateChat;
     }
+    console.log(chatType)
     const chat = await chatModel.findByIdAndUpdate(id, updateQuery, options);
 
     return chat;

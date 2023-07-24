@@ -3,6 +3,8 @@ import * as Validators from "../validators/index.js";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { StatusCodes } from "http-status-codes";
+import Chat from "../models/Chat.js";
+import dateCalculator from "../utils/date.js";
 const addMember = async (req, res) => {
   // if new member has privacy limitations send suitable error
   // limitations for number of members
@@ -52,7 +54,38 @@ const removeMember = async (req, res) => {
   });
   console.log(removeFromGroupResult);
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-
 };
 
-export { addMember, editGroupType,removeMember };
+const editGroupPermissions = async (req, res) => {
+  const {
+    body,
+    params: { groupId },
+  } = req;
+  let data;
+  try {
+    data = await Validators.editGroupPermsAndExps.validate(body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+   data.exceptions.forEach((exception) => {
+    if (exception.restrictUntil != "custom") {
+      exception.restrictUntil =  dateCalculator(exception.restrictUntil, 1);
+    } else {
+      exception.restrictUntil = new Date(exception.customDate);
+    }
+  });
+  const updated = await Services.Chat.findAndUpdateChat(
+    groupId,
+    {
+      $set: { userPermissionsAndExceptions: data },
+    },
+    { new: true }
+  );
+  console.log(req.body);
+  res.send(updated);
+};
+
+export { addMember, editGroupType, removeMember, editGroupPermissions };
