@@ -50,6 +50,11 @@ export default{
   "message":{
     "name":"message",
     "value":"پیام"
+  },
+  "groupType":{
+    "name":"groupType",
+    "value":"نوع گروه"
+
   }
   
 }

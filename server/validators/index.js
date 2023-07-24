@@ -6,6 +6,7 @@ import createChat from "./createChat.js";
 import createMessage from "./createMessage.js";
 import editProfile from "./editProfile.js";
 import getChat from "./getChat.js";
+import editGroupType from "./editGroupType.js";
 export {
   loginUser,
   registerUser,
@@ -15,4 +16,5 @@ export {
   createMessage,
   editProfile,
   getChat,
+  editGroupType
 };

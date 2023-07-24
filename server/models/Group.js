@@ -3,10 +3,21 @@ import Chat from "./Chat.js";
 import { groupType } from "../utils/enums.js";
 import { string } from "yup";
 const GroupChatSchema = new mongoose.Schema({
-  groupType: {
-    type:String,
-    enum:groupType,
-    default: 'private',
+  groupTypeSetting: {
+    groupType: {
+      type: String,
+      enum: groupType,
+      default: "private",
+    },
+    url: String,
+    restrictSavingContent: {
+      type: Boolean,
+      default: false,
+    },
+    approveNewMembers: {
+      type: Boolean,
+      default: false,
+    },
   },
   name: {
     type: String,
@@ -21,10 +32,10 @@ const GroupChatSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Types.ObjectId,
     ref: "User",
-    required:true
+    required: true,
   },
   // inviteLink:{
-    
+
   //   createdLinks:[
   //     {
   //       creator:{
@@ -38,14 +49,14 @@ const GroupChatSchema = new mongoose.Schema({
   //   ]
   // },
   inviteLinks: [
-   {
-        creator:{
-          type:mongoose.Types.ObjectId,
-          ref:'User'
-        },
-        link: String,
-        expireDate: Date,
+    {
+      creator: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
       },
+      link: String,
+      expireDate: Date,
+    },
   ],
   adminRights: [
     {
@@ -90,4 +101,4 @@ const GroupChatSchema = new mongoose.Schema({
     },
   ],
 });
-export default Chat.discriminator("GroupChat", GroupChatSchema,"chats");
+export default Chat.discriminator("GroupChat", GroupChatSchema, "chats");

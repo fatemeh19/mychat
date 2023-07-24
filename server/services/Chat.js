@@ -7,19 +7,30 @@ import { Query } from "mongoose";
 import { chatType } from "../utils/enums.js";
 import GroupChat from "../models/Group.js";
 import PrivateChat from "../models/privateChat.js";
+import Group from "../models/Group.js";
+
 const createChat = async (chat) => {
   let newChat;
   if (chat.chatType == chatType[0]) {
     newChat = await GroupChat.create(chat);
-    console.log("newChat")
+    console.log("newChat");
   } else {
     newChat = await PrivateChat.create(chat);
   }
   return newChat;
 };
-const findAndUpdateChat = async (id, updateQuery) => {
+const findAndUpdateChat = async (
+  id,
+  updateQuery,
+  options,
+  chatType = "private"
+) => {
   try {
-    const chat = await Chat.findByIdAndUpdate(id, updateQuery);
+    let chatModel = Chat;
+    if (chatType == "group") {
+      chatModel = Group;
+    }
+    const chat = await chatModel.findByIdAndUpdate(id, updateQuery,options);
 
     return chat;
   } catch (err) {

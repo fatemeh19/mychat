@@ -18,6 +18,7 @@ export default function (io) {
     let roomName =
       userId > contactId ? userId + "" + contactId : contactId + "" + userId;
     io.to(roomName).emit("sendMessage", message);
+    io.sockets.clients(roomName)
   };
 
   const deleteMessage = async function (deleteInfo) {

@@ -1,9 +1,8 @@
-import express from 'express'
-const router = express.Router()
-import { addMember } from '../controllers/groupController.js'
+import express from "express";
+const router = express.Router();
+import { addMember, editGroupType } from "../controllers/groupController.js";
 
+router.patch("/addMember/:groupId", addMember);
+router.patch("/editGroupType/:groupId", editGroupType);
 
-router.patch('/addMember/:groupId', addMember)
-
-
-export default router
+export default router;
