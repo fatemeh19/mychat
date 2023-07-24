@@ -23,12 +23,14 @@ const getContact = async (id: string) => {
         }
     };
     const res = await callApi().get(`/main/contact/${id}`, config)
+    console.log('get userContact : ', res)
     return res.data.value.contact
 }
 
 const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId }) => {
 
     const dispatch = useAppDispatch()
+    console.log('run chat component')
 
     useEffect(() => {
         (async () => {

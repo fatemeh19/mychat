@@ -33,16 +33,14 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
     // console.log('firstChat in sendBox out of useEffect : ', firstChat)
     // ------- discription of reason for using useEffect :: -------- i add this CAS when there is no chat if send msg chat created and chatID back but when send the second message firstChat is make false and we dont have chatId because fetchChat is not in the sendMessage soooo i put fetchChatt in useEffect that is controlled by firstChat by this -> when firstChat turn to false at sending second chat fetchChat run and we access to chat Informaition and save it in redux and access it from redux in next sending msg annnnnd in opening this chat again in rightSideMainPage file we fetchChat and in fetchChat we save chat information in redux and every thing working so good --- so cool.
-    // useEffect(() => {
-    //     (async () => {
-    //         console.log('chatList', chatList)
-    //         console.log('contactId', contactId)
-    //         // if (firstChat) chatId = contactId
-    //         chatId = await fetchChat(chatId, dispatch)
-    //         console.log('chatId in useEffect sendBox : ', chatId)
-    //     })()
-    // }, [firstChat])
-    // console.log('chatList', chatList)
+    useEffect(() => {
+        (async () => {
+            chatId = await fetchChat(chatId, dispatch)
+            console.log('firstChat in send Effect: ', firstChat)
+
+        })()
+    }, [firstChat])
+    console.log('chatList', chatList)
 
     const attachmentHandler = (e: any) => {
         // @ts-ignore
@@ -53,6 +51,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const sendHandler = async () => {
         // const membersIds: string[] = [contactId]
         // firstChat ? chatId = await createChat(userInfo._id, contactId, membersIds) : null
+        console.log('firstChat in send handler : ', firstChat)
         firstChat ? chatId = await createChat(userInfo._id, [contactId], ChatType.private, '', dispatch) : null
         console.log('chatId in sendHandler :', chatId)
         let type = messageTypes.text

@@ -10,7 +10,7 @@ const TextMessage = ({ dir, msg }: { dir: string, msg: recievedMessageInterface 
 
     return (
         <div className=" max-w-lg ">
-            <div className={`relative flex gap-1 items-end px-2 py-1 w-fit rounded-xl shadow-[0_0_1px_.1px_rgb(0_0_0_/.2)] ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'} dark:bg-bgColorDark3 dark:text-white`}>
+            <div className={`relative flex gap-1 items-end px-2 py-1 w-fit rounded-xl shadow-[0_0_1px_.1px_rgb(0_0_0_/.2)] transition-all duration-75 ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'} dark:bg-bgColorDark3 dark:text-white`}>
                 <p className="break-all whitespace-pre-line text-sm ">
                     {msg.content.text}
                 </p>

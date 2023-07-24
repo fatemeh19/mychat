@@ -14,16 +14,17 @@ import { useOnClickOutside } from './useOnClickOutside';
 interface RightClickProps {
     x: number,
     y: number,
-    closeContextMenu: () => void
+    closeContextMenu: () => void,
+    child: Element | undefined
 }
 
-const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
+const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child }) => {
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
     const hiddenScroll = useRef<HTMLDivElement>(null)
 
     // click out of contextMenu : close contextMenu
-    // useOnClickOutside(contextMenuRef, closeContextMenu)
+    useOnClickOutside(contextMenuRef, closeContextMenu)
 
     // set the contextMenu cordinate 
     useEffect(() => {
@@ -37,9 +38,10 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
         const distWidth = winWidth - cmWidth
         const distHeight = winHeight - cmHeight
 
+        console.log('child : ', child)
+
         // @ts-ignore
         if (x > distWidth) {
-            console.log('x > distWidth')
             // @ts-ignore
             contextMenuRef.current.style.left = `${distWidth}px`
             // @ts-ignore
@@ -57,10 +59,17 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
             // @ts-ignore
             hiddenScroll.current.style.top = ''
         }
+        child?.classList.add('select')
 
-        return () => document.addEventListener('click', () => closeContextMenu())
+
+        return () => {
+            // child.style.background = 'white'
+            child?.classList.remove('select')
+
+        }
 
     }, [x, y])
+
 
     return (
         <div
@@ -108,30 +117,6 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu }) => {
                                     <li className={`${style.item}`}>
                                         <Image width={500} height={0} src="/images/assetse-rightClick/profile1.jpg" alt="" />
                                         <span>fatemeh veysi</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
-                                    </li>
-                                    <li className={`${style.item}`}>
-                                        <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />
-                                        <span>kosar hosseini</span>
                                     </li>
                                     <li className={`${style.item}`}>
                                         <Image width={500} height={0} src="/images/assetse-rightClick/profile2.jpg" alt="" />

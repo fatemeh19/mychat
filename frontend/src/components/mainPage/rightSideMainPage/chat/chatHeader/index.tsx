@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image'
-import { useState,useEffect, Dispatch, FC, SetStateAction } from 'react'
+import { useState, useEffect, Dispatch, FC, SetStateAction } from 'react'
 
 // icons
 import { CgMoreO } from 'react-icons/cg'
@@ -16,7 +16,7 @@ import { useAppSelector } from '@/src/redux/hooks'
 
 interface ChatHeaderProps {
     infoState: boolean,
-    setInfoVState: Dispatch<SetStateAction<boolean>> ,
+    setInfoVState: Dispatch<SetStateAction<boolean>>,
 }
 
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
@@ -24,29 +24,29 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const [open, setOpen] = useState(false)
     const userContact = useAppSelector(state => state.userContact).Contact
     const socket = useAppSelector(state => state.socket).Socket
-    const [online , setOnline] = useState(userContact.status.online)
-    const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
-    const contactId=userContact._id
+    // const [online , setOnline] = useState(userContact.status.online)
+    // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
+    const contactId = userContact._id
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
             console.log('contactId : ' + contactId)
-            if(contactId==CId){
+            if (contactId == CId) {
                 console.log('online contact : ' + CId)
-                setOnline(true)
+                // setOnline(true)
             }
-            
+
         });
         socket?.on('offlineContact', (CId) => {
             console.log('contactId : ' + contactId)
-            if(contactId==CId){
+            if (contactId == CId) {
                 console.log('offline contact : ' + CId)
-                setOnline(false)
-                const now=Date.now();
-                setLastSeen(now)
+                // setOnline(false)
+                const now = Date.now();
+                // setLastSeen(now)
             }
-            
+
         });
-    }, [socket,contactId])
+    }, [socket, contactId])
     let closeInfoSide = () => {
         if (infoState) setInfoVState(false)
         else setInfoVState(true)
@@ -80,8 +80,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                             height={500}
                             src={
                                 userContact.profilePic
-                                ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
-                                : '/uploads/picture/defaultProfilePic.png'
+                                    ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
+                                    : '/uploads/picture/defaultProfilePic.png'
                             }
                             alt='chat profile'
                             className='rounded-full w-[50px] h-[50px] object-cover'
@@ -93,12 +93,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                             {/* <span>12</span> member,&nbsp;
                             <span>5</span> online */}
                             {/* <span>{online ? 'online' : 'offline'}</span> */}
-                            {online ?
+                            {/* {online ?
                             <span className="text-sky-500">Online</span> 
                                 : <span className="text-gray-500">
                                     {lastSeen? (new Date(lastSeen).getHours() +':' 
                                     + new Date(lastSeen).getMinutes()) : 'offline'}</span>
-                            }
+                            } */}
                         </p>
                     </div>
                 </div>

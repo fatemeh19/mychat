@@ -16,6 +16,7 @@ const initialContextMenu = {
 }
 
 const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
+    const [children, setChildren] = useState<Element>()
     const User = useAppSelector(state => state.userInfo).User
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatType = useAppSelector(state => state.chat).chatType
@@ -46,14 +47,15 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
         const { clientX, clientY } = e
         // access to currentTarget = currentTarget = div:messageBox
         setContextMenu({ show: true, x: clientX, y: clientY })
+        const message = e.currentTarget.children[0].children[0].children[0].children[0]
+        setChildren(message)
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
     return (
-        <div className="" ref={messageBox} onContextMenu={handleContextMenu} >
-
-            {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} />}
-            <div className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
+        <div className="messageBox"  >
+            {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} child={children} />}
+            <div ref={messageBox} onContextMenu={handleContextMenu} className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                 {
                     chatType !== ChatType.private
                         ? (

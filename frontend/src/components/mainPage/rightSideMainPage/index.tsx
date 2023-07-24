@@ -53,7 +53,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         return () => {
             socket.removeAllListeners('sendMessage')
         }
-    }, [])
+    })
 
     return (
         <>
@@ -62,7 +62,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     ? (
                         <div className="flex gap-[1px] justify-end">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId}  />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -71,7 +71,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId}  />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
                         </div>
                     )
             }
