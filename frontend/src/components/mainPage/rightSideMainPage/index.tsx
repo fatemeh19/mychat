@@ -6,8 +6,9 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage, setChatCreated } from "@/src/redux/features/chatSlice"
+import { addMessage, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
+import CustomizedDialogs from "../../popUp"
 
 interface IUserInfo {
     name: string,
@@ -25,6 +26,8 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
+    const chatMessages = useAppSelector(state => state.chat).Chat.messages
+
     let found = false
 
     useEffect(() => {
@@ -52,8 +55,18 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
+        socket.on('deleteMessage', (data: any) => {
+            console.log('deleteMessage data : ', data)
+            const msg = chatMessages.filter(CM => {
+                for (let i = 0; i < data.messageIds.length; i++) {
+                    if (CM._id !== data.messageIds[i]) return CM._id
+                }
+            })
+            dispatch(updateArrayMessages(msg))
+        })
         return () => {
             socket.removeAllListeners('sendMessage')
+            socket.removeAllListeners('deleteMessage')
         }
     })
 
@@ -81,15 +94,4 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
         </>
     )
-
-    // <div className="grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-[2px] ">
-    //         <div className="col-span-10  ">
-    //             <Chat setOpen={setOpen} />
-    //         </div>
-    //         <div className="col-span-4 bg-purple-400 ">
-    //             <ChatInfo />
-    //         </div>
-    //     </div>
-
-
 }

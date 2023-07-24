@@ -8,6 +8,7 @@ import { useAppSelector } from "@/src/redux/hooks"
 import RightClick from "@/src/components/rightClick"
 import { ChatType, MessageBoxProps } from "@/src/models/enum"
 import { recievedMessageInterface } from "@/src/models/interface"
+import CustomizedDialogs from "@/src/components/popUp"
 
 const initialContextMenu = {
     show: false,
@@ -21,6 +22,10 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatType = useAppSelector(state => state.chat).chatType
     let sender;
+
+    const socket = useAppSelector(state => state.socket).Socket
+    const chatId = useAppSelector(state => state.chat).Chat._id
+
 
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
 
@@ -43,18 +48,39 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
-
         const { clientX, clientY } = e
         // access to currentTarget = currentTarget = div:messageBox
         setContextMenu({ show: true, x: clientX, y: clientY })
-        const message = e.currentTarget.children[0].children[0].children[0].children[0]
+        // const message = e.currentTarget.children[0].children[0].children[0].children[0]
+        const message = e.currentTarget
         setChildren(message)
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
+    const [confim, setConfirm] = useState(false)
+    const [open, setOpen] = useState(false)
+    const handelOpen = () => setOpen(!open)
+
+    const deleteHandler = () => {
+        setOpen(true)
+        setConfirm(true)
+        closeContextMenu()
+
+        console.log('delete msg : ', msg._id)
+    }
+    const deleteH = () => {
+        console.log('delete msg Done!')
+        const deleteInfo = {
+            chatId,
+            messageIds: [msg._id],
+            deleteAll: true
+        }
+        socket.emit('deleteMessage', deleteInfo)
+        setConfirm(false)
+    }
     return (
         <div className="messageBox"  >
-            {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} child={children} />}
+            {contextMenu.show && <RightClick x={contextMenu.x} y={contextMenu.y} closeContextMenu={closeContextMenu} child={children} msg={msg} deleteHandler={deleteHandler} />}
             <div ref={messageBox} onContextMenu={handleContextMenu} className={`flex gap-5 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                 {
                     chatType !== ChatType.private
@@ -104,6 +130,20 @@ const MessageBox = ({ msg }: { msg: recievedMessageInterface }) => {
                     </div>
                 </div>
             </div>
+
+            {/* ----------------------------- delete modal */}
+            {confim && <CustomizedDialogs
+                title='delete'
+                children={<div className="px-6 pb-2 flex flex-col">
+                    <p>Are you sure?</p>
+                    <div className="btns flex gap-1 justify-end">
+                        <button className='bg-white text-black p-2 rounded-md hover:bg-slate-300 transition duration-75' onClick={() => setConfirm(false)}>cancel</button>
+                        <button className='bg-red-500 text-white p-2 rounded-md hover:bg-red-700 transition duration-75' onClick={deleteH}>confim</button>
+                    </div>
+                </div>}
+                open={open}
+                handelOpen={handelOpen}
+            />}
         </div>
 
     )

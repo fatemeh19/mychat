@@ -44,6 +44,9 @@ export const ChatSlice = createSlice({
         },
         setChatCreated: (state, action: PayloadAction<boolean>) => {
             state.chatCreated = action.payload
+        },
+        updateArrayMessages: (state, action: PayloadAction<any>) => {
+            state.Chat.messages = action.payload
         }
     },
 });
@@ -53,6 +56,7 @@ export const {
     setChatType,
     setFirstChat,
     addMessage,
-    setChatCreated
+    setChatCreated,
+    updateArrayMessages
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
