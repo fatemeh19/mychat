@@ -1,7 +1,7 @@
 "use client"
 
 import Image from 'next/image';
-import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, MouseEvent } from 'react'
 
 import { GoPeople } from 'react-icons/go'
 import { PiSelection } from 'react-icons/pi'
@@ -11,20 +11,18 @@ import { BsReply, BsLink45Deg, BsPinAngle, BsTrash3 } from 'react-icons/bs'
 import style from './style.module.css'
 import { useOnClickOutside } from './useOnClickOutside';
 import { recievedMessageInterface } from '@/src/models/interface';
-import { deleteMessage } from '@/src/helper/useAxiosRequests';
-import { useAppSelector } from '@/src/redux/hooks';
-import CustomizedDialogs from '../popUp';
 
 interface RightClickProps {
     x: number,
     y: number,
-    closeContextMenu: () => void,
     child: Element | undefined,
     msg: recievedMessageInterface,
-    deleteHandler: () => void
+    closeContextMenu: () => void,
+    showConfirmModal: () => void,
+    activeSelection: (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void
 }
 
-const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, deleteHandler }) => {
+const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, showConfirmModal, activeSelection }) => {
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
     const hiddenScroll = useRef<HTMLDivElement>(null)
@@ -43,8 +41,6 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, d
             cmHeight = contextMenuRef.current.offsetHeight;
         const distWidth = winWidth - cmWidth
         const distHeight = winHeight - cmHeight
-
-        console.log('child : ', child)
 
         // @ts-ignore
         if (x > distWidth) {
@@ -67,29 +63,11 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, d
         }
         child?.classList.add('select')
 
-
         return () => {
             // child.style.background = 'white'
             child?.classList.remove('select')
-
         }
-
     }, [x, y])
-
-    console.log('msg in rightClick : ', msg)
-    // const [confim, setConfirm] = useState(false)
-
-    // const [open, setOpen] = useState(false)
-    // const handelOpen = () => setOpen(!open)
-
-    // const deleteHandler = async () => {
-    //     setConfirm(true)
-    //     setOpen(!open)
-    // }
-    // const deleteH = () => {
-    //     console.log('delete')
-    //     console.log(popUpRef)
-    // }
 
     return (
         <>
@@ -124,7 +102,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, d
                             <BsReply className={`${style.rotateZ} ${style.icon}`} />
                             <span>Forward</span>
                         </li>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={activeSelection}>
                             <PiSelection className={`${style.icon} `} />
                             <span>Select</span>
                         </li>
@@ -155,7 +133,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, d
                                 </div>
                             </div>
                         </li>
-                        <li className={`${style.item}`} onClick={deleteHandler}>
+                        <li className={`${style.item}`} onClick={showConfirmModal}>
                             <BsTrash3 className={`${style.icon}`} />
                             <span>Delete</span>
                         </li>

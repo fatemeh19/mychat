@@ -40,7 +40,6 @@ export const ChatSlice = createSlice({
         },
         addMessage: (state, action: PayloadAction<any>) => {
             state.Chat.messages.push(action.payload)
-            // console.log('action : ', action)
         },
         setChatCreated: (state, action: PayloadAction<boolean>) => {
             state.chatCreated = action.payload

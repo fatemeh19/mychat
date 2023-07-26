@@ -6,7 +6,7 @@ import openChatReducer from './features/openChatSlice';
 import userContactListReducer from './features/userContactListSlice';
 import userChatListReducer from './features/userChatListSlice';
 import userInfoReducer from './features/userInfoSlice';
-import messagesReducer from './features/messagesSlice';
+import selectedMessagesReducer from './features/selectedMessagesSlice';
 import chatReducer from './features/chatSlice'
 import socketReducer from './features/socketSlice';
 import chatOpenInListReducer from './features/chatOpenInListSlice';
@@ -18,10 +18,10 @@ export const store = configureStore({
     userContact: userContactReducer,
     openChat: openChatReducer,
     chatOpenInList: chatOpenInListReducer,
-    userContactsList : userContactListReducer,
-    userChatList : userChatListReducer,
+    userContactsList: userContactListReducer,
+    userChatList: userChatListReducer,
     userInfo: userInfoReducer,
-    message: messagesReducer,
+    selectedMessage: selectedMessagesReducer,
     chat: chatReducer,
     socket: socketReducer,
   },

@@ -17,7 +17,7 @@ enum fileType {
     xlsx = 'xlsx',
 }
 
-enum MessageBoxProps {
+enum MessageBoxDir {
     rtl = 'rtl',
     ltr = 'ltr'
 }
@@ -28,4 +28,4 @@ enum ChatType {
     channel = 'channel'
 }
 
-export { messageTypes, MessageBoxProps, ChatType, fileType }
+export { messageTypes, MessageBoxDir, ChatType, fileType }
