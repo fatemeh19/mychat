@@ -53,11 +53,12 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
-            console.log('deleteMessage data : ', data)
             const msg = chatMessages.filter(CM => {
+                let flag = true
                 for (let i = 0; i < data.messageIds.length; i++) {
-                    if (CM._id !== data.messageIds[i]) return CM._id
+                    CM._id === data.messageIds[i] ? flag = false : null
                 }
+                if (flag) return CM._id
             })
             dispatch(updateArrayMessages(msg))
         })

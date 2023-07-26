@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { MouseEvent, useRef, useState, useEffect, SetStateAction, Dispatch, FC } from "react"
+import { MouseEvent, useRef, useState, useEffect, FC } from "react"
 
 import Message from "./message"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
@@ -9,11 +9,7 @@ import RightClick from "@/src/components/rightClick"
 import { ChatType, MessageBoxDir } from "@/src/models/enum"
 import { recievedMessageInterface } from "@/src/models/interface"
 import CustomizedDialogs from "@/src/components/popUp"
-import { addSelectMessage, removeSelectMessage, selectedMessageSlice } from "@/src/redux/features/selectedMessagesSlice"
-
-import { GrRadialSelected } from 'react-icons/gr'
-import { BsCircle } from "react-icons/bs"
-import { IconBaseProps } from "react-icons/lib"
+import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 
 const initialContextMenu = {
     show: false,
@@ -22,18 +18,15 @@ const initialContextMenu = {
 }
 
 interface MessageBoxProps {
-    msg: recievedMessageInterface,
-    activeSelect: boolean,
-    setActiveSelect: Dispatch<SetStateAction<boolean>>
+    msg: recievedMessageInterface
 }
 
-const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect }) => {
+const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
     const [children, setChildren] = useState<Element>()
     const [confim, setConfirm] = useState(false)
     const [open, setOpen] = useState(false)
-    // const [selectedMessages, setSelectedMessages] = useState()
 
     const messageBoxRef = useRef<HTMLDivElement>(null)
     const selectIconRef = useRef<HTMLDivElement>(null)
@@ -46,8 +39,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect })
     const socket = useAppSelector(state => state.socket).Socket
     const chatId = useAppSelector(state => state.chat).Chat._id
     const chatType = useAppSelector(state => state.chat).chatType
-    const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const selectedMessages = useAppSelector(state => state.selectedMessage).SelectedMessages
+    const activeSelectedMessages = useAppSelector(state => state.selectedMessage).activeSelection
 
 
     let information = {
@@ -85,7 +78,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect })
         closeContextMenu()
         console.log('delete msg : ', msg._id)
     }
-    const deleteHandler = () => {
+    const deleteHandler_oneMessage = () => {
         console.log('delete msg Done!')
         const deleteInfo = {
             chatId,
@@ -96,40 +89,39 @@ const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect })
         setConfirm(false)
     }
     const activeSelection = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
-        setActiveSelect(true)
+        dispatch(setActiveSelection(true))
         closeContextMenu()
-        // @ts-ignore
-        selectIconRef.current.style.display = 'block'
     }
     let counter = 0
     const selectHandler = () => {
-        if (activeSelect) {
-            // @ts-ignore
-            const currentMessage = messageBoxRef.current
+        if (activeSelectedMessages) {
             // @ts-ignore
             const circleStyle = selectIconRef.current.style
             circleStyle.background = '#2563eb'
             circleStyle.borderColor = '#2563eb'
 
-            dispatch(addSelectMessage(msg))
+            // @ts-ignore
+            dispatch(addSelectMessage(msg._id))
             selectedMessages.map(selectedMsg => {
-                if (selectedMsg._id === msg._id) {
+                if (selectedMsg === msg._id) {
                     counter = counter + 1
                     console.log(counter)
                     if (counter === 1) {
                         console.log('removin tekrari')
-                        const filteredSelectedMessage = selectedMessages.filter(sMsg => sMsg._id !== msg._id)
+                        const filteredSelectedMessage = selectedMessages.filter(sMsg => sMsg !== msg._id)
                         dispatch(removeSelectMessage(filteredSelectedMessage))
                         circleStyle.background = 'transparent'
                         circleStyle.borderColor = 'black'
                     }
                 }
             })
-            console.log('select messages : ', selectedMessages)
         }
 
     }
 
+    useEffect(() => {
+        console.log('select messages : ', selectedMessages)
+    }, [selectedMessages])
     return (
         <div className="messageBox" ref={messageBoxRef} onClick={selectHandler}>
             {contextMenu.show &&
@@ -145,8 +137,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect })
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
-                {/* <div ref={selectIconRef} className=" flex items-center justify-center w-fit h-fit border-[1px] border-black rounded-full " > <div className="w-3 h-3 self-center m-[2px] bg-[#2563eb] rounded-full"></div> </div> */}
-                <div ref={selectIconRef} className={` w-[15px] h-[15px] border-[1px] border-black rounded-full ${activeSelect ? 'block' : 'hidden'}`} > <div className=""></div> </div>
+                {activeSelectedMessages && <div ref={selectIconRef} className={` w-[15px] h-[15px] border-[1px] border-black rounded-full transition-all duration-100`} > </div>}
                 {
                     chatType !== ChatType.private
                         ? (
@@ -203,7 +194,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg, activeSelect, setActiveSelect })
                     <p>Are you sure?</p>
                     <div className="btns flex gap-1 justify-end">
                         <button className='bg-white text-black p-2 rounded-md hover:bg-slate-300 transition duration-75' onClick={() => setConfirm(false)}>cancel</button>
-                        <button className='bg-red-500 text-white p-2 rounded-md hover:bg-red-700 transition duration-75' onClick={deleteHandler}>confim</button>
+                        <button className='bg-red-500 text-white p-2 rounded-md hover:bg-red-700 transition duration-75' onClick={deleteHandler_oneMessage}>confim</button>
                     </div>
                 </div>}
                 open={open}
