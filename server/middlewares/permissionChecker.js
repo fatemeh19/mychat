@@ -15,7 +15,7 @@ const permissionChecker = (routeName) => {
       { userPermissionsAndExceptions: 1, chatType: 1 }
     );
     if (group.chatType != "group") {
-      next();
+      return next();
     }
     let perms;
     if (res.locals.permissionType) {
