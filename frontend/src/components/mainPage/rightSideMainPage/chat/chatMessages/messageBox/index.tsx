@@ -82,7 +82,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
-        console.log('delete msg : ', msg._id)
     }
     const deleteHandler_oneMessage = () => {
         console.log('delete msg Done!')
@@ -121,9 +120,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             selectedMessages.map(selectedMsg => {
                 if (selectedMsg === msg._id) {
                     counter = counter + 1
-                    console.log(counter)
                     if (counter === 1) {
-                        console.log('removin tekrari')
                         const filteredSelectedMessage = selectedMessages.filter(sMsg => sMsg !== msg._id)
                         dispatch(removeSelectMessage(filteredSelectedMessage))
                         circleStyle.background = 'transparent'

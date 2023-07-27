@@ -19,7 +19,6 @@ export const selectedMessageSlice = createSlice({
             state.SelectedMessages.push(action.payload)
         },
         removeSelectMessage: (state, action: PayloadAction<any>) => {
-            console.log('action.payload : ', action.payload)
             state.SelectedMessages = action.payload
         },
         setActiveSelection: (state, action: PayloadAction<boolean>) => {

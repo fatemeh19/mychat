@@ -15,7 +15,7 @@ const VoiceRecord: FC<VoiceRecordProps> = ({ voice, setVoice, sendHandler }) => 
 
   useEffect(() => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      console.log("getUserMedia supported.");
+      // console.log("getUserMedia supported.");
       navigator.mediaDevices
         .getUserMedia(
           // constraints - only audio needed for this app
