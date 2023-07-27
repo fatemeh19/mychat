@@ -15,10 +15,7 @@ interface ChatInputProps {
 const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
 
     const snedMessage = async () => {
-        console.log('start sending message')
         sendHandler()
-        console.log('message sended')
-
         setInput('')
     }
 
