@@ -21,7 +21,7 @@ const createMessage = async (req, res) => {
 
   let newMessage = {
     reply: {
-      isReplied: message?.reply?.isReplied,
+      isReplied: Boolean(message?.reply?.isReplied),
       messageId: message?.reply?.messageId,
     },
     content: {
