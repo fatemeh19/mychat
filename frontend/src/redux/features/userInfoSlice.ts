@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserInterface {
+export interface UserInterface {
     name: string,
     phoneNumber: string,
     profilePic: string,
-    email :string,
-    _id:string
+    email: string,
+    _id: string
 }
 interface initialStateInterface {
-    User : UserInterface
+    User: UserInterface
 }
 
 const initialState = {
-    User : {}
+    User: {}
 } as initialStateInterface
 
 export const UserSlice = createSlice({

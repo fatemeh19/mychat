@@ -1,20 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface contactInterface {
+export interface contactInterface {
     _id: string,
     name: string,
     profilePic: string,
-    status:{
-        online : boolean,
-        lastseen : string | Date | number
+    status: {
+        online: boolean,
+        lastseen: string | Date | number
     },
 }
 interface initialStateInterface {
-    contacts : contactInterface[]
+    contacts: contactInterface[]
 }
 
 const initialState = {
-    contacts : []
+    contacts: []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
