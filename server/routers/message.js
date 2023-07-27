@@ -1,11 +1,17 @@
-import express from 'express'
-const router = express.Router()
+import express from "express";
+const router = express.Router();
 import uploadFile from "../utils/multer.js";
+import bodyParser from "body-parser";
+import { createMessage } from "../controllers/messageController.js";
+import permissionChecker from "../middlewares/permissionChecker.js";
+import  messageTypeChecker  from "../middlewares/messageTypeChecker.js";
 
-import { createMessage } from '../controllers/messageController.js'
-
-router.route('/:chatId')
-.post(uploadFile.single('file'),createMessage)
+router
+  .route("/:chatId")
+  .post(
+    [uploadFile.single("file"),messageTypeChecker, permissionChecker("")],
+    createMessage
+  );
 // .delete(deleteMessage)
-
-export default router
+// ,uploadFile.single('file')]
+export default router;

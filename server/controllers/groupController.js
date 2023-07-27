@@ -10,7 +10,7 @@ const addMember = async (req, res) => {
   // limitations for number of members
   const {
     body: { memberId },
-    params: { groupId },
+    params: { chatId:groupId },
   } = req;
   const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $push: { memberIds: memberId },
@@ -20,7 +20,7 @@ const addMember = async (req, res) => {
 };
 
 const editGroupType = async (req, res) => {
-  const { groupId } = req.params;
+  const { chatId:groupId } = req.params;
   let data;
   try {
     data = await Validators.editGroupType.validate(req.body, {
@@ -47,7 +47,7 @@ const editGroupType = async (req, res) => {
 const removeMember = async (req, res) => {
   const {
     body: { memberId },
-    params: { groupId },
+    params: { chatId:groupId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $pull: { memberIds: memberId },
@@ -59,7 +59,7 @@ const removeMember = async (req, res) => {
 const editGroupPermissions = async (req, res) => {
   const {
     body,
-    params: { groupId },
+    params: { chatId:groupId },
   } = req;
   let data;
   try {
@@ -77,6 +77,7 @@ const editGroupPermissions = async (req, res) => {
       exception.restrictUntil = new Date(exception.customDate);
     }
   });
+  console.log(groupId)
   const updated = await Services.Chat.findAndUpdateChat(
     groupId,
     {

@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import * as RH from "./ResponseHandler.js";
 const authMiddleware = async (req, res, next) => {
   const { authorization: authHeader } = req.headers;
-  
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     await RH.CustomError({
       errorClass: CustomError.UnauthenticatedError,

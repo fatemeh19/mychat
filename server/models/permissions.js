@@ -4,15 +4,15 @@ export default{
         default: true,
       },
       sendMedia: {
-        photos: {
+        photo: {
           type: Boolean,
           default: true,
         },
-        videoFiles: {
+        videoMessage: {
           type: Boolean,
           default: true,
         },
-        videoMessages: {
+        voice: {
           type: Boolean,
           default: true,
         },
@@ -24,18 +24,7 @@ export default{
           type: Boolean,
           default: true,
         },
-        stickers: {
-          type: Boolean,
-          default: true,
-        },
-        ebmedLinks: {
-          type: Boolean,
-          default: true,
-        },
-        polls: {
-          type: Boolean,
-          default: true,
-        },
+        
       },
       addMember: {
         type: Boolean,

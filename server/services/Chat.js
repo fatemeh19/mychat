@@ -28,7 +28,7 @@ const findAndUpdateChat = async (id, updateQuery, options) => {
     }else{
       chatModel = privateChat;
     }
-    console.log(chatType)
+   
     const chat = await chatModel.findByIdAndUpdate(id, updateQuery, options);
 
     return chat;
@@ -42,9 +42,9 @@ const findAndUpdateChat = async (id, updateQuery, options) => {
     });
   }
 };
-const getChat = async (Query) => {
+const getChat = async (Query,select={}) => {
   try {
-    const chat = await Chat.findOne(Query);
+    const chat = await Chat.findOne(Query).select(select)
     return chat;
   } catch (err) {
     const { errorType, field } = await mongooseErrorExtractor(err);
