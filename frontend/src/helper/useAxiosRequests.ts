@@ -80,6 +80,7 @@ export const createMessage = async (chatId: string, newMessage: any, dispatch: a
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {
+            console.log(res)
             return res.data.value.message
 
         }

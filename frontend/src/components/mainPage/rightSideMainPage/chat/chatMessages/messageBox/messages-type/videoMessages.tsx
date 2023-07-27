@@ -21,7 +21,7 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
     const originalName = msg.content.originalName?.split('.')[0]
 
 
-    const videoRef = useRef()
+    const videoRef = useRef<HTMLVideoElement>(null)
 
     const handelPlayPause = () => {
         setPlay(!playing)

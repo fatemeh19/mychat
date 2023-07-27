@@ -21,7 +21,7 @@ const Message: FC<messageProps> = ({ type, dir, msg }) => {
     switch (type) {
         case messageTypes.text:
             return (<TextMessage dir={dir} msg={msg} />)
-        case messageTypes.picture:
+        case messageTypes.photo:
             return (<ImageMessage dir={dir} msg={msg} />)
         case messageTypes.voice:
             return (<VoiceMessage dir={dir} msg={msg} />)
@@ -29,7 +29,7 @@ const Message: FC<messageProps> = ({ type, dir, msg }) => {
             return (<MusicMessage dir={dir} msg={msg} />)
         case messageTypes.file:
             return (<FileMessage dir={dir} msg={msg} />)
-        case messageTypes.video:
+        case messageTypes.videoMessage:
             return (<VideoMessage dir={dir} msg={msg} />)
     }
 

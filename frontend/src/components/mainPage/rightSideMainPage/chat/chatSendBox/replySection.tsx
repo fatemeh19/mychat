@@ -49,7 +49,7 @@ const ReplySection: FC<ReplySectionProps> = () => {
                         <BsFillReplyFill className={`w-[25px] h-[25px] text-blue-500`} />
                         <div className=" flex items-center justify-center gap-2">
                             {
-                                repliedMessage.content.contentType === messageTypes.picture && <div>
+                                repliedMessage.content.contentType === messageTypes.photo && <div>
                                     <Image width={40} height={40} alt="" src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} className="w-[40px] h-[40px]" />
                                 </div>
                             }

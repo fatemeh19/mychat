@@ -31,6 +31,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     let firstChat = useAppSelector(state => state.chat).firstChat
     const chatCreated = useAppSelector(state => state.chat).chatCreated
     const showReply = useAppSelector(state => state.repledMessage).ShowReply
+    const repliedMessageId = useAppSelector(state => state.repledMessage).RepliedMessage._id
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -64,10 +65,10 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 type = messageTypes.file
                 break;
             case 'image':
-                type = messageTypes.picture
+                type = messageTypes.photo
                 break;
             case 'video':
-                type = messageTypes.video
+                type = messageTypes.videoMessage
                 break;
             default:
 
@@ -84,6 +85,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             file ? newMessage.append('file', file) : null
             newMessage.append('senderId', userInfo._id)
             voice ? newMessage.append('file', voice) : null
+            // showReply ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
+            // showReply ? newMessage.append('reply[messageId]', repliedMessageId) : null
 
             let message = ''
             chatId

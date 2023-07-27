@@ -6,7 +6,7 @@ interface infoFace {
 }
 
 interface recievedMessageInterface {
-    _id?: string,
+    _id: string,
     content: {
         contentType: string,
         url: string,
