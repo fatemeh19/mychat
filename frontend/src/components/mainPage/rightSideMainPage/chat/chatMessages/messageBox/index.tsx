@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { updateArrayMessages } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
+import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
 
 const initialContextMenu = {
     show: false,
@@ -74,15 +75,15 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         const message = e.currentTarget
         setChildren(message)
     }
+
     const closeContextMenu = () => setContextMenu(initialContextMenu)
-
-
 
     const showConfirmModal = () => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
     }
+
     const deleteHandler_oneMessage = () => {
         console.log('delete msg Done!')
         const deleteInfo = {
@@ -107,6 +108,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         dispatch(setActiveSelection(true))
         closeContextMenu()
     }
+
     let counter = 0
     const selectHandler = () => {
         if (activeSelectedMessages) {
@@ -129,6 +131,13 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                 }
             })
         }
+    }
+
+    const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+        console.log(e)
+        console.log(e.currentTarget)
+        dispatch(setShowReply(true))
+        dispatch(setRepliedMessage(msg))
 
     }
 
@@ -136,7 +145,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     //     console.log('select messages : ', selectedMessages)
     // }, [selectedMessages])
     return (
-        <div className="messageBox select-none cursor-pointer" ref={messageBoxRef} onClick={selectHandler}>
+        <div className="messageBox select-none cursor-default" onDoubleClick={messageDoubleClickHandler} ref={messageBoxRef} onClick={selectHandler}>
             {contextMenu.show &&
                 <RightClick
                     x={contextMenu.x}

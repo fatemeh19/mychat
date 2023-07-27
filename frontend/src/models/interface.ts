@@ -14,7 +14,8 @@ interface recievedMessageInterface {
         originalName?: string,
     },
     reply: {
-        isReplied: boolean
+        isReplied: boolean,
+        messageId: string
     },
     senderId: string,
     seenIds: string[],
