@@ -7,13 +7,10 @@ import ErrorMessages from "../messages/errors.js";
 import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
-import path from "path";
 import message from "../models/message.js";
-import { deleteMessages } from "./devController.js";
-import mongoose from "mongoose";
-import { updateMessages } from "../services/Message.js";
-import { object } from "yup";
+import * as fileController from "../utils/file.js"
 const createMessage = async (req, res) => {
+
   const {
     params: { chatId },
     body: message,
@@ -21,7 +18,6 @@ const createMessage = async (req, res) => {
   } = req;
   let url = file && message.content.contentType != "text" ? file.path : undefined
   let originalName = file && message.content.contentType != "text" ? req.file.originalname  : undefined
-  console.log(message.content.contentType);
 
   let newMessage = {
     reply: {
@@ -84,13 +80,22 @@ const createMessage = async (req, res) => {
 };
 const DeleteMessage = async (userId, deleteInfo) => {
   const { chatId, messageIds, deleteAll } = deleteInfo;
-  // let { userId } = req.user;
+  
   if (deleteAll) {
-    await Services.Message.deleteMessage({
+    const messages = await Services.Message.getMessages({_id:{$in: messageIds}})
+    
+    messages.forEach(message => {
+      if(message.content.url){
+        fileController.deleteFile(message.content.url)
+      }
+      
+    }); 
+    Services.Message.deleteMessage({
       _id: { $in: messageIds },
     });
 
-    await Services.Chat.findAndUpdateChat(chatId, {
+
+    Services.Chat.findAndUpdateChat(chatId, {
       $pullAll: {
         messages: messageIds,
       },

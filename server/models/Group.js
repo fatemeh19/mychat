@@ -2,11 +2,23 @@ import mongoose, { Mongoose, mongo } from "mongoose";
 import Chat from "./Chat.js";
 import { groupType } from "../utils/enums.js";
 import { string } from "yup";
+import permissions from "./permissions.js";
 const GroupChatSchema = new mongoose.Schema({
-  groupType: {
-    type:String,
-    enum:groupType,
-    default: 'private',
+  groupTypeSetting: {
+    groupType: {
+      type: String,
+      enum: groupType,
+      default: "private",
+    },
+    url: String,
+    restrictSavingContent: {
+      type: Boolean,
+      default: false,
+    },
+    approveNewMembers: {
+      type: Boolean,
+      default: false,
+    },
   },
   name: {
     type: String,
@@ -21,34 +33,39 @@ const GroupChatSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Types.ObjectId,
     ref: "User",
-    required:true
+    required: true,
   },
-  // inviteLink:{
-    
-  //   createdLinks:[
-  //     {
-  //       creator:{
-  //         type:mongoose.Types.ObjectId,
-  //         ref:'User'
-  //       },
-  //       link: String,
-  //       expireDate: Date,
-  //     },
-
-  //   ]
-  // },
-  inviteLinks: [
-   {
-        creator:{
-          type:mongoose.Types.ObjectId,
-          ref:'User'
+  userPermissionsAndExceptions: {
+    permissions: permissions,
+    exceptions: [
+      {
+        userId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
         },
-        link: String,
-        expireDate: Date,
+        restrictUntil: {
+          type: Date,
+        },
+        permissions: permissions,
       },
-  ],
-  adminRights: [
+    ],
+  },
+  inviteLinks: [
     {
+      creator: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+      },
+      link: String,
+      expireDate: Date,
+    },
+  ],
+  adminsAndRights: [
+    {
+      customTitle: {
+        type: String,
+        default: "admin",
+      },
       adminId: {
         type: mongoose.Types.ObjectId,
         ref: "User",
@@ -90,4 +107,4 @@ const GroupChatSchema = new mongoose.Schema({
     },
   ],
 });
-export default Chat.discriminator("GroupChat", GroupChatSchema,"chats");
+export default Chat.discriminator("GroupChat", GroupChatSchema, "chats");

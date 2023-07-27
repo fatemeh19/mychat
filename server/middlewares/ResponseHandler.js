@@ -20,8 +20,8 @@ const CustomError = async ({ err, errorClass, errorType, Field, socket = false }
     errors.push(error);
   } else {
     error = {
-      errorType: errorType.name,
-      message: errorType.message,
+      errorType: errorType?.name,
+      message: errorType?.message,
     };
     errors.push(error);
   }
