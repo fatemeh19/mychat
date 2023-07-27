@@ -1,11 +1,12 @@
 "use client"
 
-import { useAppSelector } from "@/src/redux/hooks"
 import MessageBox from "./messageBox"
+import { useAppSelector } from "@/src/redux/hooks"
 
 export default function ChatMessages() {
 
     const chatInfo = useAppSelector(state => state.chat)
+    const userId = useAppSelector(state => state.userInfo).User._id
     const chat = chatInfo.Chat
 
     return (
@@ -19,8 +20,15 @@ export default function ChatMessages() {
                     {/* <DateLine date={'Today'}/> */}
                     <div className="flex flex-col ">
                         {
+                            // if flag == true => show messages / flag = false => dont show deleted messages
+                            // we are checking if userId is in the message deletedIds then => dont show this message to this user
                             chat.messages?.map((msg, index) => {
-                                return <MessageBox key={index} msg={msg} />
+                                let flag = true
+                                console.log(msg.deletedIds)
+                                msg.deletedIds.map(delId => {
+                                    if (delId === userId) flag = false
+                                })
+                                if (flag) return <MessageBox key={index} msg={msg} />
                             })
                         }
                     </div>

@@ -13,6 +13,8 @@ import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { removeSelectMessage, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
+import { updateArrayMessages } from '@/src/redux/features/chatSlice'
+import ConfirmModal from '@/src/components/basicComponents/confirmModal'
 
 
 interface ChatHeaderProps {
@@ -22,7 +24,8 @@ interface ChatHeaderProps {
 
 const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
-    const [open, setOpen] = useState(false)
+    const [showConfirm, setShowConfirm] = useState<boolean>(false)
+    const [open, setOpen] = useState<boolean>(false)
 
     const dispatch = useAppDispatch()
 
@@ -31,6 +34,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const activeSelection = useAppSelector(state => state.selectedMessage).activeSelection
     const selectedMessages = useAppSelector(state => state.selectedMessage).SelectedMessages
     const chatId = useAppSelector(state => state.chat).Chat._id
+    const toggle = useAppSelector(state => state.toggle).Toggle
+    const chatMessages = useAppSelector(state => state.chat.Chat).messages
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -69,18 +74,31 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         dispatch(setActiveSelection(false))
         dispatch(removeSelectMessage([]))
     }
+    const showConfirmModal = () => {
+        setOpen(true)
+        setShowConfirm(true)
+    }
 
     const deleteHandler_multipleMessage = () => {
         console.log('delete msg Done!')
         const deleteInfo = {
             chatId,
             messageIds: selectedMessages,
-            deleteAll: true
+            deleteAll: toggle
         }
         socket.emit('deleteMessage', deleteInfo)
         dispatch(setActiveSelection(false))
         dispatch(removeSelectMessage([]))
-        // setConfirm(false)
+        if (!deleteInfo.deleteAll) {
+            const msg = chatMessages.filter(CM => {
+                let flag = true
+                for (let i = 0; i < selectedMessages.length; i++) {
+                    CM._id === selectedMessages[i] ? flag = false : null
+                }
+                if (flag) return CM._id
+            })
+            dispatch(updateArrayMessages(msg))
+        }
     }
 
     const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
@@ -103,7 +121,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     Forward
                                     {selectedMessages.length !== 0 && <span className='ml-1 text-blue-100'>{selectedMessages.length}</span>}
                                 </button>
-                                <button className='bg-blue-500 p-2 px-4 rounded-md text-white font-medium uppercase' onClick={deleteHandler_multipleMessage}>
+                                <button className='bg-blue-500 p-2 px-4 rounded-md text-white font-medium uppercase' onClick={showConfirmModal}>
                                     Delete
                                     {selectedMessages.length !== 0 && <span className='ml-1 text-blue-100'>{selectedMessages.length}</span>}
                                 </button>
@@ -173,6 +191,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                         </>
                     </div>
             }
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} />
         </div >
     )
 }

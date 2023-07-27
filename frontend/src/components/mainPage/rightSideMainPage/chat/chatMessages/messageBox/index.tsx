@@ -4,11 +4,13 @@ import Image from "next/image"
 import { MouseEvent, useRef, useState, useEffect, FC } from "react"
 
 import Message from "./message"
-import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import RightClick from "@/src/components/rightClick"
 import { ChatType, MessageBoxDir } from "@/src/models/enum"
+import { setToggle } from "@/src/redux/features/toggleSlice"
 import { recievedMessageInterface } from "@/src/models/interface"
-import CustomizedDialogs from "@/src/components/popUp"
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
+import { updateArrayMessages } from "@/src/redux/features/chatSlice"
+import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 
 const initialContextMenu = {
@@ -23,17 +25,19 @@ interface MessageBoxProps {
 
 const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
+    // states
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
     const [children, setChildren] = useState<Element>()
-    const [confim, setConfirm] = useState(false)
-    const [open, setOpen] = useState(false)
+    const [showConfirm, setShowConfirm] = useState<boolean>(false)
+    const [open, setOpen] = useState<boolean>(false)
 
+    // ref
     const messageBoxRef = useRef<HTMLDivElement>(null)
     const selectIconRef = useRef<HTMLDivElement>(null)
 
-
     const dispatch = useAppDispatch()
 
+    // selectors
     const User = useAppSelector(state => state.userInfo).User
     const Contact = useAppSelector(state => state.userContact).Contact
     const socket = useAppSelector(state => state.socket).Socket
@@ -41,6 +45,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const chatType = useAppSelector(state => state.chat).chatType
     const selectedMessages = useAppSelector(state => state.selectedMessage).SelectedMessages
     const activeSelectedMessages = useAppSelector(state => state.selectedMessage).activeSelection
+    const chatMessages = useAppSelector(state => state.chat).Chat.messages
+    const deleteToggle = useAppSelector(state => state.toggle).Toggle
 
 
     let information = {
@@ -70,11 +76,11 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
-    const handelOpen = () => setOpen(!open)
+
 
     const showConfirmModal = () => {
         setOpen(true)
-        setConfirm(true)
+        setShowConfirm(true)
         closeContextMenu()
         console.log('delete msg : ', msg._id)
     }
@@ -83,11 +89,21 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         const deleteInfo = {
             chatId,
             messageIds: [msg._id],
-            deleteAll: true
+            deleteAll: deleteToggle
         }
         socket.emit('deleteMessage', deleteInfo)
-        setConfirm(false)
+        setShowConfirm(false)
+
+        // delete user message whene deleteAll is false : delete message jus for user
+        if (!deleteInfo.deleteAll) {
+            const newMsgs = chatMessages.filter(CM => {
+                if (CM._id !== msg._id) return CM._id
+            })
+            dispatch(updateArrayMessages(newMsgs))
+        }
+        dispatch(setToggle(false))
     }
+
     const activeSelection = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
         dispatch(setActiveSelection(true))
         closeContextMenu()
@@ -119,11 +135,11 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     }
 
-    useEffect(() => {
-        console.log('select messages : ', selectedMessages)
-    }, [selectedMessages])
+    // useEffect(() => {
+    //     console.log('select messages : ', selectedMessages)
+    // }, [selectedMessages])
     return (
-        <div className="messageBox" ref={messageBoxRef} onClick={selectHandler}>
+        <div className="messageBox select-none cursor-pointer" ref={messageBoxRef} onClick={selectHandler}>
             {contextMenu.show &&
                 <RightClick
                     x={contextMenu.x}
@@ -133,7 +149,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     msg={msg}
                     showConfirmModal={showConfirmModal}
                     activeSelection={activeSelection}
-
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
@@ -186,22 +201,9 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     </div>
                 </div>
             </div>
-
             {/* ----------------------------- delete modal */}
-            {confim && <CustomizedDialogs
-                title='delete'
-                children={<div className="px-6 pb-2 flex flex-col">
-                    <p>Are you sure?</p>
-                    <div className="btns flex gap-1 justify-end">
-                        <button className='bg-white text-black p-2 rounded-md hover:bg-slate-300 transition duration-75' onClick={() => setConfirm(false)}>cancel</button>
-                        <button className='bg-red-500 text-white p-2 rounded-md hover:bg-red-700 transition duration-75' onClick={deleteHandler_oneMessage}>confim</button>
-                    </div>
-                </div>}
-                open={open}
-                handelOpen={handelOpen}
-            />}
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_oneMessage} />
         </div>
-
     )
 }
 

@@ -10,6 +10,7 @@ import selectedMessagesReducer from './features/selectedMessagesSlice';
 import chatReducer from './features/chatSlice'
 import socketReducer from './features/socketSlice';
 import chatOpenInListReducer from './features/chatOpenInListSlice';
+import toggleRefucer from './features/toggleSlice'
 // ...
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     selectedMessage: selectedMessagesReducer,
     chat: chatReducer,
     socket: socketReducer,
+    toggle: toggleRefucer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

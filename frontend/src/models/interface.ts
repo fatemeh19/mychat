@@ -18,6 +18,7 @@ interface recievedMessageInterface {
     },
     senderId: string,
     seenIds: string[],
+    deletedIds: string[],
     createdAt?: any,
     updatedAt?: any,
     __v?: number
