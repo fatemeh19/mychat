@@ -55,6 +55,10 @@ export default{
     "name":"groupType",
     "value":"نوع گروه"
 
+  },
+  "group":{
+    "name":"group",
+    "value":"گروه"
   }
   
 }

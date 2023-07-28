@@ -5,22 +5,26 @@ import * as RH from "../middlewares/ResponseHandler.js";
 import { StatusCodes } from "http-status-codes";
 import Chat from "../models/Chat.js";
 import dateCalculator from "../utils/date.js";
+import ErrorMessages from "../messages/errors.js";
+import Fields from "../messages/fields.js";
+
 const addMember = async (req, res) => {
+  // if it has joined by link
   // if new member has privacy limitations send suitable error
   // limitations for number of members
   const {
     body: { memberId },
-    params: { chatId:groupId },
+    params: { chatId: groupId },
   } = req;
   const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $push: { memberIds: memberId },
   });
-  console.log(addToGroupResult);
+  // console.log(addToGroupResult);
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const editGroupType = async (req, res) => {
-  const { chatId:groupId } = req.params;
+  const { chatId: groupId } = req.params;
   let data;
   try {
     data = await Validators.editGroupType.validate(req.body, {
@@ -46,8 +50,7 @@ const editGroupType = async (req, res) => {
 
 const removeMember = async (req, res) => {
   const {
-    body: { memberId },
-    params: { chatId:groupId },
+    params: { chatId: groupId , memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $pull: { memberIds: memberId },
@@ -59,7 +62,7 @@ const removeMember = async (req, res) => {
 const editGroupPermissions = async (req, res) => {
   const {
     body,
-    params: { chatId:groupId },
+    params: { chatId: groupId },
   } = req;
   let data;
   try {
@@ -70,14 +73,14 @@ const editGroupPermissions = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-   data.exceptions.forEach((exception) => {
+  data.exceptions.forEach((exception) => {
     if (exception.restrictUntil != "custom") {
-      exception.restrictUntil =  dateCalculator(exception.restrictUntil, 1);
+      exception.restrictUntil = dateCalculator(exception.restrictUntil, 1);
     } else {
       exception.restrictUntil = new Date(exception.customDate);
     }
   });
-  console.log(groupId)
+  console.log(groupId);
   const updated = await Services.Chat.findAndUpdateChat(
     groupId,
     {
@@ -86,8 +89,43 @@ const editGroupPermissions = async (req, res) => {
     { new: true }
   );
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-
-  
 };
 
-export { addMember, editGroupType, removeMember, editGroupPermissions };
+const getGroupByLink = async (req, res) => {
+  const { params:{link}, user:{userId} } = req;
+
+  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
+
+  if (!group) {
+    await RH.CustomError({
+      errorClass: CustomError.NotFoundError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+  let isMember = false
+  group.memberIds.forEach((memberId)=>{
+    if(memberId.equals(userId)){
+      isMember = true
+    }
+  })
+  let title
+  let joinedBefore 
+  if(isMember){
+    title = "joinedAlready"
+    joinedBefore = true
+
+  }else{
+    title = "notJoinedYet"
+    joinedBefore = false
+
+  }
+  RH.SendResponse({res,statusCode:StatusCodes.OK,title,value:{group, joinedBefore}})
+
+};
+const joinViaLink = async (req, res) => {
+  
+
+};
+
+export {getGroupByLink, addMember, editGroupType, removeMember, editGroupPermissions };
