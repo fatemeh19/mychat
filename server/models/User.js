@@ -103,17 +103,6 @@ UserSchema.methods.hasThisContact = async function(contact){
   // let contactNameExists = false
   let contactExists = false
   this.contacts.forEach((value, index)=>{
-    // console.log("value.name = ",value.name)
-    // console.log("contact.name = ",contact.name)
-    // console.log("value.userId = ",value.userId)
-    // console.log("contact.userId = ",contact.userId)
-    // console.log("contactNameExists = ",contactNameExists)
-    // console.log("contactExists = ",contactExists)
-    // if(value.name==contact.name){
-      
-    //   contactNameExists = true
-    // }
-
     if(value.userId.equals(contact.userId)){
       contactExists = true
     }
