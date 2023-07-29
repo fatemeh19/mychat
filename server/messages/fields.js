@@ -59,6 +59,14 @@ export default{
   "group":{
     "name":"group",
     "value":"گروه"
+  },
+  "member":{
+    "name":"member",
+    "value":"عضو در گروه"
+  },
+  "joinUsersLimit":{
+    "name":"joinUsersLimit",
+    "value":"ظرفیت  کاربران برای جوین"
   }
   
 }

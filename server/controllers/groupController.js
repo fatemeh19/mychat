@@ -134,9 +134,50 @@ const getGroupByLink = async (req, res) => {
     value: { group, joinedBefore },
   });
 };
-const joinGroupViaLink = async (req,res)=>{
-  
-}
+const joinGroupViaLink = async (req, res) => {
+  const {
+    params: { link },
+    user: { userId },
+  } = req;
+  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
+  if (!group) {
+    await RH.CustomError({
+      errorClass: CustomError.NotFoundError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+  let inviteLinkIndex;
+  group.inviteLinks.forEach((inviteLink, index) => {
+    if (inviteLink.link == link) {
+      inviteLinkIndex = index;
+    }
+  });
+console.log(inviteLinkIndex)
+  if (
+    inviteLinkIndex != 0 &&
+    group.inviteLinks[inviteLinkIndex].limitForJoin.joinedUsers.length + 1 >
+      group.inviteLinks[inviteLinkIndex].limitForJoin.limit
+  ) {
+    return RH.CustomError({errorClass:CustomError.BadRequestError,errorType:ErrorMessages.FullError,Field:Fields.joinUsersLimit})
+    // is full Error
+  }
+  group.memberIds.forEach((memberId) => {
+    if (memberId.equals(userId)) {
+      // is a member already
+      return RH.CustomError({errorClass:CustomError.BadRequestError,errorType:ErrorMessages.DuplicateError,Field:Fields.member})
+      // return console.log("is a member already");
+
+    }
+  });
+  let updateQuery = { $push: {
+    
+  } };
+  updateQuery["$push"]["memberIds"] = userId
+  updateQuery["$push"]["inviteLinks."+ inviteLinkIndex+".limitForJoin.joinedUsers"] = userId
+  const updated = await Services.Chat.findAndUpdateChat(group._id, updateQuery,{new:true});
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
 const createInviteLink = async (req, res) => {
   const {
     body,
@@ -271,20 +312,15 @@ const revokeLink = async (req, res) => {
   let updateQuery = { $set: {} };
 
   if (index == 0) {
-    updateQuery["$set"]["inviteLinks." + index + ".link"] = createRandomInviteLink();
-
+    updateQuery["$set"]["inviteLinks." + index + ".link"] =
+      createRandomInviteLink();
   } else {
     updateQuery["$set"]["inviteLinks." + index + ".revoke"] = true;
-    
   }
 
-  const updated = await Services.Chat.findAndUpdateChat(
-    groupId,
-    updateQuery,
-    {
-      new: true,
-    }
-  );
+  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+    new: true,
+  });
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
@@ -297,5 +333,6 @@ export {
   createInviteLink,
   editInviteLink,
   deleteInviteLink,
-  revokeLink
+  revokeLink,
+  joinGroupViaLink,
 };
