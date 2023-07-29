@@ -216,16 +216,50 @@ const editInviteLink = async (req, res) => {
     },
     creator: group.inviteLinks[index].creator,
     link: group.inviteLinks[index].link,
-    revoke:data.revoke || group.inviteLinks[index].revoke
+    revoke: data.revoke || group.inviteLinks[index].revoke,
   };
   InviteLink.name = data.name ? data.name : group.inviteLinks[index].name;
 
   let updateQuery = { $set: {} };
   updateQuery["$set"]["inviteLinks." + index] = InviteLink;
-  console.log(updateQuery);
   const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
     new: true,
   });
+  res.send(updated);
+};
+
+const deleteInviteLink = async (req, res) => {
+  console.log("slkdjf");
+
+  const {
+    params: { chatId: groupId, index },
+  } = req;
+  const group = await Services.Chat.getChat({ _id: groupId });
+  if (!group) {
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+
+  // group.inviteLinks[index].splice(index,1)
+  // const updated = await group.save()
+
+  let updateQuery = { $unset: {} };
+  updateQuery["$unset"]["inviteLinks." + index] = 1;
+
+  await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+    new: true,
+  });
+  const updated = await Services.Chat.findAndUpdateChat(
+    groupId,
+    { $pull: { inviteLinks: null } },
+    {
+      new: true,
+    }
+  );
+
   res.send(updated);
 };
 
@@ -237,4 +271,5 @@ export {
   editGroupPermissions,
   createInviteLink,
   editInviteLink,
+  deleteInviteLink,
 };
