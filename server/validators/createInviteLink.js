@@ -15,7 +15,8 @@ const createInviteLink = yup.object({
             is:false,
             then:(schema)=> schema.required('EmptyError')
         })
-    })
+    }),
+    revoke:yup.boolean(),
 
 
 })

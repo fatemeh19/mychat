@@ -161,7 +161,9 @@ const createInviteLink = async (req, res) => {
     name: "",
     expireDate: {
       noLimit: data.expireDate.noLimit,
-      expiresIn: data.expireDate.expiresIn? Date(data.expireDate.expiresIn) : undefined,
+      expiresIn: data.expireDate.expiresIn
+        ? Date(data.expireDate.expiresIn)
+        : undefined,
     },
     limitForJoin: {
       noLimit: data.limitForJoin.noLimit,
@@ -177,6 +179,56 @@ const createInviteLink = async (req, res) => {
   res.send(updated);
 };
 
+const editInviteLink = async (req, res) => {
+  const {
+    body,
+    params: { chatId: groupId, index },
+    user: { userId },
+  } = req;
+  let data;
+  try {
+    data = await Validators.createInviteLink.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  const group = await Services.Chat.getChat({ _id: groupId });
+  if (!group) {
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+  const InviteLink = {
+    name: "",
+    expireDate: {
+      noLimit: data.expireDate.noLimit,
+      expiresIn: data.expireDate.expiresIn
+        ? Date(data.expireDate.expiresIn)
+        : undefined,
+    },
+    limitForJoin: {
+      noLimit: data.limitForJoin.noLimit,
+      limit: data.limitForJoin.limit || undefined,
+    },
+    creator: group.inviteLinks[index].creator,
+    link: group.inviteLinks[index].link,
+    revoke:data.revoke || group.inviteLinks[index].revoke
+  };
+  InviteLink.name = data.name ? data.name : group.inviteLinks[index].name;
+
+  let updateQuery = { $set: {} };
+  updateQuery["$set"]["inviteLinks." + index] = InviteLink;
+  console.log(updateQuery);
+  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+    new: true,
+  });
+  res.send(updated);
+};
+
 export {
   getGroupByLink,
   addMember,
@@ -184,7 +236,5 @@ export {
   removeMember,
   editGroupPermissions,
   createInviteLink,
+  editInviteLink,
 };
-
-
-
