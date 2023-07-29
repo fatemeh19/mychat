@@ -145,7 +145,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     //     console.log('select messages : ', selectedMessages)
     // }, [selectedMessages])
     return (
-        <div className="messageBox select-none cursor-default" onDoubleClick={messageDoubleClickHandler} ref={messageBoxRef} onClick={selectHandler}>
+        // id for scroll to repliedMessage
+        <div className="messageBox select-none cursor-default" id={msg._id} onDoubleClick={messageDoubleClickHandler} ref={messageBoxRef} onClick={selectHandler} >
             {contextMenu.show &&
                 <RightClick
                     x={contextMenu.x}
@@ -203,7 +204,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     }
 
                     <div className="gap-3 flex flex-col font-[vazir]">
-                        <Message type={msg.content.contentType} dir={information.dir} msg={msg} />
+                        <Message type={msg.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
                     </div>
                 </div>
             </div>

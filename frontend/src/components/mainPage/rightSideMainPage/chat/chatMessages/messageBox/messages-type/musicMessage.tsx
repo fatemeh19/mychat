@@ -1,6 +1,7 @@
 import { recievedMessageInterface } from "@/src/models/interface";
 import { FC, useState, createRef, useEffect } from "react";
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
+import RepliedMessage from "./repliedMessage";
 
 interface MusicMessageProps {
     dir: string,
@@ -56,6 +57,9 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
     return (
         <div className={`px-3 pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
             <div className=" flex items-center w-60 gap-2">
+                {
+                    msg.reply.isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                }
                 <div className={` control bg-[#fafafa] cursor-pointer w-12 h-12 rounded-full flex items-center justify-center transition duration-500 ${playing ? '' : 'rotate-90'} ease-in-out `} onClick={handelPlayPause}>
                     <Icon2 className={`w-14 h-14 text-blue-500 ${playing ? '' : 'rotate-[-90deg]'}`} />
                 </div>

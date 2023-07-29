@@ -1,11 +1,13 @@
 import { recievedMessageInterface } from "@/src/models/interface"
 import Image from "next/image"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import RepliedMessage from "./repliedMessage"
 
 
 
 const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface }) => {
     const isText = msg.content.text ? true : false
+    const isReplied = msg.reply.isReplied
 
     const [open, setOpen] = useState(false)
 
@@ -19,11 +21,19 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
         setOpen(!open)
     }
 
+    // let isReplied = false
+    // useEffect(() => {
+    //     isReplied = msg.reply.isReplied
+    // }, [msg])
+
     return (
         <>
 
             <div className="relative max-w-[22rem] rounded-xl">
-                <div className={`w-fit rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                <div className={`flex flex-col rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                    {
+                        isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                    }
                     <div className="flex flex-col rounded-xl">
                         <Image
                             width={500}
@@ -46,6 +56,10 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                                 }
                                 ${open
                                     ? `w-[${outerHeight}px]`
+                                    : ''
+                                }
+                                ${isReplied
+                                    ? '!rounded-t-sm'
                                     : ''
                                 }
                                 cursor-pointer

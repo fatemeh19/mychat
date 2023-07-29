@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosRequests'
 import VoiceRecord from './voiceRecord'
 import ReplySection from './replySection'
+import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
 
 interface chatSendProps {
     contactId: string,
@@ -85,8 +86,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             file ? newMessage.append('file', file) : null
             newMessage.append('senderId', userInfo._id)
             voice ? newMessage.append('file', voice) : null
-            // showReply ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
-            // showReply ? newMessage.append('reply[messageId]', repliedMessageId) : null
+            showReply ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
+            showReply ? newMessage.append('reply[messageId]', repliedMessageId) : null
 
             let message = ''
             chatId
@@ -101,12 +102,13 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 socket.emit('sendMessage', contactId, message)
             }
             dispatch(setFirstChat(false))
+            showReply && dispatch(setShowReply(false))
         }
     }
 
     return (
         <div className='w-full relative'>
-            <ReplySection />
+            {showReply && <ReplySection showReply={showReply} />}
             <div className="bg-white w-full bottom-0 p-5 px-6 dark:bg-bgColorDark2">
                 <div className="w-full col-span-1 bg-[#f5f5f5] flex rounded-md p-3 items-center dark:bg-bgColorDark3">
                     <ChatInput sendHandler={sendHandler} input={input} setInput={setInput} />

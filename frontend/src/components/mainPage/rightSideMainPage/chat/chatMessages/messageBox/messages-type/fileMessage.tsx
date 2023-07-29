@@ -2,6 +2,7 @@ import { fileType } from "@/src/models/enum";
 import { recievedMessageInterface } from "@/src/models/interface";
 import { FC, useState, createRef, useEffect } from "react";
 import { PiFilePdf, PiFileDoc, PiFileZip, PiFileXls, PiFilePpt, PiFile } from "react-icons/pi"
+import RepliedMessage from "./repliedMessage";
 
 interface FileMessageProps {
     dir: string,
@@ -67,6 +68,9 @@ const FileMessage: FC<FileMessageProps> = ({ dir, msg }) => {
     return (
         <div className={`px-3 pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
             <div className=" flex items-center w-60 gap-2">
+                {
+                    msg.reply.isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                }
                 <div className={` control bg-[#fafafa] cursor-pointer w-12 h-14 rounded-lg flex items-center justify-center transition duration-500 ease-in-out `} onClick={handelPlayPause}>
                     <Icon className={`w-14 h-14 text-blue-500`} />
                 </div>

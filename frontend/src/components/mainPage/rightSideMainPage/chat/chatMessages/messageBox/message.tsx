@@ -1,6 +1,6 @@
 "use client"
 
-import { FC } from "react"
+import { FC, RefObject } from "react"
 import { messageTypes } from "@/src/models/enum"
 import TextMessage from "./messages-type/textMessage"
 import ImageMessage from "./messages-type/imgMessage"
@@ -13,14 +13,15 @@ import VideoMessage from "./messages-type/videoMessages"
 interface messageProps {
     type: string
     dir: string,
-    msg: recievedMessageInterface
+    msg: recievedMessageInterface,
+    messageBoxRef: RefObject<HTMLDivElement>
 }
 
-const Message: FC<messageProps> = ({ type, dir, msg }) => {
+const Message: FC<messageProps> = ({ type, dir, msg, messageBoxRef }) => {
 
     switch (type) {
         case messageTypes.text:
-            return (<TextMessage dir={dir} msg={msg} />)
+            return (<TextMessage dir={dir} msg={msg} messageBoxRef={messageBoxRef} />)
         case messageTypes.photo:
             return (<ImageMessage dir={dir} msg={msg} />)
         case messageTypes.voice:

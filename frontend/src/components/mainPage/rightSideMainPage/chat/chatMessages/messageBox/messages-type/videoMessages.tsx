@@ -1,6 +1,6 @@
-import { FC, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import { recievedMessageInterface } from "@/src/models/interface";
-import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
+import RepliedMessage from "./repliedMessage";
 
 interface VideoMessageProps {
     dir: string,
@@ -9,48 +9,24 @@ interface VideoMessageProps {
 
 const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
     const isText = msg.content.text ? true : false
-    const [playing, setPlay] = useState(false);
-
-    const Icon2 = playing ? BsFillPauseCircleFill : BsFillPlayCircleFill
+    const isReplied = msg.reply.isReplied
 
     const date = new Date(msg.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
     const fileFullUrl = msg.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
-    const originalName = msg.content.originalName?.split('.')[0]
-
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
-    const handelPlayPause = () => {
-        setPlay(!playing)
-        // @ts-ignore
-        playing ? videoRef.current.pause() : videoRef.current.play()
-        // @ts-ignore
-        setValue(videoRef.current.currentTime)
-    }
-
-    // console.log('video message : ', msg)
-    // return (
-    //     <div className={` rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
-    //         <div className=" flex flex-col items-center w-72 gap-2">
-    //             <div className={` control absolute bg-[#fafafa] cursor-pointer w-12 h-12 rounded-full flex items-center justify-center transition duration-500 ${playing ? '' : 'rotate-90'} ease-in-out `} onClick={handelPlayPause}>
-    //                 <Icon2 className={`w-14 h-14 text-blue-500 ${playing ? '' : 'rotate-[-90deg]'}`} />
-    //             </div>
-    //             {/* <div className="info flex flex-col w-full break-all"> */}
-    //             {/* </div> */}
-    //             <video ref={videoRef} src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} ></video>
-    //         </div>
-    //         <p className={`date text-xs text-[#9a9a9a] mb-1 mt-2 whitespace-nowrap`}>{time}</p>
-    //     </div>
-
-    // );
     return (
         <>
 
             <div className="relative max-w-[28rem] rounded-xl">
-                <div className={`w-fit rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                <div className={`rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                    {
+                        isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                    }
                     <div className="flex flex-col rounded-xl">
                         <video
                             ref={videoRef}
@@ -68,6 +44,10 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
                                         ? 'rounded-tr-sm rounded-tl-xl bg-white'
                                         : 'rounded-tl-sm rounded-tr-xl bg-yellow-200'
                                     }`
+                                }
+                                ${isReplied
+                                    ? '!rounded-t-sm'
+                                    : ''
                                 }
                                 cursor-pointer
                                 `
