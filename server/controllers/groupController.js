@@ -7,7 +7,7 @@ import Chat from "../models/Chat.js";
 import dateCalculator from "../utils/date.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
-
+import createRandomInviteLink from "../utils/createInviteLink.js";
 const addMember = async (req, res) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
@@ -34,7 +34,6 @@ const editGroupType = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  console.log(data);
 
   await Services.Chat.findAndUpdateChat(
     groupId,
@@ -50,7 +49,7 @@ const editGroupType = async (req, res) => {
 
 const removeMember = async (req, res) => {
   const {
-    params: { chatId: groupId , memberId },
+    params: { chatId: groupId, memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $pull: { memberIds: memberId },
@@ -73,14 +72,21 @@ const editGroupPermissions = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
+
   data.exceptions.forEach((exception) => {
-    if (exception.restrictUntil != "custom") {
-      exception.restrictUntil = dateCalculator(exception.restrictUntil, 1);
+    if (exception.restrictUntil != "forever") {
+      exception.restrictUntil = {
+        forever: false,
+        date: new Date(exception.specificTime),
+      };
+
+      // exception.restrictUntil = dateCalculator(exception.restrictUntil, 1);
     } else {
-      exception.restrictUntil = new Date(exception.customDate);
+      exception.restrictUntil = {
+        forever: true,
+      };
     }
   });
-  console.log(groupId);
   const updated = await Services.Chat.findAndUpdateChat(
     groupId,
     {
@@ -92,7 +98,10 @@ const editGroupPermissions = async (req, res) => {
 };
 
 const getGroupByLink = async (req, res) => {
-  const { params:{link}, user:{userId} } = req;
+  const {
+    params: { link },
+    user: { userId },
+  } = req;
 
   const group = await Services.Chat.getChat({ "inviteLinks.link": link });
 
@@ -103,29 +112,79 @@ const getGroupByLink = async (req, res) => {
       Field: Fields.group,
     });
   }
-  let isMember = false
-  group.memberIds.forEach((memberId)=>{
-    if(memberId.equals(userId)){
-      isMember = true
+  let isMember = false;
+  group.memberIds.forEach((memberId) => {
+    if (memberId.equals(userId)) {
+      isMember = true;
     }
-  })
-  let title
-  let joinedBefore 
-  if(isMember){
-    title = "joinedAlready"
-    joinedBefore = true
-
-  }else{
-    title = "notJoinedYet"
-    joinedBefore = false
-
+  });
+  let title;
+  let joinedBefore;
+  if (isMember) {
+    title = "joinedAlready";
+    joinedBefore = true;
+  } else {
+    title = "notJoinedYet";
+    joinedBefore = false;
   }
-  RH.SendResponse({res,statusCode:StatusCodes.OK,title,value:{group, joinedBefore}})
-
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title,
+    value: { group, joinedBefore },
+  });
 };
-const joinViaLink = async (req, res) => {
-  
+const createInviteLink = async (req, res) => {
+  const {
+    body,
+    params: { chatId: groupId },
+    user: { userId },
+  } = req;
+  let data;
+  try {
+    data = await Validators.createInviteLink.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  const group = await Services.Chat.getChat({ _id: groupId });
+  if (!group) {
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+  const newInviteLink = {
+    name: "",
+    expireDate: {
+      noLimit: data.expireDate.noLimit,
+      expiresIn: data.expireDate.expiresIn? Date(data.expireDate.expiresIn) : undefined,
+    },
+    limitForJoin: {
+      noLimit: data.limitForJoin.noLimit,
+      limit: data.limitForJoin.limit || undefined,
+    },
+    creator: userId,
+    link: createRandomInviteLink(),
+  };
+  newInviteLink.name = data.name || newInviteLink.link.slice(0, 10);
+  group.inviteLinks.push(newInviteLink);
+  const updated = await group.save();
 
+  res.send(updated);
 };
 
-export {getGroupByLink, addMember, editGroupType, removeMember, editGroupPermissions };
+export {
+  getGroupByLink,
+  addMember,
+  editGroupType,
+  removeMember,
+  editGroupPermissions,
+  createInviteLink,
+};
+
+
+

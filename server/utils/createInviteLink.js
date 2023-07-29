@@ -1,9 +1,5 @@
-import crypto from 'crypto'
+import cryptoRandomString from 'crypto-random-string'
 import './loadEnv.js'
 export default ()=>{
-    return 'mychat.me/'+crypto
-    .createHash("sha256")
-    .update(process.env.INVITE_LINK_KEY)
-    .digest("base64")
-
+    return cryptoRandomString({length: 30, type: 'url-safe'})
 }

@@ -10,7 +10,7 @@ import { chatSearchType, chatType } from "../utils/enums.js";
 import Group from "../models/Group.js";
 import crypto from "crypto";
 import "../utils/loadEnv.js";
-import createInviteLink from "../utils/createInviteLink.js";
+import createRandomInviteLink from "../utils/createInviteLink.js";
 const createChat = async (req, res) => {
   const {
     body: body,
@@ -32,11 +32,56 @@ const createChat = async (req, res) => {
       });
     }
   } else {
+    // inviteLinks: [
+    //   {
+    //     revoked:{
+    //       type:Boolean,
+    //       default:false
+    //     },
+    //     name: {
+    //       type: String,
+    //     },
+    //     creator: {
+    //       type: mongoose.Types.ObjectId,
+    //       ref: "User",
+    //     },
+    //     expireDate: {
+    //       noLimit: {
+    //         type: Boolean,
+    //         default: true,
+    //       },
+    //       expire: Date,
+    //     },
+    //     limitForJoin: {
+    //       noLimit: {
+    //         type: Boolean,
+    //         default: true,
+    //       },
+    //       limit: Number,
+    //       joinedUsers: [
+    //         {
+    //           type: mongoose.Types.ObjectId,
+    //           ref: "User",
+    //         },
+    //       ],
+    //     },
+    //     link: String,
+    //   },
+    // ]
+
+
+
+
+
+
+
+
+
     data.owner = userId;
     let primaryLink = {
-      link: createInviteLink(),
-      creator: userId,
-      expireDate: new Date(2147483647 * 1000).toUTCString(),
+      name:'primaryLink',
+      link: createRandomInviteLink(),
+      creator: userId, 
     };
     data.inviteLinks = []
     data.inviteLinks.push(primaryLink)

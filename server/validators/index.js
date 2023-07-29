@@ -8,6 +8,7 @@ import editProfile from "./editProfile.js";
 import getChat from "./getChat.js";
 import editGroupType from "./editGroupType.js";
 import editGroupPermsAndExps from "./editGroupPermsandExps.js";
+import createInviteLink from "./createInviteLink.js";
 export {
   loginUser,
   registerUser,
@@ -18,5 +19,6 @@ export {
   editProfile,
   getChat,
   editGroupType,
-  editGroupPermsAndExps
+  editGroupPermsAndExps,
+  createInviteLink
 };

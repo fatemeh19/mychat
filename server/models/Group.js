@@ -44,7 +44,11 @@ const GroupChatSchema = new mongoose.Schema({
           ref: "User",
         },
         restrictUntil: {
-          type: Date,
+          forever:{
+            type:Boolean,
+            default:true
+          },
+          date:Date
         },
         permissions: permissions,
       },
@@ -52,12 +56,38 @@ const GroupChatSchema = new mongoose.Schema({
   },
   inviteLinks: [
     {
+      revoked:{
+        type:Boolean,
+        default:false
+      },
+      name: {
+        type: String,
+      },
       creator: {
         type: mongoose.Types.ObjectId,
         ref: "User",
       },
+      expireDate: {
+        noLimit: {
+          type: Boolean,
+          default: true,
+        },
+        expiresIn: Date,
+      },
+      limitForJoin: {
+        noLimit: {
+          type: Boolean,
+          default: true,
+        },
+        limit: Number,
+        joinedUsers: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        ],
+      },
       link: String,
-      expireDate: Date,
     },
   ],
   adminsAndRights: [

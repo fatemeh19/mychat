@@ -33,7 +33,6 @@ const findAndUpdateChat = async (id, updateQuery, options) => {
 
     return chat;
   } catch (err) {
-    console.log(err);
     const { errorType, field } = await mongooseErrorExtractor(err);
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,

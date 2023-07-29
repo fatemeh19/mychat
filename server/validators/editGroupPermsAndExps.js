@@ -11,9 +11,11 @@ const editGroupPermsAndExps = yup.object({
         .string()
         .oneOf(restrictUserDate)
         .required("EmptyError"),
-      customDate:yup.date().when("restrictUntil",{
-        is:"custom",
+      specificTime:yup.date().when("restrictUntil",{
+        is:"specificTime",
         then:(schema)=>schema.required("EmptyError")
+      
+
       }),
       permissions: permissions,
     })
