@@ -15,6 +15,7 @@ const createChat = async (req, res) => {
   const {
     body: body,
     user: { userId },
+    file
   } = req;
   const data = await Validators.createChat.validate(body);
   // if type of chat is group
@@ -32,51 +33,9 @@ const createChat = async (req, res) => {
       });
     }
   } else {
-    // inviteLinks: [
-    //   {
-    //     revoked:{
-    //       type:Boolean,
-    //       default:false
-    //     },
-    //     name: {
-    //       type: String,
-    //     },
-    //     creator: {
-    //       type: mongoose.Types.ObjectId,
-    //       ref: "User",
-    //     },
-    //     expireDate: {
-    //       noLimit: {
-    //         type: Boolean,
-    //         default: true,
-    //       },
-    //       expire: Date,
-    //     },
-    //     limitForJoin: {
-    //       noLimit: {
-    //         type: Boolean,
-    //         default: true,
-    //       },
-    //       limit: Number,
-    //       joinedUsers: [
-    //         {
-    //           type: mongoose.Types.ObjectId,
-    //           ref: "User",
-    //         },
-    //       ],
-    //     },
-    //     link: String,
-    //   },
-    // ]
-
-
-
-
-
-
-
-
-
+    if(file){
+      data.profilePic = file.path
+    }
     data.owner = userId;
     let primaryLink = {
       name:'primaryLink',

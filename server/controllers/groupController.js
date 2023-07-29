@@ -8,6 +8,8 @@ import dateCalculator from "../utils/date.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
+import * as fileController from "../utils/file.js"
+
 const addMember = async (req, res) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
@@ -153,29 +155,40 @@ const joinGroupViaLink = async (req, res) => {
       inviteLinkIndex = index;
     }
   });
-console.log(inviteLinkIndex)
+  console.log(inviteLinkIndex);
   if (
     inviteLinkIndex != 0 &&
     group.inviteLinks[inviteLinkIndex].limitForJoin.joinedUsers.length + 1 >
       group.inviteLinks[inviteLinkIndex].limitForJoin.limit
   ) {
-    return RH.CustomError({errorClass:CustomError.BadRequestError,errorType:ErrorMessages.FullError,Field:Fields.joinUsersLimit})
+    return RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.FullError,
+      Field: Fields.joinUsersLimit,
+    });
     // is full Error
   }
   group.memberIds.forEach((memberId) => {
     if (memberId.equals(userId)) {
       // is a member already
-      return RH.CustomError({errorClass:CustomError.BadRequestError,errorType:ErrorMessages.DuplicateError,Field:Fields.member})
+      return RH.CustomError({
+        errorClass: CustomError.BadRequestError,
+        errorType: ErrorMessages.DuplicateError,
+        Field: Fields.member,
+      });
       // return console.log("is a member already");
-
     }
   });
-  let updateQuery = { $push: {
-    
-  } };
-  updateQuery["$push"]["memberIds"] = userId
-  updateQuery["$push"]["inviteLinks."+ inviteLinkIndex+".limitForJoin.joinedUsers"] = userId
-  const updated = await Services.Chat.findAndUpdateChat(group._id, updateQuery,{new:true});
+  let updateQuery = { $push: {} };
+  updateQuery["$push"]["memberIds"] = userId;
+  updateQuery["$push"][
+    "inviteLinks." + inviteLinkIndex + ".limitForJoin.joinedUsers"
+  ] = userId;
+  const updated = await Services.Chat.findAndUpdateChat(
+    group._id,
+    updateQuery,
+    { new: true }
+  );
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 const createInviteLink = async (req, res) => {
@@ -324,6 +337,48 @@ const revokeLink = async (req, res) => {
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
+const editGroupInfo = async (req, res) => {
+  const {
+    body,
+    params: { chatId: groupId },
+    file
+  } = req;
+  let data
+  try {
+    data = await Validators.editGroupInfo.validate(body,{
+      stripUnknown:true,
+      abortEarly:false
+    })
+    
+  } catch (err) {
+    await RH.CustomError({err, errorClass:CustomError.ValidationError})
+  }
+
+  const group = await Services.Chat.getChat({_id:groupId})
+  if(!group){
+    await RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.NotFoundError,
+      Field: Fields.group,
+    });
+  }
+  if(file){
+    group.profilePic = file.path
+  }else{
+    group.profilePic = undefined
+  }
+  await fileController.deleteFile(group.profilePic)
+
+  const updated = await Services.Chat.findAndUpdateChat(groupId, {$set:{
+    name:data.name,
+    decription:data.description,
+    profilePic:group.profilePic
+  }})
+
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  
+};
+
 export {
   getGroupByLink,
   addMember,
@@ -335,4 +390,5 @@ export {
   deleteInviteLink,
   revokeLink,
   joinGroupViaLink,
+  editGroupInfo
 };
