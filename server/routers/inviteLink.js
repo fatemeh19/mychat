@@ -1,8 +1,15 @@
-import express from 'express'
-const router = express.Router()
-import {deleteInviteLink,editInviteLink, createInviteLink } from '../controllers/groupController.js'
+import express from "express";
+const router = express.Router();
+import {
+  revokeLink,
+  deleteInviteLink,
+  editInviteLink,
+  createInviteLink,
+} from "../controllers/groupController.js";
 
-router.patch("/:chatId",createInviteLink)
-router.patch("/:chatId/:index",editInviteLink)
-router.delete("/:chatId/:index",deleteInviteLink)
-export default router
+router.patch("/:chatId", createInviteLink);
+router.patch("/:chatId/:index", editInviteLink);
+router.delete("/:chatId/:index", deleteInviteLink);
+router.patch("/:chatId/:index", revokeLink);
+
+export default router;

@@ -134,6 +134,9 @@ const getGroupByLink = async (req, res) => {
     value: { group, joinedBefore },
   });
 };
+const joinGroupViaLink = async (req,res)=>{
+  
+}
 const createInviteLink = async (req, res) => {
   const {
     body,
@@ -176,7 +179,7 @@ const createInviteLink = async (req, res) => {
   group.inviteLinks.push(newInviteLink);
   const updated = await group.save();
 
-  res.send(updated);
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const editInviteLink = async (req, res) => {
@@ -225,12 +228,10 @@ const editInviteLink = async (req, res) => {
   const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
     new: true,
   });
-  res.send(updated);
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const deleteInviteLink = async (req, res) => {
-  console.log("slkdjf");
-
   const {
     params: { chatId: groupId, index },
   } = req;
@@ -260,7 +261,31 @@ const deleteInviteLink = async (req, res) => {
     }
   );
 
-  res.send(updated);
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
+
+const revokeLink = async (req, res) => {
+  const {
+    params: { chatId: groupId, index },
+  } = req;
+  let updateQuery = { $set: {} };
+
+  if (index == 0) {
+    updateQuery["$set"]["inviteLinks." + index + ".link"] = createRandomInviteLink();
+
+  } else {
+    updateQuery["$set"]["inviteLinks." + index + ".revoke"] = true;
+    
+  }
+
+  const updated = await Services.Chat.findAndUpdateChat(
+    groupId,
+    updateQuery,
+    {
+      new: true,
+    }
+  );
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 export {
@@ -272,4 +297,5 @@ export {
   createInviteLink,
   editInviteLink,
   deleteInviteLink,
+  revokeLink
 };
