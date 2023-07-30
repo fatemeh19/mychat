@@ -4,10 +4,11 @@ import { HiOutlinePlus } from 'react-icons/hi'
 
 
 interface profileImgSelector {
-    setImage: Dispatch<SetStateAction<string>>
+    setImage: Dispatch<SetStateAction<string>>,
+    styleClassName?: string
 }
 
-const ProfileImgSelector: FC<profileImgSelector> = ({ setImage }) => {
+const ProfileImgSelector: FC<profileImgSelector> = ({ setImage, styleClassName }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
@@ -40,19 +41,22 @@ const ProfileImgSelector: FC<profileImgSelector> = ({ setImage }) => {
                 hidden
                 onChange={changeHandler}
             />
-            <div className="
-                wraper
-                overflow-hidden
-                bg-transparent
-                w-64 h-64
-                rounded-full
-                flex flex-col items-center justify-center
-                border-2 border-dashed border-blue-500
-                hover:border-blue-900
-                cursor-pointer
-                group
-                relative
-            ">
+            <div className={`
+                ${`
+                    wraper
+                    overflow-hidden
+                    bg-transparent
+                    w-64 h-64
+                    rounded-full
+                    flex flex-col items-center justify-center
+                    border-2 border-dashed border-blue-500
+                    hover:border-blue-900
+                    cursor-pointer
+                    group
+                    relative
+                    ${styleClassName ?? ''}
+                `}
+            `}>
                 <img
                     src=""
                     ref={profileImg}
