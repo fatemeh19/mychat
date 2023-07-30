@@ -3,12 +3,6 @@ import * as Validators from "../validators/index.js";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { StatusCodes } from "http-status-codes";
-import Chat from "../models/Chat.js";
-import dateCalculator from "../utils/date.js";
-import ErrorMessages from "../messages/errors.js";
-import Fields from "../messages/fields.js";
-import createRandomInviteLink from "../utils/createInviteLink.js";
-import * as fileController from "../utils/file.js"
 
 const addMember = async (req, res) => {
   // if it has joined by link
@@ -98,297 +92,55 @@ const editGroupPermissions = async (req, res) => {
   );
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
-
-const getGroupByLink = async (req, res) => {
-  const {
-    params: { link },
-    user: { userId },
-  } = req;
-
-  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
-
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.NotFoundError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-  let isMember = false;
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
-      isMember = true;
-    }
-  });
-  let title;
-  let joinedBefore;
-  if (isMember) {
-    title = "joinedAlready";
-    joinedBefore = true;
-  } else {
-    title = "notJoinedYet";
-    joinedBefore = false;
-  }
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title,
-    value: { group, joinedBefore },
-  });
-};
-const joinGroupViaLink = async (req, res) => {
-  const {
-    params: { link },
-    user: { userId },
-  } = req;
-  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.NotFoundError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-  let inviteLinkIndex;
-  group.inviteLinks.forEach((inviteLink, index) => {
-    if (inviteLink.link == link) {
-      inviteLinkIndex = index;
-    }
-  });
-  console.log(inviteLinkIndex);
-  if (
-    inviteLinkIndex != 0 &&
-    group.inviteLinks[inviteLinkIndex].limitForJoin.joinedUsers.length + 1 >
-      group.inviteLinks[inviteLinkIndex].limitForJoin.limit
-  ) {
-    return RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.FullError,
-      Field: Fields.joinUsersLimit,
-    });
-    // is full Error
-  }
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
-      // is a member already
-      return RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.DuplicateError,
-        Field: Fields.member,
-      });
-      // return console.log("is a member already");
-    }
-  });
-  let updateQuery = { $push: {} };
-  updateQuery["$push"]["memberIds"] = userId;
-  updateQuery["$push"][
-    "inviteLinks." + inviteLinkIndex + ".limitForJoin.joinedUsers"
-  ] = userId;
-  const updated = await Services.Chat.findAndUpdateChat(
-    group._id,
-    updateQuery,
-    { new: true }
-  );
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-const createInviteLink = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId },
-    user: { userId },
-  } = req;
-  let data;
-  try {
-    data = await Validators.createInviteLink.validate(body, {
-      stripUnknown: true,
-      abortEarly: false,
-    });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-  const newInviteLink = {
-    name: "",
-    expireDate: {
-      noLimit: data.expireDate.noLimit,
-      expiresIn: data.expireDate.expiresIn
-        ? Date(data.expireDate.expiresIn)
-        : undefined,
-    },
-    limitForJoin: {
-      noLimit: data.limitForJoin.noLimit,
-      limit: data.limitForJoin.limit || undefined,
-    },
-    creator: userId,
-    link: createRandomInviteLink(),
-  };
-  newInviteLink.name = data.name || newInviteLink.link.slice(0, 10);
-  group.inviteLinks.push(newInviteLink);
-  const updated = await group.save();
-
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-
-const editInviteLink = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId, index },
-    user: { userId },
-  } = req;
-  let data;
-  try {
-    data = await Validators.createInviteLink.validate(body, {
-      stripUnknown: true,
-      abortEarly: false,
-    });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-  const InviteLink = {
-    name: "",
-    expireDate: {
-      noLimit: data.expireDate.noLimit,
-      expiresIn: data.expireDate.expiresIn
-        ? Date(data.expireDate.expiresIn)
-        : undefined,
-    },
-    limitForJoin: {
-      noLimit: data.limitForJoin.noLimit,
-      limit: data.limitForJoin.limit || undefined,
-    },
-    creator: group.inviteLinks[index].creator,
-    link: group.inviteLinks[index].link,
-    revoke: data.revoke || group.inviteLinks[index].revoke,
-  };
-  InviteLink.name = data.name ? data.name : group.inviteLinks[index].name;
-
-  let updateQuery = { $set: {} };
-  updateQuery["$set"]["inviteLinks." + index] = InviteLink;
-  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
-    new: true,
-  });
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-
-const deleteInviteLink = async (req, res) => {
-  const {
-    params: { chatId: groupId, index },
-  } = req;
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-
-  // group.inviteLinks[index].splice(index,1)
-  // const updated = await group.save()
-
-  let updateQuery = { $unset: {} };
-  updateQuery["$unset"]["inviteLinks." + index] = 1;
-
-  await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
-    new: true,
-  });
-  const updated = await Services.Chat.findAndUpdateChat(
-    groupId,
-    { $pull: { inviteLinks: null } },
-    {
-      new: true,
-    }
-  );
-
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-
-const revokeLink = async (req, res) => {
-  const {
-    params: { chatId: groupId, index },
-  } = req;
-  let updateQuery = { $set: {} };
-
-  if (index == 0) {
-    updateQuery["$set"]["inviteLinks." + index + ".link"] =
-      createRandomInviteLink();
-  } else {
-    updateQuery["$set"]["inviteLinks." + index + ".revoke"] = true;
-  }
-
-  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
-    new: true,
-  });
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-
 const editGroupInfo = async (req, res) => {
   const {
     body,
     params: { chatId: groupId },
-    file
+    file,
   } = req;
-  let data
+  let data;
   try {
-    data = await Validators.editGroupInfo.validate(body,{
-      stripUnknown:true,
-      abortEarly:false
-    })
-    
+    data = await Validators.editGroupInfo.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
   } catch (err) {
-    await RH.CustomError({err, errorClass:CustomError.ValidationError})
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
 
-  const group = await Services.Chat.getChat({_id:groupId})
-  if(!group){
+  const group = await Services.Chat.getChat({ _id: groupId });
+  if (!group) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.group,
     });
   }
-  if(file){
-    group.profilePic = file.path
-  }else{
-    group.profilePic = undefined
+  if (file) {
+    group.profilePic = file.path;
+  } else {
+    group.profilePic = undefined;
   }
-  await fileController.deleteFile(group.profilePic)
+  await fileController.deleteFile(group.profilePic);
 
-  const updated = await Services.Chat.findAndUpdateChat(groupId, {$set:{
-    name:data.name,
-    decription:data.description,
-    profilePic:group.profilePic
-  }})
+  const updated = await Services.Chat.findAndUpdateChat(groupId, {
+    $set: {
+      name: data.name,
+      decription: data.description,
+      profilePic: group.profilePic,
+    },
+  });
 
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-  
 };
 
+
+
 export {
-  getGroupByLink,
   addMember,
   editGroupType,
   removeMember,
   editGroupPermissions,
-  createInviteLink,
-  editInviteLink,
-  deleteInviteLink,
-  revokeLink,
-  joinGroupViaLink,
-  editGroupInfo
+  editGroupInfo,
+
 };

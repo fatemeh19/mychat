@@ -6,11 +6,13 @@ import {
   deleteInviteLink,
   editInviteLink,
   createInviteLink,
-} from "../controllers/groupController.js";
+  getGroupByLink
+} from "../controllers/inviteLinkController.js";
+router.get("/:link",getGroupByLink);
 router.patch("/join/:link", joinGroupViaLink)
 router.patch("/:chatId", createInviteLink);
 router.patch("/:chatId/:index", editInviteLink);
 router.delete("/:chatId/:index", deleteInviteLink);
-router.patch("/:chatId/:index", revokeLink);
+router.patch("/revoke/:chatId/:index", revokeLink);
 
 export default router;

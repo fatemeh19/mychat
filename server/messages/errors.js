@@ -59,6 +59,10 @@ export default{
   "FullError":{
     "name":"FullError",
     "message":"به حد خود رسیده است"
+  },
+  "ExpiredError":{
+    "name":"ExpiredError",
+    "message":"منقضی شده است"
   }
   
 }
