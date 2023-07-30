@@ -57,7 +57,6 @@ const CreateGroupStep1: FC<CreateGroupStep1Props> = ({ createGroupOpenHandler, s
                             type="submit"
                             id="add-contact"
                             name="add contact"
-                            // onClick={() => { createGroupOpenHandler() }}
                             className="font-semibold cursor-pointer bg-white hover:text-sky-700 transition-all duration-150 text-sky-500 outline-none text-base "
                         >Next</button>
                     </div>

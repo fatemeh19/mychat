@@ -5,6 +5,7 @@ import { BiSearch } from "react-icons/bi";
 import { useAppSelector } from "@/src/redux/hooks";
 import Link from "next/link";
 import ContactBox from "../contact/contactList/contactBox";
+import { contactInterface } from "@/src/redux/features/userContactListSlice";
 
 
 interface CreateGroupStep2Props {
@@ -14,10 +15,12 @@ interface CreateGroupStep2Props {
 const CreateGroupStep2: FC<CreateGroupStep2Props> = ({ createGroupOpenHandler }) => {
 
     const [members, setMembers] = useState<string[]>([])
+    const [contact, setContact] = useState<contactInterface>()
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
 
-    const handleOpen = () => {
+    const selectMember = (contact: contactInterface) => {
         console.log('select')
+        console.log(contact)
     }
 
     return (
@@ -34,7 +37,8 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({ createGroupOpenHandler })
                         : userContactsList.map((contact) => (
                             // @ts-ignore
 
-                            <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={false} />
+                            <ContactBox key={contact._id} contact={contact} selectMember={selectMember} isOpenChat={false} />
+
 
                         ))
                 }
