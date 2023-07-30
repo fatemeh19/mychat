@@ -44,11 +44,15 @@ const CreateGroup: FC<CreateGroupProps> = ({
                 }
             };
 
-            const res = await callApi().patch('/main/chat/', formData, config)
+            const res = await callApi().post('/main/chat/', formData, config)
             console.log('createGroup res : ', res)
         } catch (error) {
             console.log('error in catch text info : ', error)
         }
+
+
+
+        setOpenCreateGroup(false)
     }
 
     useEffect(() => {
