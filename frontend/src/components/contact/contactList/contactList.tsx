@@ -6,7 +6,8 @@ import ContactBox from "./contactBox";
 import ContactListBtn from "./contactListBtn";
 import Link from "next/link";
 import NoContact from "./noContact";
-import {useAppSelector } from "@/src/redux/hooks";
+import { useAppSelector } from "@/src/redux/hooks";
+import PopUpBtns from "../../popUp/popUpBtns";
 interface ContactsProps {
     handleAddContact: () => void,
     handleOpen: () => void
@@ -44,8 +45,18 @@ const ContactList: FC<ContactsProps> = ({
 
                 </div>
 
-                <ContactListBtn handleOpen={handleOpen}
-                    handleAddContact={handleAddContact} />
+                {/* <ContactListBtn handleOpen={handleOpen}
+                    handleAddContact={handleAddContact} /> */}
+                <PopUpBtns
+                    title1="Add Contact"
+                    title2="Close"
+                    id1="add-contact"
+                    id2="close"
+                    name1="add-contact"
+                    name2="close"
+                    onClickHandler1={handleAddContact}
+                    onClickHandler2={handleOpen}
+                />
             </div>
 
         </>
