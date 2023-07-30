@@ -34,13 +34,10 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({ createGroupOpenHandler })
                         : userContactsList.map((contact) => (
                             // @ts-ignore
 
-                            <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} />
-
+                            <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={false} />
 
                         ))
-
                 }
-
             </div>
             <PopUpBtns
                 title1="Cancle"

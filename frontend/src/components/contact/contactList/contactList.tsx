@@ -3,7 +3,6 @@
 import { FC } from "react";
 import { BiSearch } from "react-icons/bi";
 import ContactBox from "./contactBox";
-import ContactListBtn from "./contactListBtn";
 import Link from "next/link";
 import NoContact from "./noContact";
 import { useAppSelector } from "@/src/redux/hooks";
@@ -36,11 +35,10 @@ const ContactList: FC<ContactsProps> = ({
                                 // @ts-ignore
                                 <Link key={contact._id} href={`/chat/${contact._id}`} >
                                     {/* @ts-ignore */}
-                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} />
+                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={true} />
                                 </Link>
 
                             ))
-
                     }
 
                 </div>

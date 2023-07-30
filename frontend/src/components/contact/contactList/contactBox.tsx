@@ -19,12 +19,14 @@ type Contact = {
 }
 interface ContactBoxProps {
     contact: Contact,
-    handleOpen: () => void
+    handleOpen: () => void,
+    isOpenChat: boolean
 }
 
 const ContactBox: FC<ContactBoxProps> = ({
     contact,
-    handleOpen
+    handleOpen,
+    isOpenChat
 }) => {
     const dispatch = useAppDispatch()
     // const [online , setOnline] = useState(contact.status.online)
@@ -54,25 +56,25 @@ const ContactBox: FC<ContactBoxProps> = ({
     }, [socket, contactId])
     const handleClick = () => {
 
-        for (let i = 0; i < chatList.length; i++) {
-            if (chatList[i].open) {
-                dispatch(openHandle(i))
-            }
-            if (chatList[i].contact._id == contactId) {
-                dispatch(openHandle(i))
-                dispatch(setChatOpenInList(true))
-                break
-            }
-            else if (chatList.length - 1 == i) {
-                dispatch(setChatOpenInList(false))
-                fetchUserChatList(dispatch)
-            }
+        // for (let i = 0; i < chatList.length; i++) {
+        //     if (chatList[i].open) {
+        //         dispatch(openHandle(i))
+        //     }
+        //     if (chatList[i].contact._id == contactId) {
+        //         dispatch(openHandle(i))
+        //         dispatch(setChatOpenInList(true))
+        //         break
+        //     }
+        //     else if (chatList.length - 1 == i) {
+        //         dispatch(setChatOpenInList(false))
+        //         fetchUserChatList(dispatch)
+        //     }
 
-        }
+        // }
     }
     return (
         <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
-            onClick={() => { handleOpen(); handleClick(); }}>
+            onClick={() => { handleOpen(); isOpenChat ?? handleClick(); }}>
             <Image
                 src={contact.profilePic ? `/uploads/picture/${profilePicNameHandler(contact)}`
                     : '/uploads/picture/defaultProfilePic.png'}
