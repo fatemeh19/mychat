@@ -7,19 +7,29 @@ import * as yup from 'yup'
 
 interface CreateGroupStep1Props {
     createGroupOpenHandler: () => void,
-    setOpenAddContactToGroup: Dispatch<SetStateAction<boolean>>
+    setOpenAddContactToGroup: Dispatch<SetStateAction<boolean>>,
+    groupPic: any,
+    setGroupPic: Dispatch<SetStateAction<any>>,
+    groupName: string,
+    setGroupName: Dispatch<SetStateAction<string>>
 }
 
-const CreateGroupStep1: FC<CreateGroupStep1Props> = ({ createGroupOpenHandler, setOpenAddContactToGroup }) => {
+const CreateGroupStep1: FC<CreateGroupStep1Props> = ({
+    createGroupOpenHandler,
+    setOpenAddContactToGroup,
+    groupPic,
+    setGroupPic,
+    groupName,
+    setGroupName
+}) => {
 
-    const [image, setImage] = useState('')
 
     useEffect(() => {
-        console.log('image : ', image)
-    }, [image])
+        console.log('image : ', groupPic)
+    }, [groupPic])
 
     const initialValues = {
-        groupName: ''
+        groupName: groupName
     }
 
     const validation = yup.object().shape({
@@ -28,6 +38,7 @@ const CreateGroupStep1: FC<CreateGroupStep1Props> = ({ createGroupOpenHandler, s
 
     const submitHandler = (values: any) => {
         console.log('next', values)
+        setGroupName(values.groupName)
         setOpenAddContactToGroup(true)
     }
 
@@ -42,7 +53,7 @@ const CreateGroupStep1: FC<CreateGroupStep1Props> = ({ createGroupOpenHandler, s
                 <div className="overflow-hidden w-full flex flex-col items-end gap-5 relative select-none p-[25px] pb-[15px]">
 
                     <div className="no-scrollbar flex overflow-y-auto w-full ">
-                        <ProfileImgSelector setImage={setImage} styleClassName="!w-20 !h-20" />
+                        <ProfileImgSelector setImage={setGroupPic} styleClassName="!w-20 !h-20" />
                         <InputField name="groupName" label="Group name" containerClassName={'w-full !mr-0'} />
                     </div>
 

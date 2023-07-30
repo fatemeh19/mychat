@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import CustomizedDialogs from "../popUp";
 import PopUpBtns from "../popUp/popUpBtns";
 import { BiSearch } from "react-icons/bi";
@@ -9,18 +9,50 @@ import { contactInterface } from "@/src/redux/features/userContactListSlice";
 
 
 interface CreateGroupStep2Props {
-    createGroupOpenHandler: () => void
+    createGroupHandler: () => void,
+    setOpenAddContactToGroup: Dispatch<SetStateAction<boolean>>,
+    memberIds: string[],
+    setMemberIds: Dispatch<SetStateAction<string[]>>
 }
 
-const CreateGroupStep2: FC<CreateGroupStep2Props> = ({ createGroupOpenHandler }) => {
+const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
+    createGroupHandler,
+    setOpenAddContactToGroup,
+    memberIds,
+    setMemberIds
+}) => {
 
-    const [members, setMembers] = useState<string[]>([])
-    const [contact, setContact] = useState<contactInterface>()
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
 
     const selectMember = (contact: contactInterface) => {
         console.log('select')
         console.log(contact)
+
+        // styling selected contact :
+
+        let counter = 0
+        setMemberIds(prev => [...prev, contact._id])
+        memberIds.map(memberId => {
+            if (memberId === contact._id) {
+                counter = counter + 1
+                if (counter === 1) {
+                    const filteredSelectedMember = memberIds.filter(mId => mId !== contact._id)
+                    setMemberIds(filteredSelectedMember)
+
+                    // remove styling of unSelected contact :
+
+                    // circleStyle.background = 'transparent'
+                    // circleStyle.borderColor = 'black'
+                }
+            }
+        })
+
+
+    }
+
+    const cancleHandler = () => {
+        setOpenAddContactToGroup(false)
+        setMemberIds([])
     }
 
     return (
@@ -50,8 +82,8 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({ createGroupOpenHandler })
                 id2="create"
                 name1="cancle"
                 name2="create"
-                onClickHandler1={createGroupOpenHandler}
-                onClickHandler2={createGroupOpenHandler}
+                onClickHandler1={cancleHandler}
+                onClickHandler2={createGroupHandler}
                 btnContainerClassName="static justify-end gap-9"
             />
         </div>
