@@ -10,11 +10,12 @@ import { chatSearchType, chatType } from "../utils/enums.js";
 import Group from "../models/Group.js";
 import crypto from "crypto";
 import "../utils/loadEnv.js";
-import createInviteLink from "../utils/createInviteLink.js";
+import createRandomInviteLink from "../utils/createInviteLink.js";
 const createChat = async (req, res) => {
   const {
     body: body,
     user: { userId },
+    file
   } = req;
   const data = await Validators.createChat.validate(body);
   // if type of chat is group
@@ -32,11 +33,14 @@ const createChat = async (req, res) => {
       });
     }
   } else {
+    if(file){
+      data.profilePic = file.path
+    }
     data.owner = userId;
     let primaryLink = {
-      link: createInviteLink(),
-      creator: userId,
-      expireDate: new Date(2147483647 * 1000).toUTCString(),
+      name:'primaryLink',
+      link: createRandomInviteLink(),
+      creator: userId, 
     };
     data.inviteLinks = []
     data.inviteLinks.push(primaryLink)

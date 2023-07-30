@@ -33,7 +33,7 @@ const findAndUpdateChat = async (id, updateQuery, options) => {
 
     return chat;
   } catch (err) {
-    console.log(err);
+    console.log(err)
     const { errorType, field } = await mongooseErrorExtractor(err);
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -47,6 +47,7 @@ const getChat = async (Query,select={}) => {
     const chat = await Chat.findOne(Query).select(select)
     return chat;
   } catch (err) {
+    console.log(err)
     const { errorType, field } = await mongooseErrorExtractor(err);
 
     return await RH.CustomError({
@@ -61,4 +62,9 @@ const getChats = async (Query, select = "", sort = "") => {
   return chats;
 };
 
-export { getChat, createChat, findAndUpdateChat, getChats };
+const aggregateChats = async (pipeLine)=>{
+  const result = await Chat.aggregate(pipeLine) 
+  return result
+}
+
+export {aggregateChats, getChat, createChat, findAndUpdateChat, getChats };

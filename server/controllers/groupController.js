@@ -3,10 +3,6 @@ import * as Validators from "../validators/index.js";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { StatusCodes } from "http-status-codes";
-import Chat from "../models/Chat.js";
-import dateCalculator from "../utils/date.js";
-import ErrorMessages from "../messages/errors.js";
-import Fields from "../messages/fields.js";
 
 const addMember = async (req, res) => {
   // if it has joined by link
@@ -34,7 +30,6 @@ const editGroupType = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  console.log(data);
 
   await Services.Chat.findAndUpdateChat(
     groupId,
@@ -50,7 +45,7 @@ const editGroupType = async (req, res) => {
 
 const removeMember = async (req, res) => {
   const {
-    params: { chatId: groupId , memberId },
+    params: { chatId: groupId, memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $pull: { memberIds: memberId },
@@ -73,14 +68,21 @@ const editGroupPermissions = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
+
   data.exceptions.forEach((exception) => {
-    if (exception.restrictUntil != "custom") {
-      exception.restrictUntil = dateCalculator(exception.restrictUntil, 1);
+    if (exception.restrictUntil != "forever") {
+      exception.restrictUntil = {
+        forever: false,
+        date: new Date(exception.specificTime),
+      };
+
+      // exception.restrictUntil = dateCalculator(exception.restrictUntil, 1);
     } else {
-      exception.restrictUntil = new Date(exception.customDate);
+      exception.restrictUntil = {
+        forever: true,
+      };
     }
   });
-  console.log(groupId);
   const updated = await Services.Chat.findAndUpdateChat(
     groupId,
     {
@@ -90,42 +92,55 @@ const editGroupPermissions = async (req, res) => {
   );
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
+const editGroupInfo = async (req, res) => {
+  const {
+    body,
+    params: { chatId: groupId },
+    file,
+  } = req;
+  let data;
+  try {
+    data = await Validators.editGroupInfo.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
 
-const getGroupByLink = async (req, res) => {
-  const { params:{link}, user:{userId} } = req;
-
-  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
-
+  const group = await Services.Chat.getChat({ _id: groupId });
   if (!group) {
     await RH.CustomError({
-      errorClass: CustomError.NotFoundError,
+      errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.NotFoundError,
       Field: Fields.group,
     });
   }
-  let isMember = false
-  group.memberIds.forEach((memberId)=>{
-    if(memberId.equals(userId)){
-      isMember = true
-    }
-  })
-  let title
-  let joinedBefore 
-  if(isMember){
-    title = "joinedAlready"
-    joinedBefore = true
-
-  }else{
-    title = "notJoinedYet"
-    joinedBefore = false
-
+  if (file) {
+    group.profilePic = file.path;
+  } else {
+    group.profilePic = undefined;
   }
-  RH.SendResponse({res,statusCode:StatusCodes.OK,title,value:{group, joinedBefore}})
+  await fileController.deleteFile(group.profilePic);
+
+  const updated = await Services.Chat.findAndUpdateChat(groupId, {
+    $set: {
+      name: data.name,
+      decription: data.description,
+      profilePic: group.profilePic,
+    },
+  });
+
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
+
+
+
+export {
+  addMember,
+  editGroupType,
+  removeMember,
+  editGroupPermissions,
+  editGroupInfo,
 
 };
-const joinViaLink = async (req, res) => {
-  
-
-};
-
-export {getGroupByLink, addMember, editGroupType, removeMember, editGroupPermissions };

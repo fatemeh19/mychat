@@ -55,6 +55,14 @@ export default{
   "FileContentError":{
     "name":"FileContentError",
     "message":"لطفا نوع فایل را به درستی مشخص کنید"
+  },
+  "FullError":{
+    "name":"FullError",
+    "message":"به حد خود رسیده است"
+  },
+  "ExpiredError":{
+    "name":"ExpiredError",
+    "message":"منقضی شده است"
   }
   
 }
