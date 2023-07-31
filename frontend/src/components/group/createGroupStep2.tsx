@@ -21,8 +21,10 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
 }) => {
 
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
+    const userId = useAppSelector(state => state.userInfo).User._id
 
     const selectMember = (contact: contactInterface, contactBoxRef: LegacyRef<HTMLDivElement> | undefined) => {
+        setMemberIds(prev => [...prev, userId])
 
         // styling selected contact :
         // @ts-ignore
