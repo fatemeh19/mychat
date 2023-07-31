@@ -113,9 +113,8 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  // res.send(chats);
   const messageIds = chats.map(
-    (chat) => chat.messages[chat.messages.length - 1]
+    (chat) => chat.messages[chat.messages.length - 1].messageId
   );
   const messages = await Services.Message.getMessages(
     {
@@ -128,8 +127,9 @@ const getChats = async (req, res) => {
     chat.messages.splice(0, chat.messages.length);
     // console.log(chat)
     // console.log(messages[index])
+    
 
-    chat.messages.push(messages[index]);
+    chat.messages[chat.messages.length].messageId=messages[index];
   });
   await RH.SendResponse({
     res,
