@@ -33,12 +33,12 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         found = false
         chatList.map(cl => {
-            if (cl.contact._id === contactId) {
-                console.log('chat is exist')
-                fetchChat(cl._id, dispatch)
-                dispatch(setChatCreated(true))
-                found = true
-            }
+            // if (cl.contact._id === contactId) { //del
+            console.log('chat is exist')
+            fetchChat(cl._id, dispatch)
+            dispatch(setChatCreated(true))
+            found = true
+            // } //del
         })
         found === false && dispatch(setChatCreated(false))
     }, [chatList])

@@ -12,19 +12,19 @@ import callApi from '@/src/helper/callApi';
 export default function ChatList() {
     const socket = useAppSelector(state => state.socket).Socket
     const openChat = useAppSelector(state => state.openChat).openChat;
-    const [userId,setUserId]=useState('')
+    const [userId, setUserId] = useState('')
 
-    const userIdHandler=async ()=>{
-            let user = await userHandler();
-            setUserId(user._id)
-            socket?.emit('online', userId)
-            console.log('user online: '+userId)
-        
+    const userIdHandler = async () => {
+        let user = await userHandler();
+        setUserId(user._id)
+        socket?.emit('online', userId)
+        console.log('user online: ' + userId)
+
     }
-    
+
     useEffect(() => {
         userIdHandler()
-    }, [socket,userId])
+    }, [socket, userId])
 
     return (
 
