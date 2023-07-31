@@ -133,11 +133,12 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         }
     }
 
-    const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+    const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => {
         console.log(e)
         console.log(e.currentTarget)
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
+        closeContextMenu()
 
     }
 
@@ -156,6 +157,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     msg={msg}
                     showConfirmModal={showConfirmModal}
                     activeSelection={activeSelection}
+                    activeReply={messageDoubleClickHandler}
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>

@@ -19,10 +19,11 @@ interface RightClickProps {
     msg: recievedMessageInterface,
     closeContextMenu: () => void,
     showConfirmModal: () => void,
-    activeSelection: (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void
+    activeSelection: (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void,
+    activeReply: (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => void
 }
 
-const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, showConfirmModal, activeSelection }) => {
+const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, showConfirmModal, activeSelection, activeReply }) => {
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
     const hiddenScroll = useRef<HTMLDivElement>(null)
@@ -78,7 +79,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
             >
                 <div className={`${style.content}`}>
                     <ul className={`${style.menu}`}>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={activeReply}>
                             <BsReply className={`${style.icon}`} />
                             <span>Reply</span>
                         </li>

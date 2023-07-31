@@ -49,7 +49,7 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
             }
             <div className="flex flex-col">
                 <p className="username text-blue-500 font-semibold text-sm">{sender.name}</p>
-                <p className="text-black break-all whitespace-pre-line text-sm font-light">
+                <p className="text-black text-sm font-light">
                     {
                         repliedMessage.content.text !== ''
                             ? repliedMessage.content.text
