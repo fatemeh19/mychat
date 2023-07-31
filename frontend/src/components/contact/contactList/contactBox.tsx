@@ -5,9 +5,10 @@ import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { openHandle } from "@/src/redux/features/userChatListSlice";
 import { contactInterface } from "@/src/redux/features/userContactListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { Dispatch } from "@reduxjs/toolkit";
 import Image from "next/image"
-import { FC, useEffect, useState } from "react"
-
+import { FC, LegacyRef, useEffect, useRef, useState } from "react"
+import { GiCheckMark } from 'react-icons/gi'
 
 type Contact = {
     name: string;
@@ -22,14 +23,14 @@ interface ContactBoxProps {
     contact: Contact,
     isOpenChat: boolean
     handleOpen?: () => void,
-    selectMember?: (contact: contactInterface) => void
+    selectMember?: (contact: contactInterface, contactBoxRef: LegacyRef<HTMLDivElement> | undefined) => void,
 }
 
 const ContactBox: FC<ContactBoxProps> = ({
     contact,
     handleOpen,
     isOpenChat,
-    selectMember
+    selectMember,
 }) => {
     const dispatch = useAppDispatch()
     // const [online , setOnline] = useState(contact.status.online)
@@ -75,19 +76,26 @@ const ContactBox: FC<ContactBoxProps> = ({
 
         }
     }
+    const contactBoxRef = useRef<HTMLDivElement>(null)
     return (
-        <div key={contact._id} className='w-full flex gap-4 mt-3 pl-[15px] py-2 hover:bg-gray-100'
+        <div key={contact._id} className='w-full flex gap-4 pl-[15px] py-3 hover:bg-gray-100'
             onClick={() => {
                 handleOpen ? handleOpen() : null;
                 isOpenChat ?? handleClick();
-                selectMember ? selectMember(contact) : null
+                selectMember ? selectMember(contact, contactBoxRef) : null
             }}>
-            <Image
-                src={contact.profilePic ? `/uploads/picture/${profilePicNameHandler(contact)}`
-                    : '/uploads/picture/defaultProfilePic.png'}
-                className="w-[50px] h-[50px] object-cover rounded-full "
-                width={500} height={50} alt="contact-profile" />
-            <div className="contact-details h-full pt-1 gap-1 grid w-full">
+            <div className={''} ref={contactBoxRef}>
+                <Image
+                    src={contact.profilePic ? `/uploads/picture/${profilePicNameHandler(contact)}`
+                        : '/uploads/picture/defaultProfilePic.png'}
+                    className="w-[56px] h-[56px] object-cover rounded-full
+                             border-2 border-white"
+                    width={500} height={50} alt="contact-profile" />
+                <div className="w-5 h-5 bg-blue-500 absolute bottom-0 right-0 rounded-full flex items-center justify-center">
+                    <GiCheckMark className="text-white" />
+                </div>
+            </div>
+            <div className="contact-details h-full pt-1 gap-1 grid">
                 <p className="contact-name font-bold text-sm">{contact.name}</p>
                 <p className="status text-xs ">
                     {/* {online ?
