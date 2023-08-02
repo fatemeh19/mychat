@@ -11,7 +11,10 @@ router
   .post(
     [uploadFile.single("file"),messageTypeChecker, permissionChecker("")],
     createMessage
-  );
-// .delete(deleteMessage)
+  )
+
+// router.patch("/seen/:chatId/:messageId",seenMessage)
+
+  // .delete(DeleteMessageHttp)
 // ,uploadFile.single('file')]
 export default router;
