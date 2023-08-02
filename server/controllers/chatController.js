@@ -61,23 +61,6 @@ const createChat = async (req, res) => {
 const getChat = async (req, res) => {
   const { params: {id:chatId} } = req;
 
-  // // const {
-  // //   user: { userId },
-  // //   params: { contactId },
-  // // } = req;
-  // // const memberIds = [userId, contactId];
-
-  // const data = await Validators.getChat.validate(body);
-  // console.log(data);
-  // let findQuery;
-  // // find by memberIds
-  // if (data.findBy == chatSearchType[0]) {
-  //   findQuery = { memberIds: { $size: 2, $all: data.memberIds } };
-  // }
-  // // find by chatId
-  // else {
-  //   findQuery = { _id: data.id };
-  // }
   const chat = await Services.Chat.getChat( { _id: chatId });
 
   if (!chat) {
@@ -87,12 +70,17 @@ const getChat = async (req, res) => {
       Field: fields.chat,
     });
   }
+  const messageIds = chat.messages.map(
+    (message)=> message.messageId
+    )
   const messages = await Services.Message.getMessages({
-    _id: { $in: chat.messages },
+    _id: { $in: messageIds },
   });
 
-  chat.messages.splice(0, chat.messages.length);
-  chat.messages = messages;
+
+  chat.messages.forEach((message, index) => {
+      message.messageId = messages[index]
+  });
 
   await RH.SendResponse({
     res,
@@ -113,9 +101,9 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  // res.send(chats);
+  
   const messageIds = chats.map(
-    (chat) => chat.messages[chat.messages.length - 1]
+    (chat) => chat.messages[chat.messages.length - 1]?.messageId
   );
   const messages = await Services.Message.getMessages(
     {
@@ -125,11 +113,20 @@ const getChats = async (req, res) => {
     "-updatedAt"
   );
   await chats.forEach((chat, index) => {
-    chat.messages.splice(0, chat.messages.length);
-    // console.log(chat)
-    // console.log(messages[index])
+    if(!chat.messages.length){
+      return
+    }
+    chat.messages.push({
+      messageId : messages[index],
+      forwarded:{
+        by : chat.messages[chat.messages.length-1]?.forwarded.by,
+        isForwarded:chat.messages[chat.messages.length-1]?.forwarded.isForwarded,
+      },
+      seenIds :chat.messages[chat.messages.length-1]?.seenIds,
+      deletedIds :chat.messages[chat.messages.length-1]?.deletedIds
+    })
+    chat.messages.splice(0, chat.messages.length-1);
 
-    chat.messages.push(messages[index]);
   });
   await RH.SendResponse({
     res,

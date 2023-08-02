@@ -2,55 +2,41 @@ import Chat from "../models/Chat.js";
 import * as Services from "../services/index.js";
 import { DeleteMessage } from "../controllers/messageController.js";
 export default function (io) {
-  const onChat = function (contactId) {
+  const onChat = function (chatId) {
     const socket = this;
     const userId = socket.user.userId;
-    console.log("user connected to chat");
-    let roomName =
-      userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-    socket.join(roomName);
-    socket.to(roomName).emit("onlineOnChat", userId);
+    console.log("user connected to chat");     
+    socket.join(chatId);
+    // socket.to(roomName).emit("onlineOnChat", userId);
   };
 
-  const sendMessage = async function (contactId, message) {
+  const sendMessage = async function (chatId, message) {
     const socket = this;
-    const userId = socket.user.userId;
-    let roomName =
-      userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-    io.to(roomName).emit("sendMessage", message);
+    // const userId = socket.user.userId;
+    io.to(chatId).emit("sendMessage", message);
   };
 
   const deleteMessage = async function (deleteInfo) {
     const socket = this;
     const userId = socket.user.userId;
-    const { chatId, deleteAll } = deleteInfo;
+    const { chatId } = deleteInfo;
     DeleteMessage(userId, deleteInfo);
-    const chat = await Services.Chat.getChat({ _id: chatId });
-    const memberIds = chat.memberIds;
 
-    let roomName =
-      memberIds[0] > memberIds[1]
-        ? memberIds[0] + "" + memberIds[1]
-        : memberIds[1] + "" + memberIds[0];
-    if (deleteAll) {
-      io.to(roomName).emit("deleteMessage", deleteInfo);
-    }
+    io.to(chatId).emit("deleteMessage", deleteInfo);
 
-    // const { chatId, messageIs, deleteAll } = deleteInfo;
+
   };
 
-  const seenMessage = async function (messageId) {
+  const seenMessage = async function (chatId,messageId) {
     const socket = this;
     const userId = socket.user.userId;
-    const chat = await Services.Chat.getChat({ messages: messageId });
-    await Services.Message.updateMessages({_id:messageId},{$push:{seenIds:userId}})
-    const memberIds = chat.memberIds;
-    let roomName =
-      memberIds[0] > memberIds[1]
-        ? memberIds[0] + "" + memberIds[1]
-        : memberIds[1] + "" + memberIds[0];
-
-    socket.to(roomName).emit("seenMessage", messageId,userId);
+    Services.Chat.findAndUpdateChat(chatId,{
+      $push:{"messages.$[message].seenIds":userId}
+    },{
+      arrayFilters:[{"message._id":messageId}]
+    })
+   
+    socket.to(chatId).emit("seenMessage",messageId,userId);
   };
 
   return { onChat, sendMessage, deleteMessage,seenMessage };
