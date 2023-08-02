@@ -6,6 +6,8 @@ import { recievedMessageInterface } from "@/src/models/interface";
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 interface chatInterface {
     _id: string,
+    adminsAndRights: [],
+    chatType: string,
     memberIds: string[],
     messages: recievedMessageInterface[],
     updatedAt: string,

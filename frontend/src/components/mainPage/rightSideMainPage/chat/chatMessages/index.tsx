@@ -9,8 +9,6 @@ export default function ChatMessages() {
     const userId = useAppSelector(state => state.userInfo).User._id
     const chat = chatInfo.Chat
 
-    console.log('chat', chat.messages)
-
     return (
         <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
 
@@ -25,6 +23,7 @@ export default function ChatMessages() {
                             // if flag == true => show messages / flag = false => dont show deleted messages
                             // we are checking if userId is in the message deletedIds then => dont show this message to this user
                             chat.messages?.map((msg, index) => {
+                                console.log('msg:', msg)
                                 let flag = true
                                 msg.deletedIds.map(delId => {
                                     if (delId === userId) flag = false
