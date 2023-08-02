@@ -43,9 +43,9 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         found === false && dispatch(setChatCreated(false))
     }, [chatList])
 
-    useEffect(() => {
-        socket?.emit('onChat', contactId)
-    }, [socket])
+    // useEffect(() => {
+    //     socket?.emit('onChat', contactId)
+    // }, [socket])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
