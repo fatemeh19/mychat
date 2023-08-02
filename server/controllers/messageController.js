@@ -88,7 +88,7 @@ const createMessage = async (req, res) => {
   const Message = await Services.Message.createMessage(newMessage);
   const chat = await Services.Chat.findAndUpdateChat(chatId, {
     $push: { messages: { messageId: Message._id } },
-  });
+  }, {new:true});
   if (!chat) {
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -96,12 +96,14 @@ const createMessage = async (req, res) => {
       Field: fields.chat,
     });
   }
+  let msg = chat.messages.pop()
+  msg.messageId = Message
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      message: Message,
+      message: msg,
     },
   });
 };
@@ -178,5 +180,39 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   // res.status(200).send("OK");
 };
+const forwardMessage = async function (req, res) {
+  const {
+    params:{chatId},
+    body:{messageIds},
+    user:{userId}
+  } = req
 
-export { createMessage, DeleteMessage };
+  const forwardedMessages = await Services.Message.getMessages({
+    _id: { $in: messageIds },
+  });
+  const messages = []
+  forwardedMessages.forEach((forwardedMessage) => {
+    messages.push({
+      messageId: forwardedMessage._id,
+      forwarded: {
+        isForwarded:true,
+        by:userId
+      },
+    });
+  });
+
+  const chat = await Services.Chat.findAndUpdateChat(
+    chatId,
+    {
+      $push: { messages: { $each: messages } },
+    },
+    { new: true }
+  );
+  const forwardInfo = {
+    forwardedMessages,
+    forwardedBy: userId,
+    chat,
+  }
+  res.send(forwardInfo)
+};
+export { forwardMessage, createMessage, DeleteMessage };

@@ -5,7 +5,7 @@ export default function (io) {
   const onChat = function (chatId) {
     const socket = this;
     const userId = socket.user.userId;
-    console.log("user connected to chat");     
+    console.log("user connected to chat");
     socket.join(chatId);
     // socket.to(roomName).emit("onlineOnChat", userId);
   };
@@ -23,21 +23,58 @@ export default function (io) {
     DeleteMessage(userId, deleteInfo);
 
     io.to(chatId).emit("deleteMessage", deleteInfo);
-
-
   };
 
-  const seenMessage = async function (chatId,messageId) {
+  const seenMessage = async function (chatId, messageId) {
     const socket = this;
     const userId = socket.user.userId;
-    Services.Chat.findAndUpdateChat(chatId,{
-      $push:{"messages.$[message].seenIds":userId}
-    },{
-      arrayFilters:[{"message._id":messageId}]
-    })
-   
-    socket.to(chatId).emit("seenMessage",messageId,userId);
+    Services.Chat.findAndUpdateChat(
+      chatId,
+      {
+        $push: { "messages.$[message].seenIds": userId },
+      },
+      {
+        arrayFilters: [{ "message._id": messageId }],
+      }
+    );
+
+    socket.to(chatId).emit("seenMessage", messageId, userId);
   };
 
-  return { onChat, sendMessage, deleteMessage,seenMessage };
+  const forwardMessage = async function (chatId, messageIds) {
+    const socket = this;
+    const userId = socket.user.userId;
+
+    const forwardedMessages = await Services.Message.getMessages({
+      _id: { $in: messageIds },
+    });
+    const messages = []
+    forwardedMessages.forEach((forwardedMessage) => {
+      messages.push({
+        messageId: forwardedMessage._id,
+        forwarded: {
+          isForwarded:true,
+          by:userId
+        },
+      });
+    });
+  
+    const chat = await Services.Chat.findAndUpdateChat(
+      chatId,
+      {
+        $push: { messages: { $each: messages } },
+      },
+      { new: true }
+    );
+    const forwardInfo = {
+      forwardedMessages,
+      forwardedBy: userId,
+      chat,
+    }
+
+    io.to(chatId).emit("forwardMessage", forwardInfo);
+
+  };
+
+  return {forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }

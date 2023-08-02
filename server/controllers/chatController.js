@@ -11,11 +11,12 @@ import Group from "../models/Group.js";
 import crypto from "crypto";
 import "../utils/loadEnv.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
+import indexFinder from "../utils/indexFinder.js";
 const createChat = async (req, res) => {
   const {
     body: body,
     user: { userId },
-    file
+    file,
   } = req;
   const data = await Validators.createChat.validate(body);
   // if type of chat is group
@@ -33,19 +34,18 @@ const createChat = async (req, res) => {
       });
     }
   } else {
-    if(file){
-      data.profilePic = file.path
+    if (file) {
+      data.profilePic = file.path;
     }
     data.owner = userId;
     let primaryLink = {
-      name:'primaryLink',
+      name: "primaryLink",
       link: createRandomInviteLink(),
-      creator: userId, 
+      creator: userId,
     };
-    data.inviteLinks = []
-    data.inviteLinks.push(primaryLink)
+    data.inviteLinks = [];
+    data.inviteLinks.push(primaryLink);
   }
-  
 
   const chat = await Services.Chat.createChat(data);
   await RH.SendResponse({
@@ -59,9 +59,11 @@ const createChat = async (req, res) => {
 };
 
 const getChat = async (req, res) => {
-  const { params: {id:chatId} } = req;
+  const {
+    params: { id: chatId },
+  } = req;
 
-  const chat = await Services.Chat.getChat( { _id: chatId });
+  const chat = await Services.Chat.getChat({ _id: chatId });
 
   if (!chat) {
     await RH.CustomError({
@@ -70,26 +72,37 @@ const getChat = async (req, res) => {
       Field: fields.chat,
     });
   }
-  const messageIds = chat.messages.map(
-    (message)=> message.messageId
-    )
+  const messageIds = chat.messages.map((message) => message.messageId);
+
   const messages = await Services.Message.getMessages({
     _id: { $in: messageIds },
   });
 
+  const messageIdss = messages.map((message) => message._id);
+  let end  = false
+  chat.messages.forEach( (message, index) => {
+    let messageIndex =  indexFinder(
+      0,
+      messageIdss.length,
+      messageIdss,
+      message.messageId
+    );
+    message.messageId = messages[messageIndex]
+   
 
-  chat.messages.forEach((message, index) => {
-      message.messageId = messages[index]
-  });
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chat,
-    },
   });
+ 
+    await RH.SendResponse({
+      res,
+      statusCode: StatusCodes.OK,
+      title: "ok",
+      value: {
+        chat,
+      },
+    });
+  // }
+  
 };
 
 const getChats = async (req, res) => {
@@ -101,7 +114,7 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  
+
   const messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageId
   );
@@ -113,20 +126,20 @@ const getChats = async (req, res) => {
     "-updatedAt"
   );
   await chats.forEach((chat, index) => {
-    if(!chat.messages.length){
-      return
+    if (!chat.messages.length) {
+      return;
     }
     chat.messages.push({
-      messageId : messages[index],
-      forwarded:{
-        by : chat.messages[chat.messages.length-1]?.forwarded.by,
-        isForwarded:chat.messages[chat.messages.length-1]?.forwarded.isForwarded,
+      messageId: messages[index],
+      forwarded: {
+        by: chat.messages[chat.messages.length - 1]?.forwarded.by,
+        isForwarded:
+          chat.messages[chat.messages.length - 1]?.forwarded.isForwarded,
       },
-      seenIds :chat.messages[chat.messages.length-1]?.seenIds,
-      deletedIds :chat.messages[chat.messages.length-1]?.deletedIds
-    })
-    chat.messages.splice(0, chat.messages.length-1);
-
+      seenIds: chat.messages[chat.messages.length - 1]?.seenIds,
+      deletedIds: chat.messages[chat.messages.length - 1]?.deletedIds,
+    });
+    chat.messages.splice(0, chat.messages.length - 1);
   });
   await RH.SendResponse({
     res,
