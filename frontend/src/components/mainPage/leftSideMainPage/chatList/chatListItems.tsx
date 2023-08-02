@@ -11,62 +11,62 @@ export default function ChatListItems() {
 
     return (
 
-            <div className="chat-scrollbar w-full 
+        <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen
             overflow-y-auto">
-                <div>
-                    {
-                        (Object.keys(Contact).length == 0) ? null
-                        : 
-                        (chatOpenInList ? null : 
+            <div>
+                {
+                    (Object.keys(Contact).length == 0) ? null
+                        :
+                        (chatOpenInList ? null :
                             <Link key={Contact._id} href={`/chat/${Contact._id}`} >
-                                    <ChatContactBox
-                                        profilePicName=
-                                        {Contact.profilePic ? `/uploads/picture/${profilePicNameHandler(Contact)}`
-                                            : '/uploads/picture/defaultProfilePic.png'}
-                                        contactId={Contact._id} chatOpennedP={true} 
-                                        lastMessegeByContact={false} 
-                                        ContactName={Contact.name} status={Contact.status} 
-                                        lastMessage={''} ContactSeen={false} lastMessageTime={''} 
-                                        numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
+                                <ChatContactBox
+                                    profilePicName=
+                                    {Contact.profilePic ? `/uploads/photo/${profilePicNameHandler(Contact)}`
+                                        : '/uploads/photo/defaultProfilePic.png'}
+                                    contactId={Contact._id} chatOpennedP={true}
+                                    lastMessegeByContact={false}
+                                    ContactName={Contact.name} status={Contact.status}
+                                    lastMessage={''} ContactSeen={false} lastMessageTime={''}
+                                    numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
                             </Link>
                         )
-                    }
-                </div>   
-                <div>
-                {
-                        (chatList.length === 0) ? null : 
-                            
-                            chatList.map((chatBox) => (
-                                <Link key={chatBox._id} href={`/chat/${chatBox.contact._id}`} >
-                                    {/* @ts-ignore */}
-                                    
-                                    <ChatContactBox
-                                        profilePicName=
-                                        {chatBox.contact.profilePic ? `/uploads/picture/${profilePicNameHandler(chatBox.contact)}`
-                                            : '/uploads/picture/defaultProfilePic.png'}
-                                        contactId={chatBox.contact._id} chatOpennedP={chatBox.open} 
-                                        lastMessegeByContact={false} 
-                                        ContactName={chatBox.contact.name} status={chatBox.contact.status} 
-                                        lastMessage={chatBox.lastMessage} ContactSeen={false} 
-                                        lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''} 
-                                        recivedMessage={true} isTyping={false} />
-                                </Link>
-                            ))
                 }
-                </div>
-                   
-                 
-                    
+            </div>
+            <div>
+                {
+                    (chatList.length === 0) ? null :
 
-                {/* <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name'} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={''} recivedMessage={true} isTyping={true}  />
+                        chatList.map((chatBox) => (
+                            <Link key={chatBox._id} href={`/chat/${chatBox.contact._id}`} >
+                                {/* @ts-ignore */}
+
+                                <ChatContactBox
+                                    profilePicName=
+                                    {chatBox.contact.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.contact)}`
+                                        : '/uploads/photo/defaultProfilePic.png'}
+                                    contactId={chatBox.contact._id} chatOpennedP={chatBox.open}
+                                    lastMessegeByContact={false}
+                                    ContactName={chatBox.contact.name} status={chatBox.contact.status}
+                                    lastMessage={chatBox.lastMessage} ContactSeen={false}
+                                    lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
+                                    recivedMessage={true} isTyping={false} />
+                            </Link>
+                        ))
+                }
+            </div>
+
+
+
+
+            {/* <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name'} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={''} recivedMessage={true} isTyping={true}  />
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
                 <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name2'} status={true} lastMessage={'hi, how you doin?'} ContactSeen={false} lastMessageTime={'9:36 AM'} numberOfUnSeen={'4'} recivedMessage={false} isTyping={false}  />
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
                 <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name3'} status={true} lastMessage={'Wow really cool'} ContactSeen={false} lastMessageTime={'1:15 AM'} numberOfUnSeen={'1'} recivedMessage={false} isTyping={false}  />
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
                 <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={false} ContactName={'Contact name2'} status={false} lastMessage={'hi, how you doin?'} ContactSeen={true} lastMessageTime={'9:36 AM'} numberOfUnSeen={''} recivedMessage={false} isTyping={false}  /> */}
-            </div>
+        </div>
     )
 }

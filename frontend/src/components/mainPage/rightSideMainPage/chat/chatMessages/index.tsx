@@ -9,6 +9,8 @@ export default function ChatMessages() {
     const userId = useAppSelector(state => state.userInfo).User._id
     const chat = chatInfo.Chat
 
+    console.log('chat', chat.messages)
+
     return (
         <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
 

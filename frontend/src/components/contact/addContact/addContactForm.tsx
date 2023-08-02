@@ -28,6 +28,7 @@ const AddContactFormInner = (props: any) => {
     const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
     const dispatch = useAppDispatch()
+
     add = (contact: any) => {
         dispatch(addContact(contact))
         console.log("contact : " + contact)
@@ -98,7 +99,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             console.log(res)
             if (res.status === 200) {
                 values.msg = "با موفقیت ایجاد شد"
-                addBtn.addEventListener('onClick', add(contact))
+                addBtn.current.addEventListener('onclick', add(contact))
             }
         } catch (error) {
             console.log('error in catch add contact form : ', error)

@@ -38,6 +38,7 @@ const ContactBox: FC<ContactBoxProps> = ({
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
+
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
             console.log('contactId : ' + contactId)
@@ -86,8 +87,8 @@ const ContactBox: FC<ContactBoxProps> = ({
             }}>
             <div className={''} ref={contactBoxRef}>
                 <Image
-                    src={contact.profilePic ? `/uploads/picture/${profilePicNameHandler(contact)}`
-                        : '/uploads/picture/defaultProfilePic.png'}
+                    src={contact.profilePic ? `/uploads/photo/${profilePicNameHandler(contact)}`
+                        : '/uploads/photo/defaultProfilePic.png'}
                     className="w-[56px] h-[56px] object-cover rounded-full
                              border-2 border-white"
                     width={500} height={50} alt="contact-profile" />

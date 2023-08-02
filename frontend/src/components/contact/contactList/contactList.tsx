@@ -16,8 +16,9 @@ const ContactList: FC<ContactsProps> = ({
     handleAddContact,
     handleOpen
 }) => {
-    const selector = useAppSelector(state => state.userContactsList)
-    const userContactsList = selector.contacts
+    const userContactsList = useAppSelector(state => state.userContactsList).contacts
+    console.log('usrContactList : ', userContactsList)
+
     return (
 
         <>
