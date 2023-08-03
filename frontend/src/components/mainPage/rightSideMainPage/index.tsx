@@ -53,14 +53,15 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
-            const msg = chatMessages.filter(CM => {
-                let flag = true
-                for (let i = 0; i < data.messageIds.length; i++) {
-                    CM._id === data.messageIds[i] ? flag = false : null
-                }
-                if (flag) return CM._id
-            })
-            dispatch(updateArrayMessages(msg))
+            console.log('data : ', data)
+            // const msg = chatMessages.filter(CM => {
+            //     let flag = true
+            //     for (let i = 0; i < data.messageIds.length; i++) {
+            //         CM._id === data.messageIds[i] ? flag = false : null
+            //     }
+            //     if (flag) return CM._id
+            // })
+            // dispatch(updateArrayMessages(msg))
         })
         return () => {
             socket.removeAllListeners('sendMessage')

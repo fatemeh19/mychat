@@ -1,4 +1,4 @@
-import { Dispatch, FC, LegacyRef, SetStateAction } from "react";
+import { Dispatch, FC, LegacyRef, SetStateAction, useEffect } from "react";
 import PopUpBtns from "../popUp/popUpBtns";
 import { BiSearch } from "react-icons/bi";
 import { useAppSelector } from "@/src/redux/hooks";
@@ -22,10 +22,11 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
 
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
     const userId = useAppSelector(state => state.userInfo).User._id
+    useEffect(() => {
+        setMemberIds(prev => [...prev, userId])
+    }, [])
 
     const selectMember = (contact: contactInterface, contactBoxRef: LegacyRef<HTMLDivElement> | undefined) => {
-        setMemberIds(prev => [...prev, userId])
-
         // styling selected contact :
         // @ts-ignore
         contactBoxRef.current.style = `
