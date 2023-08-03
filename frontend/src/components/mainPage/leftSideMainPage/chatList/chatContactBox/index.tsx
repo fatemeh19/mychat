@@ -93,7 +93,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             if(chatList[i].open){
                 dispatch(openHandle(i))
             }
-            if(chatList[i].contact._id==contactId){
+            if(chatList[i].chatInfo._id==contactId){
                 dispatch(openHandle(i))
                 setChatOpenned(true)
                 dispatch(setChatOpenInList(true))

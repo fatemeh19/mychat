@@ -33,7 +33,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         found = false
         chatList.map(cl => {
-            if (cl.contact._id === contactId) {
+            if (cl.chatInfo._id === contactId) {
                 console.log('chat is exist')
                 fetchChat(cl._id, dispatch)
                 dispatch(setChatCreated(true))
