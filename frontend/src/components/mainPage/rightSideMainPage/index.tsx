@@ -6,9 +6,10 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addMessage, deleteMessageFromMessageArray, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
 import CustomizedDialogs from "../../popUp"
+import findIndex from "@/src/helper/findIndex"
 
 interface IUserInfo {
     name: string,
@@ -54,6 +55,16 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         })
         socket.on('deleteMessage', (data: any) => {
             console.log('data : ', data)
+            const chatMessageIds = chatMessages.map(cm => cm._id)
+            console.log('messageIds :', chatMessageIds)
+            let indexes = []
+            let index
+            for (let i = 0; i < data.messageIds.length; i++) {
+                findIndex(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
+            }
+            indexes.push(index)
+            // console.log('chatMessages out', chatMessages)
+
             // const msg = chatMessages.filter(CM => {
             //     let flag = true
             //     for (let i = 0; i < data.messageIds.length; i++) {
@@ -68,7 +79,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             socket.removeAllListeners('deleteMessage')
         }
     })
-
     return (
         <>
             {

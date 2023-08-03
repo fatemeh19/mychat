@@ -48,6 +48,10 @@ export const ChatSlice = createSlice({
         },
         updateArrayMessages: (state, action: PayloadAction<any>) => {
             state.Chat.messages = action.payload
+        },
+        deleteMessageFromMessageArray: (state, action: PayloadAction<any>) => {
+            state.Chat.messages.splice(action.payload, 1)
+
         }
     },
 });
@@ -58,6 +62,7 @@ export const {
     setFirstChat,
     addMessage,
     setChatCreated,
-    updateArrayMessages
+    updateArrayMessages,
+    deleteMessageFromMessageArray
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
