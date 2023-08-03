@@ -108,7 +108,7 @@ const createMessage = async (req, res) => {
   });
 };
 const DeleteMessage = async (userId, deleteInfo) => {
-  const { chatId, messageIds, deleteAll } = deleteInfo;
+  let { chatId, messageIds, deleteAll } = deleteInfo;
 
   messageIds = objectId(messageIds);
 
