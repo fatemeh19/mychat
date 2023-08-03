@@ -31,7 +31,7 @@ const ChatSchema = new mongoose.Schema(
           {
             type: mongoose.Types.ObjectId,
             ref: "User",
-            unique:true
+            
           },
         ],
         deletedIds: [
