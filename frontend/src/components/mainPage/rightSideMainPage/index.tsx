@@ -6,9 +6,10 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addMessage, deleteMessageFromMessageArray, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
 import CustomizedDialogs from "../../popUp"
+import findIndex from "@/src/helper/findIndex"
 
 interface IUserInfo {
     name: string,
@@ -33,19 +34,19 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         found = false
         chatList.map(cl => {
-            if (cl.chatInfo._id === contactId) {
-                console.log('chat is exist')
-                fetchChat(cl._id, dispatch)
-                dispatch(setChatCreated(true))
-                found = true
-            }
+            // if (cl.contact._id === contactId) { //del
+            console.log('chat is exist')
+            fetchChat(cl._id, dispatch)
+            dispatch(setChatCreated(true))
+            found = true
+            // } //del
         })
         found === false && dispatch(setChatCreated(false))
     }, [chatList])
 
-    useEffect(() => {
-        socket?.emit('onChat', contactId)
-    }, [socket])
+    // useEffect(() => {
+    //     socket?.emit('onChat', contactId)
+    // }, [socket])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
@@ -53,21 +54,31 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
-            const msg = chatMessages.filter(CM => {
-                let flag = true
-                for (let i = 0; i < data.messageIds.length; i++) {
-                    CM._id === data.messageIds[i] ? flag = false : null
-                }
-                if (flag) return CM._id
-            })
-            dispatch(updateArrayMessages(msg))
+            console.log('data : ', data)
+            const chatMessageIds = chatMessages.map(cm => cm._id)
+            console.log('messageIds :', chatMessageIds)
+            let indexes = []
+            let index
+            for (let i = 0; i < data.messageIds.length; i++) {
+                findIndex(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
+            }
+            indexes.push(index)
+            // console.log('chatMessages out', chatMessages)
+
+            // const msg = chatMessages.filter(CM => {
+            //     let flag = true
+            //     for (let i = 0; i < data.messageIds.length; i++) {
+            //         CM._id === data.messageIds[i] ? flag = false : null
+            //     }
+            //     if (flag) return CM._id
+            // })
+            // dispatch(updateArrayMessages(msg))
         })
         return () => {
             socket.removeAllListeners('sendMessage')
             socket.removeAllListeners('deleteMessage')
         }
     })
-
     return (
         <>
             {

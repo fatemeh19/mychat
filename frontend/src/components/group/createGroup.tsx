@@ -21,14 +21,11 @@ const CreateGroup: FC<CreateGroupProps> = ({
     const [memberIds, setMemberIds] = useState<string[]>([])
     const [groupPic, setGroupPic] = useState('')
     const [groupName, setGroupName] = useState('')
-    const userId = useAppSelector(state => state.userInfo).User._id
 
     const createGroupHandler = async () => {
         // add userId to memberIds
-        setMemberIds(prev => [...prev, userId])
 
         try {
-
             let formData = new FormData()
             formData.append('profilePic', groupPic)
             formData.append('name', groupName)

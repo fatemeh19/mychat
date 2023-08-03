@@ -6,6 +6,8 @@ import { recievedMessageInterface } from "@/src/models/interface";
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 interface chatInterface {
     _id: string,
+    adminsAndRights: [],
+    chatType: string,
     memberIds: string[],
     messages: recievedMessageInterface[],
     updatedAt: string,
@@ -46,6 +48,10 @@ export const ChatSlice = createSlice({
         },
         updateArrayMessages: (state, action: PayloadAction<any>) => {
             state.Chat.messages = action.payload
+        },
+        deleteMessageFromMessageArray: (state, action: PayloadAction<any>) => {
+            state.Chat.messages.splice(action.payload, 1)
+
         }
     },
 });
@@ -56,6 +62,7 @@ export const {
     setFirstChat,
     addMessage,
     setChatCreated,
-    updateArrayMessages
+    updateArrayMessages,
+    deleteMessageFromMessageArray
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

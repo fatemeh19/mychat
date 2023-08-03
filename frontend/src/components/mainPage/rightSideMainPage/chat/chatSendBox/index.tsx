@@ -45,6 +45,9 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             chatId = await fetchChat(chatId, dispatch)
         })()
     }, [firstChat])
+    useEffect(() => {
+        socket?.emit('onChat', chatId)
+    }, [socket, chatId])
 
     const attachmentHandler = (e: any) => {
         // @ts-ignore
@@ -96,10 +99,13 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
             setInput('')
             setFile(null)
-
+            console.log('message out:', message)
+            console.log(socket)
             if (socket) {
+                console.log('socket is exist')
                 // newMessage.forEach(item => console.log(item))
-                socket.emit('sendMessage', contactId, message)
+                chatId ? socket.emit('sendMessage', chatId, message) : null
+                // socket.emit('sendMessage', chatId, message)
             }
             dispatch(setFirstChat(false))
             showReply && dispatch(setShowReply(false))

@@ -9,7 +9,7 @@ const Page = async ({ params }: { params: any }) => {
 
     return (
         <>
-            <RightSideMainPage contactId={params.contactId} />
+            <RightSideMainPage contactId={params.chatId} />
         </>
     );
 }

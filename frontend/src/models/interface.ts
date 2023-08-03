@@ -7,21 +7,34 @@ interface infoFace {
 
 interface recievedMessageInterface {
     _id: string,
-    content: {
-        contentType: string,
-        url: string,
-        text: string,
-        originalName?: string,
-    },
-    reply: {
-        isReplied: boolean,
-        messageId: string
-    },
-    senderId: string,
+    // content: {
+    //     contentType: string,
+    //     url: string,
+    //     text: string,
+    //     originalName?: string,
+    // },
+    // message :
+    messageId: {
+        _id: string,
+        content: {
+            contentType: string,
+            text: string,
+            url: string,
+            originalName?: string,
+        },
+        senderId: string,
+        reply: {
+            isReplied: boolean,
+            messageId: string
+        },
+        createdAt?: any,
+        updatedAt?: any,
+        __v?: number
+    }
     seenIds: string[],
     deletedIds: string[],
-    createdAt?: any,
-    updatedAt?: any,
-    __v?: number
+    forwarded: {
+        isForwarded: boolean
+    }
 }
 export type { infoFace, recievedMessageInterface }

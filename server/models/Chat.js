@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { chatType } from "../utils/enums.js";
 import { boolean } from "yup";
+import { mongo } from "mongoose";
 
 const ChatSchema = new mongoose.Schema(
   {
-    
     memberIds: [
       {
         type: mongoose.Types.ObjectId,
@@ -13,13 +13,39 @@ const ChatSchema = new mongoose.Schema(
     ],
     messages: [
       {
-        type: mongoose.Types.ObjectId,
-        ref: "Message",
+        messageId: {
+          type: mongoose.Types.ObjectId,
+          ref: "Message",
+        },
+        forwarded: {
+          isForwarded: {
+            type: Boolean,
+            default: false,
+          },
+          by:{
+            type:mongoose.Types.ObjectId,
+            ref:'User'
+          }
+        },
+        seenIds: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+            
+          },
+        ],
+        deletedIds: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        ],
+        
       },
     ],
     chatType: {
-      type:String,
-      enum:chatType,
+      type: String,
+      enum: chatType,
     },
     notifications: {
       type: Boolean,

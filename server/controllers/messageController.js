@@ -8,16 +8,23 @@ import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import message from "../models/message.js";
-import * as fileController from "../utils/file.js"
+import * as fileController from "../utils/file.js";
+import Chat from "../models/Chat.js";
+import Group from "../models/Group.js";
+import mongoose from "mongoose";
+import { objectId } from "../utils/typeConverter.js";
 const createMessage = async (req, res) => {
-
   const {
     params: { chatId },
     body: message,
     file,
   } = req;
-  let url = file && message.content.contentType != "text" ? file.path : undefined
-  let originalName = file && message.content.contentType != "text" ? req.file.originalname  : undefined
+  let url =
+    file && message.content.contentType != "text" ? file.path : undefined;
+  let originalName =
+    file && message.content.contentType != "text"
+      ? req.file.originalname
+      : undefined;
 
   let newMessage = {
     reply: {
@@ -28,7 +35,7 @@ const createMessage = async (req, res) => {
       contentType: message.content.contentType,
       text: message.content.text,
       url: url,
-      originalName
+      originalName,
     },
     senderId: message.senderId,
   };
@@ -47,10 +54,29 @@ const createMessage = async (req, res) => {
     // console.log(file)
   }
   if (newMessage.reply.messageId) {
-    const repliedMessage = await Services.Message.findMessage({
-      _id: newMessage.reply.messageId,
-    });
-    if (!repliedMessage) {
+    const repliedMessage = await Services.Chat.aggregateChats([
+      {
+        $match: { _id: await objectId(chatId) },
+      },
+      {
+        $project: {
+          messages: 1,
+          messages: {
+            $filter: {
+              input: "$messages",
+              as: "message",
+              cond: {
+                $eq: [
+                  "$$message._id",
+                  await objectId(newMessage.reply.messageId),
+                ],
+              },
+            },
+          },
+        },
+      },
+    ]);
+    if (!repliedMessage[0].messages.length) {
       return await RH.CustomError({
         errorClass: CustomError.BadRequestError,
         errorType: ErrorMessages.NotFoundError,
@@ -58,10 +84,11 @@ const createMessage = async (req, res) => {
       });
     }
   }
+
   const Message = await Services.Message.createMessage(newMessage);
   const chat = await Services.Chat.findAndUpdateChat(chatId, {
-    $push: { messages: Message._id },
-  });
+    $push: { messages: { messageId: Message._id } },
+  }, {new:true});
   if (!chat) {
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -69,45 +96,123 @@ const createMessage = async (req, res) => {
       Field: fields.chat,
     });
   }
+  let msg = chat.messages.pop()
+  msg.messageId = Message
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      message: Message,
+      message: msg,
     },
   });
 };
 const DeleteMessage = async (userId, deleteInfo) => {
-  const { chatId, messageIds, deleteAll } = deleteInfo;
-  
+  let { chatId, messageIds, deleteAll } = deleteInfo;
+
+  messageIds = objectId(messageIds);
+
+  let notForwardedMessages = await Services.Chat.aggregateChats([
+    { $match: { _id: objectId(chatId) } },
+    {
+      $project: {
+        messages: 1,
+        messages: {
+          $filter: {
+            input: "$messages",
+            as: "message",
+            cond: {
+              $and: [
+                {
+                  $eq: ["$$message.forwarded.isForwarded", false],
+                },
+                {
+                  $in: ["$$message._id", messageIds],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  ]);
+  if (notForwardedMessages.length) {
+    notForwardedMessages = notForwardedMessages[0].messages.map(
+      (message) => message.messageId
+    );
+  }
+
+  let result;
   if (deleteAll) {
-    const messages = await Services.Message.getMessages({_id:{$in: messageIds}})
-    
-    messages.forEach(message => {
-      if(message.content.url){
-        fileController.deleteFile(message.content.url)
-      }
-      
-    }); 
-    Services.Message.deleteMessage({
-      _id: { $in: messageIds },
+    const messages = await Services.Message.getMessages({
+      _id: { $in: notForwardedMessages },
     });
 
+    messages.forEach((message) => {
+      if (message.content.url) {
+        fileController.deleteFile(message.content.url);
+      }
+    });
+    Services.Message.deleteMessage({
+      _id: { $in: notForwardedMessages },
+    });
 
     Services.Chat.findAndUpdateChat(chatId, {
-      $pullAll: {
-        messages: messageIds,
-      },
+      $pull: { messages: { _id: { $in: messageIds } } },
     });
   } else {
-    await Services.Message.updateMessages(
-      { _id: { $in: messageIds } },
-      { $push: { deletedIds: userId } }
+    result = await Services.Chat.findAndUpdateChat(
+      chatId,
+      {
+        $push: { "messages.$[message].deletedIds": userId },
+      },
+      {
+        arrayFilters: [
+          {
+            "message._id": {
+              $in: messageIds,
+            },
+          },
+        ],
+      }
     );
   }
 
   // res.status(200).send("OK");
 };
+const forwardMessage = async function (req, res) {
+  const {
+    params:{chatId},
+    body:{messageIds},
+    user:{userId}
+  } = req
 
-export { createMessage, DeleteMessage };
+  const forwardedMessages = await Services.Message.getMessages({
+    _id: { $in: messageIds },
+  });
+  const messages = []
+  forwardedMessages.forEach((forwardedMessage) => {
+    messages.push({
+      messageId: forwardedMessage._id,
+      forwarded: {
+        isForwarded:true,
+        by:userId
+      },
+    });
+  });
+
+  const chat = await Services.Chat.findAndUpdateChat(
+    chatId,
+    {
+      $push: { messages: { $each: messages } },
+    },
+    { new: true }
+  );
+  const forwardInfo = {
+    forwardedMessages,
+    forwardedBy: userId,
+    chat,
+  }
+  res.send(forwardInfo)
+};
+export { forwardMessage, createMessage, DeleteMessage };

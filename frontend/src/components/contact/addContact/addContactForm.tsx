@@ -29,6 +29,7 @@ const AddContactFormInner = (props: any) => {
     const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
     const dispatch = useAppDispatch()
+
     add = (contact: any) => {
         
         fetchUserContactsListData(dispatch);

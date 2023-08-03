@@ -23,10 +23,10 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
 
     let sender: contactInterface | UserInterface
 
-    if (repliedMessage.senderId === user._id) sender = user
+    if (repliedMessage.messageId.senderId === user._id) sender = user
     else {
         let senderFromContact = userContactList.filter(contact => {
-            if (contact._id === repliedMessage.senderId) {
+            if (contact._id === repliedMessage.messageId.senderId) {
                 return contact
             }
         })[0]
@@ -35,15 +35,15 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
 
 
     let fileName: any[] = []
-    if (isReplied && repliedMessage.content.url) {
-        const fileFullUrl = repliedMessage.content.url.split('\\')
+    if (isReplied && repliedMessage.messageId.content.url) {
+        const fileFullUrl = repliedMessage.messageId.content.url.split('\\')
         fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
     }
 
     return (
         <div className={`${containerClassName ?? 'flex items-center gap-2'}`}>
             {
-                repliedMessage.content.contentType === messageTypes.photo && <div>
+                repliedMessage.messageId.content.contentType === messageTypes.photo && <div>
                     <Image width={40} height={40} alt="" src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} className="w-[40px] h-[40px]" />
                 </div>
             }
@@ -51,9 +51,9 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
                 <p className="username text-blue-500 font-semibold text-sm">{sender.name}</p>
                 <p className="text-black text-sm font-light">
                     {
-                        repliedMessage.content.text !== ''
-                            ? repliedMessage.content.text
-                            : repliedMessage.content.contentType
+                        repliedMessage.messageId.content.text !== ''
+                            ? repliedMessage.messageId.content.text
+                            : repliedMessage.messageId.content.contentType
                     }
                 </p>
             </div>

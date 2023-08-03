@@ -13,15 +13,13 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
     const [playing, setPlay] = useState(false);
     const Icon2 = playing ? BsFillPauseCircleFill : BsFillPlayCircleFill
 
-    const date = new Date(msg.createdAt);
+    const date = new Date(msg.messageId.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
-    const fileFullUrl = msg.content.url.split('\\')
+    const fileFullUrl = msg.messageId.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
-
-    // console.log('msg : ', msg)
-    const originalName = msg.content.originalName?.split('.')[0]
+    const originalName = msg.messageId.content.originalName?.split('.')[0]
 
     let music = createRef<HTMLAudioElement>();
     useEffect(() => {
@@ -58,7 +56,7 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
         <div className={`px-3 pt-3 pb-1  rounded-3xl ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}  >
             <div className=" flex items-center w-60 gap-2">
                 {
-                    msg.reply.isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                    msg.messageId.reply.isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
                 }
                 <div className={` control bg-[#fafafa] cursor-pointer w-12 h-12 rounded-full flex items-center justify-center transition duration-500 ${playing ? '' : 'rotate-90'} ease-in-out `} onClick={handelPlayPause}>
                     <Icon2 className={`w-14 h-14 text-blue-500 ${playing ? '' : 'rotate-[-90deg]'}`} />
