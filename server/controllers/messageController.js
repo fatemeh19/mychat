@@ -1,4 +1,3 @@
-import Message from "../models/message.js";
 import * as Validators from "../validators/index.js";
 import * as Services from "../services/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
@@ -7,11 +6,8 @@ import ErrorMessages from "../messages/errors.js";
 import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
-import message from "../models/message.js";
 import * as fileController from "../utils/file.js";
-import Chat from "../models/Chat.js";
-import Group from "../models/Group.js";
-import mongoose from "mongoose";
+
 import { objectId } from "../utils/typeConverter.js";
 const createMessage = async (req, res) => {
   const {
@@ -86,9 +82,13 @@ const createMessage = async (req, res) => {
   }
 
   const Message = await Services.Message.createMessage(newMessage);
-  const chat = await Services.Chat.findAndUpdateChat(chatId, {
-    $push: { messages: { messageId: Message._id } },
-  }, {new:true});
+  const chat = await Services.Chat.findAndUpdateChat(
+    chatId,
+    {
+      $push: { messages: { messageId: Message._id } },
+    },
+    { new: true }
+  );
   if (!chat) {
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -96,8 +96,8 @@ const createMessage = async (req, res) => {
       Field: fields.chat,
     });
   }
-  let msg = chat.messages.pop()
-  msg.messageId = Message
+  let msg = chat.messages.pop();
+  msg.messageId = Message;
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
@@ -110,10 +110,10 @@ const createMessage = async (req, res) => {
 const DeleteMessage = async (userId, deleteInfo) => {
   let { chatId, messageIds, deleteAll } = deleteInfo;
 
-  messageIds = objectId(messageIds);
+  messageIds = await objectId(messageIds);
 
   let notForwardedMessages = await Services.Chat.aggregateChats([
-    { $match: { _id: objectId(chatId) } },
+    { $match: { _id: await objectId(chatId) } },
     {
       $project: {
         messages: 1,
@@ -180,23 +180,23 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   // res.status(200).send("OK");
 };
-const forwardMessage = async function (req, res) {
+const forwardMessage = async (req, res) => {
   const {
-    params:{chatId},
-    body:{messageIds},
-    user:{userId}
-  } = req
+    params: { chatId },
+    body: { messageIds },
+    user: { userId },
+  } = req;
 
   const forwardedMessages = await Services.Message.getMessages({
     _id: { $in: messageIds },
   });
-  const messages = []
+  const messages = [];
   forwardedMessages.forEach((forwardedMessage) => {
     messages.push({
       messageId: forwardedMessage._id,
       forwarded: {
-        isForwarded:true,
-        by:userId
+        isForwarded: true,
+        by: userId,
       },
     });
   });
@@ -212,7 +212,36 @@ const forwardMessage = async function (req, res) {
     forwardedMessages,
     forwardedBy: userId,
     chat,
-  }
-  res.send(forwardInfo)
+  };
+  res.send(forwardInfo);
 };
-export { forwardMessage, createMessage, DeleteMessage };
+const pinUnPinMessage = async (userId, pinnedInfo) => {
+  let { messageId, chatId, pin } = pinnedInfo;
+  // check chat Id and message ID exists
+  let op;
+  let pinStat;
+  let updateQuery;
+  pin = Number(pin);
+  if (pin) {
+    op = "$push";
+    pinStat = {
+      pinned: true,
+      by: userId,
+    };
+    updateQuery = { $push: {}, $set: {} };
+  } else {
+    op = "$pull";
+    pinStat = {
+      pinned: false,
+    };
+    updateQuery = { $pull: {}, $set: {} };
+  }
+  updateQuery[op]["pinnedMessages"] = messageId;
+  updateQuery["$set"]["messages.$[message].pinStat"] = pinStat;
+
+  const chat = await Services.Chat.findAndUpdateChat(chatId, updateQuery, {
+    arrayFilters: [{ "message._id": { $eq: messageId } }],
+    new: true,
+  });
+};
+export { pinUnPinMessage, forwardMessage, createMessage, DeleteMessage };

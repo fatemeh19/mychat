@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
-import validator from 'validator'
-import bcrypt from 'bcryptjs'
+import mongoose from "mongoose";
+import validator from "validator";
+import bcrypt from "bcryptjs";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -9,8 +9,8 @@ const UserSchema = new mongoose.Schema(
       // minLength: [4, "name must be more than 4 characters"],
       // maxLength: [2, "name must be less than 20 characters"],
     },
-    lastname:{
-      type:String
+    lastname: {
+      type: String,
     },
     email: {
       type: String,
@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-    //   required: [true, "please provide phoneNumber"],
+      //   required: [true, "please provide phoneNumber"],
       // validate: {
       //   validator: validator.isMobilePhone('ir-IR'),
       // },
@@ -45,9 +45,9 @@ const UserSchema = new mongoose.Schema(
     },
     contacts: [],
     profilePic: String,
-    isVerified:{
-        type:Boolean,
-        default:false
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     isFirstTimeLogin: {
       type: Boolean,
@@ -71,46 +71,65 @@ const UserSchema = new mongoose.Schema(
           type: String,
         },
         lastname: {
-          type:String
+          type: String,
         },
-        profilePic:{
-          type:String
-        }
+        profilePic: {
+          type: String,
+        },
+      },
+    ],
+    folders: [
+      {
+        name: String,
+        chats: [
+          {
+            pinned: {
+              type:Boolean,
+              default: false,
+            },
+            chat: {
+              type: mongoose.Types.ObjectId,
+              ref: "Chat",
+            },
+          },
+        ],
+        pinnedChats: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "Chat",
+          },
+        ],
       },
     ],
   },
   { timestamps: true }
 );
-UserSchema.pre("save",async function(){
-  if (!this.isModified('password')) return
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-})
+});
 
 // UserSchema.methods.hashPassowrd = async function(){
-  
+
 // }
 // UserSchema.methods.comparePassowrd = async function(password){
 //   const isMatch = await bcrypt.compare(password,this.password)
-//   return isMatch 
-  
+//   return isMatch
+
 // }
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
- 
 };
-UserSchema.methods.hasThisContact = async function(contact){
+UserSchema.methods.hasThisContact = async function (contact) {
   // let contactNameExists = false
-  let contactExists = false
-  this.contacts.forEach((value, index)=>{
-    if(value.userId.equals(contact.userId)){
-      contactExists = true
+  let contactExists = false;
+  this.contacts.forEach((value, index) => {
+    if (value.userId.equals(contact.userId)) {
+      contactExists = true;
     }
-
-  })
-  return {contactExists}
-
-}
-
+  });
+  return { contactExists };
+};
 
 export default mongoose.model("User", UserSchema);

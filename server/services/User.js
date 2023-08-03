@@ -25,21 +25,19 @@ const createUser = async (body) => {
   return user;
 };
 
-const findAndUpdateUser = async (id, updateQuery, socket = false) => {
+const findAndUpdateUser = async (id, updateQuery,options) => {
   let user;
 
   try {
-    user = await User.findByIdAndUpdate(id, updateQuery, {
-      runValidators: true,
-    });
+    user = await User.findByIdAndUpdate(id, updateQuery, options).select({password:0});
   } catch (err) {
+    console.log(err)
     const { errorType, field } = await mongooseErrorExtractor(err);
 
     return await RH.CustomError({
       errorClass: CustomError.BadRequestError,
       errorType,
       Field: Fields[field],
-      socket,
     });
   }
 
@@ -70,10 +68,17 @@ const findAndUpdateBySave = async (findQuery, data) => {
   return user
 };
 
+const aggregateUsers = async (pipeLine)=>{
+  const result = await User.aggregate(pipeLine)
+  return result
+
+}
+
 export {
   findUsers,
   findUser,
   createUser,
   findAndUpdateUser,
   findAndUpdateBySave,
+  aggregateUsers
 };

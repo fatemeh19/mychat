@@ -5,6 +5,7 @@ import { mongo } from "mongoose";
 
 const ChatSchema = new mongoose.Schema(
   {
+    
     memberIds: [
       {
         type: mongoose.Types.ObjectId,
@@ -13,6 +14,16 @@ const ChatSchema = new mongoose.Schema(
     ],
     messages: [
       {
+        pinStat:{
+          pinned:{
+            type:Boolean,
+            default:false
+          },
+          by:{
+            type:mongoose.Types.ObjectId,
+            ref:'User'
+          }
+        },
         messageId: {
           type: mongoose.Types.ObjectId,
           ref: "Message",
@@ -51,6 +62,10 @@ const ChatSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    pinnedMessages:[{
+      type:mongoose.Types.ObjectId,
+      ref:'Message'
+    }]
   },
   { timestamps: true }
 );
