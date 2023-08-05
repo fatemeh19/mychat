@@ -2,8 +2,10 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import CustomizedDialogs from '../popUp';
 import CreateGroupStep1 from './createGroupStep1';
 import CreateGroupStep2 from './createGroupStep2';
-import { useAppSelector } from '@/src/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import callApi from '@/src/helper/callApi';
+import { fetchUserChatList } from '@/src/helper/userInformation';
+import { addGroupChat } from '@/src/redux/features/userChatListSlice';
 
 interface CreateGroupProps {
     openCreateGroup: boolean,
@@ -22,6 +24,7 @@ const CreateGroup: FC<CreateGroupProps> = ({
     const [groupPic, setGroupPic] = useState('')
     const [groupName, setGroupName] = useState('')
 
+    const dispatch = useAppDispatch()
     const createGroupHandler = async () => {
         // add userId to memberIds
 
@@ -43,6 +46,28 @@ const CreateGroup: FC<CreateGroupProps> = ({
 
             const res = await callApi().post('/main/chat/', formData, config)
             console.log('createGroup res : ', res)
+            if (res.status === 201 || res.statusText === 'created') {
+                // fetchUserChatList(dispatch)
+                // @ts-ignore
+                let imgType=groupPic.type.split('/')
+                // @ts-ignore
+                let pic='\\'+(groupPic.lastModified) +'.'+imgType[1]
+                console.log(pic)
+                let newGroup= {
+                    _id: res.data.value.chatId,
+                    lastMessage: '',
+                    lastMessageTime: '',
+                    chatInfo:{
+                        _id : res.data.value.chatId,
+                        name: groupName,
+                        profilePic: pic,
+                        status:{},
+                    },
+                    open:false
+                }
+                // let newGroupChat=[newGroup].contact
+                dispatch(addGroupChat(newGroup))
+            }
         } catch (error) {
             console.log('error in catch text info : ', error)
         }

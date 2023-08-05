@@ -30,6 +30,9 @@ export const contactSlice = createSlice({
         addChat: (state, action: PayloadAction<any>) => {
             state.chatList[state.chatList.length] = action.payload
         },
+        addGroupChat: (state, action: PayloadAction<any>) => {
+            state.chatList = [action.payload].concat(state.chatList)
+        },
         addChatList: (state, action: PayloadAction<any>) => {
             state.chatList = action.payload
         },
@@ -41,6 +44,7 @@ export const contactSlice = createSlice({
 
 export const {
     addChat,
+    addGroupChat,
     addChatList,
     openHandle
 } = contactSlice.actions;
