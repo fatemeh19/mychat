@@ -33,8 +33,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     selectMember,
 }) => {
     const dispatch = useAppDispatch()
-    // const [online , setOnline] = useState(contact.status.online)
-    // const [lastSeen , setLastSeen] = useState(contact.status.lastseen)
+    const [online , setOnline] = useState(contact.status?.online)
+    const [lastSeen , setLastSeen] = useState(contact.status?.lastseen)
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -44,7 +44,7 @@ const ContactBox: FC<ContactBoxProps> = ({
             console.log('contactId : ' + contactId)
             if (contactId == CId) {
                 console.log('online contact : ' + CId)
-                // setOnline(true)
+                setOnline(true)
             }
 
         });
@@ -52,9 +52,9 @@ const ContactBox: FC<ContactBoxProps> = ({
             console.log('contactId : ' + contactId)
             if (contactId == CId) {
                 console.log('offline contact : ' + CId)
-                // setOnline(false)
+                setOnline(false)
                 const now = Date.now();
-                // setLastSeen(now)
+                setLastSeen(now)
             }
 
         });
@@ -99,11 +99,11 @@ const ContactBox: FC<ContactBoxProps> = ({
             <div className="contact-details h-full pt-1 gap-1 grid">
                 <p className="contact-name font-bold text-sm">{contact.name}</p>
                 <p className="status text-xs ">
-                    {/* {online ?
+                    {online ?
 
                        <span className="text-sky-500">Online</span> 
                         : <span className="text-gray-500">{lastSeen? (new Date(lastSeen).getHours() +':' + new Date(lastSeen).getMinutes()) : ''}</span>
-                    } */}
+                    }
                 </p>
             </div>
         </div>

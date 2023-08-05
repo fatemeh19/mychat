@@ -36,6 +36,11 @@ export const contactSlice = createSlice({
         addChatList: (state, action: PayloadAction<any>) => {
             state.chatList = action.payload
         },
+        addChatToTop: (state, action: PayloadAction<any>) => {
+            const element=state.chatList.splice(action.payload,1)[0]
+            console.log(element)
+            state.chatList.splice(state.chatList.length,0,element)
+        },
         openHandle: (state, action: PayloadAction<any>) => {
             state.chatList[action.payload].open = !(state.chatList[action.payload].open);
         },
@@ -46,6 +51,7 @@ export const {
     addChat,
     addGroupChat,
     addChatList,
+    addChatToTop,
     openHandle
 } = contactSlice.actions;
 export default contactSlice.reducer;
