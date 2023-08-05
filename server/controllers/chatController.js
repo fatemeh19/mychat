@@ -79,30 +79,26 @@ const getChat = async (req, res) => {
   });
 
   const messageIdss = messages.map((message) => message._id);
-  let end  = false
-  chat.messages.forEach( (message, index) => {
-    let messageIndex =  indexFinder(
+  let end = false;
+  chat.messages.forEach((message, index) => {
+    let messageIndex = indexFinder(
       0,
       messageIdss.length,
       messageIdss,
       message.messageId
     );
-    message.messageId = messages[messageIndex]
-   
-
-
+    message.messageId = messages[messageIndex];
   });
- 
-    await RH.SendResponse({
-      res,
-      statusCode: StatusCodes.OK,
-      title: "ok",
-      value: {
-        chat,
-      },
-    });
+
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      chat,
+    },
+  });
   // }
-  
 };
 
 const getChats = async (req, res) => {
@@ -150,5 +146,10 @@ const getChats = async (req, res) => {
     },
   });
 };
+
+const getFoldersAndChats = async (req, res) => {
+  // All chats personal chats
+};
+
 
 export { createChat, getChat, getChats };

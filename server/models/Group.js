@@ -136,5 +136,6 @@ const GroupChatSchema = new mongoose.Schema({
       },
     },
   ],
+  
 });
 export default Chat.discriminator("GroupChat", GroupChatSchema, "chats");

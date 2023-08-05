@@ -7,12 +7,12 @@ import authMiddleware from './authorization.js'
 export default async (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3001",
+      origin: "*",
       credentials: true,
     },
   });
   const { online, offline } = statusHandler(io);
-  const { onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
+  const {pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
 
   // const onChat = io.of("/onChat");
   // onChat.on("connection", (socket) => {
@@ -45,7 +45,7 @@ export default async (server) => {
     socket.on("deleteMessage",deleteMessage)
     socket.on("seenMessage",seenMessage)
     socket.on("forwardMessage",forwardMessage)
-
+    socket.on("pinUnpinMessage",pinUnpinMessage)
     socket.on("disconnecting",offline)
     socket.on("disconnect", () => {
       console.log("user disconnected");

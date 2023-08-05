@@ -10,6 +10,7 @@ import editGroupType from "./editGroupType.js";
 import editGroupPermsAndExps from "./editGroupPermsandExps.js";
 import createInviteLink from "./createInviteLink.js";
 import editGroupInfo from "./editGroupInfo.js"
+import createFolder from "./createFolder.js";
 export {
   loginUser,
   registerUser,
@@ -22,5 +23,6 @@ export {
   editGroupType,
   editGroupPermsAndExps,
   createInviteLink,
-  editGroupInfo
+  editGroupInfo,
+  createFolder
 };

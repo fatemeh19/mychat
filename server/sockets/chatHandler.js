@@ -1,6 +1,6 @@
 import Chat from "../models/Chat.js";
 import * as Services from "../services/index.js";
-import { DeleteMessage } from "../controllers/messageController.js";
+import { DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
 export default function (io) {
   const onChat = function (chatId) {
     const socket = this;
@@ -76,5 +76,14 @@ export default function (io) {
 
   };
 
-  return {forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
+  const pinUnpinMessage = async function(pinnedInfo){
+    const socket = this;
+    const userId = socket.user.userId;
+    pinUnPinMessage(userId,pinnedInfo)
+    const {chatId} = pinnedInfo
+    io.to(chatId).emit("pinUnpinMessage",userId,pinnedInfo)
+
+  }
+
+  return {pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }
