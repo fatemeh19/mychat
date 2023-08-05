@@ -32,6 +32,12 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const [children, setChildren] = useState<Element>()
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
+    const [confirmHandler, setConfirmHandler] = useState<() => void>(() => { })
+    const [confirmInfo, setConfirmInfo] = useState({
+        confirmTitle: '',
+        confirmDiscription: '',
+        confirmOption: '',
+    })
 
     // ref
     const messageBoxRef = useRef<HTMLDivElement>(null)
@@ -80,10 +86,33 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
-    const showConfirmModal = () => {
+    const showConfirmModal = (type: string) => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
+        console.log('type: ', type)
+        switch (type) {
+            case 'Delete':
+                console.log('this is delete handler')
+                setConfirmHandler(() => deleteHandler_oneMessage)
+                setConfirmInfo({
+                    confirmTitle: 'Delete',
+                    confirmDiscription: 'Are you sure?',
+                    confirmOption: 'delete All'
+                })
+                break;
+            case 'Pin':
+                setConfirmHandler(() => pinMessage)
+                setConfirmInfo({
+                    confirmTitle: 'Pin message',
+                    confirmDiscription: 'Pin this message in the chat?',
+                    confirmOption: 'Notify all members'
+                })
+                break;
+            default:
+
+                break;
+        }
     }
 
     const deleteHandler_oneMessage = () => {
@@ -140,6 +169,16 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         dispatch(setRepliedMessage(msg))
         closeContextMenu()
 
+    }
+
+    const pinMessage = () => {
+        console.log('pin message done')
+        const pinnedInfo = {
+            chatId,
+            messageId: msg._id,
+            pin: 1
+        }
+        socket.emit('pinUnpinMessage', pinnedInfo)
     }
 
     // useEffect(() => {
@@ -211,7 +250,9 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                 </div>
             </div>
             {/* ----------------------------- delete modal */}
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_oneMessage} />
+
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} />
+
         </div>
     )
 }

@@ -3,9 +3,6 @@ import { deleteMessageFromMessageArray } from "../redux/features/chatSlice"
 const findIndex = (x = 0, y: number, list: string[], value: string, dispatch: any): void => {
     let borderIndex = Math.floor((x + y) / 2)
 
-    console.log('list[borderIndex]":', list[borderIndex])
-    console.log('value:', value)
-    console.log('list[borderIndex] == value:', list[borderIndex] == value)
     if (list[borderIndex] == value) {
         console.log('borderIndex', borderIndex)
         console.log('list.splice(borderIndex, 1):', list.splice(borderIndex, 1))

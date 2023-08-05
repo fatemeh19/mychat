@@ -18,7 +18,7 @@ interface RightClickProps {
     child: Element | undefined,
     msg: recievedMessageInterface,
     closeContextMenu: () => void,
-    showConfirmModal: () => void,
+    showConfirmModal: (type: string) => void,
     activeSelection: (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void,
     activeReply: (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => void
 }
@@ -95,7 +95,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
                             <BsLink45Deg className={`${style.icon}`} />
                             <span>Copy Message Link</span>
                         </li>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={() => showConfirmModal('Pin')}>
                             <BsPinAngle className={`${style.icon}`} />
                             <span>Pin</span>
                         </li>
@@ -134,7 +134,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
                                 </div>
                             </div>
                         </li>
-                        <li className={`${style.item}`} onClick={showConfirmModal}>
+                        <li className={`${style.item}`} onClick={() => showConfirmModal('Delete')}>
                             <BsTrash3 className={`${style.icon}`} />
                             <span>Delete</span>
                         </li>
