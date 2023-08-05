@@ -26,41 +26,42 @@ const createFolder = async (req, res) => {
   let chats = [];
   data.chatIds.forEach((chatId) => {
     let chat = {
-      chat: chatId,
+      chatInfo: chatId,
     };
     chats.push(chat);
+  });
+  const newFolder = await Services.Folder.createFolder({
+    name: data.name,
+    chats,
   });
 
   const updated = await Services.User.findAndUpdateUser(
     userId,
     {
       $push: {
-        folders: {
-          name: data.name,
-          chats,
-        },
+        folders: newFolder._id
       },
     },
     { new: true }
   );
 
+
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const addToFolder = async (req, res) => {
-    // tekrari chat
+  // tekrari chat
   const {
     params: { chatId, folderId },
-    user: { userId },
+    // user: { userId },
   } = req;
 
-  const updated = await Services.User.findAndUpdateUser(
-    userId,
+  const updated = await Services.Folder.findAndUpdateFolder(
+    folderId,
     {
-      $push: { "folders.$[folder].chats": { chat: chatId } },
+      $push: { chats: { chatInfo: chatId } },
     },
     {
-      arrayFilters: [{ "folder._id": { $eq: folderId } }],
       new: true,
     }
   );
@@ -73,13 +74,12 @@ const removeFromFolder = async (req, res) => {
     user: { userId },
   } = req;
 
-  const updated = await Services.User.findAndUpdateUser(
-    userId,
+  const updated = await Services.Folder.findAndUpdateFolder(
+    folderId,
     {
-      $pull: { "folders.$[folder].chats": { chat: chatId } },
+      $pull: { chats: { chatInfo: chatId } },
     },
     {
-      arrayFilters: [{ "folder._id": { $eq: folderId } }],
       new: true,
     }
   );
@@ -91,10 +91,11 @@ const deleteFolder = async (req, res) => {
     params: { id: folderId },
     user: { userId },
   } = req;
+  await Services.Folder.deleteFolder({_id:folderId})
   const updated = await Services.User.findAndUpdateUser(
     userId,
     {
-      $pull: { folders: { _id: folderId } },
+      $pull: { folders:  folderId  },
     },
     { new: true }
   );
@@ -103,42 +104,63 @@ const deleteFolder = async (req, res) => {
 
 const getFolder = async (req, res) => {
   const {
-    params: { id:folderId },
+    params: { id: folderId },
     user: { userId },
   } = req;
-
-  const updated = await Services.User.aggregateUsers([
-    {$match:{_id:await objectId(userId)}},
-    {$project:{
-        folders:1,
-        folders:{
-            $filter:{
-                input:"$folders",
-                as:"folder",
-                cond:{
-                    $eq:["$$folder._id",await objectId(folderId)]
-                }
-            }
-        }
-    }}
-  ])
-  let chatIds =updated[0].folders[0].chats
-  chatIds = chatIds.map((chat)=>chat.chat)
+  
+  const folder = await Services.Folder.findFolder({_id:folderId})
+  // const updated = await Services.User.aggregateUsers([
+  //   { $match: { _id: await objectId(userId) } },
+  //   {
+  //     $project: {
+  //       folders: 1,
+  //       folders: {
+  //         $filter: {
+  //           input: "$folders",
+  //           as: "folder",
+  //           cond: {
+  //             $eq: ["$$folder._id", await objectId(folderId)],
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // ]);
+  let chatIds = folder.chats;
+  chatIds = chatIds.map((chat) => chat.chatInfo);
 
   const chats = await Services.Chat.getChats({
-    _id:{$in:chatIds}
-  })
+    _id: { $in: chatIds },
+  });
 
-  updated[0].folders[0].chats.forEach((chat,index)=>{
-    chat.chat = chats[index]
-  })
+  folder.chats.forEach((chat, index) => {
+    chat.chatInfo = chats[index];
+  });
 
+  const messageIds = folder.chats.map(
+    (chat) =>
+      chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo
+  );
+  const messages = await Services.Message.getMessages(
+    {
+      _id: { $in: messageIds },
+    },
+    ""
+  );
+  chats.forEach((chat, index) => {
+    console.log(chat)
+    if (!chat.messages.length) {
+      return;
+    }
+    chat.messages.splice(0, chat.messages.length - 1);
+    chat.messages[0].messageInfo = messages[index];
+  });
 
+  folder.chats.forEach((chat, index) => {
+    chat.chatInfo = chats[index]
+  });
 
-  res.send(updated[0].folders[0].chats)
-  
-
-
+  res.send(folder);
 };
 
-export { deleteFolder, removeFromFolder, addToFolder, createFolder,getFolder };
+export { deleteFolder, removeFromFolder, addToFolder, createFolder, getFolder };
