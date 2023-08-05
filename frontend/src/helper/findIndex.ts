@@ -10,7 +10,7 @@ const findIndex = (x = 0, y: number, list: string[], value: string, dispatch: an
         console.log('borderIndex', borderIndex)
         console.log('list.splice(borderIndex, 1):', list.splice(borderIndex, 1))
         dispatch(deleteMessageFromMessageArray(borderIndex))
-
+        return
         // return borderIndex
     } else {
         if (list[borderIndex] > value) {

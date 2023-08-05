@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { removeSelectMessage, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
 import { updateArrayMessages } from '@/src/redux/features/chatSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
+import findIndex from '@/src/helper/findIndex'
+import { recievedMessageInterface } from '@/src/models/interface'
 
 
 interface ChatHeaderProps {
@@ -89,15 +91,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         socket.emit('deleteMessage', deleteInfo)
         dispatch(setActiveSelection(false))
         dispatch(removeSelectMessage([]))
+
         if (!deleteInfo.deleteAll) {
-            const msg = chatMessages.filter(CM => {
-                let flag = true
-                for (let i = 0; i < selectedMessages.length; i++) {
-                    CM._id === selectedMessages[i] ? flag = false : null
-                }
-                if (flag) return CM._id
-            })
-            dispatch(updateArrayMessages(msg))
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+            for (let i = 0; i < selectedMessages.length; i++) {
+                findIndex(0, chatMessageIds.length, chatMessageIds, selectedMessages[i], dispatch)
+            }
         }
     }
 

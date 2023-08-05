@@ -10,6 +10,7 @@ import { addMessage, deleteMessageFromMessageArray, setChatCreated, updateArrayM
 import { ChatType } from "@/src/models/enum"
 import CustomizedDialogs from "../../popUp"
 import findIndex from "@/src/helper/findIndex"
+import { recievedMessageInterface } from "@/src/models/interface"
 
 interface IUserInfo {
     name: string,
@@ -54,15 +55,13 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
+            console.log('delete for all')
             console.log('data : ', data)
-            const chatMessageIds = chatMessages.map(cm => cm._id)
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             console.log('messageIds :', chatMessageIds)
-            let indexes = []
-            let index
             for (let i = 0; i < data.messageIds.length; i++) {
                 findIndex(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
             }
-            indexes.push(index)
             // console.log('chatMessages out', chatMessages)
 
             // const msg = chatMessages.filter(CM => {

@@ -13,6 +13,7 @@ import { updateArrayMessages } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
+import findIndex from "@/src/helper/findIndex"
 
 const initialContextMenu = {
     show: false,
@@ -97,10 +98,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
         // delete user message whene deleteAll is false : delete message jus for user
         if (!deleteInfo.deleteAll) {
-            const newMsgs = chatMessages.filter(CM => {
-                if (CM._id !== msg._id) return CM._id
-            })
-            dispatch(updateArrayMessages(newMsgs))
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+            findIndex(0, chatMessageIds.length, chatMessageIds, msg._id, dispatch)
         }
         dispatch(setToggle(false))
     }
