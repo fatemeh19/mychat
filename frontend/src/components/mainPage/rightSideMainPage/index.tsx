@@ -6,11 +6,12 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage, deleteMessageFromMessageArray, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addMessage, addPinMessage, deleteMessageFromMessageArray, deleteMessageFromPinnedMessagesArray, setChatCreated, setPinState, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
 import CustomizedDialogs from "../../popUp"
 import findIndex from "@/src/helper/findIndex"
 import { recievedMessageInterface } from "@/src/models/interface"
+import deleteMessage from "@/src/helper/deleteMessage"
 
 interface IUserInfo {
     name: string,
@@ -29,6 +30,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
+    const pinnedMessages = useAppSelector(state => state.chat).Chat.pinnedMessages
 
     let found = false
 
@@ -60,24 +62,51 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             console.log('messageIds :', chatMessageIds)
             for (let i = 0; i < data.messageIds.length; i++) {
-                findIndex(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
+                deleteMessage(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
             }
-            // console.log('chatMessages out', chatMessages)
+        })
+        socket.on('pinUnpinMessage', (userId: string, pinnedInfo: any) => {
+            console.log('userId', userId)
+            console.log('pinnedInfo: ', pinnedInfo)
 
-            // const msg = chatMessages.filter(CM => {
-            //     let flag = true
-            //     for (let i = 0; i < data.messageIds.length; i++) {
-            //         CM._id === data.messageIds[i] ? flag = false : null
-            //     }
-            //     if (flag) return CM._id
-            // })
-            // dispatch(updateArrayMessages(msg))
+
+            // 1
+            console.log('pinnedMessages :', pinnedMessages)
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+            let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, pinnedInfo.messageId)
+            console.log('chat index : ', messageIndex)
+
+            if (pinnedInfo.pin) {
+                console.log('pin = 1', pinnedInfo.pin)
+                dispatch(addPinMessage(pinnedInfo.messageId))
+                console.log('index', messageIndex)
+                dispatch(setPinState({ index: messageIndex, pinStat: { pinned: true, by: userId } }))
+
+            } else {
+                console.log('pin = 0', pinnedInfo.pin)
+                let pinIndex = findIndex(0, pinnedMessages.length, pinnedMessages, pinnedInfo.messageId)
+                console.log('pinIndex: ', pinIndex)
+                dispatch(deleteMessageFromPinnedMessagesArray(pinIndex))
+                dispatch(setPinState({ index: messageIndex, pinStat: { pinned: false } }))
+            }
+
+            // 2
         })
         return () => {
             socket.removeAllListeners('sendMessage')
             socket.removeAllListeners('deleteMessage')
+            socket.removeAllListeners('pinUnpinMessage')
         }
     })
+
+    useEffect(() => {
+        console.log('pinnedMessages : ', pinnedMessages)
+
+    }, [pinnedMessages])
+    useEffect(() => {
+        console.log('chatMessages : ', chatMessages)
+
+    }, [chatMessages])
     return (
         <>
             {

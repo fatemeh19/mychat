@@ -13,7 +13,7 @@ import { updateArrayMessages } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
-import findIndex from "@/src/helper/findIndex"
+import findIndex from "@/src/helper/deleteMessage"
 
 const initialContextMenu = {
     show: false,
@@ -173,12 +173,20 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     const pinMessage = () => {
         console.log('pin message done')
+        let pinState = 0
+        console.log('msg.pinStat.pinned:', msg)
+        msg.pinStat.pinned ? pinState = 0 : pinState = 1
+
         const pinnedInfo = {
             chatId,
             messageId: msg._id,
-            pin: 1
+            pin: pinState
         }
         socket.emit('pinUnpinMessage', pinnedInfo)
+
+
+        setShowConfirm(false)
+
     }
 
     // useEffect(() => {
