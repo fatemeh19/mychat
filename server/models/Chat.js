@@ -24,7 +24,7 @@ const ChatSchema = new mongoose.Schema(
             ref:'User'
           }
         },
-        messageId: {
+        messageInfo: {
           type: mongoose.Types.ObjectId,
           ref: "Message",
         },

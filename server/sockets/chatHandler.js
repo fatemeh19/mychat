@@ -19,10 +19,12 @@ export default function (io) {
   const deleteMessage = async function (deleteInfo) {
     const socket = this;
     const userId = socket.user.userId;
-    const { chatId } = deleteInfo;
+    const { chatId,deleteAll } = deleteInfo;
     DeleteMessage(userId, deleteInfo);
 
-    io.to(chatId).emit("deleteMessage", deleteInfo);
+    if(deleteAll){
+      io.to(chatId).emit("deleteMessage", deleteInfo);
+    }
   };
 
   const seenMessage = async function (chatId, messageId) {

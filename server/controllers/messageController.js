@@ -85,7 +85,7 @@ const createMessage = async (req, res) => {
   const chat = await Services.Chat.findAndUpdateChat(
     chatId,
     {
-      $push: { messages: { messageId: Message._id } },
+      $push: { messages: { messageInfo: Message._id } },
     },
     { new: true }
   );
@@ -97,7 +97,7 @@ const createMessage = async (req, res) => {
     });
   }
   let msg = chat.messages.pop();
-  msg.messageId = Message;
+  msg.messageInfo = Message;
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
