@@ -14,7 +14,7 @@ interface recievedMessageInterface {
     //     originalName?: string,
     // },
     // message :
-    messageId: {
+    messageInfo: {
         _id: string,
         content: {
             contentType: string,

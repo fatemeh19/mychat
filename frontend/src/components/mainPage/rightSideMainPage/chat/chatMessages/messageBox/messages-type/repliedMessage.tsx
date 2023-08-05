@@ -13,7 +13,7 @@ const RepliedMessage: FC<RepliedMessageProps> = ({
     msg,
     containerClassName
 }) => {
-    const replliedMessageId = msg.messageId.reply.messageId
+    const replliedMessageId = msg.messageInfo.reply.messageId
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const repliedMessage = chatMessages.filter(m => m._id === replliedMessageId)[0]
 
@@ -24,7 +24,7 @@ const RepliedMessage: FC<RepliedMessageProps> = ({
                     ? <a href={`#${repliedMessage._id}`}>
                         <div className="flex gap-2 pt-1 cursor-pointer" >
                             <div className="w-1 rounded-full bg-blue-500"></div>
-                            <ReplyContentSection isReplied={msg.messageId.reply.isReplied} repliedMessage={repliedMessage} containerClassName={containerClassName} />
+                            <ReplyContentSection isReplied={msg.messageInfo.reply.isReplied} repliedMessage={repliedMessage} containerClassName={containerClassName} />
                         </div>
                     </a>
                     : <div className="flex gap-2 pt-1 cursor-pointer" >

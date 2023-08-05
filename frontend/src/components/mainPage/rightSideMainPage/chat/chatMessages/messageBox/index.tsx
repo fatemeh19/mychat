@@ -64,7 +64,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
 
     let sender;
-    msg.messageId.senderId === User._id
+    msg.messageInfo.senderId === User._id
         ? sender = User
         // if sender not user then we should search the sender in groupMembers(chat member) if private then contactId
         : sender = Contact
@@ -253,7 +253,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     }
 
                     <div className="gap-3 flex flex-col font-[vazir]">
-                        <Message type={msg.messageId.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                        <Message type={msg.messageInfo.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
                     </div>
                 </div>
             </div>

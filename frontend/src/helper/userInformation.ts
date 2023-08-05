@@ -73,25 +73,26 @@ export const fetchUserChatList = async (dispatch: any) => {
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
             console.log(chatList[i].chatType)
-            if(chatList[i].chatType=="private"){
+            if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
             }
-            else if(chatList[i].chatType=="group"){
+            else if (chatList[i].chatType == "group") {
                 chatInfo = {
-                    name:chatList[i].name,
-                    profilePic:chatList[i].profilePic,
-                    _id:chatList[i]._id,
-                    status:{}
+                    name: chatList[i].name,
+                    profilePic: chatList[i].profilePic,
+                    _id: chatList[i]._id,
+                    status: {}
                 }
             }
             let lastMessage = ''
             let lastMessageTime = ''
             if (chatList[i].messages[0] != null) {
-                lastMessage = chatList[i].messages[0].messageId.content.text
-                lastMessageTime =chatList[i].messages[0].messageId.updatedAt
+                console.log('chatList[i].messages[0]:', chatList[i].messages)
+                // lastMessage = chatList[i].messages[0].messageInfo.content.text
+                // lastMessageTime = chatList[i].messages[0].messageInfo.updatedAt
             }
-            else if(chatList[i].messages[0] == null){
-                lastMessageTime=chatList[i].updatedAt
+            else if (chatList[i].messages[0] == null) {
+                lastMessageTime = chatList[i].updatedAt
             }
             let chat = {
                 chatInfo: chatInfo,
@@ -99,7 +100,7 @@ export const fetchUserChatList = async (dispatch: any) => {
                 lastMessage: lastMessage,
                 lastMessageTime: lastMessageTime,
                 open: false,
-    
+
             }
             dispatch(addChat(chat))
 
