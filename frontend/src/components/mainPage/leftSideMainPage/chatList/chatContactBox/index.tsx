@@ -57,7 +57,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             console.log('chatOpennedP : ',chatOpennedP)
             if(chatOpennedP || chatOpenned){
                 console.log('i got new Message in chat box: ', message)
-                if(message.content.contentType!='text' && message.content.text==''){
+                if(message.messageId.content.contentType!='text' && message.messageId.content.text==''){
                     setLastMesText(message.content.originalName)
                 }
                 else{

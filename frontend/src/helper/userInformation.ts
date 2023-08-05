@@ -85,14 +85,19 @@ export const fetchUserChatList = async (dispatch: any) => {
                 }
             }
             let lastMessage = ''
+            let lastMessageTime = ''
             if (chatList[i].messages[0] != null) {
-                // lastMessage = chatList[i].messages[0].content.text
+                lastMessage = chatList[i].messages[0].messageId.content.text
+                lastMessageTime =chatList[i].messages[0].messageId.updatedAt
+            }
+            else if(chatList[i].messages[0] == null){
+                lastMessageTime=chatList[i].updatedAt
             }
             let chat = {
                 chatInfo: chatInfo,
                 _id: chatList[i]._id,
                 lastMessage: lastMessage,
-                lastMessageTime: chatList[i].updatedAt,
+                lastMessageTime: lastMessageTime,
                 open: false,
     
             }
