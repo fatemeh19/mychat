@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-interface ContactInterface {
+interface chatInfoInterface {
     _id : string,
     name: string,
     profilePic: string,
@@ -12,7 +12,7 @@ interface chatBoxInterface {
     _id: string,
     lastMessage: string,
     lastMessageTime: string,
-    contact:ContactInterface,
+    chatInfo:chatInfoInterface,
     open:boolean
 }
 interface initialStateInterface {

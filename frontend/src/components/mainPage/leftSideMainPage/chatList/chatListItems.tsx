@@ -32,33 +32,33 @@ export default function ChatListItems() {
                                     numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
                             </Link>
                         )
-                }
-            </div>
-            <div>
+                    }
+                </div>   
+                <div>
                 {
-                    (chatList.length === 0) ? null :
-
-                        chatList.map((chatBox) => (
-                            <Link key={chatBox._id} href={`/chat/${chatBox.contact._id}`} >
-                                {/* @ts-ignore */}
-
-                                <ChatContactBox
-                                    profilePicName=
-                                    {chatBox.contact.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.contact)}`
-                                        : '/uploads/photo/defaultProfilePic.png'}
-                                    contactId={chatBox.contact._id} chatOpennedP={chatBox.open}
-                                    lastMessegeByContact={false}
-                                    ContactName={chatBox.contact.name} status={chatBox.contact.status}
-                                    lastMessage={chatBox.lastMessage} ContactSeen={false}
-                                    lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
-                                    recivedMessage={true} isTyping={false} />
-                            </Link>
-                        ))
+                        (chatList.length === 0) ? null : 
+                            
+                            chatList.map((chatBox) => (
+                                <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                                    {/* @ts-ignore */}
+                                    
+                                    <ChatContactBox
+                                        profilePicName=
+                                        {chatBox.chatInfo.profilePic ? `/uploads/picture/${profilePicNameHandler(chatBox.chatInfo)}`
+                                            : '/uploads/picture/defaultProfilePic.png'}
+                                        contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open} 
+                                        lastMessegeByContact={false} 
+                                        ContactName={chatBox.chatInfo.name} 
+                                        status={Object.keys(chatBox.chatInfo.status).length>0 ? 
+                                            chatBox.chatInfo.status : undefined} 
+                                        lastMessage={chatBox.lastMessage} ContactSeen={false} 
+                                        lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''} 
+                                        recivedMessage={true} isTyping={false} />
+                                </Link>
+                            ))
                 }
             </div>
-
-
-
+            
 
             {/* <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name'} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={''} recivedMessage={true} isTyping={true}  />
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
