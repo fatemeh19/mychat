@@ -88,8 +88,8 @@ export const fetchUserChatList = async (dispatch: any) => {
             let lastMessageTime = ''
             if (chatList[i].messages[0] != null) {
                 console.log('chatList[i].messages[0]:', chatList[i].messages)
-                // lastMessage = chatList[i].messages[0].messageInfo.content.text
-                // lastMessageTime = chatList[i].messages[0].messageInfo.updatedAt
+                lastMessage = chatList[i].messages[0].messageInfo.content.text
+                lastMessageTime = chatList[i].messages[0].messageInfo.updatedAt
             }
             else if (chatList[i].messages[0] == null) {
                 lastMessageTime = chatList[i].updatedAt

@@ -56,30 +56,6 @@ export default function ChatListItems() {
                                     recivedMessage={true} isTyping={false}
                                     chatbox={chatBox} />
                             </Link>
-                        ))
-                }
-            </div>
-            <div>
-                {
-                    (chatList.length === 0) ? null :
-
-                        chatList.map((chatBox) => (
-                            <Link key={chatBox._id} href={`/chat/${chatBox.chatInfo._id}`} >
-                                {/* @ts-ignore */}
-
-                                <ChatContactBox
-                                    profilePicName=
-                                    {chatBox.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.chatInfo)}`
-                                        : '/uploads/photo/defaultProfilePic.png'}
-                                    contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
-                                    lastMessegeByContact={false}
-                                    ContactName={chatBox.chatInfo.name}
-                                    status={Object.keys(chatBox.chatInfo.status).length > 0 ?
-                                        chatBox.chatInfo.status : undefined}
-                                    lastMessage={chatBox.lastMessage} ContactSeen={false}
-                                    lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
-                                    recivedMessage={true} isTyping={false} />
-                            </Link>
 
                         )
                         )

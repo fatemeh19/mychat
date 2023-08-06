@@ -75,8 +75,9 @@ const ChatContactBox: FC<chatContactProps> = ({
     useEffect(() => {
         // socket?.on('sendMessage', (message) => {
         console.log('chatOpennedP : ', chatOpennedP)
-        if (chatOpennedP || chatOpenned) {
-            if (chatMessages) {
+        console.log('chatMessages : ', chatMessages)
+        if ((chatOpennedP || chatOpenned) && (chatMessages != undefined)) {
+            if (chatMessages?.length > 0) {
                 console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length - 1])
                 if (chatMessages[chatMessages?.length - 1].messageInfo.content.contentType != 'text' && chatMessages[chatMessages?.length - 1].messageInfo.content.text == '') {
                     let text = chatMessages[chatMessages?.length - 1].messageInfo.content.originalName
@@ -88,12 +89,13 @@ const ChatContactBox: FC<chatContactProps> = ({
                 setLastMesTime(chatMessages[chatMessages?.length - 1].messageInfo.updatedAt)
                 console.log(lastMesText)
                 //add chat on top of the list bc this chat have new message
-                const fromIndex = chatList.indexOf(chatbox)
-                console.log(fromIndex)
-                dispatch(addChatToTop(fromIndex))
+                if (chatbox != undefined) {
+                    const fromIndex = chatList.indexOf(chatbox)
+                    console.log(fromIndex)
+                    dispatch(addChatToTop(fromIndex))
+                }
             }
         }
-
         // })
     }, [chatMessages, chatOpennedP])
     useEffect(() => {
