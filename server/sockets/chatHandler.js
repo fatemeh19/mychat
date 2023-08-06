@@ -15,6 +15,11 @@ export default function (io) {
     // const userId = socket.user.userId;
     io.to(chatId).emit("sendMessage", message);
   };
+  const editMessage = async function (chatId, message) {
+    const socket = this;
+    // const userId = socket.user.userId;
+    io.to(chatId).emit("editMessage", message);
+  };
 
   const deleteMessage = async function (deleteInfo) {
     const socket = this;
@@ -87,5 +92,5 @@ export default function (io) {
 
   }
 
-  return {pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
+  return {editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }

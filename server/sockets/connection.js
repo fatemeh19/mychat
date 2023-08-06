@@ -12,7 +12,7 @@ export default async (server) => {
     },
   });
   const { online, offline } = statusHandler(io);
-  const {pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
+  const {editMessage,pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
 
   // const onChat = io.of("/onChat");
   // onChat.on("connection", (socket) => {
@@ -40,7 +40,7 @@ export default async (server) => {
     // socket.on("offline", offline);
 
     socket.on("onChat", onChat);
-
+    socket.on("editMessage",editMessage)
     socket.on("sendMessage",sendMessage)
     socket.on("deleteMessage",deleteMessage)
     socket.on("seenMessage",seenMessage)
