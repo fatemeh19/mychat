@@ -14,7 +14,7 @@ interface recievedMessageInterface {
     //     originalName?: string,
     // },
     // message :
-    messageId: {
+    messageInfo: {
         _id: string,
         content: {
             contentType: string,
@@ -35,6 +35,10 @@ interface recievedMessageInterface {
     deletedIds: string[],
     forwarded: {
         isForwarded: boolean
+    },
+    pinStat: {
+        pinned: number,
+        by: string //userId
     }
 }
 export type { infoFace, recievedMessageInterface }

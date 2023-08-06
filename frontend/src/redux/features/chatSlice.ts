@@ -11,6 +11,10 @@ interface chatInterface {
     memberIds: string[],
     messages: recievedMessageInterface[],
     updatedAt: string,
+    notifications: boolean,
+    pinnedMessages: string[],
+    userPermissionsAndExceptions: [],
+    inviteLinks: string[],
     __v: number
 }
 interface initialStateInterface {
@@ -52,6 +56,17 @@ export const ChatSlice = createSlice({
         deleteMessageFromMessageArray: (state, action: PayloadAction<any>) => {
             state.Chat.messages.splice(action.payload, 1)
 
+        },
+        addPinMessage: (state, action: PayloadAction<string>) => {
+            state.Chat.pinnedMessages.push(action.payload)
+        },
+        deleteMessageFromPinnedMessagesArray: (state, action: PayloadAction<number>) => {
+            console.log('delete pin message : ', action.payload)
+            state.Chat.pinnedMessages.splice(action.payload, 1)
+        },
+        setPinState: (state, action: PayloadAction<any>) => {
+            console.log('action : ', action.payload)
+            state.Chat.messages[action.payload.index].pinStat = action.payload.pinStat
         }
     },
 });
@@ -63,6 +78,9 @@ export const {
     addMessage,
     setChatCreated,
     updateArrayMessages,
-    deleteMessageFromMessageArray
+    deleteMessageFromMessageArray,
+    addPinMessage,
+    deleteMessageFromPinnedMessagesArray,
+    setPinState
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

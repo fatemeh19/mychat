@@ -13,6 +13,7 @@ import { updateArrayMessages } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
+import findIndex from "@/src/helper/deleteMessage"
 
 const initialContextMenu = {
     show: false,
@@ -31,6 +32,12 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const [children, setChildren] = useState<Element>()
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
+    const [confirmHandler, setConfirmHandler] = useState<() => void>(() => { })
+    const [confirmInfo, setConfirmInfo] = useState({
+        confirmTitle: '',
+        confirmDiscription: '',
+        confirmOption: '',
+    })
 
     // ref
     const messageBoxRef = useRef<HTMLDivElement>(null)
@@ -57,7 +64,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
 
     let sender;
-    msg.messageId.senderId === User._id
+    msg.messageInfo.senderId === User._id
         ? sender = User
         // if sender not user then we should search the sender in groupMembers(chat member) if private then contactId
         : sender = Contact
@@ -79,10 +86,33 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
-    const showConfirmModal = () => {
+    const showConfirmModal = (type: string) => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
+        console.log('type: ', type)
+        switch (type) {
+            case 'Delete':
+                console.log('this is delete handler')
+                setConfirmHandler(() => deleteHandler_oneMessage)
+                setConfirmInfo({
+                    confirmTitle: 'Delete',
+                    confirmDiscription: 'Are you sure?',
+                    confirmOption: 'delete All'
+                })
+                break;
+            case 'Pin':
+                setConfirmHandler(() => pinMessage)
+                setConfirmInfo({
+                    confirmTitle: 'Pin message',
+                    confirmDiscription: 'Pin this message in the chat?',
+                    confirmOption: 'Notify all members'
+                })
+                break;
+            default:
+
+                break;
+        }
     }
 
     const deleteHandler_oneMessage = () => {
@@ -97,10 +127,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
         // delete user message whene deleteAll is false : delete message jus for user
         if (!deleteInfo.deleteAll) {
-            const newMsgs = chatMessages.filter(CM => {
-                if (CM._id !== msg._id) return CM._id
-            })
-            dispatch(updateArrayMessages(newMsgs))
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+            findIndex(0, chatMessageIds.length, chatMessageIds, msg._id, dispatch)
         }
         dispatch(setToggle(false))
     }
@@ -140,6 +168,24 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
         closeContextMenu()
+
+    }
+
+    const pinMessage = () => {
+        console.log('pin message done')
+        let pinState = 0
+        console.log('msg.pinStat.pinned:', msg)
+        msg.pinStat.pinned ? pinState = 0 : pinState = 1
+
+        const pinnedInfo = {
+            chatId,
+            messageId: msg._id,
+            pin: pinState
+        }
+        socket.emit('pinUnpinMessage', pinnedInfo)
+
+
+        setShowConfirm(false)
 
     }
 
@@ -207,12 +253,14 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     }
 
                     <div className="gap-3 flex flex-col font-[vazir]">
-                        <Message type={msg.messageId.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                        <Message type={msg.messageInfo.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
                     </div>
                 </div>
             </div>
             {/* ----------------------------- delete modal */}
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_oneMessage} />
+
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} />
+
         </div>
     )
 }

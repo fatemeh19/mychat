@@ -1,9 +1,10 @@
 import * as User from './User.js'
 import * as Chat from './Chat.js'
 import * as Message from './Message.js'
-
+import * as Folder from './Folder.js'
 export {
     User,
     Chat,
-    Message
+    Message,
+    Folder
 }

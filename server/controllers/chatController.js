@@ -72,23 +72,24 @@ const getChat = async (req, res) => {
       Field: fields.chat,
     });
   }
-  const messageIds = chat.messages.map((message) => message.messageId);
+  const messageIds = chat.messages.map((message) => message.messageInfo);
 
   const messages = await Services.Message.getMessages({
     _id: { $in: messageIds },
   });
 
   const messageIdss = messages.map((message) => message._id);
-  let end = false;
+  // if()
   chat.messages.forEach((message, index) => {
     let messageIndex = indexFinder(
       0,
       messageIdss.length,
       messageIdss,
-      message.messageId
+      message.messageInfo
     );
-    message.messageId = messages[messageIndex];
+    message.messageInfo = messages[messageIndex];
   });
+  
 
   await RH.SendResponse({
     res,
@@ -121,21 +122,13 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  await chats.forEach((chat, index) => {
+  chats.forEach((chat, index) => {
     if (!chat.messages.length) {
       return;
     }
-    chat.messages.push({
-      messageId: messages[index],
-      forwarded: {
-        by: chat.messages[chat.messages.length - 1]?.forwarded.by,
-        isForwarded:
-          chat.messages[chat.messages.length - 1]?.forwarded.isForwarded,
-      },
-      seenIds: chat.messages[chat.messages.length - 1]?.seenIds,
-      deletedIds: chat.messages[chat.messages.length - 1]?.deletedIds,
-    });
     chat.messages.splice(0, chat.messages.length - 1);
+    chat.messages[0].messageInfo = messages[index]
+    
   });
   await RH.SendResponse({
     res,

@@ -15,6 +15,9 @@ import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { removeSelectMessage, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
 import { updateArrayMessages } from '@/src/redux/features/chatSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
+import findIndex from '@/src/helper/deleteMessage'
+import { recievedMessageInterface } from '@/src/models/interface'
+import deleteMessage from '@/src/helper/deleteMessage'
 
 
 interface ChatHeaderProps {
@@ -26,6 +29,11 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
+    const [confirmInfo, setConfirmInfo] = useState({
+        confirmTitle: '',
+        confirmDiscription: '',
+        confirmOption: '',
+    })
 
     const dispatch = useAppDispatch()
 
@@ -77,6 +85,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const showConfirmModal = () => {
         setOpen(true)
         setShowConfirm(true)
+
+        setConfirmInfo({
+            confirmTitle: 'Delete',
+            confirmDiscription: 'Are you sure?',
+            confirmOption: 'delete aAll'
+        })
     }
 
     const deleteHandler_multipleMessage = () => {
@@ -89,15 +103,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         socket.emit('deleteMessage', deleteInfo)
         dispatch(setActiveSelection(false))
         dispatch(removeSelectMessage([]))
+
         if (!deleteInfo.deleteAll) {
-            const msg = chatMessages.filter(CM => {
-                let flag = true
-                for (let i = 0; i < selectedMessages.length; i++) {
-                    CM._id === selectedMessages[i] ? flag = false : null
-                }
-                if (flag) return CM._id
-            })
-            dispatch(updateArrayMessages(msg))
+            const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+            for (let i = 0; i < selectedMessages.length; i++) {
+                deleteMessage(0, chatMessageIds.length, chatMessageIds, selectedMessages[i], dispatch)
+            }
         }
     }
 
@@ -191,7 +202,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                         </>
                     </div>
             }
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} confirmInfo={confirmInfo} />
         </div >
     )
 }

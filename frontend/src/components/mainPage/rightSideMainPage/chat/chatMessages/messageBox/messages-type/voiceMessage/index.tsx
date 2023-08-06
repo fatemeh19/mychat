@@ -12,11 +12,11 @@ interface VoiceMessageProps {
 
 const VoiceMessage: FC<VoiceMessageProps> = ({ dir, msg }) => {
 
-    const fileFullUrl = msg.messageId.content.url.split('\\')
+    const fileFullUrl = msg.messageInfo.content.url.split('\\')
     const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
 
-    const date = new Date(msg.messageId.createdAt);
+    const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
     return (

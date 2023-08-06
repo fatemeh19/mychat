@@ -21,6 +21,7 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
             dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
             dispatch(addChat(Chat))
+            console.log('Chat in fetch Chat: ', Chat)
             // save Chat in redux
             return res.data.value.chat._id
         }

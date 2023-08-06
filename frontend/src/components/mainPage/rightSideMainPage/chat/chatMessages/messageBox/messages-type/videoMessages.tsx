@@ -8,13 +8,13 @@ interface VideoMessageProps {
 }
 
 const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
-    const isText = msg.messageId.content.text ? true : false
-    const isReplied = msg.messageId.reply.isReplied
+    const isText = msg.messageInfo.content.text ? true : false
+    const isReplied = msg.messageInfo.reply.isReplied
 
-    const date = new Date(msg.messageId.createdAt);
+    const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
-    const fileFullUrl = msg.messageId.content.url.split('\\')
+    const fileFullUrl = msg.messageInfo.content.url.split('\\')
     const fileName = fileFullUrl?.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -60,7 +60,7 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
                                     isText
                                         ?
                                         <>
-                                            <p className="px-2 py-2 pb-1 break-all whitespace-pre-line text-sm">{msg.messageId.content.text}</p>
+                                            <p className="px-2 py-2 pb-1 break-all whitespace-pre-line text-sm">{msg.messageInfo.content.text}</p>
                                             <div className="w-20 h-2 relative">
                                                 <span className="absolute right-0 bottom-[-1px] date text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap">{time} AM
                                                     <span className="pl-1 text-green-500"> \// </span>

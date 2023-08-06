@@ -80,26 +80,9 @@ const UserSchema = new mongoose.Schema(
     ],
     folders: [
       {
-        name: String,
-        chats: [
-          {
-            pinned: {
-              type:Boolean,
-              default: false,
-            },
-            chat: {
-              type: mongoose.Types.ObjectId,
-              ref: "Chat",
-            },
-          },
-        ],
-        pinnedChats: [
-          {
-            type: mongoose.Types.ObjectId,
-            ref: "Chat",
-          },
-        ],
-      },
+        type:mongoose.Types.ObjectId,
+        ref:"Folder"
+      }
     ],
   },
   { timestamps: true }
