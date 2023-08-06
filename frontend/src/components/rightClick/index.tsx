@@ -7,6 +7,7 @@ import { GoPeople } from 'react-icons/go'
 import { PiSelection } from 'react-icons/pi'
 import { FiEdit2, FiCopy } from 'react-icons/fi'
 import { BsReply, BsLink45Deg, BsPinAngle, BsTrash3 } from 'react-icons/bs'
+import {PiPushPinLight, PiPushPinSlashLight} from 'react-icons/pi'
 
 import style from './style.module.css'
 import { useOnClickOutside } from './useOnClickOutside';
@@ -96,6 +97,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
                             <span>Copy Message Link</span>
                         </li>
                         <li className={`${style.item}`} onClick={() => showConfirmModal('Pin')}>
+                            <BsPinAngle className={`${style.icon}`} />
                             <BsPinAngle className={`${style.icon}`} />
                             <span>Pin</span>
                         </li>
