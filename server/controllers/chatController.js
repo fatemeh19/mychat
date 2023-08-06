@@ -121,15 +121,15 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  
-  let index = 0
+
+  let index = 0;
   chats.forEach((chat) => {
     if (!chat.messages.length) {
       return;
     }
     chat.messages.splice(0, chat.messages.length - 1);
     chat.messages[0].messageInfo = messages[index];
-    index++
+    index++;
   });
   await RH.SendResponse({
     res,
@@ -142,7 +142,59 @@ const getChats = async (req, res) => {
 };
 
 const pinUnpinChat = async (req, res) => {
-  const {body, params:{chatId}} = req
+  const {
+    body,
+    params: { id:chatId },
+    user: { userId },
+  } = req;
+  let data;
+  try {
+    data = await Validators.pinUnpinChat.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  let updateQuery;
+  let op;
+  if (data.pin) {
+    op = "$push";
+    updateQuery = {
+      $push: {},
+      $set: {},
+    };
+  } else {
+    op = "$pull";
+    updateQuery = {
+      $pull: {},
+      $set: {},
+    };
+  }
+  updateQuery[op]["pinnedChats"] = chatId;
+
+  if (data.allChats) {
+
+    await Services.User.findAndUpdateUser(userId, updateQuery);
+    await Services.Chat.findAndUpdateChat(chatId, {
+      $set: { pinned: data.pin },
+    });
+  } else {
+    updateQuery["$set"]["chats.$[chat].pinned"] = data.pin;
+    await Services.Folder.findAndUpdateFolder(
+      data.folderId,
+      updateQuery,
+      {
+        arrayFilters: [{ "chat.chatInfo": chatId }],
+      }
+    );
+  }
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
+  
 };
 
-export { createChat, getChat, getChats };
+export {pinUnpinChat, createChat, getChat, getChats };

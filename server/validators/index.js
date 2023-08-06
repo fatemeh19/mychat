@@ -11,6 +11,7 @@ import editGroupPermsAndExps from "./editGroupPermsandExps.js";
 import createInviteLink from "./createInviteLink.js";
 import editGroupInfo from "./editGroupInfo.js"
 import createFolder from "./createFolder.js";
+import pinUnpinChat from "./pinUnpinChat.js"
 export {
   loginUser,
   registerUser,
@@ -24,5 +25,6 @@ export {
   editGroupPermsAndExps,
   createInviteLink,
   editGroupInfo,
-  createFolder
+  createFolder,
+  pinUnpinChat
 };

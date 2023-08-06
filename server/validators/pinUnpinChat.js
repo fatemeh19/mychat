@@ -9,4 +9,4 @@ const pinUnpinChat = yup.object({
     })
 })
 
-export default  loginUser
+export default  pinUnpinChat
