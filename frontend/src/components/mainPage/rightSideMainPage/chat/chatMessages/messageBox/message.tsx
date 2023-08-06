@@ -18,7 +18,6 @@ interface messageProps {
 }
 
 const Message: FC<messageProps> = ({ type, dir, msg, messageBoxRef }) => {
-
     switch (type) {
         case messageTypes.text:
             return (<TextMessage dir={dir} msg={msg} messageBoxRef={messageBoxRef} />)
