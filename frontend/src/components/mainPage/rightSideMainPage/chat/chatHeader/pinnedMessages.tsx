@@ -1,6 +1,7 @@
 import findIndex from "@/src/helper/findIndex";
 import { recievedMessageInterface } from "@/src/models/interface";
-import { useAppSelector } from "@/src/redux/hooks";
+import { setOpenPinSection } from "@/src/redux/features/openSlice";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { FC, useEffect, useState } from "react";
 
 import { PiPushPinSimpleLight } from 'react-icons/pi'
@@ -12,6 +13,8 @@ interface PinnedMessagesProps {
 
 const PinnedMessages: FC<PinnedMessagesProps> = () => {
     const [msg, setMsg] = useState<recievedMessageInterface>()
+
+    const dispatch = useAppDispatch()
 
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
@@ -44,7 +47,7 @@ const PinnedMessages: FC<PinnedMessagesProps> = () => {
                     <p>{msg?.messageInfo.content.text}</p>
                 </div>
             </div>
-            <div className="right text-gray-600 cursor-pointer ml-3">
+            <div className="right text-gray-600 cursor-pointer ml-3" onClick={() => dispatch(setOpenPinSection(true))}>
                 <PiPushPinSimpleLight className="w-5 h-5" />
             </div>
         </div>

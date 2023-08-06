@@ -12,6 +12,7 @@ import CustomizedDialogs from "../../popUp"
 import findIndex from "@/src/helper/findIndex"
 import { recievedMessageInterface } from "@/src/models/interface"
 import deleteMessage from "@/src/helper/deleteMessage"
+import PinnedSection from "./chat/pinnedSection"
 
 interface IUserInfo {
     name: string,
@@ -31,6 +32,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const pinnedMessages = useAppSelector(state => state.chat).Chat.pinnedMessages
+    const openPinSection = useAppSelector(state => state.open).openPinSectin
 
     let found = false
 
@@ -115,14 +117,10 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                             </div>
                         </div>
                     )
-                    :
-                    // openPinSection 
-                    true
-                        ? <p>pin section</p>
-                        :
-                        <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
-                        </div>
+                    : openPinSection
+                        ? <PinnedSection />
+                        : <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
+
 
             }
 
