@@ -76,24 +76,25 @@ const ChatContactBox: FC<chatContactProps> = ({
         // socket?.on('sendMessage', (message) => {
             console.log('chatOpennedP : ',chatOpennedP)
             if(chatOpennedP || chatOpenned){
-               if(chatMessages){
-                console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length-1])
-                if(chatMessages[chatMessages?.length-1].messageId.content.contentType!='text' && chatMessages[chatMessages?.length-1].messageId.content.text==''){
-                    let text=chatMessages[chatMessages?.length-1].messageId.content.originalName
-                    setLastMesText((text ? text :''))
+               if(chatMessages.length>0){
+                    console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length-1])
+                    if(chatMessages[chatMessages?.length-1].messageId.content.contentType!='text' && chatMessages[chatMessages?.length-1].messageId.content.text==''){
+                        let text=chatMessages[chatMessages?.length-1].messageId.content.originalName
+                        setLastMesText((text ? text :''))
+                    }
+                    else{
+                        setLastMesText(chatMessages[chatMessages?.length-1].messageId.content.text)
+                    }
+                    setLastMesTime(chatMessages[chatMessages?.length-1].messageId.updatedAt)
+                    console.log(lastMesText)
+                    //add chat on top of the list bc this chat have new message
+                    if(chatbox!=undefined){
+                        const fromIndex=chatList.indexOf(chatbox)
+                        console.log(fromIndex)
+                        dispatch(addChatToTop(fromIndex))
+                    }
                 }
-                else{
-                    setLastMesText(chatMessages[chatMessages?.length-1].messageId.content.text)
-                }
-                setLastMesTime(chatMessages[chatMessages?.length-1].messageId.updatedAt)
-                console.log(lastMesText)
-                //add chat on top of the list bc this chat have new message
-                const fromIndex=chatList.indexOf(chatbox)
-                console.log(fromIndex)
-                dispatch(addChatToTop(fromIndex))
-               }
             }
-            
         // })
     }, [chatMessages,chatOpennedP])
     useEffect(() => {
