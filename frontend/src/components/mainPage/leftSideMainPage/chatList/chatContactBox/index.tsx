@@ -2,7 +2,7 @@
 
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { setOpenChat } from "@/src/redux/features/openChatSlice";
-import { openHandle } from "@/src/redux/features/userChatListSlice";
+import { addChatToTop, openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
 import { FC, useEffect, useRef, useState } from "react"
@@ -26,7 +26,8 @@ interface chatContactProps {
     ContactName:string,
     chatOpennedP?:Boolean,
     profilePicName:string,
-    contactId?:string
+    contactId?:string,
+    chatbox?:any
 }
 
 const ChatContactBox: FC<chatContactProps> = ({
@@ -41,7 +42,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     ContactName,
     chatOpennedP,
     profilePicName,
-    contactId
+    contactId,
+    chatbox
 }) => {
     const dispatch = useAppDispatch()
     const [online , setOnline] = useState(status?.online)
@@ -49,26 +51,51 @@ const ChatContactBox: FC<chatContactProps> = ({
     const [chatOpenned,setChatOpenned]=useState(false)
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
-
+    const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const [lastMesText,setLastMesText]=useState(lastMessage)
     const [lastMesTime,setLastMesTime]=useState(lastMessageTime)
-    useEffect(() => {
-        socket?.on('sendMessage', (message) => {
+    // useEffect(() => {
+    //     socket?.on('sendMessage', (message) => {
+    //         console.log('chatOpennedP : ',chatOpennedP)
+    //         if(chatOpennedP || chatOpenned){
+    //             console.log('i got new Message in chat box: ', message)
+    //             if(message.messageId.content.contentType!='text' && message.messageId.content.text==''){
+    //                 setLastMesText(message.content.originalName)
+    //             }
+    //             else{
+    //                 setLastMesText(message.content.text)
+    //             }
+    //             setLastMesTime(message.updatedAt)
+    //             console.log(lastMesText)
+    //         }
+            
+    //     })
+    // }, [socket,chatOpennedP])
+    
+        useEffect(() => {
+        // socket?.on('sendMessage', (message) => {
             console.log('chatOpennedP : ',chatOpennedP)
             if(chatOpennedP || chatOpenned){
-                console.log('i got new Message in chat box: ', message)
-                if(message.messageId.content.contentType!='text' && message.messageId.content.text==''){
-                    setLastMesText(message.content.originalName)
+               if(chatMessages){
+                console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length-1])
+                if(chatMessages[chatMessages?.length-1].messageId.content.contentType!='text' && chatMessages[chatMessages?.length-1].messageId.content.text==''){
+                    let text=chatMessages[chatMessages?.length-1].messageId.content.originalName
+                    setLastMesText((text ? text :''))
                 }
                 else{
-                    setLastMesText(message.content.text)
+                    setLastMesText(chatMessages[chatMessages?.length-1].messageId.content.text)
                 }
-                setLastMesTime(message.updatedAt)
+                setLastMesTime(chatMessages[chatMessages?.length-1].messageId.updatedAt)
                 console.log(lastMesText)
+                //add chat on top of the list bc this chat have new message
+                const fromIndex=chatList.indexOf(chatbox)
+                console.log(fromIndex)
+                dispatch(addChatToTop(fromIndex))
+               }
             }
             
-        })
-    }, [socket,chatOpennedP])
+        // })
+    }, [chatMessages,chatOpennedP])
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
             console.log('contactId : ' + contactId)
