@@ -89,7 +89,6 @@ const getChat = async (req, res) => {
     );
     message.messageInfo = messages[messageIndex];
   });
-  
 
   await RH.SendResponse({
     res,
@@ -113,7 +112,7 @@ const getChats = async (req, res) => {
   );
 
   const messageIds = chats.map(
-    (chat) => chat.messages[chat.messages.length - 1]?.messageId
+    (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
   );
   const messages = await Services.Message.getMessages(
     {
@@ -122,13 +121,15 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  chats.forEach((chat, index) => {
+  
+  let index = 0
+  chats.forEach((chat) => {
     if (!chat.messages.length) {
       return;
     }
     chat.messages.splice(0, chat.messages.length - 1);
-    chat.messages[0].messageInfo = messages[index]
-    
+    chat.messages[0].messageInfo = messages[index];
+    index++
   });
   await RH.SendResponse({
     res,
@@ -140,9 +141,6 @@ const getChats = async (req, res) => {
   });
 };
 
-const getFoldersAndChats = async (req, res) => {
-  // All chats personal chats
-};
-
+const pinUnpinChat = async (req, res) => {};
 
 export { createChat, getChat, getChats };

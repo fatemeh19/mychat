@@ -5,7 +5,10 @@ import { mongo } from "mongoose";
 
 const ChatSchema = new mongoose.Schema(
   {
-    
+    pinned:{
+      type:Boolean,
+      default:false
+    },
     memberIds: [
       {
         type: mongoose.Types.ObjectId,
