@@ -221,7 +221,7 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
   let op;
   let pinStat;
   let updateQuery;
-  pin = Number(pin);
+  pin = Boolean(pin);
   if (pin) {
     op = "$push";
     pinStat = {
@@ -237,7 +237,7 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
     updateQuery = { $pull: {}, $set: {} };
   }
 
-  
+
   updateQuery[op]["pinnedMessages"] = messageId;
   updateQuery["$set"]["messages.$[message].pinStat"] = pinStat;
 

@@ -141,6 +141,8 @@ const getChats = async (req, res) => {
   });
 };
 
-const pinUnpinChat = async (req, res) => {};
+const pinUnpinChat = async (req, res) => {
+  const {body, params:{chatId}} = req
+};
 
 export { createChat, getChat, getChats };
