@@ -11,7 +11,7 @@ import ChatListItems from './chatListItems';
 import callApi from '@/src/helper/callApi';
 export default function ChatList() {
     const socket = useAppSelector(state => state.socket).Socket
-    const openChat = useAppSelector(state => state.openChat).openChat;
+    const openChat = useAppSelector(state => state.open).openChat;
     const [userId, setUserId] = useState('')
 
     const userIdHandler = async () => {

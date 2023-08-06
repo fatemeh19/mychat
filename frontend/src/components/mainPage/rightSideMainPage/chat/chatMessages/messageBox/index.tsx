@@ -183,8 +183,11 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             pin: pinState
         }
         socket.emit('pinUnpinMessage', pinnedInfo)
+        if (pinState) {
 
+        }
 
+        closeContextMenu()
         setShowConfirm(false)
 
     }
@@ -205,6 +208,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     showConfirmModal={showConfirmModal}
                     activeSelection={activeSelection}
                     activeReply={messageDoubleClickHandler}
+                    pinMessage={pinMessage}
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>

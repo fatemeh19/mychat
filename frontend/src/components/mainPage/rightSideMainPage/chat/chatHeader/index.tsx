@@ -145,11 +145,11 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                         <div
                             className=" w-full h-[74px] mx-auto bg-white cursor-pointer dark:bg-bgColorDark2">
                             <div className="flex justify-between flex-row-reverse">
-                                {/* <div className="righ flex flex-row-reverse gap-4 items-center pr-6">
-                                <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
-                                <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
-                                <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
-                            </div> */}
+                                <div className="righ flex flex-row-reverse gap-4 items-center pr-6">
+                                    <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
+                                    <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
+                                    <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
+                                </div>
                                 <div className="
                                     left
                                     flex gap-3 items-center 

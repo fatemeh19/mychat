@@ -45,7 +45,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             // } //del
         })
         found === false && dispatch(setChatCreated(false))
-    }, [chatList])
+    }, []) //chatList
 
     // useEffect(() => {
     //     socket?.emit('onChat', contactId)
@@ -66,11 +66,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             }
         })
         socket.on('pinUnpinMessage', (userId: string, pinnedInfo: any) => {
-            console.log('userId', userId)
-            console.log('pinnedInfo: ', pinnedInfo)
 
-
-            // 1
             console.log('pinnedMessages :', pinnedMessages)
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, pinnedInfo.messageId)
@@ -79,13 +75,11 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             if (pinnedInfo.pin) {
                 console.log('pin = 1', pinnedInfo.pin)
                 dispatch(addPinMessage(pinnedInfo.messageId))
-                console.log('index', messageIndex)
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: true, by: userId } }))
 
             } else {
                 console.log('pin = 0', pinnedInfo.pin)
                 let pinIndex = findIndex(0, pinnedMessages.length, pinnedMessages, pinnedInfo.messageId)
-                console.log('pinIndex: ', pinIndex)
                 dispatch(deleteMessageFromPinnedMessagesArray(pinIndex))
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: false } }))
             }
@@ -121,11 +115,15 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                             </div>
                         </div>
                     )
-                    : (
+                    :
+                    // openPinSection 
+                    true
+                        ? <p>pin section</p>
+                        :
                         <div className="">
                             <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
                         </div>
-                    )
+
             }
 
 

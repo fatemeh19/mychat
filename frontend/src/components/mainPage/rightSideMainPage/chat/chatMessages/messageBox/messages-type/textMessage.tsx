@@ -1,6 +1,7 @@
 import { recievedMessageInterface } from "@/src/models/interface"
 import RepliedMessage from "./repliedMessage";
 import { RefObject } from "react";
+import { PiPushPinFill } from "react-icons/pi";
 
 
 
@@ -19,10 +20,14 @@ const TextMessage = ({ dir, msg, messageBoxRef }: { dir: string, msg: recievedMe
                     <p className="break-all whitespace-pre-line text-sm ">
                         {msg.messageInfo.content.text}
                     </p>
-                    <div className="w-20 h-2 relative">
-                        <span className="absolute right-0 bottom-[-5px] date text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap">{time} AM
+                    <div className={`w-20 h-2 relative ${msg.pinStat.pinned ? 'w-24' : ''} `}>
+                        <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                            {
+                                msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                            }
+                            <span>{time} AM</span>
                             <span className="pl-1 text-green-500"> \// </span>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>

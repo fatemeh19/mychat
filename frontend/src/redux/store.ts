@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import popUpReducer from './features/popUpSlice';
 import localStorageReducer from './features/localStorageSlice';
 import userContactReducer from './features/userContactSlice';
-import openChatReducer from './features/openChatSlice';
+import openReducer from './features/openSlice';
 import userContactListReducer from './features/userContactListSlice';
 import userChatListReducer from './features/userChatListSlice';
 import userInfoReducer from './features/userInfoSlice';
@@ -18,7 +18,7 @@ export const store = configureStore({
     popUp: popUpReducer,
     localStorage: localStorageReducer,
     userContact: userContactReducer,
-    openChat: openChatReducer,
+    open: openReducer,
     chatOpenInList: chatOpenInListReducer,
     userContactsList: userContactListReducer,
     userChatList: userChatListReducer,
