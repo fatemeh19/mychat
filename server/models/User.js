@@ -84,6 +84,12 @@ const UserSchema = new mongoose.Schema(
         ref:"Folder"
       }
     ],
+    pinnedChats: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Chat",
+      },
+    ],
   },
   { timestamps: true }
 );
