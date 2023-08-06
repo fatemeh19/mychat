@@ -6,7 +6,6 @@ import ErrorMessages from "../messages/errors.js";
 import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
-import { objectId } from "../utils/typeConverter.js";
 
 const createFolder = async (req, res) => {
   const {
@@ -39,51 +38,43 @@ const createFolder = async (req, res) => {
     userId,
     {
       $push: {
-        folders: newFolder._id
+        folders: newFolder._id,
       },
     },
     { new: true }
   );
 
-
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const addToFolder = async (req, res) => {
+const addRemoveChat = async (req, res) => {
   // tekrari chat
-  const {
-    params: { chatId, folderId },
+  let {
+    params: { chatId, folderId, add },
     // user: { userId },
   } = req;
-
-  const updated = await Services.Folder.findAndUpdateFolder(
-    folderId,
-    {
-      $push: { chats: { chatInfo: chatId } },
-    },
-    {
-      new: true,
+  add = Number(add);
+  let updateQuery
+  if (add) {
+    updateQuery = {
+      $push:{chats:{ chatInfo: chatId }}
     }
-  );
-  res.send(updated);
-};
-
-const removeFromFolder = async (req, res) => {
-  const {
-    params: { chatId, folderId },
-    user: { userId },
-  } = req;
-
-  const updated = await Services.Folder.findAndUpdateFolder(
-    folderId,
-    {
-      $pull: { chats: { chatInfo: chatId } },
-    },
-    {
-      new: true,
+ 
+  } else {
+    updateQuery = {
+      $pull:{chats:{ chatInfo: chatId }}
     }
-  );
-  res.send(updated);
+  }
+
+
+  await Services.Folder.findAndUpdateFolder(folderId, updateQuery, {
+    new: true,
+  });
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
 };
 
 const deleteFolder = async (req, res) => {
@@ -91,47 +82,38 @@ const deleteFolder = async (req, res) => {
     params: { id: folderId },
     user: { userId },
   } = req;
-  await Services.Folder.deleteFolder({_id:folderId})
+  await Services.Folder.deleteFolder({ _id: folderId });
   const updated = await Services.User.findAndUpdateUser(
     userId,
     {
-      $pull: { folders:  folderId  },
+      $pull: { folders: folderId },
     },
     { new: true }
   );
-  res.send(updated);
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+  });
 };
 
 const getFolder = async (req, res) => {
   const {
     params: { id: folderId },
-    user: { userId },
   } = req;
-  
-  const folder = await Services.Folder.findFolder({_id:folderId})
-  // const updated = await Services.User.aggregateUsers([
-  //   { $match: { _id: await objectId(userId) } },
-  //   {
-  //     $project: {
-  //       folders: 1,
-  //       folders: {
-  //         $filter: {
-  //           input: "$folders",
-  //           as: "folder",
-  //           cond: {
-  //             $eq: ["$$folder._id", await objectId(folderId)],
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // ]);
+
+  const folder = await Services.Folder.findFolder({ _id: folderId });
+
   let chatIds = folder.chats;
   chatIds = chatIds.map((chat) => chat.chatInfo);
 
-  const chats = await Services.Chat.getChats({
-    _id: { $in: chatIds },
-  });
+  const chats = await Services.Chat.getChats(
+    {
+      _id: { $in: chatIds },
+    },
+    "",
+    "-updatedAt"
+  );
 
   folder.chats.forEach((chat, index) => {
     chat.chatInfo = chats[index];
@@ -145,22 +127,47 @@ const getFolder = async (req, res) => {
     {
       _id: { $in: messageIds },
     },
-    ""
+    "",
+    "-updatedAt"
   );
-  chats.forEach((chat, index) => {
-    console.log(chat)
+  let index = 0;
+  chats.forEach((chat) => {
     if (!chat.messages.length) {
       return;
     }
     chat.messages.splice(0, chat.messages.length - 1);
     chat.messages[0].messageInfo = messages[index];
+    index++;
   });
 
   folder.chats.forEach((chat, index) => {
-    chat.chatInfo = chats[index]
+    chat.chatInfo = chats[index];
   });
 
-  res.send(folder);
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: { folder },
+  });
 };
 
-export { deleteFolder, removeFromFolder, addToFolder, createFolder, getFolder };
+const getFolders = async (req, res) => {
+  const { user:{userId} } = req;
+  const user = await Services.User.findUser({_id:userId},"folders")
+  const folders = await Services.Folder.findFolders({
+    _id:{
+      $in:user.folders
+    }
+  })
+
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: { folders },
+  });
+  
+};
+
+export { deleteFolder, addRemoveChat, createFolder, getFolder,getFolders };
