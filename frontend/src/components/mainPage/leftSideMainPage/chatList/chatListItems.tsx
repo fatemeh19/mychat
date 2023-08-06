@@ -53,7 +53,8 @@ export default function ChatListItems() {
                                         chatBox.chatInfo.status : undefined}
                                     lastMessage={chatBox.lastMessage} ContactSeen={false}
                                     lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
-                                    recivedMessage={true} isTyping={false} />
+                                    recivedMessage={true} isTyping={false}
+                                    chatbox={chatBox} />
                             </Link>
 
                         )
