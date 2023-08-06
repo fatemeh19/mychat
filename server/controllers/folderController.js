@@ -6,6 +6,7 @@ import ErrorMessages from "../messages/errors.js";
 import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
+import folder from "../models/folder.js";
 
 const createFolder = async (req, res) => {
   const {
@@ -170,4 +171,41 @@ const getFolders = async (req, res) => {
   
 };
 
-export { deleteFolder, addRemoveChat, createFolder, getFolder,getFolders };
+const editFolder = async (req, res)=>{
+  const {
+    params:{id:folderId},
+    body,
+  } = req;
+  let data;
+  try {
+    data = await Validators.createFolder.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+
+  let chats = [];
+  data.chatIds.forEach((chatId) => {
+    let chat = {
+      chatInfo: chatId,
+    };
+    chats.push(chat);
+  });
+  const updated = await Services.Folder.findAndUpdateFolder(folderId,{
+    name:data.name,
+    chats:chats
+  },{
+    new:true
+  })
+
+ 
+  res.send(updated)
+
+  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+
+
+}
+
+export {editFolder, deleteFolder, addRemoveChat, createFolder, getFolder,getFolders };
