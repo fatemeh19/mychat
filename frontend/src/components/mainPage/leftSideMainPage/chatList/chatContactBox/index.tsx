@@ -78,14 +78,14 @@ const ChatContactBox: FC<chatContactProps> = ({
             if(chatOpennedP || chatOpenned){
                if(chatMessages.length>0){
                     console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length-1])
-                    if(chatMessages[chatMessages?.length-1].messageId.content.contentType!='text' && chatMessages[chatMessages?.length-1].messageId.content.text==''){
-                        let text=chatMessages[chatMessages?.length-1].messageId.content.originalName
+                    if(chatMessages[chatMessages?.length-1].messageInfo.content.contentType!='text' && chatMessages[chatMessages?.length-1].messageInfo.content.text==''){
+                        let text=chatMessages[chatMessages?.length-1].messageInfo.content.originalName
                         setLastMesText((text ? text :''))
                     }
                     else{
-                        setLastMesText(chatMessages[chatMessages?.length-1].messageId.content.text)
+                        setLastMesText(chatMessages[chatMessages?.length-1].messageInfo.content.text)
                     }
-                    setLastMesTime(chatMessages[chatMessages?.length-1].messageId.updatedAt)
+                    setLastMesTime(chatMessages[chatMessages?.length-1].messageInfo.updatedAt)
                     console.log(lastMesText)
                     //add chat on top of the list bc this chat have new message
                     if(chatbox!=undefined){
