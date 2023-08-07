@@ -9,11 +9,12 @@ import { ChatType, MessageBoxDir } from "@/src/models/enum"
 import { setToggle } from "@/src/redux/features/toggleSlice"
 import { recievedMessageInterface } from "@/src/models/interface"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
-import { updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addSeenIds, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
-import findIndex from "@/src/helper/deleteMessage"
+import findIndex1 from "@/src/helper/deleteMessage"
+import findIndex from "@/src/helper/findIndex"
 
 const initialContextMenu = {
     show: false,
@@ -128,7 +129,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         // delete user message whene deleteAll is false : delete message jus for user
         if (!deleteInfo.deleteAll) {
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
-            findIndex(0, chatMessageIds.length, chatMessageIds, msg._id, dispatch)
+            findIndex1(0, chatMessageIds.length, chatMessageIds, msg._id, dispatch)
         }
         dispatch(setToggle(false))
     }
@@ -189,9 +190,27 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     }
 
-    // useEffect(() => {
-    //     console.log('select messages : ', selectedMessages)
-    // }, [selectedMessages])
+    useEffect(() => {
+        if (msg.messageInfo.senderId !== User._id) {
+            console.log('emit seenMessageId : ', msg._id)
+            socket.emit('seenMessage', msg._id)
+        }
+
+        socket.on('seenMessage', (messageId, userId) => {
+            console.log('messageId : ' + messageId)
+            console.log('userId : ' + userId)
+            if ((messageId === msg._id) && (User._id === msg.messageInfo.senderId) && (User._id !== userId)) {
+                console.log('your message seen')
+                const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
+                let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, msg._id)
+                console.log('messageIndex', messageIndex)
+                dispatch(addSeenIds({ index: messageIndex, userId: userId }))
+            }
+
+        });
+
+
+    }, [User, socket])
     return (
         // id for scroll to repliedMessage
         <div className="messageBox select-none cursor-default" id={msg._id} onDoubleClick={messageDoubleClickHandler} ref={messageBoxRef} onClick={selectHandler} >

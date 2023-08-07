@@ -67,6 +67,10 @@ export const ChatSlice = createSlice({
         setPinState: (state, action: PayloadAction<any>) => {
             console.log('action : ', action.payload)
             state.Chat.messages[action.payload.index].pinStat = action.payload.pinStat
+        },
+        addSeenIds: (state, action: PayloadAction<any>) => {
+            console.log('contact seen message id : ', action.payload)
+            state.Chat.messages[action.payload.index].seenIds.push(action.payload.userId)
         }
     },
 });
@@ -81,6 +85,7 @@ export const {
     deleteMessageFromMessageArray,
     addPinMessage,
     deleteMessageFromPinnedMessagesArray,
-    setPinState
+    setPinState,
+    addSeenIds
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
