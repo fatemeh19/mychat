@@ -7,15 +7,19 @@ var storage = multer.diskStorage({
     let filePath;
 
     if (req.body.content) {
+      
       filePath =path.join(consts.MEDIA_SAVE_PATH,req.body.content.contentType)   
     } else {
       filePath =path.join(consts.MEDIA_SAVE_PATH ,'/photo/') 
 
     }
+    
     cb(null, filePath);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname)); //Appending extension
+    
+    
   },
 });
 const upload = multer({ storage: storage });

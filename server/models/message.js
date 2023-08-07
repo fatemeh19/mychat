@@ -22,7 +22,10 @@ const MessageSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
-    
+    edited:{
+      type:Boolean,
+      default:false
+    }
     
   },
   { timestamps: true }

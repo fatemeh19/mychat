@@ -221,7 +221,7 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
   let op;
   let pinStat;
   let updateQuery;
-  pin = Number(pin);
+  pin = Boolean(pin);
   if (pin) {
     op = "$push";
     pinStat = {
@@ -236,12 +236,80 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
     };
     updateQuery = { $pull: {}, $set: {} };
   }
+
   updateQuery[op]["pinnedMessages"] = messageId;
   updateQuery["$set"]["messages.$[message].pinStat"] = pinStat;
 
-  const chat = await Services.Chat.findAndUpdateChat(chatId, updateQuery, {
+  await Services.Chat.findAndUpdateChat(chatId, updateQuery, {
     arrayFilters: [{ "message._id": { $eq: messageId } }],
     new: true,
   });
 };
-export { pinUnPinMessage, forwardMessage, createMessage, DeleteMessage };
+const editMessage = async (req, res) => {
+  const {
+    body,
+    file,
+    params: { id: messageId },
+  } = req;
+  let data;
+  try {
+    data = await Validators.editMessage.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (err) {
+    return RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  }
+  // if message exists
+  const message = await Services.Message.findMessage({ _id: messageId });
+
+  if (message.content.contentType != data.content.contentType) {
+    // error
+    return RH.CustomError({
+      errorClass: CustomError.BadRequestError,
+      errorType: ErrorMessages.ContentMatchError,
+      Field: fields.file,
+    });
+  }
+  if (message.content.contentType != "text") {
+    if (!file) {
+      return RH.CustomError({
+        errorClass: CustomError.BadRequestError,
+        errorType: ErrorMessages.NoFileFoundError,
+        Field: fields.file,
+      });
+      // error
+    }
+    req.body.content.url = file.path;
+    req.body.content.originalName = file.originalname;
+  } else {
+    if (file) {
+      // error
+      fileController.deleteFile(file.path);
+      return RH.CustomError({
+        errorClass: CustomError.BadRequestError,
+        errorType: ErrorMessages.changeContentError,
+        Field: fields.file,
+      });}
+
+  }
+  message.content = data.content;
+  message.edited = true
+  const editedMessage = await message.save();
+  await RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      message:editedMessage
+    },
+  });
+  // res.send(updated);
+};
+export {
+  editMessage,
+  pinUnPinMessage,
+  forwardMessage,
+  createMessage,
+  DeleteMessage,
+};

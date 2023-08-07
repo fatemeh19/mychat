@@ -48,7 +48,7 @@ export default{
     "name":"EnumError",
     "message":" معتبر نیست"
   },
-  "ContentError":{
+  "ContentMatchError":{
     "name":"ContentError",
     "message":"نوع پیام مشخص شده با پیام ارسال شده مطابقت ندارد"
   },
@@ -63,6 +63,20 @@ export default{
   "ExpiredError":{
     "name":"ExpiredError",
     "message":"منقضی شده است"
+  },
+  "changeContentError":{
+    "name":"changeContentError",
+    "message":"اجازه تغییر نوع پیام را ندارید"
+  },
+  "changeContentError":{
+    "name":"changeContentError",
+    "message":"اجازه تغییر نوع پیام را ندارید"
+  },
+  "NoFileFoundError":{
+    "name":"NoFileFoundError",
+    "message":"لطفا فایل را ارسال کنید"
+
+
   }
   
 }
