@@ -37,9 +37,9 @@ const PinnedSection: FC<PinSectionProps> = () => {
 
     const unPinAllMessageHandler = () => {
         pinnedMessagesInfo.map(pm => {
-            let pinState = 0
+            let pinState = false
             console.log('msg.pinStat.pinned:', pm)
-            pm.pinStat.pinned ? pinState = 0 : pinState = 1
+            pm.pinStat.pinned ? pinState = false : pinState = true
 
             const pinnedInfo = {
                 chatId,

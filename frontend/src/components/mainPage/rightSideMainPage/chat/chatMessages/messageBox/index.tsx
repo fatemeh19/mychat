@@ -173,9 +173,9 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     const pinMessage = () => {
         console.log('pin message done')
-        let pinState = 0
+        let pinState = false
         console.log('msg.pinStat.pinned:', msg)
-        msg.pinStat.pinned ? pinState = 0 : pinState = 1
+        msg.pinStat.pinned ? pinState = false : pinState = true
 
         const pinnedInfo = {
             chatId,
@@ -183,9 +183,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             pin: pinState
         }
         socket.emit('pinUnpinMessage', pinnedInfo)
-        if (pinState) {
-
-        }
 
         closeContextMenu()
         setShowConfirm(false)

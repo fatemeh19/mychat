@@ -73,14 +73,15 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, pinnedInfo.messageId)
             console.log('chat index : ', messageIndex)
+            console.log('pinnedInfo: ', pinnedInfo)
 
             if (pinnedInfo.pin) {
-                console.log('pin = 1', pinnedInfo.pin)
+                console.log('pin = true', pinnedInfo.pin)
                 dispatch(addPinMessage(pinnedInfo.messageId))
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: true, by: userId } }))
 
             } else {
-                console.log('pin = 0', pinnedInfo.pin)
+                console.log('pin = false', pinnedInfo.pin)
                 let pinIndex = findIndex(0, pinnedMessages.length, pinnedMessages, pinnedInfo.messageId)
                 dispatch(deleteMessageFromPinnedMessagesArray(pinIndex))
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: false } }))
