@@ -103,8 +103,8 @@ const getGroupByLink = async (req, res) => {
 
   
   let isMember = false;
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
+  group.members.forEach((member) => {
+    if (member.memberId.equals(userId)) {
       isMember = true;
     }
   });
@@ -154,8 +154,8 @@ const joinGroupViaLink = async (req, res) => {
       Field: Fields.joinUsersLimit,
     });
   }
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
+  group.members.forEach((member) => {
+    if (member.memberId.equals(userId)) {
       // is a member already
       return RH.CustomError({
         errorClass: CustomError.BadRequestError,
@@ -166,7 +166,7 @@ const joinGroupViaLink = async (req, res) => {
     }
   });
   let updateQuery = { $push: {} };
-  updateQuery["$push"]["memberIds"] = userId;
+  updateQuery["$push"]["members"] = {memberId:userId};
   updateQuery["$push"][
     "inviteLinks." + inviteLinkIndex + ".limitForJoin.joinedUsers"
   ] = userId;

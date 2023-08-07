@@ -5,27 +5,33 @@ import { mongo } from "mongoose";
 
 const ChatSchema = new mongoose.Schema(
   {
-    pinned:{
-      type:Boolean,
-      default:false
+    pinned: {
+      type: Boolean,
+      default: false,
     },
-    memberIds: [
+    members: [
       {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
+        memberId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+        joinedAt:{
+          type:Date,
+          default:Date.now()
+        }
       },
     ],
     messages: [
       {
-        pinStat:{
-          pinned:{
-            type:Boolean,
-            default:false
+        pinStat: {
+          pinned: {
+            type: Boolean,
+            default: false,
           },
-          by:{
-            type:mongoose.Types.ObjectId,
-            ref:'User'
-          }
+          by: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
         },
         messageInfo: {
           type: mongoose.Types.ObjectId,
@@ -36,16 +42,15 @@ const ChatSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
           },
-          by:{
-            type:mongoose.Types.ObjectId,
-            ref:'User'
-          }
+          by: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
         },
         seenIds: [
           {
             type: mongoose.Types.ObjectId,
             ref: "User",
-            
           },
         ],
         deletedIds: [
@@ -54,7 +59,6 @@ const ChatSchema = new mongoose.Schema(
             ref: "User",
           },
         ],
-        
       },
     ],
     chatType: {
@@ -65,10 +69,12 @@ const ChatSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    pinnedMessages:[{
-      type:mongoose.Types.ObjectId,
-      ref:'Message'
-    }]
+    pinnedMessages: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Message",
+      },
+    ],
   },
   { timestamps: true }
 );
