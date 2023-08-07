@@ -13,6 +13,8 @@ import findIndex from "@/src/helper/findIndex"
 import { recievedMessageInterface } from "@/src/models/interface"
 import deleteMessage from "@/src/helper/deleteMessage"
 import PinnedSection from "./chat/pinnedSection"
+import callApi from "@/src/helper/callApi"
+import { addUserContact } from "@/src/redux/features/userContactSlice"
 
 interface IUserInfo {
     name: string,
@@ -20,6 +22,17 @@ interface IUserInfo {
     profilePic: string,
     email: string,
     _id: string
+}
+
+const getContact = async (id: string) => {
+    const token = localStorage.getItem('token')
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    const res = await callApi().get(`/main/contact/${id}`, config)
+    return res.data.value.contact
 }
 
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
@@ -38,20 +51,35 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     useEffect(() => {
         found = false
-        chatList.map(cl => {
-            // if (cl.contact._id === contactId) { //del
-            console.log('chat is exist')
-            fetchChat(cl._id, dispatch)
-            dispatch(setChatCreated(true))
-            found = true
-            // } //del
+        console.log('chatList: ', chatList)
+        chatList.map(async cl => {
+            console.log('cl._id: ', cl._id)
+            console.log('contactId: ', contactId)
+            if (cl._id === contactId) {
+                console.log('chat is exist')
+                fetchChat(cl._id, dispatch)
+                dispatch(setChatCreated(true))
+                found = true
+
+                if (cl._id === contactId) {
+                    // mean : chatType = group => useContact not found so chatInfo is place in it
+                    if (cl._id === cl.chatInfo._id) {
+                        let userContact = {
+                            name: cl.chatInfo.name,
+                            profilePic: cl.chatInfo.profilePic
+                        }
+                        dispatch(addUserContact(userContact))
+                        console.log('userContact: ', userContact)
+                    } else { // mean: chatType = private => just get contact info
+                        let userContact = await getContact(cl.chatInfo._id)
+                        dispatch(addUserContact(userContact))
+                        console.log('userContact: ', userContact)
+                    }
+                }
+            }
         })
         found === false && dispatch(setChatCreated(false))
     }, [contactId]) //chatList
-
-    // useEffect(() => {
-    //     socket?.emit('onChat', contactId)
-    // }, [socket])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
@@ -87,7 +115,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: false } }))
             }
 
-            // 2
         })
         return () => {
             socket.removeAllListeners('sendMessage')

@@ -5,9 +5,10 @@ import ChatHeader from "./chatHeader"
 import ChatMessages from "./chatMessages"
 import ChatSendBox from "./chatSendBox"
 import callApi from "@/src/helper/callApi";
-import { useAppDispatch } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { addUserContact } from "@/src/redux/features/userContactSlice";
 import { Suspense } from 'react'
+import { ChatType } from "@/src/models/enum";
 
 interface chatProps {
     infoState: boolean,
@@ -27,16 +28,6 @@ const getContact = async (id: string) => {
 }
 
 const Chat: FC<chatProps> = ({ infoState, setInfoVState, contactId }) => {
-
-    const dispatch = useAppDispatch()
-
-    useEffect(() => {
-        (async () => {
-            let userContact = await getContact(contactId)
-            dispatch(addUserContact(userContact))
-        })()
-
-    }, [])
 
     return (
         <div className="flex flex-col w-full h-screen min-w-fit">
