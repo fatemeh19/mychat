@@ -39,7 +39,7 @@ export default function ChatListItems() {
                     (chatList.length === 0) ? null :
 
                         chatList.map((chatBox) => (
-                            <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                            <Link key={chatBox._id} href={`/chat/${chatBox.chatInfo._id}`} >
                                 {/* @ts-ignore */}
 
                                 <ChatContactBox
@@ -49,9 +49,7 @@ export default function ChatListItems() {
                                     contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
                                     lastMessegeByContact={false}
                                     ContactName={chatBox.chatInfo.name}
-                                    // status={Object.keys(chatBox.chatInfo.status).length > 0 ?
-                                    //     chatBox.chatInfo.status : undefined}
-                                    status={false ?
+                                    status={Object.keys(chatBox.chatInfo.status).length > 0 ?
                                         chatBox.chatInfo.status : undefined}
                                     lastMessage={chatBox.lastMessage} ContactSeen={false}
                                     lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
