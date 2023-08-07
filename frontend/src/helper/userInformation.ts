@@ -54,11 +54,11 @@ export const fetchUserChatList = async (dispatch: any) => {
         let contact = {}
         let user = await userHandler();
 
-        if (chatBox.memberIds[0] == user._id) {
-            contact = await findContact(chatBox.memberIds[1])
+        if (chatBox.members[0].memberId == user._id) {
+            contact = await findContact(chatBox.members[1].memberId)
         }
         else {
-            contact = await findContact(chatBox.memberIds[0])
+            contact = await findContact(chatBox.members[0].memberId)
         }
 
         return contact;
@@ -75,6 +75,7 @@ export const fetchUserChatList = async (dispatch: any) => {
             console.log(chatList[i].chatType)
             if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
+                console.log('chatInfo : ', chatInfo)
             }
             else if (chatList[i].chatType == "group") {
                 chatInfo = {
