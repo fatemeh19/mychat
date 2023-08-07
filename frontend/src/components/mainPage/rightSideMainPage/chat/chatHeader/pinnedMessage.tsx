@@ -7,11 +7,11 @@ import { FC, useEffect, useState } from "react";
 import { PiPushPinSimpleLight } from 'react-icons/pi'
 
 
-interface PinnedMessagesProps {
+interface PinnedMessageProps {
 
 }
 
-const PinnedMessages: FC<PinnedMessagesProps> = () => {
+const PinnedMessage: FC<PinnedMessageProps> = () => {
     const [msg, setMsg] = useState<recievedMessageInterface>()
 
     const dispatch = useAppDispatch()
@@ -39,7 +39,7 @@ const PinnedMessages: FC<PinnedMessagesProps> = () => {
 
 
     return (
-        <div className="flex justify-between items-center p-2 bg-gray-50">
+        <div className="flex justify-between items-center p-2 bg-gray-50 px-6">
             <div className="left flex gap-3">
                 <div className="w-1 rounded-full bg-blue-500"></div>
                 <div>
@@ -56,4 +56,4 @@ const PinnedMessages: FC<PinnedMessagesProps> = () => {
     );
 }
 
-export default PinnedMessages;
+export default PinnedMessage;

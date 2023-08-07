@@ -47,7 +47,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             // } //del
         })
         found === false && dispatch(setChatCreated(false))
-    }, []) //chatList
+    }, [contactId]) //chatList
 
     // useEffect(() => {
     //     socket?.emit('onChat', contactId)
@@ -106,22 +106,20 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     return (
         <>
             {
-                infoState
-                    ? (
-                        <div className="flex gap-[1px] justify-end">
-                            <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
+                openPinSection
+                    ? <PinnedSection />
+                    : infoState
+                        ? (
+                            <div className="flex gap-[1px] justify-end">
+                                <div className="w-full ">
+                                    <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
+                                </div>
+                                <div className="min-w-fit">
+                                    <ChatInfo />
+                                </div>
                             </div>
-                            <div className="min-w-fit">
-                                <ChatInfo />
-                            </div>
-                        </div>
-                    )
-                    : openPinSection
-                        ? <PinnedSection />
+                        )
                         : <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
-
-
             }
 
 

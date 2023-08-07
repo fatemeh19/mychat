@@ -18,7 +18,7 @@ import ConfirmModal from '@/src/components/basicComponents/confirmModal'
 import findIndex from '@/src/helper/deleteMessage'
 import { recievedMessageInterface } from '@/src/models/interface'
 import deleteMessage from '@/src/helper/deleteMessage'
-import PinnedMessages from './pinnedMessages'
+import PinnedMessage from './pinnedMessage'
 
 
 interface ChatHeaderProps {
@@ -206,7 +206,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                         {
 
                             pinnedMessages?.length > 0
-                                ? <PinnedMessages />
+                                ? <PinnedMessage />
                                 : null
 
                         }
