@@ -33,7 +33,7 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
             <div className="relative max-w-[22rem] rounded-xl">
                 <div className={`flex flex-col rounded-xl py-1 px-2 dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
                     {
-                        isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
+                        isReplied && <RepliedMessage msg={msg} />
                     }
                     <div className="flex flex-col rounded-xl pt-1">
                         <Image
