@@ -8,7 +8,7 @@ import Fields from "../messages/fields.js"
 import * as Services from "../services/index.js"
 import * as Validators from "../validators/index.js"
 import * as RH from"../middlewares/ResponseHandler.js"
-
+import { setStatus } from "./userController.js";
 
 
 const register = async (req, res) => {
@@ -72,6 +72,7 @@ const verifyEmail = async (req, res) => {
   (user.isVerified = true), (user.verified = Date.now());
   user.verificationToken = "";
   await user.save();
+  setStatus({userId:user._id, online:false})
   return RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,

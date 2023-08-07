@@ -121,8 +121,24 @@ const editProfile = async (req , res)=>{
   
 }
 
+const setStatus = async ({userId,online})=>{
+  //  if user does not exist
+  // error
+  Services.User.findAndUpdateUser(
+    userId,
+    {
+      status: {
+        online,
+        lastseen: Date.now(),
+      },
+    },
+  );
+
+}
+
 export {
  setInfo,
  getProfile,
- editProfile
+ editProfile,
+ setStatus
 };
