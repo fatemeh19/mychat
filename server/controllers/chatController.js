@@ -22,7 +22,10 @@ const createChat = async (req, res) => {
   // if type of chat is group
   if (data.chatType == chatType[1]) {
     const chatExists = await Services.Chat.getChat({
-      memberIds: { $size: 2, $all: data.memberIds },
+      and: [
+        { "members.0.memberId": { $in: data.memberIds } },
+        { "members.1.memberId": { $in: data.memberIds } },
+      ],
       chatType: chatType[1],
     });
 
@@ -46,6 +49,17 @@ const createChat = async (req, res) => {
     data.inviteLinks = [];
     data.inviteLinks.push(primaryLink);
   }
+  let members = [];
+  // console.log(data.memberIds)
+  data.memberIds.forEach((memberId) => {
+    members.push({
+      memberId,
+    });
+    // console.log(members)
+  });
+
+  data["members"] = members;
+  console.log(data);
 
   const chat = await Services.Chat.createChat(data);
   await RH.SendResponse({
@@ -60,11 +74,17 @@ const createChat = async (req, res) => {
 
 const getChat = async (req, res) => {
   const {
+    user: { userId },
     params: { id: chatId },
   } = req;
 
   const chat = await Services.Chat.getChat({ _id: chatId });
-
+  let joinedAt;
+  chat.members.forEach((member) => {
+    if (member.memberId.equals(userId)) {
+      joinedAt = member.joinedAt;
+    }
+  });
   if (!chat) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -72,23 +92,68 @@ const getChat = async (req, res) => {
       Field: fields.chat,
     });
   }
+  // chat.messages.forEach((message, index) => {
+  //   console.log("message.createdAt=",message.createdAt)
+  //   console.log("joined=",joinedAt)
+
+  //   if(message.createdAt<joinedAt){
+  //     chat.messages.splice(index,1)
+  //   }
+
+  // });
   const messageIds = chat.messages.map((message) => message.messageInfo);
 
   const messages = await Services.Message.getMessages({
     _id: { $in: messageIds },
+    // createdAt: { $gte: joinedAt },
   });
 
   const messageIdss = messages.map((message) => message._id);
-  // if()
-  chat.messages.forEach((message, index) => {
+ 
+  let index;
+  let i = 0
+  let length = chat.messages.length;
+  for (index = 0; index < length; index++) {
+    if (messages[i].createdAt < joinedAt) {
+      chat.messages.splice(index, 1);
+      index--;
+      length = chat.messages.length;
+      i++
+      continue;
+    }
     let messageIndex = indexFinder(
       0,
       messageIdss.length,
       messageIdss,
-      message.messageInfo
+      chat.messages[index].messageInfo
     );
-    message.messageInfo = messages[messageIndex];
-  });
+    chat.messages[index].messageInfo = messages[messageIndex];
+    i++
+  }
+
+  // chat.messages.forEach((message) => {
+  //   // console.log(index)
+  //   console.log(chat.messages)
+  //   // console.log("messages[index].createdAt=",messages[index].createdAt)
+  //   // console.log("joinedAt=",joinedAt)
+  //   // console.log(messages[index]._id)
+  //   if(messages[index].createdAt<joinedAt){
+  //     chat.messages.splice(index,1)
+  //     index--
+
+  //   }
+  //     let messageIndex = indexFinder(
+  //       0,
+  //       messageIdss.length,
+  //       messageIdss,
+  //       message.messageInfo
+  //     );
+  //     message.messageInfo = messages[messageIndex];
+  //     index++
+
+  //   // console.log(chat.messages)
+
+  // });
 
   await RH.SendResponse({
     res,
@@ -106,7 +171,7 @@ const getChats = async (req, res) => {
     user: { userId },
   } = req;
   const chats = await Services.Chat.getChats(
-    { memberIds: userId },
+    { "members.memberId": userId },
     "",
     "-updatedAt"
   );
@@ -141,10 +206,11 @@ const getChats = async (req, res) => {
   });
 };
 
+
 const pinUnpinChat = async (req, res) => {
   const {
     body,
-    params: { id:chatId },
+    params: { id: chatId },
     user: { userId },
   } = req;
   let data;
@@ -174,27 +240,21 @@ const pinUnpinChat = async (req, res) => {
   updateQuery[op]["pinnedChats"] = chatId;
 
   if (data.allChats) {
-
     await Services.User.findAndUpdateUser(userId, updateQuery);
     await Services.Chat.findAndUpdateChat(chatId, {
       $set: { pinned: data.pin },
     });
   } else {
     updateQuery["$set"]["chats.$[chat].pinned"] = data.pin;
-    await Services.Folder.findAndUpdateFolder(
-      data.folderId,
-      updateQuery,
-      {
-        arrayFilters: [{ "chat.chatInfo": chatId }],
-      }
-    );
+    await Services.Folder.findAndUpdateFolder(data.folderId, updateQuery, {
+      arrayFilters: [{ "chat.chatInfo": chatId }],
+    });
   }
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",
   });
-  
 };
 
-export {pinUnpinChat, createChat, getChat, getChats };
+export { pinUnpinChat, createChat, getChat, getChats };

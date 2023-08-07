@@ -13,7 +13,7 @@ const addMember = async (req, res) => {
     params: { chatId: groupId },
   } = req;
   const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $push: { memberIds: memberId },
+    $push: { members:{memberId} },
   });
   // console.log(addToGroupResult);
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
@@ -48,7 +48,7 @@ const removeMember = async (req, res) => {
     params: { chatId: groupId, memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $pull: { memberIds: memberId },
+    $pull: { members:{memberId: memberId} },
   });
   console.log(removeFromGroupResult);
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
