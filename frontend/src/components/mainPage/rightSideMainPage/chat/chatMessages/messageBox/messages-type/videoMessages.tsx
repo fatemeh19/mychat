@@ -1,6 +1,7 @@
 import { FC, useRef } from "react";
 import { recievedMessageInterface } from "@/src/models/interface";
 import RepliedMessage from "./repliedMessage";
+import { PiPushPinFill } from "react-icons/pi";
 
 interface VideoMessageProps {
     dir: string,
@@ -68,9 +69,13 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
                                             </div>
                                         </>
                                         :
-                                        <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 absolute bottom-[-5px] right-0`}>{time} AM
+                                        <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                                            {
+                                                msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                                            }
+                                            <span>{time} AM</span>
                                             <span className="pl-1 text-green-500"> \// </span>
-                                        </p>
+                                        </div>
                                 }
                             </div>
                         </div>

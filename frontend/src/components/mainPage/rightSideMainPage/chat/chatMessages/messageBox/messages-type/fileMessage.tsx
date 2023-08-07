@@ -1,7 +1,7 @@
 import { fileType } from "@/src/models/enum";
 import { recievedMessageInterface } from "@/src/models/interface";
 import { FC, useState, createRef, useEffect } from "react";
-import { PiFilePdf, PiFileDoc, PiFileZip, PiFileXls, PiFilePpt, PiFile } from "react-icons/pi"
+import { PiFilePdf, PiFileDoc, PiFileZip, PiFileXls, PiFilePpt, PiFile, PiPushPinFill } from "react-icons/pi"
 import RepliedMessage from "./repliedMessage";
 
 interface FileMessageProps {
@@ -80,7 +80,13 @@ const FileMessage: FC<FileMessageProps> = ({ dir, msg }) => {
                 </div>
                 <div ref={file}></div>
             </div>
-            <p className={`date text-xs text-[#9a9a9a] mb-1 mt-1 whitespace-nowrap`}>{time}</p>
+            <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                {
+                    msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                }
+                <span>{time} AM</span>
+                <span className="pl-1 text-green-500"> \// </span>
+            </div>
         </div>
     );
 }

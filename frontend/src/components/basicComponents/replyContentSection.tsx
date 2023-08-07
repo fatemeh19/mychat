@@ -41,7 +41,7 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
     }
 
     return (
-        <div className={`${containerClassName ?? 'flex items-center gap-2'}`}>
+        <div className={`flex items-center gap-2 ${containerClassName ?? ''}`}>
             {
                 repliedMessage.messageInfo.content.contentType === messageTypes.photo && <div>
                     <Image width={40} height={40} alt="" src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} className="w-[40px] h-[40px]" />

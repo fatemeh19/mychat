@@ -5,6 +5,7 @@ import { FC, useState, useEffect, useRef } from "react";
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
 import style from './musicStyle.module.css'
 import RepliedMessage from "../repliedMessage";
+import { PiPushPinFill } from "react-icons/pi";
 interface MusicMessageProps {
     dir: string,
     msg: recievedMessageInterface
@@ -88,7 +89,13 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
                 </div>
                 <audio ref={musicRef} src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} onTimeUpdate={playHandler} onDurationChange={onDurationChangeHandler} onEnded={endHandler} ></audio>
             </div>
-            <p className={`date text-xs text-[#9a9a9a] mb-1 mt-2 whitespace-nowrap`}>{time}</p>
+            <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                {
+                    msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                }
+                <span>{time} AM</span>
+                <span className="pl-1 text-green-500"> \// </span>
+            </div>
         </div>
     );
 }

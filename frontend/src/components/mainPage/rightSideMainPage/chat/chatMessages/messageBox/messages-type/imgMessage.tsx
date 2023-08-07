@@ -2,6 +2,7 @@ import { recievedMessageInterface } from "@/src/models/interface"
 import Image from "next/image"
 import { useEffect, useState } from 'react'
 import RepliedMessage from "./repliedMessage"
+import { PiPushPinFill } from "react-icons/pi"
 
 
 
@@ -30,11 +31,11 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
         <>
 
             <div className="relative max-w-[22rem] rounded-xl">
-                <div className={`flex flex-col rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                <div className={`flex flex-col rounded-xl py-1 px-2 dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
                     {
                         isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
                     }
-                    <div className="flex flex-col rounded-xl">
+                    <div className="flex flex-col rounded-xl pt-1">
                         <Image
                             width={500}
                             height={0}
@@ -75,15 +76,23 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                                         <>
                                             <p className="px-2 py-2 pb-1 break-all whitespace-pre-line text-sm">{msg.messageInfo.content.text}</p>
                                             <div className="w-20 h-2 relative">
-                                                <span className="absolute right-0 bottom-[-1px] date text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap">{time} AM
+                                                <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                                                    {
+                                                        msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                                                    }
+                                                    <span>{time} AM</span>
                                                     <span className="pl-1 text-green-500"> \// </span>
-                                                </span>
+                                                </div>
                                             </div>
                                         </>
                                         :
-                                        <p className={`date text-xs text-[#9a9a9a] mb-[.5px] whitespace-nowrap px-2 pb-2 absolute bottom-[-5px] right-0`}>{time} AM
+                                        <div className={`date absolute right-1 bottom-1 bg-[#000000ab] rounded-full py-[7px] px-[10px] text-xs text-white ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                                            {
+                                                msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
+                                            }
+                                            <span>{time} AM</span>
                                             <span className="pl-1 text-green-500"> \// </span>
-                                        </p>
+                                        </div>
                                 }
                             </div>
                         </div>
