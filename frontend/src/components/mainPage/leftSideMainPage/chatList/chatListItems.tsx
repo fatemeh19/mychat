@@ -38,8 +38,10 @@ export default function ChatListItems() {
                 {
                     (chatList.length === 0) ? null :
 
-                        chatList.map((chatBox) => (
-                            <Link key={chatBox._id} href={`/chat/${chatBox.chatInfo._id}`} >
+                        chatList.map((chatBox) => {
+                            console.log('chatBox : ', chatBox)
+
+                            return <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                 {/* @ts-ignore */}
 
                                 <ChatContactBox
@@ -57,7 +59,9 @@ export default function ChatListItems() {
                                     chatbox={chatBox} />
                             </Link>
 
-                        )
+                        }
+
+
                         )
                 }
             </div>
