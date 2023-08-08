@@ -56,8 +56,8 @@ export default function (io) {
     let forwardedMessages = await Services.Message.getMessages({
       _id: { $in: messageIds },
     });
+    let forwardedMsgs = [...forwardedMessages]
     const messages = []
-    let forwardedmessages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
         messageInfo: forwardedMessage._id,
@@ -78,7 +78,7 @@ export default function (io) {
     
     forwardedMessages = chat.messages.slice(chat.messages.length-messages.length,chat.messages.length)
     forwardedMessages.forEach((forwardedMessage, index)=>{
-      forwardedMessage.messageInfo = messages[index]
+      forwardedMessage.messageInfo = forwardedMsgs[index]
     })
 
     io.to(chatId).emit("forwardMessage", forwardedMessages);
