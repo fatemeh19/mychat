@@ -74,11 +74,17 @@ const aggregateUsers = async (pipeLine)=>{
 
 }
 
+const updateUsers = async (Query,update)=>{
+  const updated = await User.updateMany(Query,update)
+  return updated
+}
+
 export {
   findUsers,
   findUser,
   createUser,
   findAndUpdateUser,
   findAndUpdateBySave,
-  aggregateUsers
+  aggregateUsers,
+  updateUsers
 };

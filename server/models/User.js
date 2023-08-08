@@ -84,6 +84,22 @@ const UserSchema = new mongoose.Schema(
         ref:"Folder"
       }
     ],
+    chats: [
+      {
+        pinned: {
+          type: Boolean,
+          default: false,
+        },
+        chatInfo: {
+          type: mongoose.Types.ObjectId,
+          ref: "Chat",
+        },
+        addedAt:{
+          type:Date,
+          default:Date.now()
+        }
+      },
+    ],
     pinnedChats: [
       {
         type: mongoose.Types.ObjectId,

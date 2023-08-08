@@ -52,13 +52,13 @@ export default function (io) {
     const socket = this;
     const userId = socket.user.userId;
 
-    const forwardedMessages = await Services.Message.getMessages({
+    let forwardedMessages = await Services.Message.getMessages({
       _id: { $in: messageIds },
     });
     const messages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
-        messageId: forwardedMessage._id,
+        messageInfo: forwardedMessage._id,
         forwarded: {
           isForwarded:true,
           by:userId
@@ -73,13 +73,13 @@ export default function (io) {
       },
       { new: true }
     );
-    const forwardInfo = {
-      forwardedMessages,
-      forwardedBy: userId,
-      chat,
-    }
+    // forwardedMessages = []
+    forwardedMessages = chat.messages.slice(chat.messages.length-messages.length,chat.messages.length)
+    // const forwardInfo = {
+    //   forwardedMessages
+    // }
 
-    io.to(chatId).emit("forwardMessage", forwardInfo);
+    io.to(chatId).emit("forwardMessage", forwardedMessages);
 
   };
 

@@ -1,10 +1,10 @@
-import * as Services from "../services/index.js";
-import * as Validators from "../validators/index.js";
+import { StatusCodes } from "http-status-codes";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
-import { StatusCodes } from "http-status-codes";
+import * as Services from "../services/index.js";
+import * as Validators from "../validators/index.js";
 
-const addMember = async (req, res) => {
+const addMember = async (req, res,next) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
   // limitations for number of members
@@ -12,11 +12,14 @@ const addMember = async (req, res) => {
     body: { memberId },
     params: { chatId: groupId },
   } = req;
+  req.user.userId = memberId
+  req.params.id = groupId
   const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $push: { members:{memberId} },
+    $push: { members: { memberId, joinedAt: Date.now() } },
   });
+  next()
   // console.log(addToGroupResult);
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const editGroupType = async (req, res) => {
@@ -43,15 +46,18 @@ const editGroupType = async (req, res) => {
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const removeMember = async (req, res) => {
+const removeMember = async (req, res,next) => {
   const {
     params: { chatId: groupId, memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $pull: { members:{memberId: memberId} },
+    $pull: { members: { memberId: memberId } },
   });
-  console.log(removeFromGroupResult);
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  req.body.deleteAll = false
+  req.params.id = groupId
+  req.user.userId = memberId
+  next()
+  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const editGroupPermissions = async (req, res) => {
@@ -134,13 +140,10 @@ const editGroupInfo = async (req, res) => {
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-
-
 export {
   addMember,
+  editGroupInfo,
+  editGroupPermissions,
   editGroupType,
   removeMember,
-  editGroupPermissions,
-  editGroupInfo,
-
 };

@@ -21,6 +21,7 @@ const createChat = async (chat) => {
 };
 const findAndUpdateChat = async (id, updateQuery, options) => {
   const chatType = await Chat.findById(id, { chatType: 1 });
+  console.log("chatType =",chatType)
   try {
     let chatModel 
     if (chatType.chatType == "group") {
@@ -67,4 +68,10 @@ const aggregateChats = async (pipeLine)=>{
   return result
 }
 
-export {aggregateChats, getChat, createChat, findAndUpdateChat, getChats };
+const deleteChat = async (Query)=>{
+  const deleted = await Chat.deleteOne(Query)
+  return deleted
+
+}
+
+export {deleteChat,aggregateChats, getChat, createChat, findAndUpdateChat, getChats };
