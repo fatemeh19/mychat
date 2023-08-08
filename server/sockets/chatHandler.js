@@ -57,9 +57,10 @@ export default function (io) {
       _id: { $in: messageIds },
     });
     const messages = []
+    let forwardedmessages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
-        messageInfo: forwardedMessage,
+        messageInfo: forwardedMessage._id,
         forwarded: {
           isForwarded:true,
           by:userId
@@ -74,11 +75,11 @@ export default function (io) {
       },
       { new: true }
     );
-    // forwardedMessages = []
+    
     forwardedMessages = chat.messages.slice(chat.messages.length-messages.length,chat.messages.length)
-    // const forwardInfo = {
-    //   forwardedMessages
-    // }
+    forwardedMessages.forEach((forwardedMessage, index)=>{
+      forwardedMessage.messageInfo = messages[index]
+    })
 
     io.to(chatId).emit("forwardMessage", forwardedMessages);
 
