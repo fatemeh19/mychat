@@ -1,6 +1,7 @@
 import Chat from "../models/Chat.js";
 import * as Services from "../services/index.js";
 import { DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
+import { DeleteChat } from "../controllers/chatController.js";
 export default function (io) {
   const onChat = function (chatId) {
     const socket = this;
@@ -58,7 +59,7 @@ export default function (io) {
     const messages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
-        messageInfo: forwardedMessage._id,
+        messageInfo: forwardedMessage,
         forwarded: {
           isForwarded:true,
           by:userId
@@ -92,5 +93,17 @@ export default function (io) {
 
   }
 
-  return {editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
+  const deleteChat = async function(deleteInfo){
+    const socket = this;
+    const userId = socket.user.userId;
+    const { chatId,deleteAll } = deleteInfo;
+    DeleteChat( deleteInfo);
+
+    if(deleteAll){
+      io.to(chatId).emit("deleteChat", deleteInfo);
+    }
+
+  }
+
+  return {deleteChat,editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }

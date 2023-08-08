@@ -106,8 +106,10 @@ const UserSchema = new mongoose.Schema(
         ref: "Chat",
       },
     ],
+    // settingId:
   },
   { timestamps: true }
+  
 );
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;

@@ -279,6 +279,62 @@ const pinUnpinChat = async (req, res) => {
   });
 };
 
+const DeleteChat = async (deleteInfo) => {
+  const {
+    chatId ,
+    userId ,
+    deleteAll
+  } = deleteInfo;
+  const chat = await Services.Chat.getChat({ _id: chatId });
+  const user = await Services.User.findUser({ _id: userId });
+  if (deleteAll) {
+    if (chat.chatType == "group") {
+      if (!chat.owner.equals(userId)) {
+        return res.send("no access")
+      }
+    }
+    await Services.Chat.deleteChat({ _id: chatId });
+    await Services.Folder.updateFolders(
+      {
+        "chats.chatInfo": chatId,
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+    // pinned chats
+    const memberIds = chat.members.map((member) => member.memberId);
+    await Services.User.updateUsers(
+      {
+        _id: { $in: memberIds },
+      },
+      {
+        $pull: { pinnedChats: chatId , chats:{chatInfo:chatId} },
+      }
+    );
+  } else {
+    if(chat.chatType == "group"){
+      await Services.Chat.findAndUpdateChat(chatId, {
+        $pull: { members: { memberId: userId } },
+      });
+    }
+    
+    await Services.Folder.updateFolders(
+      {
+        _id: { $in: user.folders },
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+
+    await Services.User.findAndUpdateUser(userId, {
+      $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
+    });
+  }
+
+  res.send("ok");
+};
 const deleteChat = async (req, res) => {
   const {
     params: { id: chatId },
@@ -336,4 +392,4 @@ const deleteChat = async (req, res) => {
   res.send("ok");
 };
 
-export {addToChats,deleteChat, pinUnpinChat, createChat, getChat, getChats };
+export {addToChats,DeleteChat,deleteChat, pinUnpinChat, createChat, getChat, getChats };

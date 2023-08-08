@@ -136,6 +136,7 @@ const setStatus = async ({userId,online})=>{
 
 }
 
+const getUser = async (req, res)
 export {
  setInfo,
  getProfile,
