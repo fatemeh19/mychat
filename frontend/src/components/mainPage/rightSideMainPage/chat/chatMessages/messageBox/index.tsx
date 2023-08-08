@@ -15,6 +15,9 @@ import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
 import findIndex1 from "@/src/helper/deleteMessage"
 import findIndex from "@/src/helper/findIndex"
+import CustomizedDialogs from "@/src/components/popUp"
+import ChatListPopup from "@/src/components/basicComponents/chatListPopup"
+import { setIsForward, setForwardMessage } from "@/src/redux/features/forwardMessageSlice"
 
 const initialContextMenu = {
     show: false,
@@ -30,6 +33,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     // states
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
+    const [forwardPopupOpen, setForwardPopupOpen] = useState(false)
     const [children, setChildren] = useState<Element>()
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
@@ -166,6 +170,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => {
         console.log(e)
         console.log(e.currentTarget)
+        dispatch(setIsForward(false))
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
         closeContextMenu()
@@ -189,6 +194,20 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         setShowConfirm(false)
 
     }
+
+    const forwardPopupOpenHandler = () => {
+        setForwardPopupOpen(!forwardPopupOpen)
+    }
+    const forwardMessage = () => {
+        setForwardPopupOpen(true)
+        dispatch(setShowReply(true))
+        dispatch(setIsForward(true))
+        dispatch(setForwardMessage(msg))
+        console.log('forwarding ...')
+        closeContextMenu()
+
+    }
+
 
     useEffect(() => {
         if (msg.messageInfo.senderId !== User._id) {
@@ -225,6 +244,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     activeSelection={activeSelection}
                     activeReply={messageDoubleClickHandler}
                     pinMessage={pinMessage}
+                    forwardMessage={forwardMessage}
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
@@ -280,7 +300,14 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             {/* ----------------------------- delete modal */}
 
             <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} />
-
+            {forwardPopupOpen
+                ? <CustomizedDialogs
+                    open={forwardPopupOpen}
+                    title="Forward to ..."
+                    handelOpen={forwardPopupOpenHandler}
+                    children={<ChatListPopup setForwardPopupOpen={setForwardPopupOpen} />} />
+                : null
+            }
         </div>
     )
 }

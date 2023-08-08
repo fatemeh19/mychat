@@ -78,6 +78,7 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
 
 export const createMessage = async (chatId: string, newMessage: any, dispatch: any,) => {
     let res: any;
+    console.log('newMessage:', newMessage)
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {

@@ -4,11 +4,11 @@ import { contactInterface } from "@/src/redux/features/userContactListSlice";
 import { UserInterface } from "@/src/redux/features/userInfoSlice";
 import { useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 interface ReplyContentSectionProps {
     isReplied: boolean,
-    repliedMessage: recievedMessageInterface,
+    repliedMessage: recievedMessageInterface | undefined,
     containerClassName?: string
 }
 
@@ -23,10 +23,14 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
 
     let sender: contactInterface | UserInterface
 
-    if (repliedMessage.messageInfo.senderId === user._id) sender = user
+    useEffect(() => {
+        console.log('message: ', repliedMessage)
+    }, [repliedMessage])
+
+    if (repliedMessage?.messageInfo.senderId === user._id) sender = user
     else {
         let senderFromContact = userContactList.filter(contact => {
-            if (contact._id === repliedMessage.messageInfo.senderId) {
+            if (contact._id === repliedMessage?.messageInfo.senderId) {
                 return contact
             }
         })[0]
@@ -35,15 +39,15 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
 
 
     let fileName: any[] = []
-    if (isReplied && repliedMessage.messageInfo.content.url) {
-        const fileFullUrl = repliedMessage.messageInfo.content.url.split('\\')
+    if (isReplied && repliedMessage?.messageInfo.content.url) {
+        const fileFullUrl = repliedMessage?.messageInfo.content.url.split('\\')
         fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
     }
 
     return (
         <div className={`flex items-center gap-2 ${containerClassName ?? ''}`}>
             {
-                repliedMessage.messageInfo.content.contentType === messageTypes.photo && <div>
+                repliedMessage?.messageInfo.content.contentType === messageTypes.photo && <div>
                     <Image width={40} height={40} alt="" src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} className="w-[40px] h-[40px]" />
                 </div>
             }
@@ -51,9 +55,9 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
                 <p className="username text-blue-500 font-semibold text-sm">{sender.name}</p>
                 <p className="text-black text-sm font-light">
                     {
-                        repliedMessage.messageInfo.content.text !== ''
-                            ? repliedMessage.messageInfo.content.text
-                            : repliedMessage.messageInfo.content.contentType
+                        repliedMessage?.messageInfo.content.text !== ''
+                            ? repliedMessage?.messageInfo.content.text
+                            : repliedMessage?.messageInfo.content.contentType
                     }
                 </p>
             </div>

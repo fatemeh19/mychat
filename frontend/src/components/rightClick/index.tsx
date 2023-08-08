@@ -6,7 +6,7 @@ import { FC, useEffect, useRef, MouseEvent } from 'react'
 import { GoPeople } from 'react-icons/go'
 import { PiSelection } from 'react-icons/pi'
 import { FiEdit2, FiCopy } from 'react-icons/fi'
-import { BsReply, BsLink45Deg, BsPinAngle, BsTrash3 } from 'react-icons/bs'
+import { BsReply, BsLink45Deg, BsTrash3 } from 'react-icons/bs'
 import { PiPushPinLight, PiPushPinSlashLight } from 'react-icons/pi'
 
 import style from './style.module.css'
@@ -23,9 +23,21 @@ interface RightClickProps {
     activeSelection: (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void,
     activeReply: (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => void
     pinMessage: () => void
+    forwardMessage: () => void;
 }
 
-const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, showConfirmModal, activeSelection, activeReply, pinMessage }) => {
+const RightClick: FC<RightClickProps> = ({
+    x,
+    y,
+    closeContextMenu,
+    child,
+    msg,
+    showConfirmModal,
+    activeSelection,
+    activeReply,
+    pinMessage,
+    forwardMessage
+}) => {
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
     const hiddenScroll = useRef<HTMLDivElement>(null)
@@ -97,18 +109,8 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
                             <BsLink45Deg className={`${style.icon}`} />
                             <span>Copy Message Link</span>
                         </li>
-                        {/* <li className={`${style.item}`} onClick={() => showConfirmModal('Pin')}>
-
-                            {
-                                msg.pinStat.pinned
-                                    ? <PiPushPinSlashLight className={`${style.icon}`} />
-                                    : <PiPushPinLight className={`${style.icon}`} />
-                            }
-                            <span>Pin</span>
-                        </li> */}
                         <>
                             {
-                                // console.log(msg.pinStat.pinned)
                                 msg.pinStat.pinned
                                     ? <li className={`${style.item}`} onClick={pinMessage}>
                                         <PiPushPinSlashLight className={`${style.icon}`} />
@@ -120,7 +122,7 @@ const RightClick: FC<RightClickProps> = ({ x, y, closeContextMenu, child, msg, s
                                     </li>
                             }
                         </>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={forwardMessage}>
                             <BsReply className={`${style.rotateZ} ${style.icon}`} />
                             <span>Forward</span>
                         </li>

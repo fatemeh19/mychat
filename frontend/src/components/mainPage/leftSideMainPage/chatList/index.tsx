@@ -44,7 +44,7 @@ export default function ChatList() {
             <div className="tablet:block hidden py-4 text-center">
                 <BiArrowBack className="text-3xl tablet:block hidden text-gray-500 m-auto mb-3" />
             </div>
-            <ChatListItems />
+            <ChatListItems popup={false} />
         </div>
     )
 }

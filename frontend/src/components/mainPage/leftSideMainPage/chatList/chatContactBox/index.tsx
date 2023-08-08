@@ -2,6 +2,7 @@
 
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { setOpenChat } from "@/src/redux/features/openSlice";
+import { setShowReply } from "@/src/redux/features/repliedMessageSlice";
 import { addChatToTop, openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
@@ -27,7 +28,8 @@ interface chatContactProps {
     chatOpennedP?: Boolean,
     profilePicName: string,
     contactId?: string,
-    chatbox?: any
+    chatbox?: any,
+    popup: boolean
 }
 
 const ChatContactBox: FC<chatContactProps> = ({
@@ -43,7 +45,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     chatOpennedP,
     profilePicName,
     contactId,
-    chatbox
+    chatbox,
+    popup
 }) => {
     const dispatch = useAppDispatch()
     const [online, setOnline] = useState(status?.online)
@@ -54,6 +57,10 @@ const ChatContactBox: FC<chatContactProps> = ({
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const [lastMesText, setLastMesText] = useState(lastMessage)
     const [lastMesTime, setLastMesTime] = useState(lastMessageTime)
+
+    const date = new Date(lastMesTime);
+    const time = date.getHours() + ":" + date.getMinutes()
+
     // useEffect(() => {
     //     socket?.on('sendMessage', (message) => {
     //         console.log('chatOpennedP : ',chatOpennedP)
@@ -126,6 +133,8 @@ const ChatContactBox: FC<chatContactProps> = ({
                 dispatch(openHandle(i))
                 setChatOpenned(true)
                 dispatch(setChatOpenInList(true))
+                popup ? dispatch(setShowReply(true)) : null
+
                 break
             }
             else if (chatList.length - 1 == i) {
@@ -141,7 +150,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             onClick={handler}
             className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
-        tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center 
+        ${popup ? '' : 'tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center'} 
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]" :
                     (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]" : '')}`}>
             <div className='relative contactProfile h-full'>
@@ -169,11 +178,12 @@ const ChatContactBox: FC<chatContactProps> = ({
                     h-[50px] w-[50px] min-h-[50px] min-w-[50px]
                     object-cover rounded-full  " width={500} height={0} alt="contact-profile" />
             </div>
-            <div className='contactMessageDetail w-full 
-                    lg:grid 
-                    tablet:hidden
-                    grid
-                    '>
+            <div className={`
+                contactMessageDetail w-full 
+                lg:grid 
+                ${popup ? '' : 'tablet:hidden'}
+                grid
+            `}>
                 <div className="relative   w-full">
                     <span className='text-md font-bold contact-name w-3/5 inline-block truncate dark:text-white '>{ContactName}</span>
                     <div className="right-0 font-semibold text-sm top-[3px] absolute messageTimeSent text-gray-400">
@@ -182,12 +192,18 @@ const ChatContactBox: FC<chatContactProps> = ({
                     </div>
                 </div>
                 <div className="relative mess-detail2 w-full">
-                    {isTyping ?
-                        <span className='text-sm text-green-500'>Typing...</span>
-                        : <span className={"text-sm truncate last-mes w-5/6 inline-block "
-                            + (recivedMessage ? "text-gray-400" : (ContactSeen ?
-                                (chatOpennedP ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>
-                            {lastMesText}</span>
+                    {
+                        popup
+                            ? chatbox._id === chatbox.chatInfo._id
+                                ? <p>group</p>
+                                : <p>{time}</p>
+                            : isTyping ?
+                                <span className='text-sm text-green-500'>Typing...</span>
+                                : <span className={"text-sm truncate last-mes w-5/6 inline-block "
+                                    + (recivedMessage ? "text-gray-400" : (ContactSeen ?
+                                        (chatOpennedP ? "dark:text-white" : "text-gray-400") : "dark:text-white"))}>
+                                    {lastMesText}</span>
+
                     }
                     {lastMessegeByContact ?
                         (recivedMessage ? null :
