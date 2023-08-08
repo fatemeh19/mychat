@@ -59,7 +59,7 @@ export default function (io) {
     const messages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
-        messageInfo: forwardedMessage._id,
+        messageInfo: forwardedMessage,
         forwarded: {
           isForwarded:true,
           by:userId
