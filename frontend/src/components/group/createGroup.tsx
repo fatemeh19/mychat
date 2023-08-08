@@ -47,25 +47,25 @@ const CreateGroup: FC<CreateGroupProps> = ({
             const res = await callApi().post('/main/chat/', formData, config)
             console.log('createGroup res : ', res)
             if (res.status === 201 || res.statusText === 'created') {
-                // fetchUserChatList(dispatch)
                 // @ts-ignore
-                let imgType=groupPic.type.split('/')
+                let imgType = groupPic.type.split('/')
                 // @ts-ignore
-                let pic='\\'+(groupPic.lastModified) +'.'+imgType[1]
+                let pic = (groupPic.lastModified) + '.' + imgType[1]
+                // @ts-ignore
+                console.log(groupPic.path)
                 console.log(pic)
-                let newGroup= {
+                let newGroup = {
                     _id: res.data.value.chatId,
                     lastMessage: '',
                     lastMessageTime: '',
-                    chatInfo:{
-                        _id : res.data.value.chatId,
+                    chatInfo: {
+                        _id: res.data.value.chatId,
                         name: groupName,
                         profilePic: pic,
-                        status:{},
+                        status: {},
                     },
-                    open:false
+                    open: false
                 }
-                // let newGroupChat=[newGroup].contact
                 dispatch(addGroupChat(newGroup))
             }
         } catch (error) {

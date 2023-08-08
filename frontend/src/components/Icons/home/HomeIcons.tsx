@@ -12,6 +12,7 @@ import Menu from "../../mainPage/leftSideMainPage/menu";
 import EditProfile from "../../setting/editProfile";
 import { useAppSelector } from "@/src/redux/hooks";
 import CreateGroup from "../../group/createGroup";
+import Folders from "../../Folders";
 
 export function AllMessageIcon() {
 
@@ -48,6 +49,10 @@ export function MenuIcon() {
     const createGroupOpenHandler = () => {
         setOpenCreateGroup(!openCreateGroup)
     }
+    const [openFolderSetting, setOpenFolderSetting] = useState(false)
+    const folderSettingHandler = () => {
+        setOpenFolderSetting(!openFolderSetting)
+    }
     return (
 
         <div className="flex justify-center logo-icon py-2  sm:hover:bg-[#0d49cb]">
@@ -65,6 +70,7 @@ export function MenuIcon() {
                         contactListOpenHandler={contactListOpenHandler}
                         settingOpenHandler={settingOpenHandler}
                         createGroupOpenHandler={createGroupOpenHandler}
+                        folderSettingHandler={folderSettingHandler}
                     />}
                 />
                 : null
@@ -87,6 +93,14 @@ export function MenuIcon() {
                 openCreateGroup
                     ? <CreateGroup createGroupOpenHandler={createGroupOpenHandler} openCreateGroup={openCreateGroup} setOpenCreateGroup={setOpenCreateGroup} />
                     : null
+            }
+            {openFolderSetting
+                ? <CustomizedDialogs
+                    open={openFolderSetting}
+                    title="Folders"
+                    handelOpen={folderSettingHandler}
+                    children={<Folders />} />
+                : null
             }
         </div>
 

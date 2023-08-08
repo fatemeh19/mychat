@@ -1,26 +1,26 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface chatInfoInterface {
-    _id : string,
+    _id: string,
     name: string,
     profilePic: string,
-    status:{
-        online : boolean,
-        lastseen : string | Date | number
+    status: {
+        online: boolean,
+        lastseen: string | Date | number
     },
 }
 interface chatBoxInterface {
     _id: string,
     lastMessage: string,
     lastMessageTime: string,
-    chatInfo:chatInfoInterface,
-    open:boolean
+    chatInfo: chatInfoInterface,
+    open: boolean
 }
 interface initialStateInterface {
-    chatList : chatBoxInterface[]
+    chatList: chatBoxInterface[]
 }
 
 const initialState = {
-    chatList : []
+    chatList: []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
@@ -37,9 +37,9 @@ export const contactSlice = createSlice({
             state.chatList = action.payload
         },
         addChatToTop: (state, action: PayloadAction<any>) => {
-            const element=state.chatList.splice(action.payload,1)[0]
-            console.log(element)
-            state.chatList.splice(state.chatList.length,0,element)
+            const element = state.chatList.splice(action.payload, 1)[0]
+            console.log("chat list after state.chatList.splice(action.payload,1): ", state.chatList)
+            state.chatList.splice(state.chatList.length, 0, element)
         },
         openHandle: (state, action: PayloadAction<any>) => {
             state.chatList[action.payload].open = !(state.chatList[action.payload].open);

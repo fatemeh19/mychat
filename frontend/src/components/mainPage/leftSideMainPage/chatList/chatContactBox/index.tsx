@@ -48,7 +48,7 @@ const ChatContactBox: FC<chatContactProps> = ({
     const dispatch = useAppDispatch()
     const [online, setOnline] = useState(status?.online)
     // const [lastSeen , setLastSeen] = useState(status?.lastseen)
-    const [chatOpenned, setChatOpenned] = useState(false)
+    const [chatOpenned, setChatOpenned] = useState(chatOpennedP)
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
@@ -74,12 +74,16 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     useEffect(() => {
         // socket?.on('sendMessage', (message) => {
-        console.log('chatOpennedP : ', chatOpennedP)
+        console.log('chatOpennedP : ', chatOpenned)
         console.log('chatMessages : ', chatMessages)
-        if ((chatOpennedP || chatOpenned) && (chatMessages != undefined)) {
+        if (chatOpenned && (chatMessages != undefined)) {
             if (chatMessages?.length > 0) {
-                console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length - 1])
-                if (chatMessages[chatMessages?.length - 1].messageInfo.content.contentType != 'text' && chatMessages[chatMessages?.length - 1].messageInfo.content.text == '') {
+                // if(chatMessages[chatMessages?.length - 1].messageInfo.senderId==contactId){
+
+                // }
+                if (chatMessages[chatMessages?.length - 1].messageInfo.content.contentType != 'text'
+                    && chatMessages[chatMessages?.length - 1].messageInfo.content.text == ''
+                ) {
                     let text = chatMessages[chatMessages?.length - 1].messageInfo.content.originalName
                     setLastMesText((text ? text : ''))
                 }
@@ -88,6 +92,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 }
                 setLastMesTime(chatMessages[chatMessages?.length - 1].messageInfo.updatedAt)
                 console.log(lastMesText)
+
                 //add chat on top of the list bc this chat have new message
                 if (chatbox != undefined) {
                     const fromIndex = chatList.indexOf(chatbox)
@@ -97,7 +102,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             }
         }
         // })
-    }, [chatMessages, chatOpennedP])
+    }, [chatMessages, chatOpenned])
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
             console.log('contactId : ' + contactId)

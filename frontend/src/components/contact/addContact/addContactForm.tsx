@@ -31,7 +31,7 @@ const AddContactFormInner = (props: any) => {
     const dispatch = useAppDispatch()
 
     add = (contact: any) => {
-        
+
         fetchUserContactsListData(dispatch);
         console.log("contact : " + contact)
         handleAddContact()
@@ -42,7 +42,7 @@ const AddContactFormInner = (props: any) => {
 
         <Form className=" w-full px-5">
             <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
-            <InputField name='lastName' label="Last name" />
+            <InputField name='lastName' label="Last name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
             <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />} />
             <div className="errMessage ml-8 w-auto text-red-500 text-sm">{values.msg}</div>
             <div className="my-5 gap-1 flex justify-end">
@@ -101,7 +101,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             console.log(res)
             if (res.status === 200) {
                 values.msg = "با موفقیت ایجاد شد"
-                
+
                 addBtn.current.addEventListener('onClick', add(contact))
             }
         } catch (error) {

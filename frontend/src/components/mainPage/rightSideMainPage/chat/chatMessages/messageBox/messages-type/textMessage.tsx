@@ -3,6 +3,7 @@ import RepliedMessage from "./repliedMessage";
 import { RefObject, useEffect, useState } from "react";
 import { BiCheck, BiCheckDouble } from "react-icons/bi";
 import { PiPushPinFill } from "react-icons/pi";
+import { useAppSelector } from "@/src/redux/hooks";
 
 
 
@@ -12,6 +13,7 @@ const TextMessage = ({ dir, msg, messageBoxRef }: { dir: string, msg: recievedMe
     const time = date.getHours() + ":" + date.getMinutes()
     const [seenMessage, setSeenMessage] = useState(false)
 
+    const User = useAppSelector(state => state.userInfo).User
     useEffect(() => {
         if (msg.seenIds.length > 0) {
             setSeenMessage(true)
@@ -34,10 +36,12 @@ const TextMessage = ({ dir, msg, messageBoxRef }: { dir: string, msg: recievedMe
                             }
                             <span>{time} AM</span>
                             <span className="pl-1 text-green-500">
-                                {seenMessage
-                                    ? <BiCheckDouble />
-                                    : <BiCheck />
+                                {
+                                    msg.messageInfo.senderId === User._id
+                                        ? (seenMessage ? <BiCheckDouble /> : <BiCheck />)
+                                        : null
                                 }
+
                             </span>
                         </div>
                     </div>

@@ -4,7 +4,8 @@ import {
     BiUser,
     BiCog,
     BiGroup,
-    BiSave
+    BiSave,
+    BiFolder
 
 } from "react-icons/bi";
 import { IoIosMoon } from "react-icons/io";
@@ -16,14 +17,16 @@ interface MenuProps {
     handleMenu: () => void,
     contactListOpenHandler: () => void,
     settingOpenHandler: () => void,
-    createGroupOpenHandler: () => void
+    createGroupOpenHandler: () => void,
+    folderSettingHandler: () => void
 }
 
 const Menu: FC<MenuProps> = ({
     handleMenu,
     contactListOpenHandler,
     settingOpenHandler,
-    createGroupOpenHandler
+    createGroupOpenHandler,
+    folderSettingHandler
 }) => {
     const selector = useAppSelector(state => state.userInfo)
     const userInfo = selector.User
@@ -62,6 +65,14 @@ const Menu: FC<MenuProps> = ({
                 <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100">
                     <BiSave className="text-gray-500 text-2xl" />
                     <span className="text-base">Saved Message</span>
+                </div>
+                <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => {
+                        handleMenu();
+                        folderSettingHandler();
+                    }}>
+                    <BiFolder className="text-gray-500 text-2xl" />
+                    <span className="text-base">Folders</span>
                 </div>
                 <div className="flex gap-5 p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {

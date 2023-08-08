@@ -18,7 +18,6 @@ export const fetchUserContactsListData = async (dispatch: any) => {
     const res = await callApi().get('/main/contact/', config)
     if (res.statusText && res.statusText === 'OK') {
         const contacts = res.data.value.contacts;
-        // console.log(contacts)
         dispatch(addContactsList(contacts))
     }
 
@@ -65,17 +64,14 @@ export const fetchUserChatList = async (dispatch: any) => {
     }
     const res = await callApi().get('/main/chat/', config)
     if (res.statusText && res.statusText === 'OK') {
-        // console.log(res)
         const chatList = res.data.value.chats;
         console.log("all chatList:", chatList)
         dispatch(addChatList([]))
-        // console.log(chatList)
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
             console.log(chatList[i].chatType)
             if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
-                console.log('chatInfo : ', chatInfo)
             }
             else if (chatList[i].chatType == "group") {
                 chatInfo = {
@@ -88,7 +84,7 @@ export const fetchUserChatList = async (dispatch: any) => {
             let lastMessage = ''
             let lastMessageTime = ''
             if (chatList[i].messages[0] != null) {
-                console.log('chatList[i].messages[0]:', chatList[i].messages)
+                console.log('chatList[i].messages:', chatList[i].messages)
                 lastMessage = chatList[i].messages[0].messageInfo.content.text
                 lastMessageTime = chatList[i].messages[0].messageInfo.updatedAt
             }
