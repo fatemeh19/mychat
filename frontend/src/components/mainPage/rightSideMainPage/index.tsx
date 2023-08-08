@@ -116,10 +116,29 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             }
 
         })
+        socket.on('forwardMessage', (forwardInfo) => {
+            console.log('forwardInfo:', forwardInfo)
+            forwardInfo.forwardedMessages.map((fm: recievedMessageInterface) => {
+                let chatMessage = {
+                    pinState: {
+                        pinned: false
+                    },
+                    forwarded: {
+                        isForwarded: true,
+                        messageId: fm._id
+                    },
+                    seenIds: [],
+                    deletedIds: [],
+                    _id: Math.random()
+                }
+                dispatch(addMessage(chatMessage))
+            })
+        })
         return () => {
             socket.removeAllListeners('sendMessage')
             socket.removeAllListeners('deleteMessage')
             socket.removeAllListeners('pinUnpinMessage')
+            socket.removeAllListeners('forwardMessage')
         }
     })
 

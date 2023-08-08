@@ -13,6 +13,7 @@ import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosReque
 import VoiceRecord from './voiceRecord'
 import ReplySection from './replySection'
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
+import { setIsForward } from '@/src/redux/features/forwardMessageSlice'
 
 interface chatSendProps {
     contactId: string,
@@ -34,6 +35,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const showReply = useAppSelector(state => state.repledMessage).ShowReply
     const repliedMessageId = useAppSelector(state => state.repledMessage).RepliedMessage._id
     const isForward = useAppSelector(state => state.forwardMessage).isForward
+    const forwardMessage = useAppSelector(state => state.forwardMessage).forwardMessage
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -81,6 +83,12 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         }
         if (type === messageTypes.text && input.length == 0) {
             console.log('empty text')
+            if (isForward) {
+                console.log('forward msg: ', forwardMessage)
+                socket.emit('forwardMessage', chatId, [forwardMessage.messageInfo._id])
+                isForward && dispatch(setIsForward(false))
+                showReply && dispatch(setShowReply(false))
+            }
         } else {
             console.log('type : ', type)
             let newMessage = new FormData()
@@ -107,10 +115,13 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 console.log('socket is exist')
                 newMessage.forEach(item => console.log(item))
                 chatId ? socket.emit('sendMessage', chatId, message) : null
+                chatId && isForward ? socket.emit('forwardMessage', chatId, [forwardMessage.messageInfo._id]) : null
+
                 // socket.emit('sendMessage', chatId, message)
             }
             dispatch(setFirstChat(false))
             showReply && dispatch(setShowReply(false))
+            isForward && dispatch(setIsForward(false))
         }
     }
 

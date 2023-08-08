@@ -9,7 +9,7 @@ import { ChatType, MessageBoxDir } from "@/src/models/enum"
 import { setToggle } from "@/src/redux/features/toggleSlice"
 import { recievedMessageInterface } from "@/src/models/interface"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
-import { addSeenIds, updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addSeenIds } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
 import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
@@ -55,7 +55,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const Contact = useAppSelector(state => state.userContact).Contact
     const socket = useAppSelector(state => state.socket).Socket
     const chatId = useAppSelector(state => state.chat).Chat._id
-    const chatType = useAppSelector(state => state.chat).chatType
+    const chatType = useAppSelector(state => state.chat).Chat.chatType
     const selectedMessages = useAppSelector(state => state.selectedMessage).SelectedMessages
     const activeSelectedMessages = useAppSelector(state => state.selectedMessage).activeSelection
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
@@ -212,7 +212,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     useEffect(() => {
         if (msg.messageInfo.senderId !== User._id) {
             console.log('emit seenMessageId : ', msg._id)
-            socket.emit('seenMessage', msg._id)
+            socket.emit('seenMessage', chatId, msg._id)
         }
 
         socket.on('seenMessage', (messageId, userId) => {
@@ -251,44 +251,48 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                 {activeSelectedMessages && <div ref={selectIconRef} className={` w-[15px] h-[15px] border-[1px] border-black rounded-full transition-all duration-100`} > </div>}
                 {
                     chatType !== ChatType.private
-                        ? (
-                            <div className="profileImageBox relative">
-                                {/* this image for box width so the text dont go under the profile image and make the opacity - 0 so we can see the second image ... i use this method til find better way */}
-                                <Image
-                                    src={
-                                        information.profilePic
-                                            ? `/uploads/picture/${information.profilePic}`
-                                            : '/uploads/picture/defaultProfilePic.png'
-                                    }
-                                    width={45}
-                                    height={0}
-                                    alt=""
-                                    className="rounded-full opacity-0 max-w-lg "
-                                />
-                                <Image
-                                    src={
-                                        information.profilePic
-                                            ? `/uploads/picture/${information.profilePic}`
-                                            : '/uploads/picture/defaultProfilePic.png'
-                                    }
-                                    width={45}
-                                    height={0}
-                                    alt=""
-                                    className="rounded-full absolute top-0 left-0 max-w-lg w-[50px] h-[50px] object-cover "
-                                />
-                            </div>
-                        )
+                        ? msg.messageInfo.senderId !== User._id
+                            ? (
+                                <div className="profileImageBox relative">
+                                    {/* this image for box width so the text dont go under the profile image and make the opacity - 0 so we can see the second image ... i use this method til find better way */}
+                                    <Image
+                                        src={
+                                            information.profilePic
+                                                ? `/uploads/picture/${information.profilePic}`
+                                                : '/uploads/picture/defaultProfilePic.png'
+                                        }
+                                        width={45}
+                                        height={0}
+                                        alt=""
+                                        className="rounded-full opacity-0 max-w-lg "
+                                    />
+                                    <Image
+                                        src={
+                                            information.profilePic
+                                                ? `/uploads/picture/${information.profilePic}`
+                                                : '/uploads/picture/defaultProfilePic.png'
+                                        }
+                                        width={45}
+                                        height={0}
+                                        alt=""
+                                        className="rounded-full absolute top-0 left-0 max-w-lg w-[50px] h-[50px] object-cover "
+                                    />
+                                </div>
+                            )
+                            : null
                         : null
                 }
 
                 <div className={`content flex flex-col mb-2 ${information.dir === 'rtl' ? 'items-end' : 'items-start'}`}>
                     {
                         chatType !== ChatType.private
-                            ? (
-                                <div className={`flex gap-2 items-end mb-2 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
-                                    <h1 className="name font-bold text-sm text-center whitespace-nowrap dark:text-white">{information.name}</h1>
-                                </div>
-                            )
+                            ? msg.messageInfo.senderId !== User._id
+                                ? (
+                                    <div className={`flex gap-2 items-end mb-2 ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
+                                        <h1 className="name font-bold text-sm text-center whitespace-nowrap dark:text-white">{information.name}</h1>
+                                    </div>
+                                )
+                                : null
                             : null
                     }
 
