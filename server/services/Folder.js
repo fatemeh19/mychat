@@ -78,6 +78,11 @@ const deleteFolder = async (Query)=>{
     return result
 }
 
+const updateFolders = async (Query,update)=>{
+  const updated = await Folder.updateMany(Query,update)
+  return updated
+}
+
 export {
     aggregateFolders,
     findAndUpdateBySave,
@@ -85,6 +90,7 @@ export {
     findAndUpdateFolder,
     createFolder,
     findFolder,
-    deleteFolder
+    deleteFolder,
+    updateFolders
 
 }
