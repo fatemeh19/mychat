@@ -301,10 +301,9 @@ const editMessage = async (req, res) => {
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      message:editedMessage
+      message:editedMessage,
     },
   });
-  // res.send(updated);
 };
 export {
   editMessage,

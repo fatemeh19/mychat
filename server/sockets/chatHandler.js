@@ -16,10 +16,10 @@ export default function (io) {
     // const userId = socket.user.userId;
     io.to(chatId).emit("sendMessage", message);
   };
-  const editMessage = async function (chatId, message) {
+  const editMessage = async function (chatId, message,subId) {
     const socket = this;
     // const userId = socket.user.userId;
-    io.to(chatId).emit("editMessage", message);
+    io.to(chatId).emit("editMessage", message, subId);
   };
 
   const deleteMessage = async function (deleteInfo) {
