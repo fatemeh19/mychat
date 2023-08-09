@@ -12,7 +12,7 @@ export default async (server) => {
     },
   });
   const { online, offline } = statusHandler(io);
-  const {editMessage,pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
+  const {deleteChat,editMessage,pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
 
   // const onChat = io.of("/onChat");
   // onChat.on("connection", (socket) => {
@@ -38,7 +38,7 @@ export default async (server) => {
     console.log("user connected to general socket");
     socket.on("online", online);
     // socket.on("offline", offline);
-
+    socket.on("deleteChat",deleteChat)
     socket.on("onChat", onChat);
     socket.on("editMessage",editMessage)
     socket.on("sendMessage",sendMessage)

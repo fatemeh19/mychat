@@ -1,6 +1,7 @@
 import Chat from "../models/Chat.js";
 import * as Services from "../services/index.js";
 import { DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
+import { DeleteChat } from "../controllers/chatController.js";
 export default function (io) {
   const onChat = function (chatId) {
     const socket = this;
@@ -15,10 +16,10 @@ export default function (io) {
     // const userId = socket.user.userId;
     io.to(chatId).emit("sendMessage", message);
   };
-  const editMessage = async function (chatId, message) {
+  const editMessage = async function (chatId, message,subId) {
     const socket = this;
     // const userId = socket.user.userId;
-    io.to(chatId).emit("editMessage", message);
+    io.to(chatId).emit("editMessage", message, subId);
   };
 
   const deleteMessage = async function (deleteInfo) {
@@ -52,13 +53,14 @@ export default function (io) {
     const socket = this;
     const userId = socket.user.userId;
 
-    const forwardedMessages = await Services.Message.getMessages({
+    let forwardedMessages = await Services.Message.getMessages({
       _id: { $in: messageIds },
     });
+    let forwardedMsgs = [...forwardedMessages]
     const messages = []
     forwardedMessages.forEach((forwardedMessage) => {
       messages.push({
-        messageId: forwardedMessage._id,
+        messageInfo: forwardedMessage._id,
         forwarded: {
           isForwarded:true,
           by:userId
@@ -73,13 +75,13 @@ export default function (io) {
       },
       { new: true }
     );
-    const forwardInfo = {
-      forwardedMessages,
-      forwardedBy: userId,
-      chat,
-    }
+    
+    forwardedMessages = chat.messages.slice(chat.messages.length-messages.length,chat.messages.length)
+    forwardedMessages.forEach((forwardedMessage, index)=>{
+      forwardedMessage.messageInfo = forwardedMsgs[index]
+    })
 
-    io.to(chatId).emit("forwardMessage", forwardInfo);
+    io.to(chatId).emit("forwardMessage", forwardedMessages);
 
   };
 
@@ -92,5 +94,17 @@ export default function (io) {
 
   }
 
-  return {editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
+  const deleteChat = async function(deleteInfo){
+    const socket = this;
+    const userId = socket.user.userId;
+    const { chatId,deleteAll } = deleteInfo;
+    DeleteChat( deleteInfo);
+
+    if(deleteAll){
+      io.to(chatId).emit("deleteChat", deleteInfo);
+    }
+
+  }
+
+  return {deleteChat,editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }

@@ -44,7 +44,7 @@ const findAndUpdateUser = async (id, updateQuery,options) => {
   return user;
 };
 
-const findUsers = async (Query, select = "", sort = "") => {
+const findUsers = async (Query, select = {}, sort = "") => {
   const users = await User.find(Query).select(select).sort(sort);
   return users;
 };
@@ -74,11 +74,17 @@ const aggregateUsers = async (pipeLine)=>{
 
 }
 
+const updateUsers = async (Query,update)=>{
+  const updated = await User.updateMany(Query,update)
+  return updated
+}
+
 export {
   findUsers,
   findUser,
   createUser,
   findAndUpdateUser,
   findAndUpdateBySave,
-  aggregateUsers
+  aggregateUsers,
+  updateUsers
 };

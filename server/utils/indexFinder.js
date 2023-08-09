@@ -1,6 +1,5 @@
 const indexFinder =  (x,y,list,value,reverse=false)=>{
     let borderIndex = Math.floor((x+y)/2)
-   
     if(list[borderIndex].equals(value)){
         return borderIndex
     }else{

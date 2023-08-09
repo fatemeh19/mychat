@@ -43,7 +43,6 @@ const UserSchema = new mongoose.Schema(
       online: Boolean,
       lastseen: Date,
     },
-    contacts: [],
     profilePic: String,
     isVerified: {
       type: Boolean,
@@ -84,14 +83,32 @@ const UserSchema = new mongoose.Schema(
         ref:"Folder"
       }
     ],
+    chats: [
+      {
+        pinned: {
+          type: Boolean,
+          default: false,
+        },
+        chatInfo: {
+          type: mongoose.Types.ObjectId,
+          ref: "Chat",
+        },
+        addedAt:{
+          type:Date,
+          default:Date.now()
+        }
+      },
+    ],
     pinnedChats: [
       {
         type: mongoose.Types.ObjectId,
         ref: "Chat",
       },
     ],
+    // settingId:
   },
   { timestamps: true }
+  
 );
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;

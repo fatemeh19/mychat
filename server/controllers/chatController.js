@@ -19,7 +19,7 @@ const createChat = async (req, res) => {
     file,
   } = req;
   const data = await Validators.createChat.validate(body);
-  // if type of chat is group
+  // if type of chat is private
   if (data.chatType == chatType[1]) {
     const chatExists = await Services.Chat.getChat({
       and: [
@@ -59,9 +59,17 @@ const createChat = async (req, res) => {
   });
 
   data["members"] = members;
-  console.log(data);
+  
 
   const chat = await Services.Chat.createChat(data);
+  await Services.User.updateUsers(
+    {
+      _id: { $in: data.memberIds },
+    },
+    {
+      $push: {chats:{chatInfo:chat._id} },
+    }
+  );
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.CREATED,
@@ -77,12 +85,12 @@ const getChat = async (req, res) => {
     user: { userId },
     params: { id: chatId },
   } = req;
-
+  const user = await Services.User.findUser({_id:userId})
   const chat = await Services.Chat.getChat({ _id: chatId });
-  let joinedAt;
-  chat.members.forEach((member) => {
-    if (member.memberId.equals(userId)) {
-      joinedAt = member.joinedAt;
+  let addedAt;
+  user.chats.forEach((chat) => {
+    if (chat.chatInfo.equals(chatId)) {
+      addedAt = chat.addedAt;
     }
   });
   if (!chat) {
@@ -109,51 +117,24 @@ const getChat = async (req, res) => {
   });
 
   const messageIdss = messages.map((message) => message._id);
- 
+
   let index;
-  let i = 0
+  let i = 0;
   let length = chat.messages.length;
   for (index = 0; index < length; index++) {
-    if (messages[i].createdAt < joinedAt) {
+    if (messages[i].createdAt < addedAt) {
       chat.messages.splice(index, 1);
       index--;
       length = chat.messages.length;
-      i++
+      i++;
       continue;
     }
-    let messageIndex = indexFinder(
-      0,
-      messageIdss.length,
-      messageIdss,
-      chat.messages[index].messageInfo
-    );
-    chat.messages[index].messageInfo = messages[messageIndex];
-    i++
+    
+    chat.messages[index].messageInfo = messages[i];
+    i++;
   }
 
-  // chat.messages.forEach((message) => {
-  //   // console.log(index)
-  //   console.log(chat.messages)
-  //   // console.log("messages[index].createdAt=",messages[index].createdAt)
-  //   // console.log("joinedAt=",joinedAt)
-  //   // console.log(messages[index]._id)
-  //   if(messages[index].createdAt<joinedAt){
-  //     chat.messages.splice(index,1)
-  //     index--
-
-  //   }
-  //     let messageIndex = indexFinder(
-  //       0,
-  //       messageIdss.length,
-  //       messageIdss,
-  //       message.messageInfo
-  //     );
-  //     message.messageInfo = messages[messageIndex];
-  //     index++
-
-  //   // console.log(chat.messages)
-
-  // });
+  
 
   await RH.SendResponse({
     res,
@@ -170,8 +151,10 @@ const getChats = async (req, res) => {
   const {
     user: { userId },
   } = req;
+  const user = await Services.User.findUser({_id:userId})
+  const chatIds = user.chats.map((chat)=>chat.chatInfo)
   const chats = await Services.Chat.getChats(
-    { "members.memberId": userId },
+    { _id: {$in:chatIds} },
     "",
     "-updatedAt"
   );
@@ -192,10 +175,51 @@ const getChats = async (req, res) => {
     if (!chat.messages.length) {
       return;
     }
+  
     chat.messages.splice(0, chat.messages.length - 1);
-    chat.messages[0].messageInfo = messages[index];
-    index++;
+    if(!messages[index] || !chat.messages[0].messageInfo.equals(messages[index]._id) ){
+      messages.forEach((message,i)=>{
+        if(message._id.equals(chat.messages[0].messageInfo)){
+          chat.messages[0].messageInfo = messages[i];
+
+        }
+      })
+    }else{
+      chat.messages[0].messageInfo = messages[index];
+      index++;
+
+    }
+    
   });
+  
+  // let index;
+  // let i = 0;
+  // let length = chats.length;
+  // for (index = 0; index < length; index++) {
+  //   if (messages[i].createdAt < addedAt) {
+  //     chat.messages.splice(index, 1);
+  //     index--;
+  //     length = chat.messages.length;
+  //     i++;
+  //     continue;
+  //   }
+  //   let messageIndex = indexFinder(
+  //     0,
+  //     messageIdss.length,
+  //     messageIdss,
+  //     chat.messages[index].messageInfo
+  //   );
+  //   chat.messages[index].messageInfo = messages[messageIndex];
+  //   i++;
+  // }
+
+
+
+
+
+
+
+
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
@@ -205,8 +229,20 @@ const getChats = async (req, res) => {
     },
   });
 };
+const addToChats = async (req, res)=>{
+  const {params:{id:chatId}, user:{userId}} = req
+
+  // if chat does not exists
+  // error
+
+  await Services.User.findAndUpdateUser(userId,{
+    $push:{chats:{chatInfo:chatId , addedAt:Date.now()}}
+  })
+  res.send("ok")
 
 
+
+}
 const pinUnpinChat = async (req, res) => {
   const {
     body,
@@ -257,6 +293,117 @@ const pinUnpinChat = async (req, res) => {
   });
 };
 
+const DeleteChat = async (deleteInfo) => {
+  const {
+    chatId ,
+    userId ,
+    deleteAll
+  } = deleteInfo;
+  const chat = await Services.Chat.getChat({ _id: chatId });
+  const user = await Services.User.findUser({ _id: userId });
+  if (deleteAll) {
+    if (chat.chatType == "group") {
+      if (!chat.owner.equals(userId)) {
+        return res.send("no access")
+      }
+    }
+    await Services.Chat.deleteChat({ _id: chatId });
+    await Services.Folder.updateFolders(
+      {
+        "chats.chatInfo": chatId,
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+    // pinned chats
+    const memberIds = chat.members.map((member) => member.memberId);
+    await Services.User.updateUsers(
+      {
+        _id: { $in: memberIds },
+      },
+      {
+        $pull: { pinnedChats: chatId , chats:{chatInfo:chatId} },
+      }
+    );
+  } else {
+    if(chat.chatType == "group"){
+      await Services.Chat.findAndUpdateChat(chatId, {
+        $pull: { members: { memberId: userId } },
+      });
+    }
+    
+    await Services.Folder.updateFolders(
+      {
+        _id: { $in: user.folders },
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
 
+    await Services.User.findAndUpdateUser(userId, {
+      $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
+    });
+  }
 
-export { pinUnpinChat, createChat, getChat, getChats };
+  res.send("ok");
+};
+const deleteChat = async (req, res) => {
+  const {
+    params: { id: chatId },
+    user: { userId },
+    body: { deleteAll },
+  } = req;
+  const chat = await Services.Chat.getChat({ _id: chatId });
+  const user = await Services.User.findUser({ _id: userId });
+  if (deleteAll) {
+    if (chat.chatType == "group") {
+      if (!chat.owner.equals(userId)) {
+        return res.send("no access")
+      }
+    }
+    await Services.Chat.deleteChat({ _id: chatId });
+    await Services.Folder.updateFolders(
+      {
+        "chats.chatInfo": chatId,
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+    // pinned chats
+    const memberIds = chat.members.map((member) => member.memberId);
+    await Services.User.updateUsers(
+      {
+        _id: { $in: memberIds },
+      },
+      {
+        $pull: { pinnedChats: chatId , chats:{chatInfo:chatId} },
+      }
+    );
+  } else {
+    if(chat.chatType == "group"){
+      await Services.Chat.findAndUpdateChat(chatId, {
+        $pull: { members: { memberId: userId } },
+      });
+    }
+    
+    await Services.Folder.updateFolders(
+      {
+        _id: { $in: user.folders },
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+
+    await Services.User.findAndUpdateUser(userId, {
+      $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
+    });
+  }
+
+  res.send("ok");
+};
+
+export {addToChats,DeleteChat,deleteChat, pinUnpinChat, createChat, getChat, getChats };

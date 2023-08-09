@@ -136,9 +136,21 @@ const setStatus = async ({userId,online})=>{
 
 }
 
+const getUser = async (req, res)=>{
+  const {id:userId} = req.params
+  const user = await Services.User.findUser({_id:userId})
+  // if user does not exists
+
+  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok",value:{
+    user
+  }})
+
+  
+}
 export {
  setInfo,
  getProfile,
  editProfile,
- setStatus
+ setStatus,
+ getUser
 };
