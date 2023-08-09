@@ -45,10 +45,15 @@ const getMessages = async (filterQuery = {},select ="", sort ="") => {
   const messages = await Message.find(filterQuery).select(select).sort(sort);
   return messages;
 };
+const aggregateMessages = async (pipeLine)=>{
+  const result = await Message.aggregate(pipeLine) 
+  return result
+}
 export {
   createMessage,
   findMessage,
   deleteMessage,
   updateMessages,
   getMessages,
+  aggregateMessages
 };
