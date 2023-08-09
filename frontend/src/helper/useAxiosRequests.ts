@@ -76,7 +76,7 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
     }
 }
 
-export const createMessage = async (chatId: string, newMessage: any, dispatch: any,) => {
+export const createMessage = async (chatId: string, newMessage: any, dispatch: any) => {
     let res: any;
     console.log('newMessage:', newMessage)
     try {
@@ -90,4 +90,13 @@ export const createMessage = async (chatId: string, newMessage: any, dispatch: a
         console.log('createMessage error : ', error)
     }
 
+}
+
+export const getGroupMembers = async (chatId: string, dispatch: any) => {
+    try {
+        const res = await callApi().get(`/main/chat/group/getMembers/${chatId}`, config)
+        console.log('get group members res : ', res)
+    } catch (error) {
+        console.log('get group members error : ', error)
+    }
 }

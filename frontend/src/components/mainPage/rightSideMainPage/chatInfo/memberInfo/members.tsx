@@ -1,6 +1,7 @@
+import { getGroupMembers } from "@/src/helper/useAxiosRequests";
 import { groupMembers } from "@/src/models/interface";
-import { useAppSelector } from "@/src/redux/hooks";
-import { FC } from "react";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { FC, useEffect } from "react";
 
 interface MembersProps {
 
@@ -10,6 +11,18 @@ const Members: FC<MembersProps> = () => {
 
     // const chat = useAppSelector(state => state.chat).Chat  
     // درخواست اچ تی تی چی اعضای گروه
+
+    const dispatch = useAppDispatch()
+    const chatId = useAppSelector(state => state.chat).Chat._id
+
+    useEffect(() => {
+        (async () => {
+            const members = await getGroupMembers(chatId, dispatch)
+            console.log('members array : ', members)
+        })()
+
+
+    }, [])
 
     return (
         <>
