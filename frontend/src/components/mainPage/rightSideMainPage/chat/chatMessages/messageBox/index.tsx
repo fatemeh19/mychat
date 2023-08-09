@@ -193,7 +193,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     useEffect(() => {
         if (msg.messageInfo.senderId !== User._id) {
             console.log('emit seenMessageId : ', msg._id)
-            socket.emit('seenMessage', msg._id, chatId)
+            socket.emit('seenMessage', chatId, msg._id)
         }
 
         socket.on('seenMessage', (messageId, userId) => {
