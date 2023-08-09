@@ -129,39 +129,12 @@ const getChat = async (req, res) => {
       i++;
       continue;
     }
-    let messageIndex = indexFinder(
-      0,
-      messageIdss.length,
-      messageIdss,
-      chat.messages[index].messageInfo
-    );
-    chat.messages[index].messageInfo = messages[messageIndex];
+    
+    chat.messages[index].messageInfo = messages[i];
     i++;
   }
 
-  // chat.messages.forEach((message) => {
-  //   // console.log(index)
-  //   console.log(chat.messages)
-  //   // console.log("messages[index].createdAt=",messages[index].createdAt)
-  //   // console.log("joinedAt=",joinedAt)
-  //   // console.log(messages[index]._id)
-  //   if(messages[index].createdAt<joinedAt){
-  //     chat.messages.splice(index,1)
-  //     index--
-
-  //   }
-  //     let messageIndex = indexFinder(
-  //       0,
-  //       messageIdss.length,
-  //       messageIdss,
-  //       message.messageInfo
-  //     );
-  //     message.messageInfo = messages[messageIndex];
-  //     index++
-
-  //   // console.log(chat.messages)
-
-  // });
+  
 
   await RH.SendResponse({
     res,
@@ -196,22 +169,27 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-  let messageIdss = messages.map((message)=>message._id)
+
   let index = 0;
   chats.forEach((chat) => {
     if (!chat.messages.length) {
       return;
     }
+  
     chat.messages.splice(0, chat.messages.length - 1);
+    if(!messages[index] || !chat.messages[0].messageInfo.equals(messages[index]._id) ){
+      messages.forEach((message,i)=>{
+        if(message._id.equals(chat.messages[0].messageInfo)){
+          chat.messages[0].messageInfo = messages[i];
 
-    // let messageIndex = indexFinder(
-    //   0,
-    //   messageIdss.length,
-    //   messageIdss,
-    //   chat.messages[0].messageInfo
-    // );
-    chat.messages[0].messageInfo = messages[index];
-    index++;
+        }
+      })
+    }else{
+      chat.messages[0].messageInfo = messages[index];
+      index++;
+
+    }
+    
   });
   
   // let index;
