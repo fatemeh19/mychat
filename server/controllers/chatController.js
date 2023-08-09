@@ -204,14 +204,13 @@ const getChats = async (req, res) => {
     }
     chat.messages.splice(0, chat.messages.length - 1);
 
-    let messageIndex = indexFinder(
-      0,
-      messageIdss.length,
-      messageIdss,
-      chat.messages[0].messageInfo
-    );
-    chat.messages.splice(0, chat.messages.length - 1);
-    chat.messages[0].messageInfo = messages[messageIndex];
+    // let messageIndex = indexFinder(
+    //   0,
+    //   messageIdss.length,
+    //   messageIdss,
+    //   chat.messages[0].messageInfo
+    // );
+    chat.messages[0].messageInfo = messages[index];
     index++;
   });
   
