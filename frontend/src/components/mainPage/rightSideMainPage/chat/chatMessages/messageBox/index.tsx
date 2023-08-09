@@ -97,6 +97,9 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             // @ts-ignore
             setSender(userContactList[index])
         }
+    }, [])
+    useEffect(() => {
+
 
         const profilePic = sender?.profilePic ? (sender.profilePic).split(`\\`) : '';
         information.dir = sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr
@@ -116,7 +119,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         const index = findIndex(0, contactIds.length, contactIds, sender?._id)
         console.log('index')
 
-    }, [])
+    }, [sender])
 
 
 

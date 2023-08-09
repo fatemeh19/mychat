@@ -42,4 +42,10 @@ interface recievedMessageInterface {
         by: string //userId
     }
 }
-export type { infoFace, recievedMessageInterface }
+
+interface groupMembers {
+    _id: string,
+    name: string,
+    profilePic: string
+}
+export type { infoFace, recievedMessageInterface, groupMembers }
