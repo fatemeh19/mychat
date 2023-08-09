@@ -72,9 +72,7 @@ const UserSchema = new mongoose.Schema(
         lastname: {
           type: String,
         },
-        profilePic: {
-          type: String,
-        },
+        
       },
     ],
     folders: [

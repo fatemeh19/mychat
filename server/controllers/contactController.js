@@ -62,7 +62,7 @@ const addContact = async (req, res) => {
     userId: contact._id,
     name: data.name,
     lastname: data.lastname,
-    profilePic: data.profilePic,
+  
   };
   await Services.User.findAndUpdateUser(user._id, {
     $push: { contacts: newContact },
@@ -90,7 +90,6 @@ const getContacts = async (req, res) => {
   contacts.forEach((contact, index) => {
     contact.name = userContacts[index].name || contact.name;
     contact.lastname = userContacts[index].lastname || contact.lastname;
-    contact.profilePic = userContacts[index].profilePic || contact.profilePic;
   });
 
   await RH.SendResponse({
@@ -122,12 +121,11 @@ const getContact = async (req, res) => {
   const userContact = user.contacts.find((userContact) =>
     userContact.userId.equals(contact._id)
   );
-  console.log(contact)
+ 
   // if(userContact)
   if(userContact){
     contact.name = userContact.name || contact.name;
     contact.lastname = userContact.lastname || contact.lastname;
-    contact.profilePic = userContact.profilePic || contact.profilePic;  
   }
 
   await RH.SendResponse({
