@@ -146,7 +146,7 @@ const getMembers = async (req, res) => {
   const memberIds = chat.members.map((member) => member.memberId);
   const members = await Services.User.findUsers(
     { _id: { $in: memberIds } },
-    { profilePic: 1 , name:1 , lastName:1, status:1 , _id:0}
+    { profilePic: 1 , name:1 , lastName:1, status:1 }
   );
   RH.SendResponse({
     res,
