@@ -196,16 +196,53 @@ const getChats = async (req, res) => {
     "",
     "-updatedAt"
   );
-
+  let messageIdss = messages.map((message)=>message._id)
   let index = 0;
   chats.forEach((chat) => {
     if (!chat.messages.length) {
       return;
     }
     chat.messages.splice(0, chat.messages.length - 1);
-    chat.messages[0].messageInfo = messages[index];
+
+    let messageIndex = indexFinder(
+      0,
+      messageIdss.length,
+      messageIdss,
+      chat.messages[0].messageInfo
+    );
+    chat.messages.splice(0, chat.messages.length - 1);
+    chat.messages[0].messageInfo = messages[messageIndex];
     index++;
   });
+  
+  // let index;
+  // let i = 0;
+  // let length = chats.length;
+  // for (index = 0; index < length; index++) {
+  //   if (messages[i].createdAt < addedAt) {
+  //     chat.messages.splice(index, 1);
+  //     index--;
+  //     length = chat.messages.length;
+  //     i++;
+  //     continue;
+  //   }
+  //   let messageIndex = indexFinder(
+  //     0,
+  //     messageIdss.length,
+  //     messageIdss,
+  //     chat.messages[index].messageInfo
+  //   );
+  //   chat.messages[index].messageInfo = messages[messageIndex];
+  //   i++;
+  // }
+
+
+
+
+
+
+
+
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
