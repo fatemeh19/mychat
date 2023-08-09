@@ -4,7 +4,7 @@ import * as RH from "../middlewares/ResponseHandler.js";
 import * as Services from "../services/index.js";
 import * as Validators from "../validators/index.js";
 
-const addMember = async (req, res,next) => {
+const addMember = async (req, res, next) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
   // limitations for number of members
@@ -12,12 +12,12 @@ const addMember = async (req, res,next) => {
     body: { memberId },
     params: { chatId: groupId },
   } = req;
-  req.user.userId = memberId
-  req.params.id = groupId
+  req.user.userId = memberId;
+  req.params.id = groupId;
   const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
-  next()
+  next();
   // console.log(addToGroupResult);
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
@@ -46,17 +46,17 @@ const editGroupType = async (req, res) => {
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const removeMember = async (req, res,next) => {
+const removeMember = async (req, res, next) => {
   const {
     params: { chatId: groupId, memberId },
   } = req;
   const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
     $pull: { members: { memberId: memberId } },
   });
-  req.body.deleteAll = false
-  req.params.id = groupId
-  req.user.userId = memberId
-  next()
+  req.body.deleteAll = false;
+  req.params.id = groupId;
+  req.user.userId = memberId;
+  next();
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
@@ -140,10 +140,29 @@ const editGroupInfo = async (req, res) => {
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
+const getMembers = async (req, res) => {
+  const { id: groupId } = req.params;
+  const chat = await Services.Chat.getChat({ _id: groupId });
+  const memberIds = chat.members.map((member) => member.memberId);
+  const members = await Services.User.findUsers(
+    { _id: { $in: memberIds } },
+    { profilePic: 1 , name:1 , lastName:1, status:1 , _id:0}
+  );
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      members,
+    },
+  });
+};
+
 export {
   addMember,
   editGroupInfo,
   editGroupPermissions,
   editGroupType,
   removeMember,
+  getMembers
 };

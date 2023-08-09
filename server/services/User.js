@@ -44,7 +44,7 @@ const findAndUpdateUser = async (id, updateQuery,options) => {
   return user;
 };
 
-const findUsers = async (Query, select = "", sort = "") => {
+const findUsers = async (Query, select = {}, sort = "") => {
   const users = await User.find(Query).select(select).sort(sort);
   return users;
 };
