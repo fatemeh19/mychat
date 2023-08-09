@@ -36,11 +36,6 @@ const Message: FC<messageProps> = ({ type, dir, msg, messageBoxRef }) => {
             // @ts-ignore
             setSender(userContactList[index])
         }
-        console.log('sender message : ', sender)
-
-
-
-
     }, [])
     switch (type) {
         case messageTypes.text:

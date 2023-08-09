@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react"
 import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
-import { fetchChat } from "@/src/helper/useAxiosRequests"
+import { fetchChat, getGroupMembers } from "@/src/helper/useAxiosRequests"
 import { addMessage, addPinMessage, deleteMessageFromMessageArray, deleteMessageFromPinnedMessagesArray, setChatCreated, setPinState, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import { ChatType } from "@/src/models/enum"
 import CustomizedDialogs from "../../popUp"
@@ -68,6 +68,9 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                             name: cl.chatInfo.name,
                             profilePic: cl.chatInfo.profilePic
                         }
+                        // get group members information
+                        const members = await getGroupMembers(cl._id, dispatch)
+                        console.log('members array : ', members)
                         dispatch(addUserContact(userContact))
                         // console.log('userContact: ', userContact)
                     } else { // mean: chatType = private => just get contact info

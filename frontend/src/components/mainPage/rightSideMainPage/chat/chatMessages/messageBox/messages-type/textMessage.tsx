@@ -15,8 +15,8 @@ const TextMessage = ({ dir, msg, messageBoxRef, sender }: { dir: string, msg: re
     const [seenMessage, setSeenMessage] = useState(false)
 
     useEffect(() => {
-        // console.log('sender useErffect : ', sender)
-    })
+        console.log('sender useErffect : ', sender)
+    }, [sender])
 
     useEffect(() => {
         if (msg.seenIds.length > 0) {

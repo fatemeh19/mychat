@@ -15,14 +15,14 @@ const Members: FC<MembersProps> = () => {
     const dispatch = useAppDispatch()
     const chatId = useAppSelector(state => state.chat).Chat._id
 
-    useEffect(() => {
-        (async () => {
-            const members = await getGroupMembers(chatId, dispatch)
-            console.log('members array : ', members)
-        })()
+    // useEffect(() => {
+    //     (async () => {
+    //         const members = await getGroupMembers(chatId, dispatch)
+    //         console.log('members array : ', members)
+    //     })()
 
 
-    }, [])
+    // }, [])
 
     return (
         <>

@@ -90,10 +90,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             setSender(User)
         } else {
             const userContactListIds = userContactList.map(uc => uc._id)
-            console.log('userContactListIds: ', userContactListIds)
-            let index = findIndex(0, userContactListIds.length, userContactListIds, msg.messageInfo.senderId)
-            console.log('index:', index)
-            console.log('userContactList[index]: ', userContactList[index])
+            let index = findIndex(0, userContactList.length, userContactListIds, msg.forwarded.by)
             // @ts-ignore
             setSender(userContactList[index])
         }
@@ -102,10 +99,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
 
         const profilePic = sender?.profilePic ? (sender.profilePic).split(`\\`) : '';
-        information.dir = sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr
-        // @ts-ignore
-        information.name = sender?.name
-        information.profilePic = sender?.profilePic ? profilePic[profilePic.length - 1] : '';
 
         setInformation({
             dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
@@ -114,12 +107,16 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             profilePic: sender?.profilePic ? profilePic[profilePic.length - 1] : ''
         })
 
-        const contactIds = userContactList.map(contact => contact._id)
-        // @ts-ignore
-        const index = findIndex(0, contactIds.length, contactIds, sender?._id)
-        console.log('index')
+        // const contactIds = userContactList.map(contact => contact._id)
+        // // @ts-ignore
+        // const index = findIndex(0, contactIds.length, contactIds, sender?._id)
+        // console.log('index')
 
     }, [sender])
+
+    useEffect(() => {
+        console.log('information : ', information)
+    }, [information])
 
 
 

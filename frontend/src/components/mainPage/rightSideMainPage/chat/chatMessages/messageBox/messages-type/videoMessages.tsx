@@ -29,7 +29,7 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg, sender }) => {
                     {
                         msg.forwarded.isForwarded && <div className="text-xs">
                             <p>Forwarded Message</p>
-                            <p>from {sender.name}</p>
+                            {/* {sender && <p>from {sender.name}</p>} */}
                         </div>
                     }
                     {
