@@ -3,7 +3,7 @@ import Fields from "../messages/fields.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js";
 import * as CustomError from "../errors/index.js";
-const findUser = async (filter, select = "") => {
+const findUser = async (filter, select = {}) => {
   let user;
   try {
     user = await User.findOne(filter).select(select);

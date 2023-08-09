@@ -155,7 +155,7 @@ const getFolder = async (req, res) => {
 
 const getFolders = async (req, res) => {
   const { user:{userId} } = req;
-  const user = await Services.User.findUser({_id:userId},"folders")
+  const user = await Services.User.findUser({_id:userId},{folders:1})
   const folders = await Services.Folder.findFolders({
     _id:{
       $in:user.folders

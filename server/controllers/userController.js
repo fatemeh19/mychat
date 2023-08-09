@@ -14,7 +14,7 @@ const setInfo = async (req, res) => {
   console.log(req.body);
   const {
     user: { userId },
-    body: { name, phoneNumber,lastname },
+    body: { name, phoneNumber,lastname ,username},
   } = req;
   // try {
   //   data =  setInfo.validate(req.body, {
@@ -46,6 +46,7 @@ const setInfo = async (req, res) => {
     phoneNumber: phoneNumber,
     lastname:lastname,
     profilePic: url,
+    username : username? username: undefined
   };
   const updatedUser = await Services.User.findAndUpdateUser(userId, update);
 
@@ -68,7 +69,7 @@ const getProfile = async (req, res)=>{
   console.log("resid")
   const {user:{userId}} = req
 
-  const user = await Services.User.findUser({_id:userId},"name lastname phoneNumber username email profilePic")
+  const user = await Services.User.findUser({_id:userId},{name:1, lastname:1, phoneNumber:1, username:1, email:1, profilePic:1})
   if(!user){
     await RH.CustomError({
       errorClass:CustomError.BadRequestError,
@@ -138,7 +139,7 @@ const setStatus = async ({userId,online})=>{
 
 const getUser = async (req, res)=>{
   const {id:userId} = req.params
-  const user = await Services.User.findUser({_id:userId})
+  const user = await Services.User.findUser({_id:userId},{password:0})
   // if user does not exists
 
   RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok",value:{
