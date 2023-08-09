@@ -6,12 +6,12 @@ import { FC, RefObject } from "react";
 interface RepliedMessageProps {
     msg: recievedMessageInterface,
     containerClassName?: string,
-    messageBoxRef?: RefObject<HTMLDivElement>
+    messageBoxRef?: RefObject<HTMLDivElement>,
 }
 
 const RepliedMessage: FC<RepliedMessageProps> = ({
     msg,
-    containerClassName
+    containerClassName,
 }) => {
     const replliedMessageId = msg.messageInfo.reply.messageId
     const chatMessages = useAppSelector(state => state.chat.Chat).messages

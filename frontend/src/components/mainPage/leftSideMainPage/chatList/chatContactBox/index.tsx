@@ -3,6 +3,7 @@
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { setOpenChat } from "@/src/redux/features/openSlice";
 import { setShowReply } from "@/src/redux/features/repliedMessageSlice";
+import { removeSelectMessage, removeSelectMessageContent, removeSelectedMessagesMainIds, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice";
 import { addChatToTop, openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
@@ -81,11 +82,11 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     useEffect(() => {
         // socket?.on('sendMessage', (message) => {
-        console.log('chatOpennedP : ', chatOpennedP)
-        console.log('chatMessages : ', chatMessages)
+        // console.log('chatOpennedP : ', chatOpennedP)
+        // console.log('chatMessages : ', chatMessages)
         if ((chatOpennedP || chatOpenned) && (chatMessages != undefined)) {
             if (chatMessages?.length > 0) {
-                console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length - 1])
+                // console.log('i got new Message in chat box: ', chatMessages[chatMessages?.length - 1])
                 if (chatMessages[chatMessages?.length - 1].messageInfo.content.contentType != 'text' && chatMessages[chatMessages?.length - 1].messageInfo.content.text == '') {
                     let text = chatMessages[chatMessages?.length - 1].messageInfo.content.originalName
                     setLastMesText((text ? text : ''))
@@ -94,11 +95,11 @@ const ChatContactBox: FC<chatContactProps> = ({
                     setLastMesText(chatMessages[chatMessages?.length - 1].messageInfo.content.text)
                 }
                 setLastMesTime(chatMessages[chatMessages?.length - 1].messageInfo.updatedAt)
-                console.log(lastMesText)
+                // console.log(lastMesText)
                 //add chat on top of the list bc this chat have new message
                 if (chatbox != undefined) {
                     const fromIndex = chatList.indexOf(chatbox)
-                    console.log(fromIndex)
+                    // console.log(fromIndex)
                     dispatch(addChatToTop(fromIndex))
                 }
             }
@@ -107,17 +108,17 @@ const ChatContactBox: FC<chatContactProps> = ({
     }, [chatMessages, chatOpennedP])
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
-            console.log('contactId : ' + contactId)
+            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                console.log('online contact : ' + CId)
+                // console.log('online contact : ' + CId)
                 setOnline(true)
             }
 
         });
         socket?.on('offlineContact', (CId) => {
-            console.log('contactId : ' + contactId)
+            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                console.log('offline contact : ' + CId)
+                // console.log('offline contact : ' + CId)
                 setOnline(false)
             }
 
@@ -134,7 +135,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 setChatOpenned(true)
                 dispatch(setChatOpenInList(true))
                 popup ? dispatch(setShowReply(true)) : null
-
+                popup ? dispatch(setActiveSelection(false)) : null
                 break
             }
             else if (chatList.length - 1 == i) {

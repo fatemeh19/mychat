@@ -11,6 +11,7 @@ import { GrClose } from 'react-icons/gr'
 import style from '../../../../rightClick/style.module.css'
 import { recievedMessageInterface } from "@/src/models/interface";
 import { setIsForward } from "@/src/redux/features/forwardMessageSlice";
+import ForwardContentSection from "@/src/components/basicComponents/forwardContentSection";
 
 
 interface ReplySectionProps {
@@ -23,16 +24,19 @@ const ReplySection: FC<ReplySectionProps> = ({ showReply }) => {
 
     const dispatch = useAppDispatch()
     const isForward = useAppSelector(state => state.forwardMessage).isForward
-    const forwardMessage = useAppSelector(state => state.forwardMessage).forwardMessage
+    const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
+    const forwardContent = useAppSelector(state => state.forwardMessage).content
     const repliedMessage = useAppSelector(state => state.repledMessage).RepliedMessage
+    const selectedMessagesContent = useAppSelector(state => state.selectedMessage).selectedMessagesContent
 
-    console.log('forwardMessage : ', forwardMessage)
-    console.log('repliedMessage : ', repliedMessage)
+
+    // console.log('forwardMessage : ', selectedMessagesContent)
+    // console.log('repliedMessage : ', repliedMessage)
 
 
     useEffect(() => {
         isForward
-            ? setMessage(forwardMessage)
+            ? setMessage(selectedMessagesContent[0])
             : setMessage(repliedMessage)
     })
 
@@ -44,7 +48,8 @@ const ReplySection: FC<ReplySectionProps> = ({ showReply }) => {
 
                         <BsFillReplyFill className={` ${isForward ? `${style.rotateZ} ${style.icon}` : ''} w-[25px] h-[25px] text-blue-500`} />
 
-                        {message ? <ReplyContentSection isReplied={showReply} repliedMessage={message} /> : null}
+                        {message && !isForward ? <ReplyContentSection isReplied={showReply} repliedMessage={message} /> : null}
+                        {message && isForward ? <ForwardContentSection isReplied={showReply} forwaredMessage={message} /> : null}
 
                     </div>
                     <div className="righ cursor-pointer" onClick={() => { dispatch(setShowReply(false)); dispatch(setIsForward(false)) }}>

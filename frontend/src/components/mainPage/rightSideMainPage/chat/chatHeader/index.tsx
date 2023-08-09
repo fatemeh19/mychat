@@ -12,13 +12,16 @@ import { HiOutlineVideoCamera } from 'react-icons/hi'
 import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
-import { removeSelectMessage, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
-import { updateArrayMessages } from '@/src/redux/features/chatSlice'
+import { addSelectedMessagesMainIds, removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
+import { addMessage, updateArrayMessages } from '@/src/redux/features/chatSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
 import findIndex from '@/src/helper/deleteMessage'
 import { recievedMessageInterface } from '@/src/models/interface'
 import deleteMessage from '@/src/helper/deleteMessage'
 import PinnedMessage from './pinnedMessage'
+import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
+import { setForwardMessageIds, setIsForward } from '@/src/redux/features/forwardMessageSlice'
+import ChatListPopup from '@/src/components/basicComponents/chatListPopup'
 
 
 interface ChatHeaderProps {
@@ -30,6 +33,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
+    const [forwardPopupOpen, setForwardPopupOpen] = useState(false)
+
     const [confirmInfo, setConfirmInfo] = useState({
         confirmTitle: '',
         confirmDiscription: '',
@@ -46,6 +51,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const toggle = useAppSelector(state => state.toggle).Toggle
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
+    const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
+
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -105,6 +112,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         socket.emit('deleteMessage', deleteInfo)
         dispatch(setActiveSelection(false))
         dispatch(removeSelectMessage([]))
+        dispatch(removeSelectMessageContent([]))
 
         if (!deleteInfo.deleteAll) {
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
@@ -112,6 +120,15 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                 deleteMessage(0, chatMessageIds.length, chatMessageIds, selectedMessages[i], dispatch)
             }
         }
+    }
+    const forwardPopupOpenHandler = () => {
+        setForwardPopupOpen(!forwardPopupOpen)
+
+        setForwardPopupOpen(true)
+        dispatch(setShowReply(true))
+        dispatch(setIsForward(true))
+        dispatch(setForwardMessageIds(SelectedMessagesMainIds))
+        console.log('forwarding ...')
     }
 
     const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
@@ -130,7 +147,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     "
                                 onClick={() => setOpen(true)}
                             >
-                                <button className='bg-blue-500 p-2 px-4 rounded-md text-white font-medium uppercase'>
+                                <button className='bg-blue-500 p-2 px-4 rounded-md text-white font-medium uppercase' onClick={forwardPopupOpenHandler}>
                                     Forward
                                     {selectedMessages.length !== 0 && <span className='ml-1 text-blue-100'>{selectedMessages.length}</span>}
                                 </button>
@@ -215,6 +232,14 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
             }
             <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} confirmInfo={confirmInfo} />
+            {forwardPopupOpen
+                ? <CustomizedDialogs
+                    open={forwardPopupOpen}
+                    title="Forward to ..."
+                    handelOpen={forwardPopupOpenHandler}
+                    children={<ChatListPopup setForwardPopupOpen={setForwardPopupOpen} />} />
+                : null
+            }
         </div >
     )
 }

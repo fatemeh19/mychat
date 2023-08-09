@@ -18,7 +18,7 @@ export default function ChatList() {
         let user = await userHandler();
         setUserId(user._id)
         socket?.emit('online', userId)
-        console.log('user online: ' + userId)
+        // console.log('user online: ' + userId)
 
     }
 

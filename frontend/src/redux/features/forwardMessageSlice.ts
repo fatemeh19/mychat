@@ -3,13 +3,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface initialStateInterface {
     isForward: boolean,
-    forwardMessage: recievedMessageInterface
+    forwardMessageIds: string[],
+    content: recievedMessageInterface,
 }
 
+// @ts-ignore
 const initialState = {
     isForward: false,
-    forwardMessage: {}
+    forwardMessageIds: [],
+    content: {},
 } as initialStateInterface
+
 
 export const ForwardMessageSlice = createSlice({
     name: "replyMessage",
@@ -18,14 +22,18 @@ export const ForwardMessageSlice = createSlice({
         setIsForward: (state, action: PayloadAction<boolean>) => {
             state.isForward = action.payload
         },
-        setForwardMessage: (state, action: PayloadAction<recievedMessageInterface>) => {
-            state.forwardMessage = action.payload
-        }
+        setForwardMessageIds: (state, action: PayloadAction<string[]>) => {
+            state.forwardMessageIds = action.payload
+        },
+        setForwardContent: (state, action: PayloadAction<any>) => {
+            state.content = action.payload
+        },
     },
 });
 
 export const {
     setIsForward,
-    setForwardMessage
+    setForwardMessageIds,
+    setForwardContent
 } = ForwardMessageSlice.actions;
 export default ForwardMessageSlice.reducer;

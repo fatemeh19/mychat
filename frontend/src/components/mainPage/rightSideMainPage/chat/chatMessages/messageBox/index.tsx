@@ -11,13 +11,15 @@ import { recievedMessageInterface } from "@/src/models/interface"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { addSeenIds } from "@/src/redux/features/chatSlice"
 import ConfirmModal from "@/src/components/basicComponents/confirmModal"
-import { addSelectMessage, removeSelectMessage, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
+import { addSelectMessage, addSelectedMessagesContent, addSelectedMessagesMainIds, removeSelectMessage, removeSelectMessageContent, removeSelectedMessagesMainIds, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice"
 import { setRepliedMessage, setShowReply } from "@/src/redux/features/repliedMessageSlice"
 import findIndex1 from "@/src/helper/deleteMessage"
 import findIndex from "@/src/helper/findIndex"
 import CustomizedDialogs from "@/src/components/popUp"
 import ChatListPopup from "@/src/components/basicComponents/chatListPopup"
-import { setIsForward, setForwardMessage } from "@/src/redux/features/forwardMessageSlice"
+import { setIsForward, setForwardMessageIds, setForwardContent } from "@/src/redux/features/forwardMessageSlice"
+import { contactInterface } from "@/src/redux/features/userContactListSlice"
+import { UserInterface } from "@/src/redux/features/userInfoSlice"
 
 const initialContextMenu = {
     show: false,
@@ -43,6 +45,11 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         confirmDiscription: '',
         confirmOption: '',
     })
+    const [information, setInformation] = useState({
+        dir: MessageBoxDir.rtl,
+        name: '',
+        profilePic: ''
+    })
 
     // ref
     const messageBoxRef = useRef<HTMLDivElement>(null)
@@ -60,24 +67,57 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const activeSelectedMessages = useAppSelector(state => state.selectedMessage).activeSelection
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const deleteToggle = useAppSelector(state => state.toggle).Toggle
+    const selectedMessagesContent = useAppSelector(state => state.selectedMessage).selectedMessagesContent
+    const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
+    const userContactList = useAppSelector(state => state.userContactsList).contacts
 
+    // let information = {
+    //     dir: MessageBoxDir.rtl,
+    //     name: '',
+    //     profilePic: ''
+    // }
 
-    let information = {
-        dir: MessageBoxDir.rtl,
-        name: '',
-        profilePic: ''
-    }
+    // let sender;
+    // msg.messageInfo.senderId === User._id
+    //     ? sender = User
+    //     // if sender not user then we should search the sender in groupMembers(chat member) if private then contactId
+    //     : sender = Contact
 
-    let sender;
-    msg.messageInfo.senderId === User._id
-        ? sender = User
-        // if sender not user then we should search the sender in groupMembers(chat member) if private then contactId
-        : sender = Contact
+    const [sender, setSender] = useState<contactInterface | UserInterface>()
+    useEffect(() => {
+        if (msg.messageInfo.senderId === User._id) {
+            // @ts-ignore
+            setSender(User)
+        } else {
+            const userContactListIds = userContactList.map(uc => uc._id)
+            console.log('userContactListIds: ', userContactListIds)
+            let index = findIndex(0, userContactListIds.length, userContactListIds, msg.messageInfo.senderId)
+            console.log('index:', index)
+            console.log('userContactList[index]: ', userContactList[index])
+            // @ts-ignore
+            setSender(userContactList[index])
+        }
 
-    const profilePic = sender.profilePic ? (sender.profilePic).split(`\\`) : '';
-    information.dir = sender === User ? MessageBoxDir.rtl : MessageBoxDir.ltr
-    information.name = sender.name
-    information.profilePic = sender.profilePic ? profilePic[profilePic.length - 1] : '';
+        const profilePic = sender?.profilePic ? (sender.profilePic).split(`\\`) : '';
+        information.dir = sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr
+        // @ts-ignore
+        information.name = sender?.name
+        information.profilePic = sender?.profilePic ? profilePic[profilePic.length - 1] : '';
+
+        setInformation({
+            dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
+            // @ts-ignore
+            name: sender?.name,
+            profilePic: sender?.profilePic ? profilePic[profilePic.length - 1] : ''
+        })
+
+        const contactIds = userContactList.map(contact => contact._id)
+        // @ts-ignore
+        const index = findIndex(0, contactIds.length, contactIds, sender?._id)
+        console.log('index')
+
+    }, [])
+
 
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
@@ -153,12 +193,24 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
             // @ts-ignore
             dispatch(addSelectMessage(msg._id))
+            dispatch(addSelectedMessagesContent(msg))
+            dispatch(addSelectedMessagesMainIds(msg.messageInfo._id))
             selectedMessages.map(selectedMsg => {
                 if (selectedMsg === msg._id) {
                     counter = counter + 1
                     if (counter === 1) {
+                        // selected farii ids
                         const filteredSelectedMessage = selectedMessages.filter(sMsg => sMsg !== msg._id)
                         dispatch(removeSelectMessage(filteredSelectedMessage))
+
+                        // selected main ids
+                        const filteredSelectedMessageMainIds = SelectedMessagesMainIds.filter(sMsgMIds => sMsgMIds !== msg.messageInfo._id)
+                        dispatch(removeSelectedMessagesMainIds(filteredSelectedMessageMainIds))
+
+                        // selected msg content
+                        const filteredSelectedMessageContent = selectedMessagesContent.filter(sMsg => sMsg._id !== msg._id)
+                        dispatch(removeSelectMessageContent(filteredSelectedMessageContent))
+
                         circleStyle.background = 'transparent'
                         circleStyle.borderColor = 'black'
                     }
@@ -170,6 +222,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => {
         console.log(e)
         console.log(e.currentTarget)
+
+        dispatch(setForwardMessageIds([]))
         dispatch(setIsForward(false))
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
@@ -202,7 +256,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         setForwardPopupOpen(true)
         dispatch(setShowReply(true))
         dispatch(setIsForward(true))
-        dispatch(setForwardMessage(msg))
+        dispatch(setForwardMessageIds([msg.messageInfo._id]))
+        dispatch(addSelectedMessagesContent(msg))
         console.log('forwarding ...')
         closeContextMenu()
 
@@ -211,18 +266,18 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     useEffect(() => {
         if (msg.messageInfo.senderId !== User._id) {
-            console.log('emit seenMessageId : ', msg._id)
+            // console.log('emit seenMessageId : ', msg._id)
             socket.emit('seenMessage', chatId, msg._id)
         }
 
         socket.on('seenMessage', (messageId, userId) => {
-            console.log('messageId : ' + messageId)
-            console.log('userId : ' + userId)
+            // console.log('messageId : ' + messageId)
+            // console.log('userId : ' + userId)
             if ((messageId === msg._id) && (User._id === msg.messageInfo.senderId) && (User._id !== userId)) {
                 console.log('your message seen')
                 const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
                 let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, msg._id)
-                console.log('messageIndex', messageIndex)
+                // console.log('messageIndex', messageIndex)
                 dispatch(addSeenIds({ index: messageIndex, userId: userId }))
             }
 
@@ -230,6 +285,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
 
     }, [User, socket])
+
     return (
         // id for scroll to repliedMessage
         <div className="messageBox select-none cursor-default" id={msg._id} onDoubleClick={messageDoubleClickHandler} ref={messageBoxRef} onClick={selectHandler} >

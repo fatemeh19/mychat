@@ -67,15 +67,15 @@ export const fetchUserChatList = async (dispatch: any) => {
     if (res.statusText && res.statusText === 'OK') {
         // console.log(res)
         const chatList = res.data.value.chats;
-        console.log("all chatList:", chatList)
+        // console.log("all chatList:", chatList)
         dispatch(addChatList([]))
         // console.log(chatList)
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
-            console.log(chatList[i].chatType)
+            // console.log(chatList[i].chatType)
             if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
-                console.log('chatInfo : ', chatInfo)
+                // console.log('chatInfo : ', chatInfo)
             }
             else if (chatList[i].chatType == "group") {
                 chatInfo = {

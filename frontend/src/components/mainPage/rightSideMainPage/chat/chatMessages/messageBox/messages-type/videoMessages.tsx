@@ -5,10 +5,11 @@ import { PiPushPinFill } from "react-icons/pi";
 
 interface VideoMessageProps {
     dir: string,
-    msg: recievedMessageInterface
+    msg: recievedMessageInterface,
+    sender: any
 }
 
-const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
+const VideoMessage: FC<VideoMessageProps> = ({ dir, msg, sender }) => {
     const isText = msg.messageInfo.content.text ? true : false
     const isReplied = msg.messageInfo.reply.isReplied
 
@@ -25,6 +26,12 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg }) => {
 
             <div className="relative max-w-[28rem] rounded-xl">
                 <div className={`rounded-xl dark:bg-bgColorDark2 dark:text-white ${dir === 'rtl' ? 'rounded-tr-sm bg-white' : 'rounded-tl-sm bg-yellow-200'}`}>
+                    {
+                        msg.forwarded.isForwarded && <div className="text-xs">
+                            <p>Forwarded Message</p>
+                            <p>from {sender.name}</p>
+                        </div>
+                    }
                     {
                         isReplied && <RepliedMessage msg={msg} containerClassName={'px-2 py-1'} />
                     }

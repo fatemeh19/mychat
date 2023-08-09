@@ -34,7 +34,8 @@ interface recievedMessageInterface {
     seenIds: string[],
     deletedIds: string[],
     forwarded: {
-        isForwarded: boolean
+        isForwarded: boolean,
+        by: string
     },
     pinStat: {
         pinned: number,

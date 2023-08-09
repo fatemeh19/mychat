@@ -53,10 +53,10 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         found = false
         console.log('chatList: ', chatList)
         chatList.map(async cl => {
-            console.log('cl._id: ', cl._id)
-            console.log('contactId: ', contactId)
+            // console.log('cl._id: ', cl._id)
+            // console.log('contactId: ', contactId)
             if (cl._id === contactId) {
-                console.log('chat is exist')
+                // console.log('chat is exist')
                 fetchChat(cl._id, dispatch)
                 dispatch(setChatCreated(true))
                 found = true
@@ -69,11 +69,11 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                             profilePic: cl.chatInfo.profilePic
                         }
                         dispatch(addUserContact(userContact))
-                        console.log('userContact: ', userContact)
+                        // console.log('userContact: ', userContact)
                     } else { // mean: chatType = private => just get contact info
                         let userContact = await getContact(cl.chatInfo._id)
                         dispatch(addUserContact(userContact))
-                        console.log('userContact: ', userContact)
+                        // console.log('userContact: ', userContact)
                     }
                 }
             }
@@ -83,33 +83,33 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
-            console.log('i got new Message: ', message)
+            // console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
-            console.log('delete for all')
-            console.log('data : ', data)
+            // console.log('delete for all')
+            // console.log('data : ', data)
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
-            console.log('messageIds :', chatMessageIds)
+            // console.log('messageIds :', chatMessageIds)
             for (let i = 0; i < data.messageIds.length; i++) {
                 deleteMessage(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
             }
         })
         socket.on('pinUnpinMessage', (userId: string, pinnedInfo: any) => {
 
-            console.log('pinnedMessages :', pinnedMessages)
+            // console.log('pinnedMessages :', pinnedMessages)
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, pinnedInfo.messageId)
-            console.log('chat index : ', messageIndex)
-            console.log('pinnedInfo: ', pinnedInfo)
+            // console.log('chat index : ', messageIndex)
+            // console.log('pinnedInfo: ', pinnedInfo)
 
             if (pinnedInfo.pin) {
-                console.log('pin = true', pinnedInfo.pin)
+                // console.log('pin = true', pinnedInfo.pin)
                 dispatch(addPinMessage(pinnedInfo.messageId))
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: true, by: userId } }))
 
             } else {
-                console.log('pin = false', pinnedInfo.pin)
+                // console.log('pin = false', pinnedInfo.pin)
                 let pinIndex = findIndex(0, pinnedMessages.length, pinnedMessages, pinnedInfo.messageId)
                 dispatch(deleteMessageFromPinnedMessagesArray(pinIndex))
                 dispatch(setPinState({ index: messageIndex, pinStat: { pinned: false } }))
