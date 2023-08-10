@@ -45,7 +45,9 @@ const createFolder = async (req, res) => {
     { new: true }
   );
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  RH.SendResponse({ res, statusCode: StatusCodes.OK,value:{
+    folderId:newFolder._id
+  } ,title: "ok" });
 };
 
 const addRemoveChat = async (req, res) => {

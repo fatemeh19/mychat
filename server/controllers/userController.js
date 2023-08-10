@@ -38,7 +38,6 @@ const setInfo = async (req, res) => {
   
   if (req.file) {
     url = req.file.path
-    // path.join(process.cwd(), "../", req.file.path);
   }
 
   const update = {
@@ -66,7 +65,6 @@ const setInfo = async (req, res) => {
 };
 
 const getProfile = async (req, res)=>{
-  console.log("resid")
   const {user:{userId}} = req
 
   const user = await Services.User.findUser({_id:userId},{name:1, lastname:1, phoneNumber:1, username:1, email:1, profilePic:1})

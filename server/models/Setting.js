@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const settingSchema = new mongoose.Schema({
-    notifocationAndSounds:{
+    notificationAndSounds:{
         notifs:{
             type:Boolean,
             default:true
