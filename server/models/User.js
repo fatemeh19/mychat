@@ -103,7 +103,10 @@ const UserSchema = new mongoose.Schema(
         ref: "Chat",
       },
     ],
-    // settingId:
+    settingId:{
+      type:mongoose.Types.ObjectId,
+      ref:'Setting'
+    }
   },
   { timestamps: true }
   
