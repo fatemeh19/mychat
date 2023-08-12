@@ -14,8 +14,8 @@ const Informatin: FC<InformatinProps> = () => {
     const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
 
     return (
-        <div className="w-full flex gap-5 items-center p-5 bg-white
-        shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]">
+        <div className={`w-full flex gap-5 items-center p-5 bg-white
+            shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]`}>
             <Image
                 width={500}
                 height={0}

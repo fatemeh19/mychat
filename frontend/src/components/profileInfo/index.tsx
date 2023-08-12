@@ -15,7 +15,7 @@ const ProfileInfo: FC<ProfileInfoProps> = () => {
         case ChatType.private:
             return <UserInfo />
         case ChatType.group:
-        // return <GroupInfo />
+            return <GroupInfo />
         default:
 
             break;
