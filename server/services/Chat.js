@@ -21,7 +21,6 @@ const createChat = async (chat) => {
 };
 const findAndUpdateChat = async (id, updateQuery, options) => {
   const chatType = await Chat.findById(id, { chatType: 1 });
-  console.log("chatType =",chatType)
   try {
     let chatModel 
     if (chatType.chatType == "group") {

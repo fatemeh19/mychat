@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import statusHandler from "./statusHanlder.js";
 import chatHandler from "./chatHandler.js";
 import authMiddleware from './authorization.js'

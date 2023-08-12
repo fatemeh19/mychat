@@ -43,7 +43,6 @@ const UserSchema = new mongoose.Schema(
       online: Boolean,
       lastseen: Date,
     },
-    contacts: [],
     profilePic: String,
     isVerified: {
       type: Boolean,
@@ -73,9 +72,7 @@ const UserSchema = new mongoose.Schema(
         lastname: {
           type: String,
         },
-        profilePic: {
-          type: String,
-        },
+        
       },
     ],
     folders: [
@@ -106,7 +103,10 @@ const UserSchema = new mongoose.Schema(
         ref: "Chat",
       },
     ],
-    // settingId:
+    settingId:{
+      type:mongoose.Types.ObjectId,
+      ref:'Setting'
+    }
   },
   { timestamps: true }
   
