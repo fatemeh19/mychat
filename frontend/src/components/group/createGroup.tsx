@@ -49,21 +49,21 @@ const CreateGroup: FC<CreateGroupProps> = ({
             if (res.status === 201 || res.statusText === 'created') {
                 // fetchUserChatList(dispatch)
                 // @ts-ignore
-                let imgType=groupPic.type.split('/')
+                let imgType = groupPic.type.split('/')
                 // @ts-ignore
-                let pic='\\'+(groupPic.lastModified) +'.'+imgType[1]
+                let pic = '\\' + (groupPic.lastModified) + '.' + imgType[1]
                 console.log(pic)
-                let newGroup= {
+                let newGroup = {
                     _id: res.data.value.chatId,
                     lastMessage: '',
                     lastMessageTime: '',
-                    chatInfo:{
-                        _id : res.data.value.chatId,
+                    chatInfo: {
+                        _id: res.data.value.chatId,
                         name: groupName,
                         profilePic: pic,
-                        status:{},
+                        status: {},
                     },
-                    open:false
+                    open: false
                 }
                 // let newGroupChat=[newGroup].contact
                 dispatch(addGroupChat(newGroup))
@@ -89,7 +89,7 @@ const CreateGroup: FC<CreateGroupProps> = ({
                     ? (
                         <CustomizedDialogs
                             title='Add Members'
-                            children={<CreateGroupStep2 createGroupHandler={createGroupHandler} setOpenAddContactToGroup={setOpenAddContactToGroup} memberIds={memberIds} setMemberIds={setMemberIds} />}
+                            children={<CreateGroupStep2 buttonHandler={createGroupHandler} setOpenAddContactToGroup={setOpenAddContactToGroup} memberIds={memberIds} setMemberIds={setMemberIds} buttonTitle='Create' />}
                             open={openCreateGroup}
                             handelOpen={createGroupOpenHandler} />
 
