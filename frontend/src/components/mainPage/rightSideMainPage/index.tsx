@@ -83,7 +83,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             }
         })
         found === false && dispatch(setChatCreated(false))
-    }, [contactId]) //chatList
+    }, [])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
