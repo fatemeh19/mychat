@@ -5,7 +5,7 @@ import { groupMemberInterface, recievedMessageInterface } from "@/src/models/int
 
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 
-interface members {
+interface member {
     _id: string,
     memberId: string,
     joinedAt: string
@@ -15,7 +15,7 @@ interface chatInterface {
     _id: string,
     adminsAndRights: [],
     chatType: string,
-    members: members[],
+    members: member[],
     messages: recievedMessageInterface[],
     updatedAt: string,
     notifications: boolean,

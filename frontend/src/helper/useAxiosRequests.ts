@@ -101,3 +101,13 @@ export const getGroupMembers = async (chatId: string, dispatch: any) => {
         console.log('get group members error : ', error)
     }
 }
+
+export const addGroupMember = async (chatId: string, memberId: string, dispatch: any) => {
+    try {
+        const res = await callApi().post(`/main/chat/group/addMember/${chatId}`, memberId, config)
+        console.log('add group member res : ', res)
+        // return res.data.value.members
+    } catch (error) {
+        console.log('add group member error : ', error)
+    }
+}
