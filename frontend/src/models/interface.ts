@@ -43,9 +43,9 @@ interface recievedMessageInterface {
     }
 }
 
-interface groupMembers {
+interface groupMemberInterface {
     _id: string,
     name: string,
     profilePic: string
 }
-export type { infoFace, recievedMessageInterface, groupMembers }
+export type { infoFace, recievedMessageInterface, groupMemberInterface }

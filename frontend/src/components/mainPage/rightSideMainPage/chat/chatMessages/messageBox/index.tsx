@@ -70,7 +70,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const selectedMessagesContent = useAppSelector(state => state.selectedMessage).selectedMessagesContent
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
-
+    const groupMembers = useAppSelector(state => state.chat).groupMembers
     // let information = {
     //     dir: MessageBoxDir.rtl,
     //     name: '',
@@ -116,7 +116,14 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     useEffect(() => {
         console.log('information : ', information)
+
+
     }, [information])
+
+    useEffect(() => {
+        console.log('members in messagebox : ', groupMembers)
+
+    }, [groupMembers])
 
 
 

@@ -21,8 +21,8 @@ const Informatin: FC<InformatinProps> = () => {
                 height={0}
                 src={
                     contact.profilePic
-                    ? `/uploads/picture/${profilePicName[profilePicName.length - 1]}`
-                    : '/uploads/picture/defaultProfilePic.png'
+                        ? `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
+                        : '/uploads/photo/defaultProfilePic.png'
                 }
                 alt=""
                 className="w-[70px] h-[70px] object-cover rounded-full"

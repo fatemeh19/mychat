@@ -96,6 +96,7 @@ export const getGroupMembers = async (chatId: string, dispatch: any) => {
     try {
         const res = await callApi().get(`/main/chat/group/getMembers/${chatId}`, config)
         console.log('get group members res : ', res)
+        return res.data.value.members
     } catch (error) {
         console.log('get group members error : ', error)
     }
