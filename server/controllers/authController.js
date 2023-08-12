@@ -10,7 +10,6 @@ import * as Validators from "../validators/index.js"
 import * as RH from"../middlewares/ResponseHandler.js"
 import { setStatus } from "./userController.js";
 
-
 const register = async (req, res) => {
   console.log(req.body);
   let data;
@@ -71,6 +70,8 @@ const verifyEmail = async (req, res) => {
 
   (user.isVerified = true), (user.verified = Date.now());
   user.verificationToken = "";
+  const setting = await Services.create("setting")
+  user.settingId = setting._id
   await user.save();
   setStatus({userId:user._id, online:false})
   return RH.SendResponse({

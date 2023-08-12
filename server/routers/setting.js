@@ -8,5 +8,5 @@ import {
   editSetting
 } from "../controllers/settingController.js";
 
-router.patch("/:title",uploadFile.single('notifSound'),editSetting)
+router.patch("/:id/:title",uploadFile.fields([{ name: 'notifSound', maxCount: 1 }, { name: 'background', maxCount: 8 }]),editSetting)
 export default router

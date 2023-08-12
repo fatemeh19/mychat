@@ -238,7 +238,9 @@ const addToChats = async (req, res)=>{
   await Services.findByIdAndUpdate('user',userId,{
     $push:{chats:{chatInfo:chatId , addedAt:Date.now()}}
   })
-  res.send("ok")
+  RH.SendResponse({res,statusCode:StatusCodes.OK,title:"ok",value:{
+    member:res.locals.resData.res
+  }})
 
 
 
