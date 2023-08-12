@@ -1,5 +1,13 @@
 import editNotifSound from "./editNotifSound.js";
 
-export {
-    editNotifSound
+const validatorSelector = async (title)=>{
+    switch (title) {
+        case "notificationAndSounds":
+            return editNotifSound
+    
+        default:
+            break;
+    }
 }
+export default validatorSelector
+    

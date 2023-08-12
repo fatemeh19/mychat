@@ -1,5 +1,5 @@
 import * as Validators from "../validators/index.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import ErrorMessages from "../messages/errors.js";
@@ -21,7 +21,7 @@ const createChat = async (req, res) => {
   const data = await Validators.createChat.validate(body);
   // if type of chat is private
   if (data.chatType == chatType[1]) {
-    const chatExists = await Services.Chat.getChat({
+    const chatExists = await Services.findOne('chat',{
       and: [
         { "members.0.memberId": { $in: data.memberIds } },
         { "members.1.memberId": { $in: data.memberIds } },
@@ -61,8 +61,8 @@ const createChat = async (req, res) => {
   data["members"] = members;
   
 
-  const chat = await Services.Chat.createChat(data);
-  await Services.User.updateUsers(
+  const chat = await Services.create(data.chatType,data);
+  await Services.updateMany('user',
     {
       _id: { $in: data.memberIds },
     },
@@ -85,8 +85,8 @@ const getChat = async (req, res) => {
     user: { userId },
     params: { id: chatId },
   } = req;
-  const user = await Services.User.findUser({_id:userId})
-  const chat = await Services.Chat.getChat({ _id: chatId });
+  const user = await Services.findOne('user',{_id:userId})
+  const chat = await Services.findOne('chat',{ _id: chatId });
   let addedAt;
   user.chats.forEach((chat) => {
     if (chat.chatInfo.equals(chatId)) {
@@ -111,7 +111,7 @@ const getChat = async (req, res) => {
   // });
   const messageIds = chat.messages.map((message) => message.messageInfo);
 
-  const messages = await Services.Message.getMessages({
+  const messages = await Services.findMany('message',{
     _id: { $in: messageIds },
     // createdAt: { $gte: joinedAt },
   });
@@ -151,18 +151,18 @@ const getChats = async (req, res) => {
   const {
     user: { userId },
   } = req;
-  const user = await Services.User.findUser({_id:userId})
+  const user = await Services.findOne('user',{_id:userId})
   const chatIds = user.chats.map((chat)=>chat.chatInfo)
-  const chats = await Services.Chat.getChats(
+  const chats = await Services.findMany('chat',
     { _id: {$in:chatIds} },
-    "",
-    "-updatedAt"
+    {},
+    {updatedAt:-1}
   );
 
   const messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
   );
-  const messages = await Services.Message.getMessages(
+  const messages = await Services.findMany('message',
     {
       _id: { $in: messageIds },
     },
@@ -235,7 +235,7 @@ const addToChats = async (req, res)=>{
   // if chat does not exists
   // error
 
-  await Services.User.findAndUpdateUser(userId,{
+  await Services.findByIdAndUpdate('user',userId,{
     $push:{chats:{chatInfo:chatId , addedAt:Date.now()}}
   })
   res.send("ok")
@@ -276,13 +276,13 @@ const pinUnpinChat = async (req, res) => {
   updateQuery[op]["pinnedChats"] = chatId;
 
   if (data.allChats) {
-    await Services.User.findAndUpdateUser(userId, updateQuery);
-    await Services.Chat.findAndUpdateChat(chatId, {
+    await Services.findByIdAndUpdate('user',userId, updateQuery);
+    await Services.findByIdAndUpdate('chat',chatId, {
       $set: { pinned: data.pin },
     });
   } else {
     updateQuery["$set"]["chats.$[chat].pinned"] = data.pin;
-    await Services.Folder.findAndUpdateFolder(data.folderId, updateQuery, {
+    await Services.findByIdAndUpdate('folder',data.folderId, updateQuery, {
       arrayFilters: [{ "chat.chatInfo": chatId }],
     });
   }
@@ -299,16 +299,16 @@ const DeleteChat = async (deleteInfo) => {
     userId ,
     deleteAll
   } = deleteInfo;
-  const chat = await Services.Chat.getChat({ _id: chatId });
-  const user = await Services.User.findUser({ _id: userId });
+  const chat = await Services.findOne('chat',{ _id: chatId });
+  const user = await Services.findOne('user',{ _id: userId });
   if (deleteAll) {
     if (chat.chatType == "group") {
       if (!chat.owner.equals(userId)) {
         return res.send("no access")
       }
     }
-    await Services.Chat.deleteChat({ _id: chatId });
-    await Services.Folder.updateFolders(
+    await Services.deleteOne('chat',{ _id: chatId });
+    await Services.updateMany('folder',
       {
         "chats.chatInfo": chatId,
       },
@@ -318,7 +318,7 @@ const DeleteChat = async (deleteInfo) => {
     );
     // pinned chats
     const memberIds = chat.members.map((member) => member.memberId);
-    await Services.User.updateUsers(
+    await Services.updateMany('user',
       {
         _id: { $in: memberIds },
       },
@@ -328,12 +328,12 @@ const DeleteChat = async (deleteInfo) => {
     );
   } else {
     if(chat.chatType == "group"){
-      await Services.Chat.findAndUpdateChat(chatId, {
+      await Services.findByIdAndUpdate('chat',chatId, {
         $pull: { members: { memberId: userId } },
       });
     }
     
-    await Services.Folder.updateFolders(
+    await Services.updateMany('folder',
       {
         _id: { $in: user.folders },
       },
@@ -342,7 +342,7 @@ const DeleteChat = async (deleteInfo) => {
       }
     );
 
-    await Services.User.findAndUpdateUser(userId, {
+    await Services.findByIdAndUpdate('user',userId, {
       $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
     });
   }
@@ -355,16 +355,16 @@ const deleteChat = async (req, res) => {
     user: { userId },
     body: { deleteAll },
   } = req;
-  const chat = await Services.Chat.getChat({ _id: chatId });
-  const user = await Services.User.findUser({ _id: userId });
+  const chat = await Services.findOne('chat',{ _id: chatId });
+  const user = await Services.findOne('user',{ _id: userId });
   if (deleteAll) {
     if (chat.chatType == "group") {
       if (!chat.owner.equals(userId)) {
         return res.send("no access")
       }
     }
-    await Services.Chat.deleteChat({ _id: chatId });
-    await Services.Folder.updateFolders(
+    await Services.deleteOne('chat',{ _id: chatId });
+    await Services.updateMany('folder',
       {
         "chats.chatInfo": chatId,
       },
@@ -374,7 +374,7 @@ const deleteChat = async (req, res) => {
     );
     // pinned chats
     const memberIds = chat.members.map((member) => member.memberId);
-    await Services.User.updateUsers(
+    await Services.updateMany('user',
       {
         _id: { $in: memberIds },
       },
@@ -384,12 +384,12 @@ const deleteChat = async (req, res) => {
     );
   } else {
     if(chat.chatType == "group"){
-      await Services.Chat.findAndUpdateChat(chatId, {
+      await Services.findByIdAndUpdate('chat',chatId, {
         $pull: { members: { memberId: userId } },
       });
     }
     
-    await Services.Folder.updateFolders(
+    await Services.updateMany('folder',
       {
         _id: { $in: user.folders },
       },
@@ -398,7 +398,7 @@ const deleteChat = async (req, res) => {
       }
     );
 
-    await Services.User.findAndUpdateUser(userId, {
+    await Services.findByIdAndUpdate('user',userId, {
       $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
     });
   }

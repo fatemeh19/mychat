@@ -1,5 +1,5 @@
 import * as Validators from "../validators/index.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import ErrorMessages from "../messages/errors.js";
@@ -30,12 +30,12 @@ const createFolder = async (req, res) => {
     };
     chats.push(chat);
   });
-  const newFolder = await Services.Folder.createFolder({
+  const newFolder = await Services.create('folder',{
     name: data.name,
     chats,
   });
 
-  const updated = await Services.User.findAndUpdateUser(
+  const updated = await Services.findByIdAndUpdate('user',
     userId,
     {
       $push: {
@@ -45,9 +45,14 @@ const createFolder = async (req, res) => {
     { new: true }
   );
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK,value:{
-    folderId:newFolder._id
-  } ,title: "ok" });
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    value: {
+      folderId: newFolder._id,
+    },
+    title: "ok",
+  });
 };
 
 const addRemoveChat = async (req, res) => {
@@ -57,20 +62,18 @@ const addRemoveChat = async (req, res) => {
     // user: { userId },
   } = req;
   add = Number(add);
-  let updateQuery
+  let updateQuery;
   if (add) {
     updateQuery = {
-      $push:{chats:{ chatInfo: chatId }}
-    }
- 
+      $push: { chats: { chatInfo: chatId } },
+    };
   } else {
     updateQuery = {
-      $pull:{chats:{ chatInfo: chatId }}
-    }
+      $pull: { chats: { chatInfo: chatId } },
+    };
   }
 
-
-  await Services.Folder.findAndUpdateFolder(folderId, updateQuery, {
+  await Services.findByIdAndUpdate('folder',folderId, updateQuery, {
     new: true,
   });
   RH.SendResponse({
@@ -85,8 +88,8 @@ const deleteFolder = async (req, res) => {
     params: { id: folderId },
     user: { userId },
   } = req;
-  await Services.Folder.deleteFolder({ _id: folderId });
-  const updated = await Services.User.findAndUpdateUser(
+  await Services.deleteOne('folder',{ _id: folderId });
+  const updated = await Services.findByIdAndUpdate('user',
     userId,
     {
       $pull: { folders: folderId },
@@ -105,17 +108,17 @@ const getFolder = async (req, res) => {
     params: { id: folderId },
   } = req;
 
-  const folder = await Services.Folder.findFolder({ _id: folderId });
+  const folder = await Services.findOne('folder',{ _id: folderId });
 
   let chatIds = folder.chats;
   chatIds = chatIds.map((chat) => chat.chatInfo);
 
-  const chats = await Services.Chat.getChats(
+  const chats = await Services.findMany('chat',
     {
       _id: { $in: chatIds },
     },
-    "",
-    "-updatedAt"
+    {},
+    {updatedAt:-1}
   );
 
   folder.chats.forEach((chat, index) => {
@@ -126,7 +129,7 @@ const getFolder = async (req, res) => {
     (chat) =>
       chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo
   );
-  const messages = await Services.Message.getMessages(
+  const messages = await Services.findMany('message',
     {
       _id: { $in: messageIds },
     },
@@ -156,13 +159,15 @@ const getFolder = async (req, res) => {
 };
 
 const getFolders = async (req, res) => {
-  const { user:{userId} } = req;
-  const user = await Services.User.findUser({_id:userId},{folders:1})
-  const folders = await Services.Folder.findFolders({
-    _id:{
-      $in:user.folders
-    }
-  })
+  const {
+    user: { userId },
+  } = req;
+  const user = await Services.findOne('user',{ _id: userId }, { folders: 1 });
+  const folders = await Services.findMany('folder',{
+    _id: {
+      $in: user.folders,
+    },
+  });
 
   RH.SendResponse({
     res,
@@ -170,12 +175,11 @@ const getFolders = async (req, res) => {
     title: "ok",
     value: { folders },
   });
-  
 };
 
-const editFolder = async (req, res)=>{
+const editFolder = async (req, res) => {
   const {
-    params:{id:folderId},
+    params: { id: folderId },
     body,
   } = req;
   let data;
@@ -195,19 +199,27 @@ const editFolder = async (req, res)=>{
     };
     chats.push(chat);
   });
-  const updated = await Services.Folder.findAndUpdateFolder(folderId,{
-    name:data.name,
-    chats:chats
-  },{
-    new:true
-  })
+  const updated = await Services.findByIdAndUpdate('folder',
+    folderId,
+    {
+      name: data.name,
+      chats: chats,
+    },
+    {
+      new: true,
+    }
+  );
 
- 
-  res.send(updated)
+  res.send(updated);
 
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
 
-
-}
-
-export {editFolder, deleteFolder, addRemoveChat, createFolder, getFolder,getFolders };
+export {
+  editFolder,
+  deleteFolder,
+  addRemoveChat,
+  createFolder,
+  getFolder,
+  getFolders,
+};

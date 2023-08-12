@@ -1,5 +1,5 @@
 import * as Validators from "../validators/index.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import ErrorMessages from "../messages/errors.js";
@@ -50,7 +50,7 @@ const createMessage = async (req, res) => {
     // console.log(file)
   }
   if (newMessage.reply.messageId) {
-    const repliedMessage = await Services.Chat.aggregateChats([
+    const repliedMessage = await Services.aggregate('chat',[
       {
         $match: { _id: await objectId(chatId) },
       },
@@ -81,8 +81,8 @@ const createMessage = async (req, res) => {
     }
   }
 
-  const Message = await Services.Message.createMessage(newMessage);
-  const chat = await Services.Chat.findAndUpdateChat(
+  const Message = await Services.create('message',newMessage);
+  const chat = await Services.findByIdAndUpdate('chat',
     chatId,
     {
       $push: { messages: { messageInfo: Message._id } },
@@ -112,7 +112,7 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   messageIds = await objectId(messageIds);
 
-  let notForwardedMessages = await Services.Chat.aggregateChats([
+  let notForwardedMessages = await Services.aggregate('chat',[
     { $match: { _id: await objectId(chatId) } },
     {
       $project: {
@@ -144,7 +144,7 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   let result;
   if (deleteAll) {
-    const messages = await Services.Message.getMessages({
+    const messages = await Services.findMany('message',{
       _id: { $in: notForwardedMessages },
     });
 
@@ -153,15 +153,15 @@ const DeleteMessage = async (userId, deleteInfo) => {
         fileController.deleteFile(message.content.url);
       }
     });
-    Services.Message.deleteMessage({
+    Services.deleteMany('message',{
       _id: { $in: notForwardedMessages },
     });
 
-    Services.Chat.findAndUpdateChat(chatId, {
+    Services.findByIdAndUpdate('chat',chatId, {
       $pull: { messages: { _id: { $in: messageIds } } },
     });
   } else {
-    result = await Services.Chat.findAndUpdateChat(
+    result = await Services.findByIdAndUpdate('chat',
       chatId,
       {
         $push: { "messages.$[message].deletedIds": userId },
@@ -187,7 +187,7 @@ const forwardMessage = async (req, res) => {
     user: { userId },
   } = req;
 
-  const forwardedMessages = await Services.Message.getMessages({
+  const forwardedMessages = await Services.findMany('message',{
     _id: { $in: messageIds },
   });
   const messages = [];
@@ -201,7 +201,7 @@ const forwardMessage = async (req, res) => {
     });
   });
 
-  const chat = await Services.Chat.findAndUpdateChat(
+  const chat = await Services.findByIdAndUpdate('chat',
     chatId,
     {
       $push: { messages: { $each: messages } },
@@ -240,7 +240,7 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
   updateQuery[op]["pinnedMessages"] = messageId;
   updateQuery["$set"]["messages.$[message].pinStat"] = pinStat;
 
-  await Services.Chat.findAndUpdateChat(chatId, updateQuery, {
+  await Services.findByIdAndUpdate('chat',chatId, updateQuery, {
     arrayFilters: [{ "message._id": { $eq: messageId } }],
     new: true,
   });
@@ -261,7 +261,7 @@ const editMessage = async (req, res) => {
     return RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
   // if message exists
-  const message = await Services.Message.findMessage({ _id: messageId });
+  const message = await Services.findOne('message',{ _id: messageId });
 
   if (message.content.contentType != data.content.contentType) {
     // error

@@ -1,6 +1,6 @@
 import * as CustomError from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import * as Validators from "../validators/index.js";
@@ -17,7 +17,7 @@ const addContact = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  const contact = await Services.User.findUser({
+  const contact = await Services.findOne('user',{
     $or: [
       {
         phoneNumber: data.phoneNumber,
@@ -35,7 +35,7 @@ const addContact = async (req, res) => {
   }
   data.userId = contact._id;
 
-  const user = await Services.User.findUser({ _id: userId });
+  const user = await Services.findOne('user',{ _id: userId });
   if (user.phoneNumber == contact.phoneNumber) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -64,7 +64,7 @@ const addContact = async (req, res) => {
     lastname: data.lastname,
   
   };
-  await Services.User.findAndUpdateUser(user._id, {
+  await Services.findByIdAndUpdate('user',user._id, {
     $push: { contacts: newContact },
   });
 
@@ -77,15 +77,15 @@ const addContact = async (req, res) => {
 
 const getContacts = async (req, res) => {
   const { userId } = req.user;
-  const user = await Services.User.findUser({ _id: userId });
+  const user = await Services.findOne('user',{ _id: userId });
   let contactIds = user.contacts;
   let userContacts = user.contacts;
 
   contactIds = contactIds.map((contact) => contact.userId);
-  const contacts = await Services.User.findUsers(
+  const contacts = await Services.findMany('user',
     { _id: { $in: contactIds } },
     { name: 1, lastname: 1, profilePic: 1, status: 1 },
-    "_id"
+    {id:1}
   );
   contacts.forEach((contact, index) => {
     contact.name = userContacts[index].name || contact.name;
@@ -104,9 +104,9 @@ const getContact = async (req, res) => {
     params: { id: contactId },
     user: { userId },
   } = req;
-  const user = await Services.User.findUser({ _id: userId });
+  const user = await Services.findOne('user',{ _id: userId });
 
-  const contact = await Services.User.findUser(
+  const contact = await Services.findOne('user',
     { _id: contactId },
     { name: 1, lastname: 1, phoneNumber: 1, profilePic: 1, bio: 1, status: 1, username:1 }
   );

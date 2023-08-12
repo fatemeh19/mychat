@@ -1,9 +1,9 @@
 import { StatusCodes } from "http-status-codes";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as Validators from "../validators/index.js";
-
+import * as fileController from "../utils/file.js"
 const addMember = async (req, res, next) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
@@ -14,7 +14,7 @@ const addMember = async (req, res, next) => {
   } = req;
   req.user.userId = memberId;
   req.params.id = groupId;
-  const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
+  const addToGroupResult = await Services.findByIdAndUpdate('chat',groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
   next();
@@ -34,7 +34,7 @@ const editGroupType = async (req, res) => {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
 
-  await Services.Chat.findAndUpdateChat(
+  await Services.findByIdAndUpdate('chat',
     groupId,
     {
       $set: { groupTypeSetting: data },
@@ -50,7 +50,7 @@ const removeMember = async (req, res, next) => {
   const {
     params: { chatId: groupId, memberId },
   } = req;
-  const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
+  const removeFromGroupResult = await Services.findByIdAndUpdate('chat',groupId, {
     $pull: { members: { memberId: memberId } },
   });
   req.body.deleteAll = false;
@@ -89,7 +89,7 @@ const editGroupPermissions = async (req, res) => {
       };
     }
   });
-  const updated = await Services.Chat.findAndUpdateChat(
+  const updated = await Services.findByIdAndUpdate('chat',
     groupId,
     {
       $set: { userPermissionsAndExceptions: data },
@@ -114,7 +114,7 @@ const editGroupInfo = async (req, res) => {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
 
-  const group = await Services.Chat.getChat({ _id: groupId });
+  const group = await Services.findOne('chat',{ _id: groupId });
   if (!group) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -129,7 +129,7 @@ const editGroupInfo = async (req, res) => {
   }
   await fileController.deleteFile(group.profilePic);
 
-  const updated = await Services.Chat.findAndUpdateChat(groupId, {
+  const updated = await Services.findByIdAndUpdate('chat',groupId, {
     $set: {
       name: data.name,
       decription: data.description,
@@ -142,9 +142,9 @@ const editGroupInfo = async (req, res) => {
 
 const getMembers = async (req, res) => {
   const { id: groupId } = req.params;
-  const chat = await Services.Chat.getChat({ _id: groupId });
+  const chat = await Services.findOne('chat',{ _id: groupId });
   const memberIds = chat.members.map((member) => member.memberId);
-  const members = await Services.User.findUsers(
+  const members = await Services.findMany('user',
     { _id: { $in: memberIds } },
     { profilePic: 1 , name:1 , lastName:1, status:1 }
   );
