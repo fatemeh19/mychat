@@ -12,6 +12,7 @@ import socketReducer from './features/socketSlice';
 import chatOpenInListReducer from './features/chatOpenInListSlice';
 import toggleReducer from './features/toggleSlice'
 import repledMessageReducer from './features/repliedMessageSlice'
+import foldersReducer from './features/folderSlice'
 // ...
 export const store = configureStore({
   reducer: {
@@ -27,7 +28,8 @@ export const store = configureStore({
     chat: chatReducer,
     socket: socketReducer,
     toggle: toggleReducer,
-    repledMessage: repledMessageReducer
+    repledMessage: repledMessageReducer,
+    folders: foldersReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

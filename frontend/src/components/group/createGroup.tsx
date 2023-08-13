@@ -5,7 +5,7 @@ import CreateGroupStep2 from './createGroupStep2';
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import callApi from '@/src/helper/callApi';
 import { fetchUserChatList } from '@/src/helper/userInformation';
-import { addGroupChat } from '@/src/redux/features/userChatListSlice';
+import { addGroupTopList } from '@/src/redux/features/userChatListSlice';
 
 interface CreateGroupProps {
     openCreateGroup: boolean,
@@ -66,7 +66,7 @@ const CreateGroup: FC<CreateGroupProps> = ({
                     },
                     open: false
                 }
-                dispatch(addGroupChat(newGroup))
+                dispatch(addGroupTopList(newGroup))
             }
         } catch (error) {
             console.log('error in catch text info : ', error)

@@ -13,14 +13,19 @@ interface chatBoxInterface {
     lastMessage: string,
     lastMessageTime: string,
     chatInfo: chatInfoInterface,
-    open: boolean
+    open: boolean,
+    chatType: string
 }
 interface initialStateInterface {
-    chatList: chatBoxInterface[]
+    chatList: chatBoxInterface[],
+    privateChatList: chatBoxInterface[],
+    groupChatList: chatBoxInterface[],
 }
 
 const initialState = {
-    chatList: []
+    chatList: [],
+    privateChatList: [],
+    groupChatList: []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
@@ -30,7 +35,7 @@ export const contactSlice = createSlice({
         addChat: (state, action: PayloadAction<any>) => {
             state.chatList[state.chatList.length] = action.payload
         },
-        addGroupChat: (state, action: PayloadAction<any>) => {
+        addGroupTopList: (state, action: PayloadAction<any>) => {
             state.chatList = [action.payload].concat(state.chatList)
         },
         addChatList: (state, action: PayloadAction<any>) => {
@@ -44,14 +49,22 @@ export const contactSlice = createSlice({
         openHandle: (state, action: PayloadAction<any>) => {
             state.chatList[action.payload].open = !(state.chatList[action.payload].open);
         },
+        addPrivateChat: (state, action: PayloadAction<any>) => {
+            state.privateChatList[state.privateChatList.length] = action.payload
+        },
+        addGroupChat: (state, action: PayloadAction<any>) => {
+            state.groupChatList[state.groupChatList.length] = action.payload
+        },
     },
 });
 
 export const {
     addChat,
-    addGroupChat,
+    addGroupTopList,
     addChatList,
     addChatToTop,
-    openHandle
+    openHandle,
+    addPrivateChat,
+    addGroupChat
 } = contactSlice.actions;
 export default contactSlice.reducer;

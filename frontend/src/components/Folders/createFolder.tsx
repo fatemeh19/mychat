@@ -49,8 +49,11 @@ const CreateFolder: FC<CreateFolderProps> = ({
     })
 
     const submitHandler = (values: any) => {
-        console.log('create folder', values)
         setFolderName(values.folderName)
+        if (folderName != undefined) {
+            saveFolderHandler()
+            console.log('create folder', values)
+        }
         createForlderOpen()
     }
     return (
@@ -61,30 +64,29 @@ const CreateFolder: FC<CreateFolderProps> = ({
                 initialValues={initialValues}
                 onSubmit={(values) => {
                     submitHandler(values)
-                    saveFolderHandler()
                 }}
                 validationSchema={validation}
             >
                 <Form >
-                    <div className="py-5 w-full h-full">
-                        <div className="">
+                    <div className="py-2 w-full h-full">
+                        <div className="mb-2">
                             {/* <p className="text-blue-500 ">Folder name</p> */}
                             <InputField name='folderName' label="Folder name" icon={BiSolidFolder} />
                         </div>
 
                         <div>
 
-                            <p className="text-blue-500">Included chats</p>
-                            <div className="addChatBtn flex gap-3 text-blue-500 px-5 hover:bg-gray-100"
+                            <p className="text-blue-500 my-1">Included chats</p>
+                            <div className="addChatBtn cursor-pointer flex gap-3 text-blue-500 px-5 hover:bg-gray-100"
                                 onClick={() => {
                                     createForlderOpen()
                                     addChatOpen()
                                 }}
                             >
-                                <AiFillPlusCircle className="" />
-                                <span className="">Add chats</span>
+                                <AiFillPlusCircle className="text-[21px]" />
+                                <span className="font-bold">Add chats</span>
                             </div>
-                            <div className="chats px-5">
+                            <div className="chats my-1 px-5">
                                 {/* example chat */}
                                 <div className="flow-root">
                                     <div className="float-left flex gap-3">
@@ -110,7 +112,7 @@ const CreateFolder: FC<CreateFolderProps> = ({
                             onClickHandler2={saveFolderHandler}
                         /> */}
 
-                        <div className="flex gap-5">
+                        <div className="flex justify-end gap-5">
                             <button
                                 id="cancel"
                                 name="cancel"

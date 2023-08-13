@@ -1,6 +1,7 @@
 "use client"
 
-import { addChat, addChatList } from "../redux/features/userChatListSlice"
+import { addFoldersList } from "../redux/features/folderSlice"
+import { addChat, addChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
@@ -97,7 +98,13 @@ export const fetchUserChatList = async (dispatch: any) => {
                 lastMessage: lastMessage,
                 lastMessageTime: lastMessageTime,
                 open: false,
-
+                chatType: chatList[i].chatType
+            }
+            if (chat.chatType == "private") {
+                dispatch(addPrivateChat(chat))
+            }
+            else if (chat.chatType == "private") {
+                dispatch(addGroupChat(chat))
             }
             dispatch(addChat(chat))
 
@@ -117,4 +124,13 @@ export const userHandler = async () => {
 
     }
     return user;
+}
+
+export const getFolders = async (dispatch: any) => {
+    const res = await callApi().get('/main/folders/', config)
+    if (res.statusText && res.statusText === 'OK') {
+        // user = res.data.value.profile;
+        console.log(res.data.value.folders)
+        dispatch(addFoldersList(res.data.value.folders))
+    }
 }

@@ -3,7 +3,7 @@
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
 import { useEffect } from "react"
-import { fetchUserChatList, fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
+import { fetchUserChatList, fetchUserContactsListData, fetchUserProfileData, getFolders } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { io } from "socket.io-client";
 import { addSocket } from "@/src/redux/features/socketSlice"
@@ -18,7 +18,8 @@ export default function LeftSideMainPage() {
     useEffect(() => {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-        fetchUserChatList(dispatch)
+        fetchUserChatList(dispatch);
+        getFolders(dispatch)
         const socketIO = io('http://localhost:3000', {
             auth: {
                 token: barearToken
@@ -27,7 +28,7 @@ export default function LeftSideMainPage() {
         dispatch(addSocket(socketIO))
     }, [])
 
-    
+
 
     return (
         <div className="

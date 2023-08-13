@@ -73,6 +73,7 @@ const AddChats: FC<AddChatsProps> = ({
 
     const cancleHandler = () => {
         addChatOpen()
+        createForlderOpen()
         setChatIds([])
     }
     const saveHandler = () => {
@@ -89,7 +90,7 @@ const AddChats: FC<AddChatsProps> = ({
                 </div>
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
                 <div className="no-scrollbar h-full overflow-y-auto pb-[30%] pt-3">
-                    <p className="bg-gray-100 p-5 text-gray-500">Chats</p>
+                    <p className="bg-gray-100 px-5 py-2 text-gray-500">Chats</p>
                     {
                         // @ts-ignore
                         (chatList.length === 0) ? null
