@@ -38,40 +38,41 @@ const MemberRightClick: FC<MemberRightClickProps> = ({
     // click out of contextMenu : close contextMenu
     useOnClickOutside(contextMenuRef, closeContextMenu)
     console.log('in')
+    console.log(x, y)
 
     // set the contextMenu cordinate 
-    useEffect(() => {
-        let
-            winWidth = window.innerWidth,
-            winHeight = window.innerHeight,
-            // @ts-ignore
-            cmWidth = contextMenuRef.current.offsetWidth,
-            // @ts-ignore
-            cmHeight = contextMenuRef.current.offsetHeight
+    // useEffect(() => {
+    //     let
+    //         winWidth = window.innerWidth,
+    //         winHeight = window.innerHeight,
+    //         // @ts-ignore
+    //         cmWidth = contextMenuRef.current.offsetWidth,
+    //         // @ts-ignore
+    //         cmHeight = contextMenuRef.current.offsetHeight
 
-        const distWidth = winWidth - cmWidth
-        const distHeight = winHeight - cmHeight
+    //     const distWidth = winWidth - cmWidth
+    //     const distHeight = winHeight - cmHeight
 
 
-        // contextMenu position : 
-        // @ts-ignore
-        if (x > distWidth) {
-            // @ts-ignore
-            contextMenuRef.current.style.left = `${distWidth - 10}px`
-        }
+    //     // contextMenu position : 
+    //     // @ts-ignore
+    //     if (x > distWidth) {
+    //         // @ts-ignore
+    //         contextMenuRef.current.style.left = `${distWidth - 10}px`
+    //     }
 
-        if (y > distHeight) {
-            // @ts-ignore
-            contextMenuRef.current.style.top = `${distHeight - 90}px`
-        }
+    //     if (y > distHeight) {
+    //         // @ts-ignore
+    //         contextMenuRef.current.style.top = `${distHeight - 90}px`
+    //     }
 
-    }, [x, y])
+    // }, [x, y])
 
     return (
         <>
             <div
                 className={`absolute z-20 ${style.wrapper} ${style.p} ${style.li}`}
-                style={{ top: `${y}px`, left: `${x}px` }}
+                style={{ top: `${0}px`, right: `${0}px` }}
                 ref={contextMenuRef}
             >
                 <div className={`${style.content}`}>

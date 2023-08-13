@@ -1,6 +1,9 @@
 import ConfirmModal from "@/src/components/basicComponents/confirmModal";
 import MemberRightClick from "@/src/components/rightClick/memberRightClick";
+import findIndex from "@/src/helper/findIndex";
+import { removeGroupMember } from "@/src/helper/useAxiosRequests";
 import { groupMemberInterface } from "@/src/models/interface";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { FC, MouseEvent, useState } from "react";
 
 interface MemberProps {
@@ -22,12 +25,13 @@ const Member: FC<MemberProps> = ({ member }) => {
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
     const [open, setOpen] = useState<boolean>(false)
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
-    const [confirmHandler, setConfirmHandler] = useState<() => void>(() => { })
     const [confirmInfo, setConfirmInfo] = useState({
-        confirmTitle: '',
         confirmDiscription: '',
-        confirmOption: '',
     })
+
+    const chatId = useAppSelector(state => state.chat.Chat)._id
+    const groupMembers = useAppSelector(state => state.chat).groupMembers
+    const dispatch = useAppDispatch()
 
     const contaxtMenuHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
@@ -38,7 +42,12 @@ const Member: FC<MemberProps> = ({ member }) => {
         // const member = e.currentTarget
     }
     const deleteMember = () => {
-
+        console.log('remove member from group')
+        const groupMemberIds = groupMembers.map(groupMember => groupMember._id)
+        const memberIndex = findIndex(0, groupMemberIds.length, groupMemberIds, member._id)
+        removeGroupMember(chatId, member._id, memberIndex, dispatch)
+        setShowConfirm(false)
+        closeContextMenu()
     }
     const closeContextMenu = () => setContextMenu(initialContextMenu)
 
@@ -46,11 +55,8 @@ const Member: FC<MemberProps> = ({ member }) => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
-        setConfirmHandler(() => deleteMember)
         setConfirmInfo({
-            confirmTitle: 'Delete',
-            confirmDiscription: 'Are you sure?',
-            confirmOption: 'delete All'
+            confirmDiscription: 'Remove Fatemeh from the group?'
         })
 
     }
@@ -85,7 +91,7 @@ const Member: FC<MemberProps> = ({ member }) => {
                 />
             </div>
             <p >{member.name}</p>
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteMember} confirmInfo={confirmInfo} />
         </div>
     );
 }

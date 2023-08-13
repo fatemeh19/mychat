@@ -86,6 +86,9 @@ export const ChatSlice = createSlice({
         addMemberToGroup: (state, action: PayloadAction<groupMemberInterface>) => {
             state.groupMembers.push(action.payload)
         },
+        removeMemberFromGroup: (state, action: PayloadAction<number>) => {
+            state.groupMembers.splice(action.payload, 1)
+        },
     },
 });
 
@@ -102,6 +105,7 @@ export const {
     setPinState,
     addSeenIds,
     setGroupMembersInformation,
-    addMemberToGroup
+    addMemberToGroup,
+    removeMemberFromGroup
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
