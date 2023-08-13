@@ -126,7 +126,7 @@ const Folders: FC<FoldersProps> = ({
 
                     }
                 </div>
-                <div className="createFolderBtn cursor-pointer flex gap-3 text-blue-500 px-5 hover:bg-gray-100"
+                <div className="createFolderBtn cursor-pointer flex gap-3 text-blue-500 py-1 px-5 hover:bg-gray-100"
                     onClick={createForlderOpen}
                 >
                     <AiFillPlusCircle className="text-[21px]" />

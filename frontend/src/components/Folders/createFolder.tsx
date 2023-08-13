@@ -76,8 +76,8 @@ const CreateFolder: FC<CreateFolderProps> = ({
 
                         <div>
 
-                            <p className="text-blue-500 my-1">Included chats</p>
-                            <div className="addChatBtn cursor-pointer flex gap-3 text-blue-500 px-5 hover:bg-gray-100"
+                            <p className="text-blue-500 my-1 px-5">Included chats</p>
+                            <div className="addChatBtn cursor-pointer flex gap-3 text-blue-500 py-1 px-5 hover:bg-gray-100"
                                 onClick={() => {
                                     createForlderOpen()
                                     addChatOpen()
@@ -90,7 +90,7 @@ const CreateFolder: FC<CreateFolderProps> = ({
                                 {/* example chat */}
                                 <div className="flow-root">
                                     <div className="float-left flex gap-3">
-                                        <BiChat className="text-xl text-blue-500" />
+                                        <BiSolidFolder className="text-xl text-blue-500" />
                                         <div>
                                             <span className='text-sm'>contact1</span>
                                             {/* <span className='text-xs text-gray-500'>6 chats</span> */}
@@ -112,7 +112,7 @@ const CreateFolder: FC<CreateFolderProps> = ({
                             onClickHandler2={saveFolderHandler}
                         /> */}
 
-                        <div className="flex justify-end gap-5">
+                        <div className="flex justify-end gap-5 px-5">
                             <button
                                 id="cancel"
                                 name="cancel"

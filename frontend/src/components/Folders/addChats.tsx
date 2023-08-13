@@ -12,7 +12,7 @@ import {
     BiSearch
 
 } from "react-icons/bi";
-import { Dispatch, FC, LegacyRef, SetStateAction, useState } from "react";
+import { Dispatch, FC, LegacyRef, SetStateAction, useEffect, useState } from "react";
 import { useAppSelector } from "@/src/redux/hooks";
 import { ImBin2 } from "react-icons/im";
 import { AiFillPlusCircle } from "react-icons/ai";
@@ -22,6 +22,7 @@ import InputField from "../auth/input/inputField";
 import PopUpBtns from "../popUp/popUpBtns";
 import ChatBox from "./chatBox";
 import { profilePicNameHandler } from "@/src/helper/userInformation";
+import Image from "next/image";
 interface AddChatsProps {
     chatIds: string[],
     setChatIds: Dispatch<SetStateAction<string[]>>
@@ -81,11 +82,42 @@ const AddChats: FC<AddChatsProps> = ({
 
     }
     const chatList = useAppSelector(state => state.userChatList).chatList
+    const [chatsInfo, setChatsInfo] = useState<any[]>([])
+    const findChatInfo = () => {
+        if (chatIds.length !== 0) {
+            for (let i = 0; i < chatIds.length; i++) {
+                for (let j = 0; j < chatList.length; j++) {
+                    if (chatIds[i] === chatList[j]._id) {
+                        setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
+    useEffect(() => {
+        findChatInfo();
+    }, [chatIds])
     return (
         <>
             <div className="py-5 w-full h-full">
                 <div className="search-contacts flex pl-[15px]">
-                    <BiSearch className="text-xl text-gray-400  mt-[15px]" />
+                    {
+                        (chatsInfo.length !== 0) ?
+                            chatsInfo.map((chat) => (
+                                <div className="w-auto p-2 flex justify-center gap-1">
+                                    <Image
+                                        src={chat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chat.chatInfo)}`
+                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        className="w-[25px] h-[25px] object-cover rounded-full"
+                                        width={500} height={50} alt="contact-profile" />
+                                    <span>{chat.chatInfo.name}</span>
+                                </div>
+                            ))
+                            : <BiSearch className="text-xl text-gray-400  mt-[15px]" />
+                    }
+
                     <input type="text" className='outline-none bg-transparent w-full border-none p-3' placeholder='Search..' />
                 </div>
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>

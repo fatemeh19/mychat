@@ -127,7 +127,7 @@ export const userHandler = async () => {
 }
 
 export const getFolders = async (dispatch: any) => {
-    const res = await callApi().get('/main/folders/', config)
+    const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
         // user = res.data.value.profile;
         console.log(res.data.value.folders)
