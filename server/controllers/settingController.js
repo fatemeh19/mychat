@@ -77,7 +77,9 @@ const getSetting = async (req, res) => {
   // if does not exist
   const setting = await Services.findOne("setting", { _id: settingId });
 
-  res.send(setting);
+  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok",value:{
+    setting
+  }})
 };
 
 export { editSetting, getSetting };
