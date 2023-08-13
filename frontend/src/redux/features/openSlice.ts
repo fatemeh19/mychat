@@ -3,12 +3,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface initialStateInterface {
     openChat: boolean,
-    openPinSectin: boolean
+    openPinSectin: boolean,
 }
 
 const initialState = {
     openChat: false,
-    openPinSectin: false
+    openPinSectin: false,
 } as initialStateInterface
 
 export const OpenSlice = createSlice({
@@ -20,12 +20,12 @@ export const OpenSlice = createSlice({
         },
         setOpenPinSection: (state, action: PayloadAction<boolean>) => {
             state.openPinSectin = action.payload
-        }
+        },
     },
 });
 
 export const {
     setOpenChat,
-    setOpenPinSection
+    setOpenPinSection,
 } = OpenSlice.actions;
 export default OpenSlice.reducer;

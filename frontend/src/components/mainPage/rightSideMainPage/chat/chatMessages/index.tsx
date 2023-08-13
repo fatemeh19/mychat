@@ -1,17 +1,24 @@
 "use client"
 
+import { useEffect, useState } from 'react'
+import Image from "next/image"
 import MessageBox from "./messageBox"
 import { useAppSelector } from "@/src/redux/hooks"
 
 export default function ChatMessages() {
+
+    const [backgroundImage, setBackgroundImage] = useState<string>()
+
+    useEffect(() => {
+        setBackgroundImage('/defaults/defaultBackgroundImage.jpg')
+    }, [])
 
     const chatInfo = useAppSelector(state => state.chat)
     const userId = useAppSelector(state => state.userInfo).User._id
     const chat = chatInfo.Chat
 
     return (
-        <div className="w-full h-full overflow-hidden flex justify-end flex-col bg-blue-200">
-
+        <div className={`backgroundImageStyle w-full h-full overflow-hidden flex justify-end flex-col relative bg-[url('${backgroundImage ? backgroundImage : '/defaults/defaultBackgroundImage.jpg'}')]`}>
             {(chat.messages?.length == 0 || !chatInfo.chatCreated)
                 ? <div className="w-full h-full flex justify-center items-center">
                     <p className="p-2 h-fit bg-gray-100 font-semibold text-gray-700">No Message</p>

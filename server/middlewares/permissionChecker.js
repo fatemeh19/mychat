@@ -1,4 +1,4 @@
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as fileController from "../utils/file.js";
 import * as RH from "./ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
@@ -10,7 +10,7 @@ const permissionChecker = (routeName) => {
       user: { userId },
       file,
     } = req;
-    const group = await Services.Chat.getChat(
+    const group = await Services.findOne('chat',
       { _id: groupId },
       { userPermissionsAndExceptions: 1, chatType: 1 }
     );

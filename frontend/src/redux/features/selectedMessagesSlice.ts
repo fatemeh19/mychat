@@ -3,12 +3,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface initialStateInterface {
     SelectedMessages: string[],
-    activeSelection: boolean
+    SelectedMessagesMainIds: string[],
+    activeSelection: boolean,
+    selectedMessagesContent: recievedMessageInterface[]
 }
 
 const initialState = {
     SelectedMessages: [],
-    activeSelection: false
+    SelectedMessagesMainIds: [],
+    activeSelection: false,
+    selectedMessagesContent: []
 } as initialStateInterface
 
 export const selectedMessageSlice = createSlice({
@@ -21,15 +25,31 @@ export const selectedMessageSlice = createSlice({
         removeSelectMessage: (state, action: PayloadAction<any>) => {
             state.SelectedMessages = action.payload
         },
+        addSelectedMessagesMainIds: (state, action: PayloadAction<string>) => {
+            state.SelectedMessagesMainIds.push(action.payload)
+        },
+        removeSelectedMessagesMainIds: (state, action: PayloadAction<any>) => {
+            state.SelectedMessagesMainIds = action.payload
+        },
         setActiveSelection: (state, action: PayloadAction<boolean>) => {
             state.activeSelection = action.payload
-        }
+        },
+        addSelectedMessagesContent: (state, action: PayloadAction<recievedMessageInterface>) => {
+            state.selectedMessagesContent.push(action.payload)
+        },
+        removeSelectMessageContent: (state, action: PayloadAction<recievedMessageInterface[]>) => {
+            state.selectedMessagesContent = action.payload
+        },
     },
 });
 
 export const {
     addSelectMessage,
     removeSelectMessage,
-    setActiveSelection
+    setActiveSelection,
+    addSelectedMessagesContent,
+    removeSelectMessageContent,
+    addSelectedMessagesMainIds,
+    removeSelectedMessagesMainIds
 } = selectedMessageSlice.actions;
 export default selectedMessageSlice.reducer;

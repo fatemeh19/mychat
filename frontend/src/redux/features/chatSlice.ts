@@ -1,11 +1,11 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChatType } from "@/src/models/enum";
-import { recievedMessageInterface } from "@/src/models/interface";
+import { groupMemberInterface, recievedMessageInterface } from "@/src/models/interface";
 
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 
-interface members {
+interface member {
     _id: string,
     memberId: string,
     joinedAt: string
@@ -15,7 +15,7 @@ interface chatInterface {
     _id: string,
     adminsAndRights: [],
     chatType: string,
-    members: members[],
+    members: member[],
     messages: recievedMessageInterface[],
     updatedAt: string,
     notifications: boolean,
@@ -28,7 +28,8 @@ interface initialStateInterface {
     Chat: chatInterface,
     chatType: ChatType,
     firstChat: boolean,
-    chatCreated: boolean
+    chatCreated: boolean,
+    groupMembers: groupMemberInterface[]
 }
 
 const initialState = {
@@ -78,7 +79,13 @@ export const ChatSlice = createSlice({
         addSeenIds: (state, action: PayloadAction<any>) => {
             console.log('contact seen message id : ', action.payload)
             state.Chat.messages[action.payload.index].seenIds.push(action.payload.userId)
-        }
+        },
+        setGroupMembersInformation: (state, action: PayloadAction<groupMemberInterface[]>) => {
+            state.groupMembers = action.payload
+        },
+        addMemberToGroup: (state, action: PayloadAction<groupMemberInterface>) => {
+            state.groupMembers.push(action.payload)
+        },
     },
 });
 
@@ -93,6 +100,8 @@ export const {
     addPinMessage,
     deleteMessageFromPinnedMessagesArray,
     setPinState,
-    addSeenIds
+    addSeenIds,
+    setGroupMembersInformation,
+    addMemberToGroup
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

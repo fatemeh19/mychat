@@ -66,11 +66,11 @@ export const fetchUserChatList = async (dispatch: any) => {
     const res = await callApi().get('/main/chat/', config)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
-        console.log("all chatList:", chatList)
+        // console.log("all chatList:", chatList)
         dispatch(addChatList([]))
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
-            console.log(chatList[i].chatType)
+            // console.log(chatList[i].chatType)
             if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
             }

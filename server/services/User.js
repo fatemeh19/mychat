@@ -3,7 +3,7 @@ import Fields from "../messages/fields.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js";
 import * as CustomError from "../errors/index.js";
-const findUser = async (filter, select = "") => {
+const findOne = async (filter, select = {}) => {
   let user;
   try {
     user = await User.findOne(filter).select(select);
@@ -20,7 +20,7 @@ const findUser = async (filter, select = "") => {
   return user;
 };
 
-const createUser = async (body) => {
+const create = async (body) => {
   const user = await User.create(body);
   return user;
 };
@@ -44,7 +44,7 @@ const findAndUpdateUser = async (id, updateQuery,options) => {
   return user;
 };
 
-const findUsers = async (Query, select = {}, sort = "") => {
+const findMany = async (Query, select = {}, sort = "") => {
   const users = await User.find(Query).select(select).sort(sort);
   return users;
 };
@@ -80,9 +80,9 @@ const updateUsers = async (Query,update)=>{
 }
 
 export {
-  findUsers,
-  findUser,
-  createUser,
+  findMany,
+  findOne,
+  create,
   findAndUpdateUser,
   findAndUpdateBySave,
   aggregateUsers,

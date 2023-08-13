@@ -1,6 +1,6 @@
 import * as CustomError  from "../errors/index.js";
 import {StatusCodes} from "http-status-codes"
-import * as Services from "../services/index.js"
+import * as Services from "../services/dbServices.js"
 import ErrorMessages from "../messages/errors.js" 
 import Fields from "../messages/fields.js"
 import path from "path"
@@ -14,7 +14,7 @@ const setInfo = async (req, res) => {
   console.log(req.body);
   const {
     user: { userId },
-    body: { name, phoneNumber,lastname },
+    body: { name, phoneNumber,lastname ,username},
   } = req;
   // try {
   //   data =  setInfo.validate(req.body, {
@@ -25,7 +25,7 @@ const setInfo = async (req, res) => {
   //    console.log("err")
   //   // await RH.CustomError({ err, errorClass: ValidationError });
   // }
-  const user = await Services.User.findUser({phoneNumber:phoneNumber});
+  const user = await Services.findOne('user',{phoneNumber:phoneNumber});
   if(user && user._id!=userId){
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -38,7 +38,6 @@ const setInfo = async (req, res) => {
   
   if (req.file) {
     url = req.file.path
-    // path.join(process.cwd(), "../", req.file.path);
   }
 
   const update = {
@@ -46,8 +45,9 @@ const setInfo = async (req, res) => {
     phoneNumber: phoneNumber,
     lastname:lastname,
     profilePic: url,
+    username : username? username: undefined
   };
-  const updatedUser = await Services.User.findAndUpdateUser(userId, update);
+  const updatedUser = await Services.findByIdAndUpdate('user',userId, update);
 
   if (!updatedUser) {
     await RH.CustomError({
@@ -65,10 +65,9 @@ const setInfo = async (req, res) => {
 };
 
 const getProfile = async (req, res)=>{
-  console.log("resid")
   const {user:{userId}} = req
 
-  const user = await Services.User.findUser({_id:userId},"name lastname phoneNumber username email profilePic")
+  const user = await Services.findOne('user',{_id:userId},{name:1, lastname:1, phoneNumber:1, username:1, email:1, profilePic:1})
   if(!user){
     await RH.CustomError({
       errorClass:CustomError.BadRequestError,
@@ -90,7 +89,7 @@ const getProfile = async (req, res)=>{
 const editProfile = async (req , res)=>{
   const {user:{userId}} = req
   console.log(req.body)
-  const User = await Services.User.findUser({_id:userId})
+  const User = await Services.findOne('user',{_id:userId})
   
   let data
   try {
@@ -104,7 +103,7 @@ const editProfile = async (req , res)=>{
     }
     data.profilePic = req.file.path
   }
-  const user = await Services.User.findAndUpdateBySave({_id:userId},data)
+  const user = await Services.findAndUpdateBySave('user',{_id:userId},data)
   if(!user){
     await RH.CustomError({
       errorClass:CustomError.BadRequestError,
@@ -124,7 +123,7 @@ const editProfile = async (req , res)=>{
 const setStatus = async ({userId,online})=>{
   //  if user does not exist
   // error
-  Services.User.findAndUpdateUser(
+  Services.findByIdAndUpdate('user',
     userId,
     {
       status: {
@@ -138,7 +137,7 @@ const setStatus = async ({userId,online})=>{
 
 const getUser = async (req, res)=>{
   const {id:userId} = req.params
-  const user = await Services.User.findUser({_id:userId})
+  const user = await Services.findOne('user',{_id:userId},{password:0})
   // if user does not exists
 
   RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok",value:{

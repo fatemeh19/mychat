@@ -89,7 +89,7 @@ const CreateGroup: FC<CreateGroupProps> = ({
                     ? (
                         <CustomizedDialogs
                             title='Add Members'
-                            children={<CreateGroupStep2 createGroupHandler={createGroupHandler} setOpenAddContactToGroup={setOpenAddContactToGroup} memberIds={memberIds} setMemberIds={setMemberIds} />}
+                            children={<CreateGroupStep2 buttonHandler={createGroupHandler} setOpenAddContactToGroup={setOpenAddContactToGroup} memberIds={memberIds} setMemberIds={setMemberIds} buttonTitle='Create' />}
                             open={openCreateGroup}
                             handelOpen={createGroupOpenHandler} />
 

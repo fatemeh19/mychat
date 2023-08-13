@@ -1,4 +1,4 @@
-import { Dispatch, FC, LegacyRef, SetStateAction, useEffect } from "react";
+import { Dispatch, FC, LegacyRef, SetStateAction, useEffect, useState } from "react";
 import PopUpBtns from "../popUp/popUpBtns";
 import { BiSearch } from "react-icons/bi";
 import { useAppSelector } from "@/src/redux/hooks";
@@ -7,24 +7,33 @@ import { contactInterface } from "@/src/redux/features/userContactListSlice";
 
 
 interface CreateGroupStep2Props {
-    createGroupHandler: () => void,
+    buttonHandler: () => void,
     setOpenAddContactToGroup: Dispatch<SetStateAction<boolean>>,
     memberIds: string[],
     setMemberIds: Dispatch<SetStateAction<string[]>>
+    buttonTitle: string
 }
 
 const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
-    createGroupHandler,
+    buttonHandler,
     setOpenAddContactToGroup,
     memberIds,
-    setMemberIds
+    setMemberIds,
+    buttonTitle
 }) => {
 
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
     const userId = useAppSelector(state => state.userInfo).User._id
     useEffect(() => {
-        setMemberIds(prev => [...prev, userId])
+        // if add member => don't add userId to memberIds 
+        // if create group => add userId to memberIds
+        buttonTitle === 'Add' ? null : setMemberIds(prev => [...prev, userId])
     }, [])
+    useEffect(() => {
+        console.log('memberIds : ', memberIds)
+    }, [memberIds])
+
+    let [prevContactBoxRef, setPrevContactBoxRef] = useState<LegacyRef<HTMLDivElement> | undefined>()
 
     const selectMember = (contact: contactInterface, contactBoxRef: LegacyRef<HTMLDivElement> | undefined) => {
         // styling selected contact :
@@ -43,7 +52,18 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
         // contactBoxRef.current.style.before = 'content:"a"'
 
         let counter = 0
+        // if add member to group then just chose one member
+        if (buttonTitle === 'Add') {
+            if (memberIds.length >= 1) {
+                setMemberIds([])
+                console.log('before aply : ', prevContactBoxRef)
+                // @ts-ignore
+                prevContactBoxRef.current.style = ''
+            }
+        }
         setMemberIds(prev => [...prev, contact._id])
+        setPrevContactBoxRef(contactBoxRef)
+        console.log('after set : ', prevContactBoxRef)
         memberIds.map(memberId => {
             if (memberId === contact._id) {
                 counter = counter + 1
@@ -91,13 +111,13 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
             </div>
             <PopUpBtns
                 title1="Cancle"
-                title2="Create"
+                title2={buttonTitle}
                 id1="cancle"
-                id2="create"
+                id2={buttonTitle}
                 name1="cancle"
-                name2="create"
+                name2={buttonTitle}
                 onClickHandler1={cancleHandler}
-                onClickHandler2={createGroupHandler}
+                onClickHandler2={buttonHandler}
                 btnContainerClassName="static justify-end gap-9"
             />
         </div>

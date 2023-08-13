@@ -34,11 +34,18 @@ interface recievedMessageInterface {
     seenIds: string[],
     deletedIds: string[],
     forwarded: {
-        isForwarded: boolean
+        isForwarded: boolean,
+        by: string
     },
     pinStat: {
         pinned: number,
         by: string //userId
     }
 }
-export type { infoFace, recievedMessageInterface }
+
+interface groupMemberInterface {
+    _id: string,
+    name: string,
+    profilePic: string
+}
+export type { infoFace, recievedMessageInterface, groupMemberInterface }

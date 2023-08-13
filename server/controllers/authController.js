@@ -5,7 +5,7 @@ import * as Util from "../utils/index.js"
 import crypto from "crypto"
 import ErrorMessages from "../messages/errors.js"
 import Fields from "../messages/fields.js" 
-import * as Services from "../services/index.js"
+import * as Services from "../services/dbServices.js"
 import * as Validators from "../validators/index.js"
 import * as RH from"../middlewares/ResponseHandler.js"
 import { setStatus } from "./userController.js";
@@ -23,7 +23,7 @@ const register = async (req, res) => {
     
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  const emailAlreadyExists = await Services.User.findUser({
+  const emailAlreadyExists = await Services.findOne('user',{
     email: data.email,
   });
   if (emailAlreadyExists) {
@@ -39,7 +39,7 @@ const register = async (req, res) => {
   let user;
 
   try {
-    user = await Services.User.createUser(data);
+    user = await Services.create('user',data);
     await  Util.sendVerificationEmail(data.email, verificationToken);
   } catch (error) {
     if (user) {
@@ -53,7 +53,7 @@ const register = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
   const { email, verificationToken } = req.body;
-  const user = await Services.User.findUser({ email: email });
+  const user = await Services.findOne('user',{ email: email });
   if (!user) {
     await RH.CustomError({
       errorClass: CustomError.UnauthenticatedError,
@@ -90,7 +90,7 @@ const login = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  const user = await Services.User.findUser({ email: data.email });
+  const user = await Services.findOne('user',{ email: data.email });
   if (!user) {
     await RH.CustomError({
       errorClass: CustomError.UnauthenticatedError,

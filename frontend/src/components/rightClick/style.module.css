@@ -64,7 +64,7 @@
 {
     overflow: hidden;
     overflow-y: scroll;
-    max-height: 290px;
+    max-height: 250px;
     scroll-margin-right: 50px;
 }
 

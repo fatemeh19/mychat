@@ -1,13 +1,17 @@
 "use client"
 
 import ChatContactBox from './chatContactBox';
-import { useAppSelector } from '@/src/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import Link from 'next/link';
 import { profilePicNameHandler, } from '@/src/helper/userInformation';
-export default function ChatListItems() {
+import { setShowReply } from '@/src/redux/features/repliedMessageSlice';
+export default function ChatListItems({ popup }: { popup: boolean }) {
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatOpenInList = useAppSelector(state => state.chatOpenInList).chatOpenInList
+
+    const dispatch = useAppDispatch()
+
 
     return (
 
@@ -29,7 +33,7 @@ export default function ChatListItems() {
                                     lastMessegeByContact={false}
                                     ContactName={Contact.name} status={Contact.status}
                                     lastMessage={''} ContactSeen={false} lastMessageTime={''}
-                                    numberOfUnSeen={''} recivedMessage={true} isTyping={false} />
+                                    numberOfUnSeen={''} recivedMessage={true} isTyping={false} popup={popup} />
                             </Link>
                         )
                 }
@@ -38,10 +42,8 @@ export default function ChatListItems() {
                 {
                     (chatList.length === 0) ? null :
 
-                        chatList.map((chatBox) => {
-                            console.log('chatBox : ', chatBox)
-
-                            return <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                        chatList.map((chatBox) => (
+                            <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                 {/* @ts-ignore */}
 
                                 <ChatContactBox
@@ -56,10 +58,12 @@ export default function ChatListItems() {
                                     lastMessage={chatBox.lastMessage} ContactSeen={false}
                                     lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
                                     recivedMessage={true} isTyping={false}
-                                    chatbox={chatBox} />
+                                    chatbox={chatBox}
+                                    popup={popup}
+                                />
                             </Link>
 
-                        }
+                        )
 
 
                         )

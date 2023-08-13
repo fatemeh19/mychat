@@ -13,6 +13,8 @@ import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosReque
 import VoiceRecord from './voiceRecord'
 import ReplySection from './replySection'
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
+import { setIsForward } from '@/src/redux/features/forwardMessageSlice'
+import { removeSelectMessage, removeSelectMessageContent, removeSelectedMessagesMainIds, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
 
 interface chatSendProps {
     contactId: string,
@@ -33,6 +35,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const chatCreated = useAppSelector(state => state.chat).chatCreated
     const showReply = useAppSelector(state => state.repledMessage).ShowReply
     const repliedMessageId = useAppSelector(state => state.repledMessage).RepliedMessage._id
+    const isForward = useAppSelector(state => state.forwardMessage).isForward
+    const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -47,7 +51,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     }, [firstChat])
     useEffect(() => {
         socket?.emit('onChat', chatId)
-    }, [socket, chatId])
+    }, [chatId])
 
     const attachmentHandler = (e: any) => {
         // @ts-ignore
@@ -80,6 +84,14 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         }
         if (type === messageTypes.text && input.length == 0) {
             console.log('empty text')
+            if (isForward) {
+                console.log('forward msg: ', forwardMessageIds)
+                socket.emit('forwardMessage', chatId, forwardMessageIds)
+                isForward && dispatch(setIsForward(false))
+                showReply && dispatch(setShowReply(false))
+                isForward && dispatch(removeSelectMessageContent([]))
+                isForward && dispatch(setActiveSelection(false))
+            }
         } else {
             console.log('type : ', type)
             let newMessage = new FormData()
@@ -89,8 +101,9 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             file ? newMessage.append('file', file) : null
             newMessage.append('senderId', userInfo._id)
             voice ? newMessage.append('file', voice) : null
-            showReply ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
-            showReply ? newMessage.append('reply[messageId]', repliedMessageId) : null
+            showReply && !isForward ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
+            showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
+            // showReply && isForward ? newMessage.append('forwarded[isForwarded]', isForward)
 
             let message = ''
             chatId
@@ -103,12 +116,21 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             console.log(socket)
             if (socket) {
                 console.log('socket is exist')
-                // newMessage.forEach(item => console.log(item))
+                newMessage.forEach(item => console.log(item))
                 chatId ? socket.emit('sendMessage', chatId, message) : null
+                chatId && isForward ? socket.emit('forwardMessage', chatId, forwardMessageIds) : null
+
                 // socket.emit('sendMessage', chatId, message)
             }
             dispatch(setFirstChat(false))
             showReply && dispatch(setShowReply(false))
+            isForward && dispatch(setIsForward(false))
+            isForward && dispatch(removeSelectMessageContent([]))
+            isForward && dispatch(setActiveSelection(false))
+
+            isForward && dispatch(removeSelectedMessagesMainIds([]))
+            isForward && dispatch(removeSelectMessage([]))
+
         }
     }
 

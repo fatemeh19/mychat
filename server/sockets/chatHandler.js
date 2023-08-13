@@ -1,5 +1,5 @@
 import Chat from "../models/Chat.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import { DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
 import { DeleteChat } from "../controllers/chatController.js";
 export default function (io) {
@@ -36,7 +36,7 @@ export default function (io) {
   const seenMessage = async function (chatId, messageId) {
     const socket = this;
     const userId = socket.user.userId;
-    Services.Chat.findAndUpdateChat(
+    Services.findByIdAndUpdate('chat',
       chatId,
       {
         $push: { "messages.$[message].seenIds": userId },
@@ -53,7 +53,7 @@ export default function (io) {
     const socket = this;
     const userId = socket.user.userId;
 
-    let forwardedMessages = await Services.Message.getMessages({
+    let forwardedMessages = await Services.findMany('message',{
       _id: { $in: messageIds },
     });
     let forwardedMsgs = [...forwardedMessages]
@@ -68,7 +68,7 @@ export default function (io) {
       });
     });
   
-    const chat = await Services.Chat.findAndUpdateChat(
+    const chat = await Services.findByIdAndUpdate('chat',
       chatId,
       {
         $push: { messages: { $each: messages } },
