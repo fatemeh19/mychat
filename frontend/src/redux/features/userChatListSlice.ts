@@ -20,12 +20,14 @@ interface initialStateInterface {
     chatList: chatBoxInterface[],
     privateChatList: chatBoxInterface[],
     groupChatList: chatBoxInterface[],
+    folderChatList: chatBoxInterface[]
 }
 
 const initialState = {
     chatList: [],
     privateChatList: [],
-    groupChatList: []
+    groupChatList: [],
+    folderChatList: []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
@@ -55,6 +57,9 @@ export const contactSlice = createSlice({
         addGroupChat: (state, action: PayloadAction<any>) => {
             state.groupChatList[state.groupChatList.length] = action.payload
         },
+        addFolderChatList: (state, action: PayloadAction<any>) => {
+            state.folderChatList = action.payload
+        },
     },
 });
 
@@ -65,6 +70,7 @@ export const {
     addChatToTop,
     openHandle,
     addPrivateChat,
-    addGroupChat
+    addGroupChat,
+    addFolderChatList
 } = contactSlice.actions;
 export default contactSlice.reducer;

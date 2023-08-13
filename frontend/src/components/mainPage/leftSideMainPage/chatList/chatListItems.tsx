@@ -7,11 +7,8 @@ import { profilePicNameHandler, } from '@/src/helper/userInformation';
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice';
 export default function ChatListItems({ popup }: { popup: boolean }) {
     const Contact = useAppSelector(state => state.userContact).Contact
-    const chatList = useAppSelector(state => state.userChatList).chatList
+    const folderChatList = useAppSelector(state => state.userChatList).folderChatList
     const chatOpenInList = useAppSelector(state => state.chatOpenInList).chatOpenInList
-
-    const dispatch = useAppDispatch()
-
 
     return (
 
@@ -40,9 +37,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
             </div>
             <div>
                 {
-                    (chatList.length === 0) ? null :
+                    (folderChatList.length === 0) ? null :
 
-                        chatList.map((chatBox) => (
+                        folderChatList.map((chatBox) => (
                             <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                 {/* @ts-ignore */}
 

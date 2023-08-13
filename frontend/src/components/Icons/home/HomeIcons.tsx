@@ -2,7 +2,8 @@
 
 import {
     BiMenu,
-    BiMessageRoundedDetail
+    BiMessageRoundedDetail,
+    BiSolidFolder
 
 } from "react-icons/bi";
 import { useState } from 'react';
@@ -10,9 +11,10 @@ import Contacts from "../../contact";
 import CustomizedDialogs from "../../popUp";
 import Menu from "../../mainPage/leftSideMainPage/menu";
 import EditProfile from "../../setting/editProfile";
-import { useAppSelector } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import CreateGroup from "../../group/createGroup";
 import Folders from "../../Folders";
+import { getFolderChats } from "@/src/helper/userInformation";
 
 export function AllMessageIcon() {
 
@@ -27,7 +29,27 @@ export function AllMessageIcon() {
 
     )
 }
+export function ShowFolder({ folder }: { folder: any }) {
+    const dispatch = useAppDispatch()
+    const [click, setClick] = useState(false)
+    const folderClickHandler = () => {
+        setClick(true)
+        getFolderChats(folder._id, dispatch)
+    }
+    return (
 
+        <div onClick={folderClickHandler}
+            key={folder._id} className={click ? "text-white grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]"
+                : "text-gray-500 grid gap-2 justify-center relative home-icons py-2 bg-transparent"}
+        >
+            <div className="flex justify-center">
+                <BiSolidFolder className=" cursor-pointer text-2xl dark:text-[#2563eb]" />
+            </div>
+            <p className="text-xs mb-2">{folder.name}</p>
+        </div>
+
+    )
+}
 
 
 

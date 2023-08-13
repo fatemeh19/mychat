@@ -1,7 +1,7 @@
 "use client"
 
 import { addFoldersList } from "../redux/features/folderSlice"
-import { addChat, addChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
+import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
@@ -32,6 +32,7 @@ export const fetchUserProfileData = async (dispatch: any) => {
 }
 
 export const fetchUserChatList = async (dispatch: any) => {
+    let allChatList = []
     const findContact = async (contactId: any) => {
         let contact = {}
         let contactList = []
@@ -107,8 +108,10 @@ export const fetchUserChatList = async (dispatch: any) => {
                 dispatch(addGroupChat(chat))
             }
             dispatch(addChat(chat))
+            allChatList.push(chat)
 
         }
+        dispatch(addFolderChatList(allChatList))
     }
 }
 
@@ -129,8 +132,14 @@ export const userHandler = async () => {
 export const getFolders = async (dispatch: any) => {
     const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
-        // user = res.data.value.profile;
-        console.log(res.data.value.folders)
+        console.log('folders:', res.data.value.folders)
         dispatch(addFoldersList(res.data.value.folders))
+    }
+}
+export const getFolderChats = async (folderId: string, dispatch: any) => {
+    const res = await callApi().get(`/main/folder/${folderId}`, config)
+    if (res.statusText && res.statusText === 'OK') {
+        console.log(`folder chat/${folderId}:`, res.data.value.chats)
+        dispatch(addFolderChatList(res.data.value.chats))
     }
 }

@@ -1,32 +1,25 @@
 "use client"
 
 import {
-    BiUser,
-    BiPhoneCall,
-    BiAt,
-    BiFolder,
-    BiRecycle,
     BiSolidFolder,
     BiX,
-    BiChat
+
 
 } from "react-icons/bi";
-import { Dispatch, FC, SetStateAction, useState } from "react";
-import { useAppSelector } from "@/src/redux/hooks";
-import { ImBin2 } from "react-icons/im";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { AiFillPlusCircle } from "react-icons/ai";
-import CustomizedDialogs from "../popUp";
-import Input from "../auth/input";
 import InputField from "../auth/input/inputField";
-import PopUpBtns from "../popUp/popUpBtns";
 import { Form, Formik } from "formik";
 import * as yup from 'yup'
+import { BsChatTextFill } from "react-icons/bs";
+import { useAppSelector } from "@/src/redux/hooks";
 interface CreateFolderProps {
     addChatOpen: () => void,
     createForlderOpen: () => void,
     folderName: string,
     saveFolderHandler: () => void
-    setFolderName: Dispatch<SetStateAction<string>>
+    setFolderName: Dispatch<SetStateAction<string>>,
+    chatsInfo: any[]
 }
 
 const CreateFolder: FC<CreateFolderProps> = ({
@@ -34,12 +27,10 @@ const CreateFolder: FC<CreateFolderProps> = ({
     createForlderOpen,
     folderName,
     saveFolderHandler,
-    setFolderName
+    setFolderName,
+    chatsInfo
 }) => {
-    // const [createFolder, setCreateFolder] = useState(false)
-    // const createForlderHandler = () => {
-    //     setCreateFolder(!createFolder)
-    // }
+
     const initialValues = {
         folderName: folderName
     }
@@ -50,12 +41,13 @@ const CreateFolder: FC<CreateFolderProps> = ({
 
     const submitHandler = (values: any) => {
         setFolderName(values.folderName)
-        if (folderName != undefined) {
+        if (folderName !== '') {
             saveFolderHandler()
             console.log('create folder', values)
         }
         createForlderOpen()
     }
+
     return (
         <>
 
@@ -76,7 +68,7 @@ const CreateFolder: FC<CreateFolderProps> = ({
 
                         <div>
 
-                            <p className="text-blue-500 my-1 px-5">Included chats</p>
+                            <p className="text-blue-500 my-1 px-5 font-bold">Included chats</p>
                             <div className="addChatBtn cursor-pointer flex gap-3 text-blue-500 py-1 px-5 hover:bg-gray-100"
                                 onClick={() => {
                                     createForlderOpen()
@@ -84,13 +76,30 @@ const CreateFolder: FC<CreateFolderProps> = ({
                                 }}
                             >
                                 <AiFillPlusCircle className="text-[21px]" />
-                                <span className="font-bold">Add chats</span>
+                                <span className="font-semibold">Add chats</span>
                             </div>
-                            <div className="chats my-1 px-5">
+                            <div className="chats my-2 px-5">
                                 {/* example chat */}
+                                {
+                                    (chatsInfo.length !== 0) ?
+                                        chatsInfo.map((chat) => (
+                                            <div className="flow-root" key={chat._id}>
+                                                <div className="float-left flex gap-3">
+                                                    <BsChatTextFill className="text-xl m-auto text-blue-500" />
+                                                    <div>
+                                                        <span className='text-sm'>{chat.chatInfo.name}</span>
+                                                        {/* <span className='text-xs text-gray-500'>6 chats</span> */}
+                                                    </div>
+                                                </div>
+                                                <BiX className="float-right text-gray-300 hover:text-gray-500" />
+                                            </div>
+                                        ))
+                                        : null
+                                }
+
                                 <div className="flow-root">
                                     <div className="float-left flex gap-3">
-                                        <BiSolidFolder className="text-xl text-blue-500" />
+                                        <BsChatTextFill className="text-xl m-auto text-blue-500" />
                                         <div>
                                             <span className='text-sm'>contact1</span>
                                             {/* <span className='text-xs text-gray-500'>6 chats</span> */}
@@ -101,16 +110,6 @@ const CreateFolder: FC<CreateFolderProps> = ({
                             </div>
 
                         </div>
-                        {/* <PopUpBtns
-                            title1="Cancel"
-                            title2="Create"
-                            id1="cancel"
-                            id2="create"
-                            name1="cancel"
-                            name2="create"
-                            onClickHandler1={createForlderOpen}
-                            onClickHandler2={saveFolderHandler}
-                        /> */}
 
                         <div className="flex justify-end gap-5 px-5">
                             <button

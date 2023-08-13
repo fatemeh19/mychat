@@ -27,14 +27,16 @@ interface AddChatsProps {
     chatIds: string[],
     setChatIds: Dispatch<SetStateAction<string[]>>
     addChatOpen: () => void,
-    createForlderOpen: () => void
+    createForlderOpen: () => void,
+    chatsInfo: any[]
 }
 
 const AddChats: FC<AddChatsProps> = ({
     chatIds,
     setChatIds,
     addChatOpen,
-    createForlderOpen
+    createForlderOpen,
+    chatsInfo
 }) => {
 
     const selectChat = (chatId: string, chatBoxRef: LegacyRef<HTMLDivElement> | undefined) => {
@@ -79,26 +81,10 @@ const AddChats: FC<AddChatsProps> = ({
     }
     const saveHandler = () => {
         addChatOpen()
-
+        createForlderOpen()
     }
+
     const chatList = useAppSelector(state => state.userChatList).chatList
-    const [chatsInfo, setChatsInfo] = useState<any[]>([])
-    const findChatInfo = () => {
-        if (chatIds.length !== 0) {
-            for (let i = 0; i < chatIds.length; i++) {
-                for (let j = 0; j < chatList.length; j++) {
-                    if (chatIds[i] === chatList[j]._id) {
-                        setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
-                        break;
-                    }
-                }
-            }
-
-        }
-    }
-    useEffect(() => {
-        findChatInfo();
-    }, [chatIds])
     return (
         <>
             <div className="py-5 w-full h-full">
@@ -106,13 +92,13 @@ const AddChats: FC<AddChatsProps> = ({
                     {
                         (chatsInfo.length !== 0) ?
                             chatsInfo.map((chat) => (
-                                <div className="w-auto p-2 flex justify-center gap-1">
+                                <div key={chat._id} className="w-auto select-none cursor-pointer bg-gray-300 py-1 px-2 flex justify-center gap-1">
                                     <Image
                                         src={chat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chat.chatInfo)}`
                                             : '/uploads/photo/defaultProfilePic.png'}
                                         className="w-[25px] h-[25px] object-cover rounded-full"
                                         width={500} height={50} alt="contact-profile" />
-                                    <span>{chat.chatInfo.name}</span>
+                                    <span className="m-auto">{chat.chatInfo.name}</span>
                                 </div>
                             ))
                             : <BiSearch className="text-xl text-gray-400  mt-[15px]" />
@@ -121,7 +107,7 @@ const AddChats: FC<AddChatsProps> = ({
                     <input type="text" className='outline-none bg-transparent w-full border-none p-3' placeholder='Search..' />
                 </div>
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <div className="no-scrollbar h-full overflow-y-auto pb-[30%] pt-3">
+                <div className="no-scrollbar h-full overflow-y-auto pb-[30%] ">
                     <p className="bg-gray-100 px-5 py-2 text-gray-500">Chats</p>
                     {
                         // @ts-ignore

@@ -23,33 +23,33 @@ const Folders: FC<FoldersProps> = ({
 
 }) => {
 
-
+    //states 
     const [createFolder, setCreateFolder] = useState(false)
     const [addChat, setAddChat] = useState(false)
     const [chatIds, setChatIds] = useState<string[]>([])
     const [folderName, setFolderName] = useState('')
+    const [chatsInfo, setChatsInfo] = useState<any[]>([])
 
+    // redux states
     const folders = useAppSelector(state => state.folders).folders
+    const chatList = useAppSelector(state => state.userChatList).chatList
+    // dispatch
+    const dispatch = useAppDispatch()
+
+    // functions
     const createForlderOpen = () => {
         setCreateFolder(!createFolder)
     }
     const addChatOpen = () => {
         setAddChat(!addChat)
     }
-
-    const dispatch = useAppDispatch()
     const saveFolderHandler = async () => {
-        // add userId to memberIds
 
         try {
-            // let formData = new FormData()
-            // formData.append('name', folderName)
-            // chatIds.map(cId => {
-            //     formData.append('chatIds', cId)
-            // })
+
             let formData = {
                 name: folderName,
-                chatIds: ['64cfdfa4444fc9a4298ec776']
+                chatIds: chatIds
             }
             const token = localStorage.getItem('token')
             const config = {
@@ -71,12 +71,26 @@ const Folders: FC<FoldersProps> = ({
         } catch (error) {
             console.log('error in catch text info : ', error)
         }
-        // setAddChat()
+    }
+    const findChatInfo = () => {
+        if (chatIds.length !== 0) {
+            for (let i = 0; i < chatIds.length; i++) {
+                for (let j = 0; j < chatList.length; j++) {
+                    if (chatIds[i] === chatList[j]._id) {
+                        setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
+                        break;
+                    }
+                }
+            }
+
+        }
     }
 
     useEffect(() => {
         console.log('chatIds : ', chatIds)
+        findChatInfo();
     }, [chatIds])
+
     return (
         <>
             <div className="w-full h-full pb-3">
@@ -95,25 +109,13 @@ const Folders: FC<FoldersProps> = ({
                 </div>
                 <div className="folders px-5 py-3">
                     <p className="text-blue-500 font-bold mb-5">My folders</p>
-                    {/* example folder */}
-                    <div className="flow-root mt-1">
-                        <div className="float-left flex gap-3">
-                            <BiSolidFolder className="text-xl text-blue-500" />
-                            <div className="grid mt-[-8px]">
-                                <span className='text-sm'>Work</span>
-                                <span className='text-xs text-gray-500'>6 chats</span>
-                            </div>
-                        </div>
-                        <ImBin2 className="float-right text-gray-300" />
-                    </div>
-
                     {
                         (folders.length === 0) ? null
                             : folders.map((folder) => (
 
-                                <div className="flow-root mt-1" key={folder._id}>
+                                <div className="flow-root mt-3" key={folder._id}>
                                     <div className="float-left flex gap-3">
-                                        <BiSolidFolder className="text-xl text-blue-500" />
+                                        <BiSolidFolder className="m-auto text-xl text-blue-500" />
                                         <div className="grid">
                                             <span className='text-sm'>{folder.name}</span>
                                             <span className='text-xs text-gray-500'>6 chats</span>
@@ -130,7 +132,7 @@ const Folders: FC<FoldersProps> = ({
                     onClick={createForlderOpen}
                 >
                     <AiFillPlusCircle className="text-[21px]" />
-                    <span className="font-bold">Create new Folder</span>
+                    <span className="font-semibold">Create new Folder</span>
                 </div>
             </div>
 
@@ -141,7 +143,8 @@ const Folders: FC<FoldersProps> = ({
                         open={addChat}
                         title="Include Chats"
                         handelOpen={addChatOpen}
-                        children={<AddChats addChatOpen={addChatOpen} chatIds={chatIds} setChatIds={setChatIds}
+                        children={<AddChats addChatOpen={addChatOpen} chatsInfo={chatsInfo}
+                            chatIds={chatIds} setChatIds={setChatIds}
                             createForlderOpen={createForlderOpen} />} />
 
                     : (createFolder
@@ -149,8 +152,9 @@ const Folders: FC<FoldersProps> = ({
                             open={createFolder}
                             title="New Folder"
                             handelOpen={createForlderOpen}
-                            children={<CreateFolder
-                                saveFolderHandler={saveFolderHandler} addChatOpen={addChatOpen} folderName={folderName} setFolderName={setFolderName}
+                            children={<CreateFolder chatsInfo={chatsInfo}
+                                saveFolderHandler={saveFolderHandler} addChatOpen={addChatOpen}
+                                folderName={folderName} setFolderName={setFolderName}
                                 createForlderOpen={createForlderOpen} />} />
                         : null)
 

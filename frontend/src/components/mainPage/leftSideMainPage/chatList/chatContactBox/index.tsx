@@ -51,7 +51,6 @@ const ChatContactBox: FC<chatContactProps> = ({
 }) => {
     const dispatch = useAppDispatch()
     const [online, setOnline] = useState(status?.online)
-    // const [lastSeen , setLastSeen] = useState(status?.lastseen)
     const [chatOpenned, setChatOpenned] = useState(chatOpennedP)
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -62,23 +61,6 @@ const ChatContactBox: FC<chatContactProps> = ({
     const date = new Date(lastMesTime);
     const time = date.getHours() + ":" + date.getMinutes()
 
-    // useEffect(() => {
-    //     socket?.on('sendMessage', (message) => {
-    //         console.log('chatOpennedP : ',chatOpennedP)
-    //         if(chatOpennedP || chatOpenned){
-    //             console.log('i got new Message in chat box: ', message)
-    //             if(message.messageId.content.contentType!='text' && message.messageId.content.text==''){
-    //                 setLastMesText(message.content.originalName)
-    //             }
-    //             else{
-    //                 setLastMesText(message.content.text)
-    //             }
-    //             setLastMesTime(message.updatedAt)
-    //             console.log(lastMesText)
-    //         }
-
-    //     })
-    // }, [socket,chatOpennedP])
 
     useEffect(() => {
         // socket?.on('sendMessage', (message) => {
