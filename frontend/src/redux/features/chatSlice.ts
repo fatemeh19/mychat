@@ -83,8 +83,8 @@ export const ChatSlice = createSlice({
         setGroupMembersInformation: (state, action: PayloadAction<groupMemberInterface[]>) => {
             state.groupMembers = action.payload
         },
-        addMemberToGroup: (state, action: PayloadAction<{ memberId: string, groupMember: groupMemberInterface }>) => {
-            state.groupMembers.push(action.payload.groupMember)
+        addMemberToGroup: (state, action: PayloadAction<groupMemberInterface>) => {
+            state.groupMembers.push(action.payload)
         },
     },
 });

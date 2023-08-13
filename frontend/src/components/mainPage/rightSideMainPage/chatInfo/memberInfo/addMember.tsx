@@ -13,6 +13,7 @@ const AddMember: FC<AddMemberProps> = () => {
 
     const dispatch = useAppDispatch()
     const chatId = useAppSelector(state => state.chat.Chat)._id
+    const userContacts = useAppSelector(state => state.userContactsList).contacts
 
     const [openAddContactToGroup, setOpenAddContactToGroup] = useState(false)
     const [memberIds, setMemberIds] = useState<string[]>([])
@@ -21,9 +22,13 @@ const AddMember: FC<AddMemberProps> = () => {
 
 
     const addGroupMemberHandler = () => {
-        addGroupMember(chatId, memberIds[0], dispatch) // memberIds insted of string
+        const memberId = memberIds[0]
+
+        const addedMember = userContacts.filter(userContact => userContact._id === memberId)
+        addGroupMember(chatId, memberId, addedMember[0], dispatch) // memberIds insted of memberId
         setOpenAddContactToGroup(false)
         setMemberIds([])
+
     }
     const openAddContactToGroupHandler = () => {
         setOpenAddContactToGroup(!openAddContactToGroup)

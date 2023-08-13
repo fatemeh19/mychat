@@ -70,12 +70,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const selectedMessagesContent = useAppSelector(state => state.selectedMessage).selectedMessagesContent
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
-    const groupMembers = useAppSelector(state => state.chat).groupMembers
-    // let information = {
-    //     dir: MessageBoxDir.rtl,
-    //     name: '',
-    //     profilePic: ''
-    // }
 
     // let sender;
     // msg.messageInfo.senderId === User._id
@@ -115,17 +109,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }, [sender])
 
     useEffect(() => {
-        console.log('information : ', information)
-
-
+        // console.log('information : ', information)
     }, [information])
-
-    useEffect(() => {
-        console.log('members in messagebox : ', groupMembers)
-
-    }, [groupMembers])
-
-
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
@@ -142,10 +127,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         setOpen(true)
         setShowConfirm(true)
         closeContextMenu()
-        console.log('type: ', type)
         switch (type) {
             case 'Delete':
-                console.log('this is delete handler')
                 setConfirmHandler(() => deleteHandler_oneMessage)
                 setConfirmInfo({
                     confirmTitle: 'Delete',
@@ -227,21 +210,16 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
 
     const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => {
-        console.log(e)
-        console.log(e.currentTarget)
-
         dispatch(setForwardMessageIds([]))
         dispatch(setIsForward(false))
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
         closeContextMenu()
-
     }
 
     const pinMessage = () => {
         console.log('pin message done')
         let pinState = false
-        console.log('msg.pinStat.pinned:', msg)
         msg.pinStat.pinned ? pinState = false : pinState = true
 
         const pinnedInfo = {
@@ -265,7 +243,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         dispatch(setIsForward(true))
         dispatch(setForwardMessageIds([msg.messageInfo._id]))
         dispatch(addSelectedMessagesContent(msg))
-        console.log('forwarding ...')
         closeContextMenu()
 
     }
@@ -273,18 +250,14 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     useEffect(() => {
         if (msg.messageInfo.senderId !== User._id) {
-            // console.log('emit seenMessageId : ', msg._id)
             socket.emit('seenMessage', chatId, msg._id)
         }
 
         socket.on('seenMessage', (messageId, userId) => {
-            // console.log('messageId : ' + messageId)
-            // console.log('userId : ' + userId)
             if ((messageId === msg._id) && (User._id === msg.messageInfo.senderId) && (User._id !== userId)) {
                 console.log('your message seen')
                 const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
                 let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, msg._id)
-                // console.log('messageIndex', messageIndex)
                 dispatch(addSeenIds({ index: messageIndex, userId: userId }))
             }
 

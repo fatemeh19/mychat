@@ -3,6 +3,7 @@
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
 import { addChat, addMemberToGroup, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
+import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -102,7 +103,7 @@ export const getGroupMembers = async (chatId: string, dispatch: any) => {
     }
 }
 
-export const addGroupMember = async (chatId: string, memberId: string, dispatch: any) => {
+export const addGroupMember = async (chatId: string, memberId: string, addedMember: groupMemberInterface, dispatch: any) => {
     const data = {
         memberId: memberId
     }
@@ -110,13 +111,7 @@ export const addGroupMember = async (chatId: string, memberId: string, dispatch:
         const res = await callApi().post(`/main/chat/group/addMember/${chatId}`, data, config)
         console.log('add group member res : ', res)
         // ----------------- add member to group member by dispatch
-        // const groupMember = {
-        //     _id: memberId,
-        //     name: 'fatemehhhh',
-        //     profilePic: ''
-        // }
-        // dispatch(addMemberToGroup({ memberId, groupMember }))
-        // return res.data.value.members
+        dispatch(addMemberToGroup(addedMember))
     } catch (error) {
         console.log('add group member error : ', error)
     }
