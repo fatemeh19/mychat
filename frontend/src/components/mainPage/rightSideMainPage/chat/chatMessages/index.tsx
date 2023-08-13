@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import Image from "next/image"
 import MessageBox from "./messageBox"
 import { useAppSelector } from "@/src/redux/hooks"
 
 export default function ChatMessages() {
 
     const [backgroundImage, setBackgroundImage] = useState<string>()
+
 
     useEffect(() => {
         setBackgroundImage('/defaults/defaultBackgroundImage.jpg')

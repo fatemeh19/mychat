@@ -3,8 +3,6 @@ import RepliedMessage from "./repliedMessage";
 import { RefObject, useEffect, useState } from "react";
 import { BiCheck, BiCheckDouble } from "react-icons/bi";
 import { PiPushPinFill } from "react-icons/pi";
-import { useAppSelector } from "@/src/redux/hooks";
-import { UserInterface } from "@/src/redux/features/userInfoSlice";
 
 
 
@@ -13,10 +11,6 @@ const TextMessage = ({ dir, msg, messageBoxRef, sender }: { dir: string, msg: re
     const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
     const [seenMessage, setSeenMessage] = useState(false)
-
-    useEffect(() => {
-        console.log('sender useErffect : ', sender)
-    }, [sender])
 
     useEffect(() => {
         if (msg.seenIds.length > 0) {

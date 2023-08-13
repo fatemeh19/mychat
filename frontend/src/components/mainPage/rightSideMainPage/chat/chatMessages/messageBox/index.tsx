@@ -1,7 +1,6 @@
 "use client"
-
 import Image from "next/image"
-import { MouseEvent, useRef, useState, useEffect, FC } from "react"
+import { MouseEvent, useRef, useState, useEffect, FC, Dispatch, SetStateAction } from "react"
 
 import Message from "./message"
 import RightClick from "@/src/components/rightClick"
@@ -71,12 +70,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
 
-    // let sender;
-    // msg.messageInfo.senderId === User._id
-    //     ? sender = User
-    //     // if sender not user then we should search the sender in groupMembers(chat member) if private then contactId
-    //     : sender = Contact
-
     const [sender, setSender] = useState<contactInterface | UserInterface>()
     useEffect(() => {
         if (msg.messageInfo.senderId === User._id) {
@@ -84,11 +77,11 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             setSender(User)
         } else {
             const userContactListIds = userContactList.map(uc => uc._id)
-            let index = findIndex(0, userContactList.length, userContactListIds, msg.forwarded.by)
+            let index = findIndex(0, userContactListIds.length, userContactListIds, msg.messageInfo.senderId)
             // @ts-ignore
             setSender(userContactList[index])
         }
-    }, [])
+    }, [chatMessages])
     useEffect(() => {
 
 
@@ -100,17 +93,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             name: sender?.name,
             profilePic: sender?.profilePic ? profilePic[profilePic.length - 1] : ''
         })
-
-        // const contactIds = userContactList.map(contact => contact._id)
-        // // @ts-ignore
-        // const index = findIndex(0, contactIds.length, contactIds, sender?._id)
-        // console.log('index')
-
     }, [sender])
-
-    useEffect(() => {
-        // console.log('information : ', information)
-    }, [information])
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
@@ -294,8 +277,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                                     <Image
                                         src={
                                             information.profilePic
-                                                ? `/uploads/picture/${information.profilePic}`
-                                                : '/uploads/picture/defaultProfilePic.png'
+                                                ? `/uploads/photo/${information.profilePic}`
+                                                : '/uploads/photo/defaultProfilePic.png'
                                         }
                                         width={45}
                                         height={0}
@@ -305,13 +288,13 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                                     <Image
                                         src={
                                             information.profilePic
-                                                ? `/uploads/picture/${information.profilePic}`
-                                                : '/uploads/picture/defaultProfilePic.png'
+                                                ? `/uploads/photo/${information.profilePic}`
+                                                : '/uploads/photo/defaultProfilePic.png'
                                         }
                                         width={45}
                                         height={0}
                                         alt=""
-                                        className="rounded-full absolute top-0 left-0 max-w-lg w-[50px] h-[50px] object-cover "
+                                        className="rounded-full absolute top-0 left-0 max-w-lg w-[40px] h-[40px] object-cover "
                                     />
                                 </div>
                             )
