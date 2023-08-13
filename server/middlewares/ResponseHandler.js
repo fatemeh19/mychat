@@ -25,7 +25,7 @@ const CustomError = async ({ err, errorClass, errorType, Field, socket = false }
     };
     errors.push(error);
   }
-  throw new errorClass("error message = ", errors);
+  throw new errorClass("error message : ", errors);
   
   
 };
