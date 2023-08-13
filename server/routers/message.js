@@ -14,7 +14,7 @@ import messageTypeChecker from "../middlewares/messageTypeChecker.js";
 router
   .route("/:chatId")
   .post(
-    [uploadFile.single("file"), messageTypeChecker, permissionChecker("")],
+    [uploadFile.single("file")],
     createMessage
   )
   .patch(forwardMessage);

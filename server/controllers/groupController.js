@@ -17,12 +17,10 @@ const addMember = async (req, res, next) => {
   const updatedChat = await Services.findByIdAndUpdate('chat',groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
-  res.locals.resData = {
-    res:updatedChat.members.pop()
-  }
+  // res.locals.resData = {
+  //   res:updatedChat.members.pop()
+  // }
   next();
-  // console.log(addToGroupResult);
-  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 const editGroupType = async (req, res) => {

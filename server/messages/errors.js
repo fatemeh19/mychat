@@ -76,7 +76,11 @@ export default{
     "name":"NoFileFoundError",
     "message":"لطفا فایل را ارسال کنید"
 
-
+  },
+  "notAllowedToSend":{
+    "name":"notAllowedToSend",
+    "message":"شما مجاز به ارسال این نوع فایل نیستید"
   }
+
   
 }

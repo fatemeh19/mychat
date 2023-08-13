@@ -15,12 +15,9 @@ const createMessage = async (req, res) => {
     body: message,
     file,
   } = req;
-  let url =
-    file && message.content.contentType != "text" ? file.path : undefined;
-  let originalName =
-    file && message.content.contentType != "text"
-      ? req.file.originalname
-      : undefined;
+  console.log(file);
+  let url = file ? file.path : undefined;
+  let originalName = file ? req.file.originalname : undefined;
 
   let newMessage = {
     reply: {
@@ -28,8 +25,8 @@ const createMessage = async (req, res) => {
       messageId: message?.reply?.messageId,
     },
     content: {
-      contentType: message.content.contentType,
-      text: message.content.text,
+      contentType: file ? file.fileType : "text",
+      text: message.content?.text,
       url: url,
       originalName,
     },
@@ -50,7 +47,7 @@ const createMessage = async (req, res) => {
     // console.log(file)
   }
   if (newMessage.reply.messageId) {
-    const repliedMessage = await Services.aggregate('chat',[
+    const repliedMessage = await Services.aggregate("chat", [
       {
         $match: { _id: await objectId(chatId) },
       },
@@ -81,8 +78,9 @@ const createMessage = async (req, res) => {
     }
   }
 
-  const Message = await Services.create('message',newMessage);
-  const chat = await Services.findByIdAndUpdate('chat',
+  const Message = await Services.create("message", newMessage);
+  const chat = await Services.findByIdAndUpdate(
+    "chat",
     chatId,
     {
       $push: { messages: { messageInfo: Message._id } },
@@ -112,7 +110,7 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   messageIds = await objectId(messageIds);
 
-  let notForwardedMessages = await Services.aggregate('chat',[
+  let notForwardedMessages = await Services.aggregate("chat", [
     { $match: { _id: await objectId(chatId) } },
     {
       $project: {
@@ -144,7 +142,7 @@ const DeleteMessage = async (userId, deleteInfo) => {
 
   let result;
   if (deleteAll) {
-    const messages = await Services.findMany('message',{
+    const messages = await Services.findMany("message", {
       _id: { $in: notForwardedMessages },
     });
 
@@ -153,15 +151,16 @@ const DeleteMessage = async (userId, deleteInfo) => {
         fileController.deleteFile(message.content.url);
       }
     });
-    Services.deleteMany('message',{
+    Services.deleteMany("message", {
       _id: { $in: notForwardedMessages },
     });
 
-    Services.findByIdAndUpdate('chat',chatId, {
+    Services.findByIdAndUpdate("chat", chatId, {
       $pull: { messages: { _id: { $in: messageIds } } },
     });
   } else {
-    result = await Services.findByIdAndUpdate('chat',
+    result = await Services.findByIdAndUpdate(
+      "chat",
       chatId,
       {
         $push: { "messages.$[message].deletedIds": userId },
@@ -187,7 +186,7 @@ const forwardMessage = async (req, res) => {
     user: { userId },
   } = req;
 
-  const forwardedMessages = await Services.findMany('message',{
+  const forwardedMessages = await Services.findMany("message", {
     _id: { $in: messageIds },
   });
   const messages = [];
@@ -201,7 +200,8 @@ const forwardMessage = async (req, res) => {
     });
   });
 
-  const chat = await Services.findByIdAndUpdate('chat',
+  const chat = await Services.findByIdAndUpdate(
+    "chat",
     chatId,
     {
       $push: { messages: { $each: messages } },
@@ -240,7 +240,7 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
   updateQuery[op]["pinnedMessages"] = messageId;
   updateQuery["$set"]["messages.$[message].pinStat"] = pinStat;
 
-  await Services.findByIdAndUpdate('chat',chatId, updateQuery, {
+  await Services.findByIdAndUpdate("chat", chatId, updateQuery, {
     arrayFilters: [{ "message._id": { $eq: messageId } }],
     new: true,
   });
@@ -261,9 +261,9 @@ const editMessage = async (req, res) => {
     return RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
   // if message exists
-  const message = await Services.findOne('message',{ _id: messageId });
+  const message = await Services.findOne("message", { _id: messageId });
 
-  if (message.content.contentType != data.content.contentType) {
+  if (message.content.contentType == "text" && file || message.content.contentType != "text" && !file) {
     // error
     return RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -271,7 +271,7 @@ const editMessage = async (req, res) => {
       Field: fields.file,
     });
   }
-  if (message.content.contentType != "text") {
+  if (!message.content.text) {
     if (!file) {
       return RH.CustomError({
         errorClass: CustomError.BadRequestError,
@@ -280,28 +280,23 @@ const editMessage = async (req, res) => {
       });
       // error
     }
-    req.body.content.url = file.path;
-    req.body.content.originalName = file.originalname;
-  } else {
-    if (file) {
-      // error
-      fileController.deleteFile(file.path);
-      return RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.changeContentError,
-        Field: fields.file,
-      });}
-
+  } 
+  if (file) {
+    fileController.deleteFile(message.content.url);
+    data.content.url = file.path;
+    data.content.contentType = file ? file.fileType : "text";
+    data.content.originalName = file.originalname;
   }
+
   message.content = data.content;
-  message.edited = true
+  message.edited = true;
   const editedMessage = await message.save();
   await RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      message:editedMessage,
+      message: editedMessage,
     },
   });
 };

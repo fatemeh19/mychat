@@ -9,7 +9,6 @@ import Chat from "../models/Chat.js";
 const create = async (model, data) => {
   const Model = await modelSelector(model);
   const newDocument = await Model.create(data);
-  console.log(newDocument)
   return newDocument;
   
 };
