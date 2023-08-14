@@ -30,7 +30,7 @@ const Folders: FC<FoldersProps> = ({
     const [chatIds, setChatIds] = useState<string[]>([])
     const [folderName, setFolderName] = useState('')
     const [chatsInfo, setChatsInfo] = useState<any[]>([])
-
+    const [folderIdForEdit, setFolderIdForEdit] = useState('')
     // redux states
     const folders = useAppSelector(state => state.folders).folders
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -60,7 +60,7 @@ const Folders: FC<FoldersProps> = ({
             };
             console.log(formData)
             if (edit) {
-                const res = await callApi().put('/main/folder/', formData, config)
+                const res = await callApi().put(`/main/folder/${folderIdForEdit}`, formData, config)
                 console.log('editFolder res : ', res)
                 if (res.status === 200) {
                     let editFolder = {
@@ -150,6 +150,7 @@ const Folders: FC<FoldersProps> = ({
     }
     const editFolder = (folder: folderInterface) => {
         setEdit(true)
+        setFolderIdForEdit(folder._id)
         let folderChatIds: string[];
         folderChatIds = []
         folder.chats.map(chat => {
