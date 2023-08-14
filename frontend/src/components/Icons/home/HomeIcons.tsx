@@ -40,7 +40,7 @@ export function ShowFolder({ folder }: { folder: any }) {
 
         <div onClick={folderClickHandler}
             key={folder._id} className={click ? "text-white grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]"
-                : "text-gray-500 grid gap-2 justify-center relative home-icons py-2 bg-transparent"}
+                : "text-gray-300 grid gap-2 justify-center relative home-icons py-2 bg-transparent"}
         >
             <div className="flex justify-center">
                 <BiSolidFolder className=" cursor-pointer text-2xl dark:text-[#2563eb]" />

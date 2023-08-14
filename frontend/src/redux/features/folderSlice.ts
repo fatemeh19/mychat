@@ -1,8 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface folderChatInterface {
+    _id: string,
+    chatInfo: string,
+    pinned: boolean
+}
 export interface folderInterface {
     _id: string,
-    name: string
+    name: string,
+    chats: folderChatInterface[],
+    pinnedChats: any[]
 }
 interface initialStateInterface {
     folders: folderInterface[]

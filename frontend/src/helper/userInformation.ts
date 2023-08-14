@@ -4,6 +4,7 @@ import { addFoldersList } from "../redux/features/folderSlice"
 import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
+import { useAppSelector } from "../redux/hooks"
 import callApi from "./callApi"
 
 const token = localStorage.getItem('token')
@@ -67,7 +68,7 @@ export const fetchUserChatList = async (dispatch: any) => {
     const res = await callApi().get('/main/chat/', config)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
-        // console.log("all chatList:", chatList)
+        console.log("all chatList:", chatList)
         dispatch(addChatList([]))
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
@@ -132,14 +133,25 @@ export const userHandler = async () => {
 export const getFolders = async (dispatch: any) => {
     const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log('folders:', res.data.value.folders)
+        console.log('folders:', res.data)
         dispatch(addFoldersList(res.data.value.folders))
     }
 }
 export const getFolderChats = async (folderId: string, dispatch: any) => {
     const res = await callApi().get(`/main/folder/${folderId}`, config)
+    const chatList = useAppSelector(state => state.userChatList).chatList
+    console.log(res)
     if (res.statusText && res.statusText === 'OK') {
-        console.log(`folder chat/${folderId}:`, res.data.value.chats)
-        dispatch(addFolderChatList(res.data.value.chats))
+        let folderChatList = []
+        let chats = res.data.value.folder.chats;
+        for (let i = 0; i < chats.length; i++) {
+            for (let j = 0; j < chatList.length; j++) {
+                if (chats[i]._id === chatList[j]._id) {
+                    folderChatList.push(chatList[j])
+                    break;
+                }
+            }
+        }
+        dispatch(addFolderChatList(folderChatList))
     }
 }

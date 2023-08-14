@@ -54,7 +54,7 @@ const ChatBox: FC<chatBoxProps> = ({
                     <GiCheckMark className="text-white" />
                 </div>
             </div>
-            <div className='contactMessageDetail w-full '>
+            <div className='contactMessageDetail w-3/5 '>
                 <div className="relative   w-full">
                     <span className='text-md font-bold contact-name w-3/5 inline-block truncate dark:text-white '>
                         {chatName}</span>

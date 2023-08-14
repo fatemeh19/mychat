@@ -13,7 +13,7 @@ import CustomizedDialogs from "../popUp";
 import CreateFolder from "./createFolder";
 import AddChats from "./addChats";
 import callApi from "@/src/helper/callApi";
-import { addFolder } from "@/src/redux/features/folderSlice";
+import { addFolder, addFoldersList, folderInterface } from "@/src/redux/features/folderSlice";
 import Image from "next/image";
 interface FoldersProps {
 
@@ -26,6 +26,7 @@ const Folders: FC<FoldersProps> = ({
     //states 
     const [createFolder, setCreateFolder] = useState(false)
     const [addChat, setAddChat] = useState(false)
+    const [edit, setEdit] = useState(false)
     const [chatIds, setChatIds] = useState<string[]>([])
     const [folderName, setFolderName] = useState('')
     const [chatsInfo, setChatsInfo] = useState<any[]>([])
@@ -58,32 +59,105 @@ const Folders: FC<FoldersProps> = ({
                 }
             };
             console.log(formData)
-            const res = await callApi().post('/main/folder/', formData, config)
-            console.log('createFolder res : ', res)
-            if (res.status === 200) {
+            if (edit) {
+                const res = await callApi().put('/main/folder/', formData, config)
+                console.log('editFolder res : ', res)
+                if (res.status === 200) {
+                    let editFolder = {
+                        _id: res.data.value.folderId,
+                        name: folderName
+                    }
+                    let newFolders: folderInterface[]
+                    newFolders = []
+                    for (let i = 0; i < folders.length; i++) {
+                        if (folders[i]._id === editFolder._id) {
+                            folders[i].name = editFolder.name
+                            let j = 0;
+                            chatIds.map((chatId) => {
+                                folders[i].chats[j].chatInfo = chatId
+                                folders[i].chats[j].pinned = false
+                                j = j + 1
 
-                let newFolder = {
-                    _id: res.data.value._id,
-                    name: folderName
+                            })
+                        }
+                        newFolders.push(folders[i])
+                    }
+                    dispatch(addFoldersList(newFolders))
+                    setChatIds([])
+                    setFolderName('')
                 }
-                dispatch(addFolder(newFolder))
+            }
+            else {
+
+                const res = await callApi().post('/main/folder/', formData, config)
+                console.log('createFolder res : ', res)
+                if (res.status === 200) {
+                    let newFolder = {
+                        _id: res.data.value.folderId,
+                        name: folderName
+                    }
+                    dispatch(addFolder(newFolder))
+                    setChatIds([])
+                    setFolderName('')
+                }
+
             }
         } catch (error) {
             console.log('error in catch text info : ', error)
         }
     }
     const findChatInfo = () => {
-        if (chatIds.length !== 0) {
-            for (let i = 0; i < chatIds.length; i++) {
-                for (let j = 0; j < chatList.length; j++) {
-                    if (chatIds[i] === chatList[j]._id) {
-                        setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
-                        break;
-                    }
+        setChatsInfo([])
+        for (let i = 0; i < chatIds.length; i++) {
+            for (let j = 0; j < chatList.length; j++) {
+                if (chatIds[i] === chatList[j]._id) {
+                    setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
+                    break;
                 }
             }
-
         }
+
+
+    }
+    const deleteFolder = async (folderId: string) => {
+
+        try {
+
+            const token = localStorage.getItem('token')
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+            const res = await callApi().delete(`/main/folder/${folderId}`, config)
+            console.log('delete folder res : ', res)
+            if (res.status === 200) {
+                let counter = 0
+                folders.map(folder => {
+                    if (folder._id === folderId) {
+                        counter = counter + 1
+                        if (counter === 1) {
+                            const filteredSelectedfolder = folders.filter(folder => folder._id !== folderId)
+                            dispatch(addFoldersList(filteredSelectedfolder))
+                        }
+                    }
+                })
+
+            }
+        } catch (error) {
+            console.log('error in catch text info : ', error)
+        }
+    }
+    const editFolder = (folder: folderInterface) => {
+        setEdit(true)
+        let folderChatIds: string[];
+        folderChatIds = []
+        folder.chats.map(chat => {
+            folderChatIds.push(chat.chatInfo)
+        })
+        setChatIds(folderChatIds)
+        setFolderName(folder.name)
+        createForlderOpen()
     }
 
     useEffect(() => {
@@ -93,7 +167,8 @@ const Folders: FC<FoldersProps> = ({
 
     return (
         <>
-            <div className="w-full h-full pb-3">
+            <div className="w-full h-full pb-3
+            shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]">
                 <div className="grid m-auto bg-gray-100 pb-3">
                     <div className="flex justify-center">
                         <Image
@@ -113,7 +188,8 @@ const Folders: FC<FoldersProps> = ({
                         (folders.length === 0) ? null
                             : folders.map((folder) => (
 
-                                <div className="flow-root mt-3" key={folder._id}>
+                                <div onClick={() => editFolder(folder)}
+                                    className="flow-root mt-3" key={folder._id}>
                                     <div className="float-left flex gap-3">
                                         <BiSolidFolder className="m-auto text-xl text-blue-500" />
                                         <div className="grid">
@@ -121,7 +197,8 @@ const Folders: FC<FoldersProps> = ({
                                             <span className='text-xs text-gray-500'>6 chats</span>
                                         </div>
                                     </div>
-                                    <ImBin2 className="float-right text-gray-300" />
+                                    <ImBin2 onClick={() => deleteFolder(folder._id)}
+                                        className="float-right text-gray-300 cursor-pointer hover:text-gray-500" />
                                 </div>
 
                             ))
@@ -145,16 +222,19 @@ const Folders: FC<FoldersProps> = ({
                         handelOpen={addChatOpen}
                         children={<AddChats addChatOpen={addChatOpen} chatsInfo={chatsInfo}
                             chatIds={chatIds} setChatIds={setChatIds}
+                            edit={edit}
                             createForlderOpen={createForlderOpen} />} />
 
                     : (createFolder
                         ? <CustomizedDialogs
                             open={createFolder}
-                            title="New Folder"
+                            title={edit ? "Edit Folder" : "New Folder"}
                             handelOpen={createForlderOpen}
                             children={<CreateFolder chatsInfo={chatsInfo}
+                                chatIds={chatIds} setChatIds={setChatIds}
                                 saveFolderHandler={saveFolderHandler} addChatOpen={addChatOpen}
                                 folderName={folderName} setFolderName={setFolderName}
+                                edit={edit} setEdit={setEdit}
                                 createForlderOpen={createForlderOpen} />} />
                         : null)
 

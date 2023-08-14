@@ -28,7 +28,8 @@ interface AddChatsProps {
     setChatIds: Dispatch<SetStateAction<string[]>>
     addChatOpen: () => void,
     createForlderOpen: () => void,
-    chatsInfo: any[]
+    chatsInfo: any[],
+    edit: boolean
 }
 
 const AddChats: FC<AddChatsProps> = ({
@@ -36,9 +37,10 @@ const AddChats: FC<AddChatsProps> = ({
     setChatIds,
     addChatOpen,
     createForlderOpen,
-    chatsInfo
+    chatsInfo,
+    edit
 }) => {
-
+    const folderChatIdsForEdit = chatIds;
     const selectChat = (chatId: string, chatBoxRef: LegacyRef<HTMLDivElement> | undefined) => {
         // styling selected contact :
         // @ts-ignore
@@ -77,7 +79,12 @@ const AddChats: FC<AddChatsProps> = ({
     const cancleHandler = () => {
         addChatOpen()
         createForlderOpen()
-        setChatIds([])
+        if (edit) {
+            setChatIds(folderChatIdsForEdit)
+        }
+        else {
+            setChatIds([])
+        }
     }
     const saveHandler = () => {
         addChatOpen()
@@ -88,15 +95,15 @@ const AddChats: FC<AddChatsProps> = ({
     return (
         <>
             <div className="py-5 w-full h-full">
-                <div className="search-contacts flex pl-[15px]">
+                <div className="search-contacts flex pl-[15px] mb-5">
                     {
                         (chatsInfo.length !== 0) ?
                             chatsInfo.map((chat) => (
-                                <div key={chat._id} className="w-auto select-none cursor-pointer bg-gray-300 py-1 px-2 flex justify-center gap-1">
+                                <div key={chat._id} className="w-full select-none cursor-pointer bg-gray-100 py-1 px-2 flex justify-center gap-1 rounded-full mr-3">
                                     <Image
                                         src={chat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chat.chatInfo)}`
                                             : '/uploads/photo/defaultProfilePic.png'}
-                                        className="w-[25px] h-[25px] object-cover rounded-full"
+                                        className="w-[40px] h-[40px] object-cover rounded-full"
                                         width={500} height={50} alt="contact-profile" />
                                     <span className="m-auto">{chat.chatInfo.name}</span>
                                 </div>
