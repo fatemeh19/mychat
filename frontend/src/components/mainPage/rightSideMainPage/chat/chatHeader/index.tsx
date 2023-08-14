@@ -22,6 +22,7 @@ import PinnedMessage from './pinnedMessage'
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
 import { setForwardMessageIds, setIsForward } from '@/src/redux/features/forwardMessageSlice'
 import ChatListPopup from '@/src/components/basicComponents/chatListPopup'
+import PopUpMenu from '@/src/components/popUp/popUpMenu'
 
 
 interface ChatHeaderProps {
@@ -52,7 +53,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
-
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -101,6 +101,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
             confirmOption: 'delete aAll'
         })
     }
+
 
     const deleteHandler_multipleMessage = () => {
         console.log('delete msg Done!')
@@ -213,6 +214,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                                     title={'User Info'}
                                                     children={<ProfileInfo />}
                                                     handelOpen={handelOpenDialog}
+                                                    ChildrenMore={<PopUpMenu />}
                                                 />
                                             </>
                                         )

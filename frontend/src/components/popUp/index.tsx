@@ -66,9 +66,10 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     return (
         <DialogTitle
             sx={{
-                m: 0, p: 2, mr: 8,
+                m: 0, p: 2, mr: '30px',
                 fontFamily: 'vazir',
-                fontWeight: 500, fontSize: 17
+                fontWeight: 500, fontSize: 17,
+                display: 'flex', justifyContent: 'space-between'
             }} {...other}>
             {children}
             {onClose ? (
@@ -95,13 +96,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 })
 interface CustomizedDialogsProps {
     children: React.ReactNode,
+    ChildrenMore?: React.ReactNode,
     open: boolean,
     title?: string,
     handelOpen: () => void,
     menuDailog?: Boolean
 }
 
-const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen, menuDailog }) => {
+const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, ChildrenMore, open, title, handelOpen, menuDailog }) => {
 
     // let scrollWrap = React.createRef<HTMLDivElement>()
     // setTimeout(() => {
@@ -111,6 +113,8 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
     //     })
     // }, 50);
 
+    const [openChildMenu, setOpenChildMenu] = React.useState(false)
+    const [openChildMenuInChild, setOpenChildMenuInChild] = React.useState(true)
 
     return (
 
@@ -138,6 +142,16 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
                 >
                     {title && <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
                         {title}
+                        {ChildrenMore && <button className='relative'>
+                            <p className='rotate-90' onClick={() => { setOpenChildMenu(!openChildMenu); setOpenChildMenuInChild(true) }}>...</p>
+                            {openChildMenu && <div className='absolute right-0 w-max font-[Vazir]'>
+                                {
+                                    // @ts-ignore
+                                    React.cloneElement(ChildrenMore, { setOpenChildMenu: setOpenChildMenu, openChildMenuInChild: openChildMenuInChild, setOpenChildMenuInChild: setOpenChildMenuInChild })
+                                }
+                            </div>}
+                        </button>
+                        }
                     </BootstrapDialogTitle>
                     }
                     <DialogContent dividers
