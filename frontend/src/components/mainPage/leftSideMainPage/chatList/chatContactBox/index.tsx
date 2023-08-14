@@ -84,11 +84,11 @@ const ChatContactBox: FC<chatContactProps> = ({
                 console.log(lastMesText)
 
                 //add chat on top of the list bc this chat have new message
-                if (chatbox != undefined) {
-                    const fromIndex = chatList.indexOf(chatbox)
-                    // console.log(fromIndex)
-                    dispatch(addChatToTop(fromIndex))
-                }
+                // if (chatbox != undefined) {
+                //     const fromIndex = chatList.indexOf(chatbox)
+                //     // console.log(fromIndex)
+                //     dispatch(addChatToTop(fromIndex))
+                // }
             }
         }
         // })
