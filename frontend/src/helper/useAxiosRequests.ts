@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -114,5 +114,15 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
         dispatch(addMemberToGroup(addedMember))
     } catch (error) {
         console.log('add group member error : ', error)
+    }
+}
+
+export const removeGroupMember = async (chatId: string, memberId: string, memberIndex: number, dispatch: any) => {
+    try {
+        const res = callApi().delete(`/main/chat/group/removeMember/${chatId}/${memberId}`, config)
+        console.log('remove group member res: ', res)
+        dispatch(removeMemberFromGroup(memberIndex))
+    } catch (error) {
+        console.log('remove group member error: ', error)
     }
 }

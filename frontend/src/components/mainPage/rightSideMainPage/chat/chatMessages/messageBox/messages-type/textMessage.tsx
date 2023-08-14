@@ -15,10 +15,6 @@ const TextMessage = ({ dir, msg, messageBoxRef, sender }: { dir: string, msg: re
 
     const User = useAppSelector(state => state.userInfo).User
     useEffect(() => {
-        console.log('sender useErffect : ', sender)
-    }, [sender])
-
-    useEffect(() => {
         if (msg.seenIds.length > 0) {
             setSeenMessage(true)
         }

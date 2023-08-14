@@ -18,7 +18,7 @@ const initialState = {
     Contact: {}
 } as initialStateInterface
 
-export const UserSlice = createSlice({
+export const UserContactSlice = createSlice({
     name: "Contact",
     initialState,
     reducers: {
@@ -31,5 +31,5 @@ export const UserSlice = createSlice({
 
 export const {
     addUserContact,
-} = UserSlice.actions;
-export default UserSlice.reducer;
+} = UserContactSlice.actions;
+export default UserContactSlice.reducer;
