@@ -12,32 +12,15 @@ export default async (server) => {
     },
   });
   const { online, offline } = statusHandler(io);
-  const {deleteChat,editMessage,pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
+  const {searchMessages,searChat,deleteChat,editMessage,pinUnpinMessage, onChat,sendMessage,deleteMessage,seenMessage,forwardMessage } = chatHandler(io);
 
-  // const onChat = io.of("/onChat");
-  // onChat.on("connection", (socket) => {
-  //   console.log("user connected to onChat namespace");
-  //   socket.on("onChat", async (userId, contactId) => {
-  //     console.log("user connected to onChat namespace");
-
-  //     let roomName =
-  //       userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-  //     socket.join(roomName);
-  //     // onChat.to(roomName).emit("onlineOnChat", userId);
-  //     socket.to(roomName).emit("onlineOnChat", userId);
-  //   });
-  //   socket.on("sendMessage", async (userId, contactId, message) => {
-  //     let roomName =
-  //       userId > contactId ? userId + "" + contactId : contactId + "" + userId;
-  //     socket.to(roomName).emit("sendMessage", message);
-  //   });
-  // });
 
   const onConnection = (socket) => {
     
     console.log("user connected to general socket");
     socket.on("online", online);
-    // socket.on("offline", offline);
+    socket.on("searchMessage",searchMessages)
+    socket.on("searchChat",searChat)
     socket.on("deleteChat",deleteChat)
     socket.on("onChat", onChat);
     socket.on("editMessage",editMessage)

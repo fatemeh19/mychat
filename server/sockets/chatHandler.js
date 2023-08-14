@@ -105,12 +105,17 @@ export default function (io) {
     }
 
   }
-  const searchat = async function(search){
+  const searChat = async function(search){
     const socket = this;
     const userId = socket.user.userId;
     const chats = await searchChat(userId,search)
     socket.emit('searchChat',chats)
   }
+  const searchMessages = async function(chatId,search){
+    const socket = this;
+    const messages = await searchMessage(chatId,search)
+    socket.emit('searchMessage',messages)
+  }
 
-  return {deleteChat,editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
+  return {searchMessages,searChat,deleteChat,editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
 }
