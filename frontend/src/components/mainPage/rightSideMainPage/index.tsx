@@ -15,6 +15,7 @@ import deleteMessage from "@/src/helper/deleteMessage"
 import PinnedSection from "./chat/pinnedSection"
 import callApi from "@/src/helper/callApi"
 import { addUserContact } from "@/src/redux/features/userContactSlice"
+import { useRouter } from "next/navigation"
 
 interface IUserInfo {
     name: string,
@@ -38,14 +39,14 @@ const getContact = async (id: string) => {
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     const [infoState, setInfoVState] = useState(false)
-    // const [online, setOnline] = useState(false)
-    const userInfo = useAppSelector(state => state.userInfo).User
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const pinnedMessages = useAppSelector(state => state.chat).Chat.pinnedMessages
     const openPinSection = useAppSelector(state => state.open).openPinSectin
+
+    const router = useRouter()
 
     let found = false
 
@@ -126,6 +127,10 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                 dispatch(addMessage(fm))
 
             })
+        })
+
+        socket.on('deleteChat', deleteInfo => {
+            router.push('/chat  ')
         })
         return () => {
             socket.removeAllListeners('sendMessage')
