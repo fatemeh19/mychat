@@ -287,8 +287,8 @@ const pinUnpinChat = async (req, res) => {
   });
 };
 
-const DeleteChat = async (deleteInfo) => {
-  const { chatId, userId, deleteAll } = deleteInfo;
+const DeleteChat = async (userId, deleteInfo) => {
+  const { chatId, deleteAll } = deleteInfo;
   const chat = await Services.findOne("chat", { _id: chatId });
   const user = await Services.findOne("user", { _id: userId });
   if (deleteAll) {
@@ -402,15 +402,14 @@ const deleteChat = async (req, res) => {
   res.send("ok");
 };
 
-const searchChat = async (req, res) => {
-  const {
-    params: { search },
-    user: { userId },
-  } = req;
+const searchChat = async (userId,search) => {
+  // const {
+  //   params: { search },
+  //   user: { userId },
+  // } = req;
   const user = await Services.findOne("user", { _id: userId });
   let userChats = user.chats.map((chat) => chat.chatInfo);
   userChats = await objectId(userChats);
-  // let groupNameRegex1 = `${search}.*`;
   let groupNameRegex1 = new RegExp(`^${search}`, "i");
   let groupNameRegex2 = new RegExp(` ${search}`, "i");
   const result = await Services.aggregate("user", [
@@ -446,8 +445,8 @@ const searchChat = async (req, res) => {
       },
     },
   ]);
-  let contacts = result[0].contacts.map((contact)=>contact.userId)
-  contacts = await objectId(contacts)
+  let contacts = result[0].contacts.map((contact) => contact.userId);
+  contacts = await objectId(contacts);
   const chats = await Services.aggregate("chat", [
     {
       $match: {
@@ -544,9 +543,8 @@ const searchChat = async (req, res) => {
                       },
                     },
                     {
-                      $in:["$$memberInfo._id",contacts]
-                      
-                    }
+                      $in: ["$$memberInfo._id", contacts],
+                    },
                   ],
                 },
                 { $ne: ["$$memberInfo._id", await objectId(userId)] },
@@ -574,10 +572,15 @@ const searchChat = async (req, res) => {
   //     chats.splice(index, 1);
   //   }
   // });
- 
-  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok", value:{
-    chats
-  }})
+  return chats
+  // RH.SendResponse({
+  //   res,
+  //   statusCode: StatusCodes.OK,
+  //   title: "ok",
+  //   value: {
+  //     chats,
+  //   },
+  // });
 };
 
 export {

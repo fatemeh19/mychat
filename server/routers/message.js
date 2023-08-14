@@ -6,7 +6,8 @@ import {
   pinUnPinMessage,
   forwardMessage,
   createMessage,
-  editMessage
+  editMessage,
+  searchMessage
 } from "../controllers/messageController.js";
 import permissionChecker from "../middlewares/permissionChecker.js";
 import messageTypeChecker from "../middlewares/messageTypeChecker.js";
@@ -21,6 +22,7 @@ router
 
 router.patch("/:pin/:chatId/:messageId", pinUnPinMessage);
 router.put("/:id",uploadFile.single("file"),editMessage)
+router.get("/search/:chatId/:search",searchMessage)
 // router.patch("/seen/:chatId/:messageId",seenMessage)
 
 // .delete(DeleteMessageHttp)

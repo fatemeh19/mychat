@@ -263,7 +263,10 @@ const editMessage = async (req, res) => {
   // if message exists
   const message = await Services.findOne("message", { _id: messageId });
 
-  if (message.content.contentType == "text" && file || message.content.contentType != "text" && !file) {
+  if (
+    (message.content.contentType == "text" && file) ||
+    (message.content.contentType != "text" && !file)
+  ) {
     // error
     return RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -280,7 +283,7 @@ const editMessage = async (req, res) => {
       });
       // error
     }
-  } 
+  }
   if (file) {
     fileController.deleteFile(message.content.url);
     data.content.url = file.path;
@@ -300,10 +303,54 @@ const editMessage = async (req, res) => {
     },
   });
 };
+
+const searchMessage = async (req, res) => {
+  const {
+    params: { chatId, search },
+  } = req;
+  const chat = await Services.findOne("chat", { _id: chatId }, { messages: 1 });
+  let messageIds = chat.messages.map((message) => message.messageInfo);
+  messageIds = await objectId(messageIds);
+  const messages = await Services.aggregate("message", [
+    {
+      $match: {
+        _id: { $in: messageIds },
+        "content.text": { $regex: search, $options: "i" },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "senderId",
+        foreignField: "_id",
+        as: "senderInfo",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        "content.text": 1,
+        "senderInfo.name": 1,
+        "senderInfo.lastname": 1,
+        "senderInfo.profilePic": 1,
+         createdAt: 1,
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
+  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok", value:{
+    messages
+  }})
+};
 export {
   editMessage,
   pinUnPinMessage,
   forwardMessage,
   createMessage,
   DeleteMessage,
+  searchMessage,
 };
