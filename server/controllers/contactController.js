@@ -18,14 +18,14 @@ const addContact = async (req, res) => {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
   const contact = await Services.findOne('user',{
-    $or: [
-      {
+    // $or: [
+      // {
         phoneNumber: data.phoneNumber,
-      },
-      {
-        username: data.username,
-      },
-    ],
+      // },
+      // {
+      //   username: data.username,
+      // },
+    // ],
   });
   if (!contact) {
     await RH.CustomError({

@@ -10,6 +10,8 @@ import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import * as Validators from "../validators/index.js";
 import * as fileController from "../utils/file.js";
+import { object } from "yup";
+import { objectId } from "../utils/typeConverter.js";
 const setInfo = async (req, res) => {
   console.log(req.body);
   const {
@@ -164,10 +166,28 @@ const getUser = async (req, res) => {
 
 const blockUser = async (req, res) => {
   const {
+    params:{id},
     user: { userId },
   } = req;
-  const user = await Services.aggregate("user",[{
-    match
-  }])
+  const user = await Services.aggregate("user", [
+    {
+      $match: { _id: await objectId(userId) },
+    },
+    {
+      $lookup: {
+        from: "settings",
+        localField: "settingId",
+        foreignField: "_id",
+        as: "settingInfo",
+      },
+    },
+    {
+      $project: {
+        "settingInfo._id": 1,
+        "settingInfo.privacyAndSecurity.security.blockedUsers": 1,
+      },
+    },
+  ]);
+ 
 };
-export { setInfo, getProfile, editProfile, setStatus, getUser };
+export {blockUser, setInfo, getProfile, editProfile, setStatus, getUser };
