@@ -169,7 +169,7 @@ const blockUser = async (req, res) => {
     params:{id},
     user: { userId },
   } = req;
-  const user = await Services.aggregate("user", [
+  const result = await Services.aggregate("user", [
     {
       $match: { _id: await objectId(userId) },
     },
@@ -188,6 +188,13 @@ const blockUser = async (req, res) => {
       },
     },
   ]);
+  console.log(result[0].settingInfo[0]._id)
+  const updated = await Services.findByIdAndUpdate("setting",{_id:result[0].settingInfo[0]._id},{
+    $push:{"privacyAndSecurity.security.blockedUsers": id}
+  },{
+    new:true
+  })
+  res.send(updated)
  
 };
 export {blockUser, setInfo, getProfile, editProfile, setStatus, getUser };
