@@ -15,6 +15,10 @@ import ReplySection from './replySection'
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
 import { setIsForward } from '@/src/redux/features/forwardMessageSlice'
 import { removeSelectMessage, removeSelectMessageContent, removeSelectedMessagesMainIds, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
+import { useRouter } from 'next/navigation'
+import { fetchUserChatList } from '@/src/helper/userInformation'
+import callApi from '@/src/helper/callApi'
+import { addChatList } from '@/src/redux/features/userChatListSlice'
 
 interface chatSendProps {
     contactId: string,
@@ -40,6 +44,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
     const fileRef = createRef<HTMLInputElement>()
 
+    const router = useRouter()
+
     // ------- discription of reason for using useEffect :: -------- i add this CAS when there is no chat if send msg chat created and chatID back but when send the second message firstChat is make false and we dont have chatId because fetchChat is not in the sendMessage soooo i put fetchChatt in useEffect that is controlled by firstChat by this -> when firstChat turn to false at sending second chat fetchChat run and we access to chat Informaition and save it in redux and access it from redux in next sending msg annnnnd in opening this chat again in rightSideMainPage file we fetchChat and in fetchChat we save chat information in redux and every thing working so good --- so cool.
     useEffect(() => {
         chatCreated === false && dispatch(setFirstChat(true))
@@ -61,6 +67,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
     const sendHandler = async () => {
         firstChat ? chatId = await createChat(userInfo._id, [contactId], ChatType.private, '', dispatch) : null
+        firstChat && router.push(`/chat/${chatId}`)
+
         let type = messageTypes.text
         voice
             ? type = messageTypes.voice
@@ -130,6 +138,24 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
             isForward && dispatch(removeSelectedMessagesMainIds([]))
             isForward && dispatch(removeSelectMessage([]))
+
+
+            if (firstChat) {
+                fetchUserChatList(dispatch)
+                // const token = localStorage.getItem('token')
+                // const config = {
+                //     headers: {
+                //         Authorization: `Bearer ${token}`
+                //     }
+                // };
+                // const res = await callApi().get('/main/chat/', config)
+                // if (res.statusText && res.statusText === 'OK') {
+                //     // console.log(res)
+                //     const chatList = res.data.value.chats;
+                //     console.log('sendBox chatList: ', chatList)
+                //     dispatch(addChatList(chatList))
+                // }
+            }
 
         }
     }

@@ -6,3 +6,9 @@ i use createGroupStep2 for add member to group because they use same functionali
 # rightClick
 position relative broke style of right click sooo if right click in not in right position it is 90% because there is element that has position relative 
 becase rightClick should positioned base on main html
+
+
+# load chat when chat dosen't exist
+if found chat => getChat
+if not found chat => getContact and save it in userContact and use it for show information 
+then when send first message and chat create push to chat/chatId and reGet all chats => (rightSideMainPage reload because chatId in url and chatList change)
