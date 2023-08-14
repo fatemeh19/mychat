@@ -210,7 +210,8 @@ const editFolder = async (req, res) => {
     }
   );
 
-  res.send(updated);
+  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok"})
+
 
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };

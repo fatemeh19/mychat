@@ -1,7 +1,7 @@
 import Chat from "../models/Chat.js";
 import * as Services from "../services/dbServices.js";
-import { DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
-import { DeleteChat } from "../controllers/chatController.js";
+import {searchMessage, DeleteMessage,pinUnPinMessage } from "../controllers/messageController.js";
+import { searchChat,DeleteChat } from "../controllers/chatController.js";
 export default function (io) {
   const onChat = function (chatId) {
     const socket = this;
@@ -98,12 +98,18 @@ export default function (io) {
     const socket = this;
     const userId = socket.user.userId;
     const { chatId,deleteAll } = deleteInfo;
-    DeleteChat( deleteInfo);
+    DeleteChat(userId, deleteInfo);
 
     if(deleteAll){
       io.to(chatId).emit("deleteChat", deleteInfo);
     }
 
+  }
+  const searchat = async function(search){
+    const socket = this;
+    const userId = socket.user.userId;
+    const chats = await searchChat(userId,search)
+    socket.emit('searchChat',chats)
   }
 
   return {deleteChat,editMessage,pinUnpinMessage,forwardMessage,onChat, sendMessage, deleteMessage, seenMessage };
