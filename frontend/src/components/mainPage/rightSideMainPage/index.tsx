@@ -88,6 +88,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         console.log('clg chatMessages : ', chatMessages)
         socket?.on('sendMessage', (message) => {
+            console.log('reply message send message : ', message)
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {

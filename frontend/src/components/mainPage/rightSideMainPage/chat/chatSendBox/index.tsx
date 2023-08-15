@@ -58,7 +58,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     useEffect(() => {
         console.log('in')
 
-        isEdit ? setInput(editedMessage.messageInfo.content.text) : setInput('')
+        isEdit ? editedMessage.messageInfo.content.contentType === messageTypes.text ? setInput(editedMessage.messageInfo.content.text) : setInput('Caption') : setInput('')
     }, [isEdit])
     useEffect(() => {
         chatCreated && (async () => {
@@ -181,7 +181,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             {showReply && <ReplySection showReply={showReply} />}
             <div className="bg-white w-full bottom-0 p-5 px-6 dark:bg-bgColorDark2">
                 <div className="w-full col-span-1 bg-[#f5f5f5] flex rounded-md p-3 items-center dark:bg-bgColorDark3">
-                    <ChatInput sendHandler={sendHandler} input={isEdit ? editedMessage.messageInfo.content.contentType === messageTypes.text ? input : 'caption' : input} setInput={setInput} />
+                    <ChatInput sendHandler={sendHandler} input={input} setInput={setInput} />
                     <input type="file" ref={fileRef} onChange={attachmentHandler} hidden />
                     <div className="icons flex text-md gap-2 mr-3 text-gray-500">
                         <ImAttachment className='cursor-pointer' onClick={() => fileRef.current?.click()} />
