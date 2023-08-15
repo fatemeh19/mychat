@@ -287,9 +287,10 @@ const editMessage = async (req, res) => {
   if (file) {
     fileController.deleteFile(message.content.url);
     data.content.url = file.path;
-    data.content.contentType = file ? file.fileType : "text";
     data.content.originalName = file.originalname;
   }
+  data.content.contentType = file ? file.fileType : "text";
+
 
   message.content = data.content;
   message.edited = true;
