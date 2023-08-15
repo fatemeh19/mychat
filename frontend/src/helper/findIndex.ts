@@ -2,6 +2,7 @@ const findIndex = (x = 0, y: number, list: string[], value: string): number => {
     let borderIndex = Math.floor((x + y) / 2)
 
     if (list[borderIndex] == value) {
+        console.log('found')
         return borderIndex
     } else {
         if (list[borderIndex] > value) {

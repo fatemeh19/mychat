@@ -5,10 +5,13 @@ import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import Link from 'next/link';
 import { profilePicNameHandler, } from '@/src/helper/userInformation';
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice';
+import findIndex from '@/src/helper/findIndex';
 export default function ChatListItems({ popup }: { popup: boolean }) {
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatOpenInList = useAppSelector(state => state.chatOpenInList).chatOpenInList
+    const isSearch = useAppSelector(state => state.search).isSearch
+    const searchedChats = useAppSelector(state => state.search).searchedChats
 
     const dispatch = useAppDispatch()
 
@@ -40,33 +43,56 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
             </div>
             <div>
                 {
-                    (chatList.length === 0) ? null :
+                    isSearch
+                        ? searchedChats.map(searchedChat => {
+                            const findChat = chatList.filter(chat => chat._id === searchedChat._id)[0]
+                            console.log('findChat : ', findChat)
+                            // return <p key={searchedChat._id}>searching</p>
 
-                        chatList.map((chatBox) => (
-                            <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                            return <Link key={findChat._id} href={`/chat/${findChat._id}`} >
                                 {/* @ts-ignore */}
 
                                 <ChatContactBox
                                     profilePicName=
-                                    {chatBox.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.chatInfo)}`
+                                    {findChat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(findChat.chatInfo)}`
                                         : '/uploads/photo/defaultProfilePic.png'}
-                                    contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
+                                    contactId={findChat.chatInfo._id} chatOpennedP={findChat.open}
                                     lastMessegeByContact={false}
-                                    ContactName={chatBox.chatInfo.name}
-                                    status={Object.keys(chatBox.chatInfo.status).length > 0 ?
-                                        chatBox.chatInfo.status : undefined}
-                                    lastMessage={chatBox.lastMessage} ContactSeen={false}
-                                    lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
+                                    ContactName={findChat.chatInfo.name}
+                                    status={Object.keys(findChat.chatInfo.status).length > 0 ?
+                                        findChat.chatInfo.status : undefined}
+                                    lastMessage={findChat.lastMessage} ContactSeen={false}
+                                    lastMessageTime={findChat.lastMessageTime} numberOfUnSeen={''}
                                     recivedMessage={true} isTyping={false}
-                                    chatbox={chatBox}
+                                    chatbox={findChat}
                                     popup={popup}
                                 />
                             </Link>
+                        })
+                        : (chatList.length === 0)
+                            ? null
+                            : chatList.map((chatBox) => (
+                                <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                                    {/* @ts-ignore */}
 
-                        )
+                                    <ChatContactBox
+                                        profilePicName=
+                                        {chatBox.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.chatInfo)}`
+                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
+                                        lastMessegeByContact={false}
+                                        ContactName={chatBox.chatInfo.name}
+                                        status={Object.keys(chatBox.chatInfo.status).length > 0 ?
+                                            chatBox.chatInfo.status : undefined}
+                                        lastMessage={chatBox.lastMessage} ContactSeen={false}
+                                        lastMessageTime={chatBox.lastMessageTime} numberOfUnSeen={''}
+                                        recivedMessage={true} isTyping={false}
+                                        chatbox={chatBox}
+                                        popup={popup}
+                                    />
+                                </Link>
 
-
-                        )
+                            ))
                 }
             </div>
 
