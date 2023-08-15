@@ -10,16 +10,33 @@ interface searchChatInterface {
     name: string,
 }
 
+interface senderInterface {
+    lastname: string,
+    name: string,
+    profilePic: string
+}
+
+interface searchMessageInterface {
+    _id: string,
+    content: {
+        text: string
+    },
+    senderInfo: senderInterface[],
+    createdAt: string,
+}
+
 interface initialStateInterface {
     searchType: SearchType,
     isSearch: boolean,
     searchedChats: searchChatInterface[]
+    searchedMessages: searchMessageInterface[]
 }
 
 const initialState = {
     searchType: SearchType.chats,
     isSearch: false,
-    searchedChats: []
+    searchedChats: [],
+    searchedMessages: []
 } as initialStateInterface
 
 export const SearchSlice = createSlice({
@@ -34,13 +51,17 @@ export const SearchSlice = createSlice({
         },
         setSearchedChats: (state, action: PayloadAction<searchChatInterface[]>) => {
             state.searchedChats = action.payload
-        }
+        },
+        setSearchedMessages: (state, action: PayloadAction<searchMessageInterface[]>) => {
+            state.searchedMessages = action.payload
+        },
     },
 });
 
 export const {
     setSearchType,
     setIsSearch,
-    setSearchedChats
+    setSearchedChats,
+    setSearchedMessages
 } = SearchSlice.actions;
 export default SearchSlice.reducer;

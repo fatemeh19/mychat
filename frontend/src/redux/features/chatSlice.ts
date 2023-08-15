@@ -13,6 +13,8 @@ interface member {
 
 interface chatInterface {
     _id: string,
+    name: string,
+    profilePic: string,
     adminsAndRights: [],
     chatType: string,
     members: member[],

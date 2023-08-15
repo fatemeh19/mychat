@@ -9,7 +9,7 @@ import ChatListHeader from './chatListHeader';
 import { userHandler } from '@/src/helper/userInformation';
 import ChatListItems from './chatListItems';
 import callApi from '@/src/helper/callApi';
-import { setSearchedChats } from '@/src/redux/features/searchSlice';
+import { setSearchedChats, setSearchedMessages } from '@/src/redux/features/searchSlice';
 export default function ChatList() {
 
     const dispatch = useAppDispatch()
@@ -30,12 +30,17 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on('searchChat', chats => {
-            console.log('search:', chats)
+            console.log('search chats:', chats)
             dispatch(setSearchedChats(chats))
+        })
+        socket.on('searchMessage', messages => {
+            console.log('search messages:', messages)
+            dispatch(setSearchedMessages(messages))
         })
 
         return () => {
             socket.removeAllListeners('searchChat')
+            socket.removeAllListeners('searchMessage')
         }
     }, [socket])
     useEffect(() => {

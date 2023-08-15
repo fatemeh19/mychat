@@ -23,6 +23,9 @@ import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
 import { setForwardMessageIds, setIsForward } from '@/src/redux/features/forwardMessageSlice'
 import ChatListPopup from '@/src/components/basicComponents/chatListPopup'
 import PopUpMenu from '@/src/components/popUp/popUpMenu'
+import { BiSearch } from 'react-icons/bi'
+import { setIsSearch, setSearchType, setSearchedMessages } from '@/src/redux/features/searchSlice'
+import { SearchType } from '@/src/models/enum'
 
 
 interface ChatHeaderProps {
@@ -53,6 +56,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
+    const isSearch = useAppSelector(state => state.search).isSearch
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -132,6 +136,19 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         console.log('forwarding ...')
     }
 
+    const searchMessageHandler = () => {
+        dispatch(setIsSearch(true))
+        dispatch(setSearchType(SearchType.messages))
+        console.log('type for search ...')
+    }
+
+    const closeSearchMessageHandleer = () => {
+        dispatch(setIsSearch(false))
+        dispatch(setSearchType(SearchType.chats))
+        console.log('message search closed!')
+        dispatch(setSearchedMessages([]))
+    }
+
     const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
 
     return (
@@ -167,6 +184,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
                                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
+                                    <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />
+                                    <button onClick={closeSearchMessageHandleer}>close</button>
                                 </div>
                                 <div className="
                                     left
