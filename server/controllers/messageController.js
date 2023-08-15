@@ -291,7 +291,6 @@ const editMessage = async (req, res) => {
   }
   data.content.contentType = file ? file.fileType : "text";
 
-
   message.content = data.content;
   message.edited = true;
   const editedMessage = await message.save();
@@ -305,11 +304,27 @@ const editMessage = async (req, res) => {
   });
 };
 
-const searchMessage = async (chatId,search) => {
-  
+const searchMessage = async (req, res) => {
+  const { chatId, search } = req.params;
   const chat = await Services.findOne("chat", { _id: chatId }, { messages: 1 });
   let messageIds = chat.messages.map((message) => message.messageInfo);
   messageIds = await objectId(messageIds);
+  let searchRegex = new RegExp(`${search}`, "i");
+
+  const conditions = messageIds.map(function (value, index) {
+    return {
+      $cond: {
+        if: {
+          $and: [
+            { $regexFind: { input: "$content.text", regex: searchRegex } },
+            { $eq: ["$_id", value] },
+          ],
+        },
+        then: index,
+        else: -1,
+      },
+    };
+  });
   const messages = await Services.aggregate("message", [
     {
       $match: {
@@ -327,14 +342,35 @@ const searchMessage = async (chatId,search) => {
     },
     {
       $project: {
-        _id: 1,
+        indexes: conditions,
+        "content.contentType": 1,
         "content.text": 1,
         "senderInfo.name": 1,
         "senderInfo.lastname": 1,
         "senderInfo.profilePic": 1,
-         createdAt: 1,
+        createdAt: 1,
       },
     },
+
+    {
+      $project: {
+        _id: 1,
+        "content.contentType": 1,
+        "content.text": 1,
+        "senderInfo.name": 1,
+        "senderInfo.lastname": 1,
+        "senderInfo.profilePic": 1,
+        createdAt: 1,
+        index: {
+          $filter: {
+            input: "$indexes",
+            as: "indexes",
+            cond: { $ne: ["$$indexes", -1] },
+          },
+        },
+      },
+    },
+    { $unwind: "$index" },
     {
       $sort: {
         createdAt: -1,
@@ -342,10 +378,15 @@ const searchMessage = async (chatId,search) => {
     },
   ]);
 
-  return messages
-  // RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok", value:{
-  //   messages
-  // }})
+  // return messages
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      messages,
+    },
+  });
 };
 export {
   editMessage,
