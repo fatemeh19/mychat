@@ -9,7 +9,7 @@ import ChatInput from './chatInput'
 import { ChatType, messageTypes } from '@/src/models/enum'
 import { setFirstChat } from '@/src/redux/features/chatSlice'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
-import { createChat, createMessage, fetchChat } from '@/src/helper/useAxiosRequests'
+import { createChat, createMessage, editMessage, fetchChat } from '@/src/helper/useAxiosRequests'
 import VoiceRecord from './voiceRecord'
 import ReplySection from './replySection'
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation'
 import { fetchUserChatList } from '@/src/helper/userInformation'
 import callApi from '@/src/helper/callApi'
 import { addChatList } from '@/src/redux/features/userChatListSlice'
+import { BsCheck } from 'react-icons/bs'
+import { setIsEdit } from '@/src/redux/features/editMessageSlice'
 
 interface chatSendProps {
     contactId: string,
@@ -41,6 +43,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const repliedMessageId = useAppSelector(state => state.repledMessage).RepliedMessage._id
     const isForward = useAppSelector(state => state.forwardMessage).isForward
     const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
+    const isEdit = useAppSelector(state => state.editMessage).isEdit
+    const editedMessage = useAppSelector(state => state.editMessage).editedMessageId
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -50,6 +54,11 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     useEffect(() => {
         chatCreated === false && dispatch(setFirstChat(true))
     })
+    useEffect(() => {
+        console.log('in')
+
+        isEdit ? setInput(editedMessage.messageInfo.content.text) : setInput('')
+    }, [isEdit])
     useEffect(() => {
         chatCreated && (async () => {
             chatId = await fetchChat(chatId, dispatch)
@@ -102,32 +111,34 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             }
         } else {
             console.log('type : ', type)
+            console.log('input : content[text] : ', input)
             let newMessage = new FormData()
 
-            newMessage.append('content[contentType]', type)
+            // newMessage.append('content[contentType]', type)
             newMessage.append('content[text]', input)
             file ? newMessage.append('file', file) : null
-            newMessage.append('senderId', userInfo._id)
-            voice ? newMessage.append('file', voice) : null
-            showReply && !isForward ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
-            showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
+            !isEdit && newMessage.append('senderId', userInfo._id)
+            !isEdit && voice ? newMessage.append('file', voice) : null
+            !isEdit && showReply && !isForward ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
+            !isEdit && showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
             // showReply && isForward ? newMessage.append('forwarded[isForwarded]', isForward)
 
             let message = ''
             chatId
-                ? message = await createMessage(chatId, newMessage, dispatch)
+                ? isEdit
+                    ? message = await editMessage(editedMessage.messageInfo._id, newMessage, dispatch)
+                    : message = await createMessage(chatId, newMessage, dispatch)
                 : null
 
             setInput('')
             setFile(null)
-            console.log('message out:', message)
-            console.log(socket)
             if (socket) {
                 console.log('socket is exist')
+                console.log('new message ::')
                 newMessage.forEach(item => console.log(item))
-                chatId ? socket.emit('sendMessage', chatId, message) : null
-                chatId && isForward ? socket.emit('forwardMessage', chatId, forwardMessageIds) : null
-
+                chatId && !isEdit && socket.emit('sendMessage', chatId, message)
+                chatId && isForward && !isEdit && socket.emit('forwardMessage', chatId, forwardMessageIds)
+                // chatId && !isForward && isEdit && socket.emit('editMessage', chatId,message, )
                 // socket.emit('sendMessage', chatId, message)
             }
             dispatch(setFirstChat(false))
@@ -138,6 +149,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
             isForward && dispatch(removeSelectedMessagesMainIds([]))
             isForward && dispatch(removeSelectMessage([]))
+
+            isEdit && dispatch(setIsEdit(false))
 
 
             if (firstChat) {
@@ -165,19 +178,36 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             {showReply && <ReplySection showReply={showReply} />}
             <div className="bg-white w-full bottom-0 p-5 px-6 dark:bg-bgColorDark2">
                 <div className="w-full col-span-1 bg-[#f5f5f5] flex rounded-md p-3 items-center dark:bg-bgColorDark3">
-                    <ChatInput sendHandler={sendHandler} input={input} setInput={setInput} />
+                    <ChatInput sendHandler={sendHandler} input={isEdit ? editedMessage.messageInfo.content.contentType === messageTypes.text ? input : 'caption' : input} setInput={setInput} />
                     <input type="file" ref={fileRef} onChange={attachmentHandler} hidden />
                     <div className="icons flex text-md gap-2 mr-3 text-gray-500">
                         <ImAttachment className='cursor-pointer' onClick={() => fileRef.current?.click()} />
                         {/* <FiMic className='cursor-pointer' /> */}
                         <VoiceRecord sendHandler={sendHandler} voice={voice} setVoice={setVoice} />
                     </div>
-                    <div className="sendIcons border-l-2 border-gray-400 pl-3 text-xl">
+                    {!isEdit
+                        ? <div className="sendIcons border-l-2 border-gray-400 pl-3 text-xl">
+                            <RiSendPlaneFill onClick={sendHandler} className='cursor-pointer dark:text-[#2563eb]' />
+                        </div>
+                        : <button className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center" onClick={sendHandler}>
+                            <BsCheck className="text-white w-5 h-5" />
+                        </button>
+                    }
+                    {/* <div className="sendIcons border-l-2 border-gray-400 pl-3 text-xl">
                         <RiSendPlaneFill onClick={sendHandler} className='cursor-pointer dark:text-[#2563eb]' />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
+
+        // {!isEdit
+        //     ? <div className="righ cursor-pointer" onClick={() => { dispatch(setShowReply(false)); dispatch(setIsForward(false)) }}>
+        //         <GrClose />
+        //     </div>
+        //     : <button className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+        //         <BsCheck className="text-white" />
+        //     </button>
+        // }
     )
 }
 export default ChatSendBox;
