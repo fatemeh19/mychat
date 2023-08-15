@@ -15,5 +15,5 @@ import {
 // router.route('/:id').get(getUser)
 router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
 router.route('/profile').get(getProfile).patch(uploadFile.single("profilePic"),editProfile)
-router.patch("/block/:id",blockUnblock)
+router.patch("/block",blockUnblock)
 export default router

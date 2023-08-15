@@ -166,15 +166,14 @@ const getUser = async (req, res) => {
 
 const blockUnblock = async (req, res) => {
   const {
-    body: { block },
-    params: { id },
+    body: { block,id },
     user: { userId },
   } = req;
   let updateOP;
   if (block) {
-    updateOP = $push;
+    updateOP = '$push';
   } else {
-    updateOP = $pull;
+    updateOP = '$pull';
   }
 
   const result = await Services.aggregate("user", [
@@ -207,6 +206,6 @@ const blockUnblock = async (req, res) => {
       new: true,
     }
   );
-  RH.SendResponse({res,statusCode:StatusCodes,title:"ok"})
+  RH.SendResponse({res,statusCode:StatusCodes.OK,title:"ok"})
 };
 export { blockUnblock, setInfo, getProfile, editProfile, setStatus, getUser };
