@@ -58,10 +58,11 @@ const createFolder = async (req, res) => {
 const addRemoveChat = async (req, res) => {
   // tekrari chat
   let {
-    params: { chatId, folderId, add },
+    body:{chatId, add},
+    params: { folderId },
     // user: { userId },
   } = req;
-  add = Number(add);
+  
   let updateQuery;
   if (add) {
     updateQuery = {

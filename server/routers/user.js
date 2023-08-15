@@ -9,11 +9,11 @@ import {
   getProfile,
   editProfile,
   getUser,
-  blockUser
+  blockUnblock
 } from "../controllers/userController.js";
 
 // router.route('/:id').get(getUser)
 router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
 router.route('/profile').get(getProfile).patch(uploadFile.single("profilePic"),editProfile)
-router.patch("/block/:id",blockUser)
+router.patch("/block/:id",blockUnblock)
 export default router
