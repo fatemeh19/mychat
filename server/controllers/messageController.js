@@ -304,8 +304,7 @@ const editMessage = async (req, res) => {
   });
 };
 
-const searchMessage = async (req, res) => {
-  const { chatId, search } = req.params;
+const searchMessage = async (chatId,search) => {
   const chat = await Services.findOne("chat", { _id: chatId }, { messages: 1 });
   let messageIds = chat.messages.map((message) => message.messageInfo);
   messageIds = await objectId(messageIds);
@@ -378,15 +377,15 @@ const searchMessage = async (req, res) => {
     },
   ]);
 
-  // return messages
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      messages,
-    },
-  });
+  return messages
+  // RH.SendResponse({
+  //   res,
+  //   statusCode: StatusCodes.OK,
+  //   title: "ok",
+  //   value: {
+  //     messages,
+  //   },
+  // });
 };
 export {
   editMessage,
