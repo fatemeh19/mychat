@@ -164,12 +164,19 @@ const getUser = async (req, res) => {
   });
 };
 
-const blockUser = async (req, res) => {
+const blockUnblock = async (req, res) => {
   const {
-    params:{id},
+    body: { block,id },
     user: { userId },
   } = req;
-  const user = await Services.aggregate("user", [
+  let updateOP;
+  if (block) {
+    updateOP = '$push';
+  } else {
+    updateOP = '$pull';
+  }
+
+  const result = await Services.aggregate("user", [
     {
       $match: { _id: await objectId(userId) },
     },
@@ -188,6 +195,17 @@ const blockUser = async (req, res) => {
       },
     },
   ]);
- 
+  console.log(result[0].settingInfo[0]._id);
+  const updated = await Services.findByIdAndUpdate(
+    "setting",
+    { _id: result[0].settingInfo[0]._id },
+    {
+      [updateOP]: { "privacyAndSecurity.security.blockedUsers": id },
+    },
+    {
+      new: true,
+    }
+  );
+  RH.SendResponse({res,statusCode:StatusCodes.OK,title:"ok"})
 };
-export {blockUser, setInfo, getProfile, editProfile, setStatus, getUser };
+export { blockUnblock, setInfo, getProfile, editProfile, setStatus, getUser };
