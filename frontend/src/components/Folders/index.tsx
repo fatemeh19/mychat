@@ -64,11 +64,10 @@ const Folders: FC<FoldersProps> = ({
                 console.log('editFolder res : ', res)
                 if (res.status === 200) {
                     let editFolder = {
-                        _id: res.data.value.folderId,
+                        _id: res.data._id,
                         name: folderName
                     }
-                    let newFolders: folderInterface[]
-                    newFolders = []
+                    let newFolders: folderInterface[] = []
                     for (let i = 0; i < folders.length; i++) {
                         if (folders[i]._id === editFolder._id) {
                             folders[i].name = editFolder.name
@@ -191,9 +190,8 @@ const Folders: FC<FoldersProps> = ({
                         (folders.length === 0) ? null
                             : folders.map((folder) => (
 
-                                <div onClick={() => editFolder(folder)}
-                                    className="flow-root mt-3" key={folder._id}>
-                                    <div className="float-left flex gap-3">
+                                <div className="flow-root mt-3 cursor-pointer" key={folder._id}>
+                                    <div onClick={() => editFolder(folder)} className="float-left flex gap-3">
                                         <BiSolidFolder className="m-auto text-xl text-blue-500" />
                                         <div className="grid">
                                             <span className='text-sm'>{folder.name}</span>

@@ -135,28 +135,26 @@ export const getFolders = async (dispatch: any) => {
     const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
         console.log('folders:', res.data)
-        let folders: folderInterface[]
-        // @ts-ignore
-        folders = []
-            // @ts-ignore
-            (res.data.value.folders).map(f => {
+        let folders: folderInterface[] = [];
 
-                const folder = {
-                    _id: f._id,
-                    name: f.name,
-                    chats: f.chats,
-                    pinnedChats: f.pinnedChats,
-                    numOfChat: f.chats.length,
-                    open: false
-                }
-                folders.push(folder)
-            })
+        // @ts-ignore
+        (res.data.value.folders).map(f => {
+
+            const folder = {
+                _id: f._id,
+                name: f.name,
+                chats: f.chats,
+                pinnedChats: f.pinnedChats,
+                numOfChat: f.chats.length,
+                open: false
+            }
+            folders.push(folder)
+        })
         dispatch(addFoldersList(folders))
     }
 }
-export const getFolderChats = async (folderId: string, dispatch: any) => {
+export const getFolderChats = async (folderId: string, dispatch: any, chatList: any) => {
     const res = await callApi().get(`/main/folder/${folderId}`, config)
-    const chatList = useAppSelector(state => state.userChatList).chatList
     console.log(res)
     if (res.statusText && res.statusText === 'OK') {
         let folderChatList = []

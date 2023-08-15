@@ -40,13 +40,15 @@ export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol
 }
 export function ShowFolder({ folder, setOpen }: { folder: any, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
+    const chatList = useAppSelector(state => state.userChatList).chatList
+
     const folderClickHandler = () => {
         setOpen(false)
         if (folder.open == false) {
             dispatch(setOpenFolder(folder._id))
         }
 
-        getFolderChats(folder._id, dispatch)
+        getFolderChats(folder._id, dispatch, chatList)
     }
     return (
 
