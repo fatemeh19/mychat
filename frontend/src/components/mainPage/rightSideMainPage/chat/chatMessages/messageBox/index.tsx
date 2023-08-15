@@ -19,6 +19,7 @@ import ChatListPopup from "@/src/components/basicComponents/chatListPopup"
 import { setIsForward, setForwardMessageIds, setForwardContent } from "@/src/redux/features/forwardMessageSlice"
 import { contactInterface } from "@/src/redux/features/userContactListSlice"
 import { UserInterface } from "@/src/redux/features/userInfoSlice"
+import { setEditedMessage, setIsEdit } from "@/src/redux/features/editMessageSlice"
 
 const initialContextMenu = {
     show: false,
@@ -195,6 +196,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const messageDoubleClickHandler = (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => {
         dispatch(setForwardMessageIds([]))
         dispatch(setIsForward(false))
+        dispatch(setIsEdit(false))
         dispatch(setShowReply(true))
         dispatch(setRepliedMessage(msg))
         closeContextMenu()
@@ -228,6 +230,15 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
         dispatch(addSelectedMessagesContent(msg))
         closeContextMenu()
 
+    }
+
+    const activeEdit = () => {
+        dispatch(setIsEdit(true))
+        dispatch(setIsForward(false))
+        dispatch(setShowReply(true))
+        dispatch(setEditedMessage(msg))
+        dispatch(addSelectedMessagesContent(msg))
+        closeContextMenu()
     }
 
 
@@ -264,6 +275,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     activeReply={messageDoubleClickHandler}
                     pinMessage={pinMessage}
                     forwardMessage={forwardMessage}
+                    activeEdit={activeEdit}
                 />
             }
             <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>

@@ -119,10 +119,24 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
 
 export const removeGroupMember = async (chatId: string, memberId: string, memberIndex: number, dispatch: any) => {
     try {
-        const res = callApi().delete(`/main/chat/group/removeMember/${chatId}/${memberId}`, config)
+        const res = await callApi().delete(`/main/chat/group/removeMember/${chatId}/${memberId}`, config)
         console.log('remove group member res: ', res)
         dispatch(removeMemberFromGroup(memberIndex))
     } catch (error) {
         console.log('remove group member error: ', error)
+    }
+}
+
+export const editMessage = async (id: string, editedMessage: any, dispatch: any) => {
+    console.log('id : ', id),
+        console.log('editedMessage : ', editMessage)
+    try {
+        const res = await callApi().put(`/main/message/${id}`, editedMessage, config)
+        console.log('edit message res: ', res)
+
+        return res.data.value.message
+        // dispatch(removeMemberFromGroup(memberIndex))
+    } catch (error) {
+        console.log('edit message error: ', error)
     }
 }

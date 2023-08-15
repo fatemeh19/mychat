@@ -26,6 +26,7 @@ interface RightClickProps {
     activeReply: (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => void
     pinMessage: () => void
     forwardMessage: () => void;
+    activeEdit: () => void
 }
 
 const RightClick: FC<RightClickProps> = ({
@@ -38,7 +39,8 @@ const RightClick: FC<RightClickProps> = ({
     activeSelection,
     activeReply,
     pinMessage,
-    forwardMessage
+    forwardMessage,
+    activeEdit
 }) => {
 
     const chat = useAppSelector(state => state.chat).Chat
@@ -115,7 +117,7 @@ const RightClick: FC<RightClickProps> = ({
                             <BsReply className={`${style.icon}`} />
                             <span>Reply</span>
                         </li>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={activeEdit}>
                             <FiEdit2 className={`${style.icon}`} />
                             <span>Edit</span>
                         </li>

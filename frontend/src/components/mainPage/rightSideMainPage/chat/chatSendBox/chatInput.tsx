@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppSelector } from "@/src/redux/hooks";
 // import EmojiPicker from "emoji-picker-react";
 import { Dispatch, FC, SetStateAction } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
@@ -13,6 +14,8 @@ interface ChatInputProps {
 
 
 const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
+
+    const editedMessage = useAppSelector(state => state.editMessage).editedMessageId
 
     const snedMessage = async () => {
         sendHandler()
