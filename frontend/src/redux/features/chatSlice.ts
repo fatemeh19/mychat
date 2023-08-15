@@ -89,6 +89,9 @@ export const ChatSlice = createSlice({
         removeMemberFromGroup: (state, action: PayloadAction<number>) => {
             state.groupMembers.splice(action.payload, 1)
         },
+        editMessage: (state, action: PayloadAction<{ index: number, message: any }>) => {
+            state.Chat.messages[action.payload.index].messageInfo = action.payload.message
+        },
     },
 });
 
@@ -106,6 +109,7 @@ export const {
     addSeenIds,
     setGroupMembersInformation,
     addMemberToGroup,
-    removeMemberFromGroup
+    removeMemberFromGroup,
+    editMessage
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

@@ -45,6 +45,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
     const isEdit = useAppSelector(state => state.editMessage).isEdit
     const editedMessage = useAppSelector(state => state.editMessage).editedMessageId
+    const chatMessages = useAppSelector(state => state.chat).Chat.messages
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -123,6 +124,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             !isEdit && showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
             // showReply && isForward ? newMessage.append('forwarded[isForwarded]', isForward)
 
+            console.log('chatMessages before edit message', chatMessages)
+
             let message = ''
             chatId
                 ? isEdit
@@ -138,8 +141,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 newMessage.forEach(item => console.log(item))
                 chatId && !isEdit && socket.emit('sendMessage', chatId, message)
                 chatId && isForward && !isEdit && socket.emit('forwardMessage', chatId, forwardMessageIds)
-                // chatId && !isForward && isEdit && socket.emit('editMessage', chatId,message, )
-                // socket.emit('sendMessage', chatId, message)
+                chatId && !isForward && isEdit && socket.emit('editMessage', chatId, message, editedMessage._id)
+                console.log('chatMessages after edit message', chatMessages)
             }
             dispatch(setFirstChat(false))
             showReply && dispatch(setShowReply(false))

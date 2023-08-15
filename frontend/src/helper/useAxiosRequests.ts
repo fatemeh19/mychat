@@ -129,7 +129,7 @@ export const removeGroupMember = async (chatId: string, memberId: string, member
 
 export const editMessage = async (id: string, editedMessage: any, dispatch: any) => {
     console.log('id : ', id),
-        console.log('editedMessage : ', editMessage)
+        console.log('editedMessage : ', editedMessage)
     try {
         const res = await callApi().put(`/main/message/${id}`, editedMessage, config)
         console.log('edit message res: ', res)
