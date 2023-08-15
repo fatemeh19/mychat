@@ -14,13 +14,22 @@ import EditProfile from "../../setting/editProfile";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import CreateGroup from "../../group/createGroup";
 import Folders from "../../Folders";
-import { getFolderChats } from "@/src/helper/userInformation";
+import { fetchUserChatList, getFolderChats } from "@/src/helper/userInformation";
+import { setCloseFolders, setOpenFolder } from "@/src/redux/features/folderSlice";
 
-export function AllMessageIcon() {
+export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
+    const dispatch = useAppDispatch()
+    const clickHandler = () => {
+        setOpen(true)
+        dispatch(setCloseFolders())
+        fetchUserChatList(dispatch)
 
+    }
     return (
 
-        <div className="grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]">
+        <div onClick={clickHandler} className={open ? "text-white grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]"
+            : "text-gray-300 grid gap-2 justify-center relative home-icons py-2 bg-transparent"}
+        >
             <div className="flex justify-center">
                 <BiMessageRoundedDetail className="text-white cursor-pointer text-2xl dark:text-[#2563eb]" />
             </div>
@@ -29,17 +38,20 @@ export function AllMessageIcon() {
 
     )
 }
-export function ShowFolder({ folder }: { folder: any }) {
+export function ShowFolder({ folder, setOpen }: { folder: any, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
-    const [click, setClick] = useState(false)
     const folderClickHandler = () => {
-        setClick(true)
+        setOpen(false)
+        if (folder.open == false) {
+            dispatch(setOpenFolder(folder._id))
+        }
+
         getFolderChats(folder._id, dispatch)
     }
     return (
 
         <div onClick={folderClickHandler}
-            key={folder._id} className={click ? "text-white grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]"
+            key={folder._id} className={folder.open ? "text-white grid gap-2 justify-center relative home-icons py-2 bg-[#0d49cb]"
                 : "text-gray-300 grid gap-2 justify-center relative home-icons py-2 bg-transparent"}
         >
             <div className="flex justify-center">

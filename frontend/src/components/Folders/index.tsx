@@ -72,6 +72,7 @@ const Folders: FC<FoldersProps> = ({
                     for (let i = 0; i < folders.length; i++) {
                         if (folders[i]._id === editFolder._id) {
                             folders[i].name = editFolder.name
+                            folders[i].numOfChat = folders[i].chats.length
                             let j = 0;
                             chatIds.map((chatId) => {
                                 folders[i].chats[j].chatInfo = chatId
@@ -94,7 +95,8 @@ const Folders: FC<FoldersProps> = ({
                 if (res.status === 200) {
                     let newFolder = {
                         _id: res.data.value.folderId,
-                        name: folderName
+                        name: folderName,
+                        numOfChat: chatIds.length
                     }
                     dispatch(addFolder(newFolder))
                     setChatIds([])
@@ -195,7 +197,7 @@ const Folders: FC<FoldersProps> = ({
                                         <BiSolidFolder className="m-auto text-xl text-blue-500" />
                                         <div className="grid">
                                             <span className='text-sm'>{folder.name}</span>
-                                            <span className='text-xs text-gray-500'>6 chats</span>
+                                            <span className='text-xs text-gray-500'>{folder.numOfChat} chats</span>
                                         </div>
                                     </div>
                                     <ImBin2 onClick={() => deleteFolder(folder._id)}

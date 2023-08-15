@@ -9,7 +9,9 @@ export interface folderInterface {
     _id: string,
     name: string,
     chats: folderChatInterface[],
-    pinnedChats: any[]
+    pinnedChats: any[],
+    numOfChat: number,
+    open: boolean
 }
 interface initialStateInterface {
     folders: folderInterface[]
@@ -29,11 +31,28 @@ export const folderSlice = createSlice({
         addFolder: (state, action: PayloadAction<any>) => {
             state.folders[state.folders.length - 1] = action.payload
         },
+        setOpenFolder: (state, action: PayloadAction<any>) => {
+            state.folders.map(folder => {
+                if (folder._id === action.payload) {
+                    folder.open = true
+                }
+                else {
+                    folder.open = false
+                }
+            })
+        },
+        setCloseFolders: (state) => {
+            state.folders.map(folder => {
+                folder.open = false
+            })
+        },
     },
 });
 
 export const {
     addFolder,
-    addFoldersList
+    addFoldersList,
+    setOpenFolder,
+    setCloseFolders
 } = folderSlice.actions;
 export default folderSlice.reducer;

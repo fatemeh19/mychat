@@ -1,6 +1,6 @@
 "use client"
 
-import { addFoldersList } from "../redux/features/folderSlice"
+import { addFoldersList, folderInterface } from "../redux/features/folderSlice"
 import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
@@ -100,7 +100,8 @@ export const fetchUserChatList = async (dispatch: any) => {
                 lastMessage: lastMessage,
                 lastMessageTime: lastMessageTime,
                 open: false,
-                chatType: chatList[i].chatType
+                chatType: chatList[i].chatType,
+                pinned: chatList[i].pinned
             }
             if (chat.chatType == "private") {
                 dispatch(addPrivateChat(chat))
@@ -134,7 +135,23 @@ export const getFolders = async (dispatch: any) => {
     const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
         console.log('folders:', res.data)
-        dispatch(addFoldersList(res.data.value.folders))
+        let folders: folderInterface[]
+        // @ts-ignore
+        folders = []
+            // @ts-ignore
+            (res.data.value.folders).map(f => {
+
+                const folder = {
+                    _id: f._id,
+                    name: f.name,
+                    chats: f.chats,
+                    pinnedChats: f.pinnedChats,
+                    numOfChat: f.chats.length,
+                    open: false
+                }
+                folders.push(folder)
+            })
+        dispatch(addFoldersList(folders))
     }
 }
 export const getFolderChats = async (folderId: string, dispatch: any) => {

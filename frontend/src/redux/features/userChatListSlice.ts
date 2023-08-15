@@ -14,7 +14,8 @@ interface chatBoxInterface {
     lastMessageTime: string,
     chatInfo: chatInfoInterface,
     open: boolean,
-    chatType: string
+    chatType: string,
+    pinned: boolean
 }
 interface initialStateInterface {
     chatList: chatBoxInterface[],

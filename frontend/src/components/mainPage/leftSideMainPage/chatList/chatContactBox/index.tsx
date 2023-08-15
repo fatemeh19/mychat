@@ -1,17 +1,16 @@
 "use client"
 
+import ConfirmModal from "@/src/components/basicComponents/confirmModal";
+import ChatRightClick from "@/src/components/rightClick/chatRightClick";
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { setOpenChat } from "@/src/redux/features/openSlice";
 import { setShowReply } from "@/src/redux/features/repliedMessageSlice";
-import { removeSelectMessage, removeSelectMessageContent, removeSelectedMessagesMainIds, setActiveSelection } from "@/src/redux/features/selectedMessagesSlice";
-import { addChatToTop, openHandle } from "@/src/redux/features/userChatListSlice";
+import { setActiveSelection } from "@/src/redux/features/selectedMessagesSlice";
+import { addChatList, openHandle } from "@/src/redux/features/userChatListSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, MouseEvent, useEffect, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
-import { useDispatch } from "react-redux";
-import io from 'socket.io-client'
-// import { Socket } from "socket.io-client"
 
 interface chatContactProps {
     status?: {
@@ -32,7 +31,11 @@ interface chatContactProps {
     chatbox?: any,
     popup: boolean
 }
-
+const initialContextMenu = {
+    show: false,
+    x: 0,
+    y: 0
+}
 const ChatContactBox: FC<chatContactProps> = ({
     status,
     lastMessage,
@@ -57,6 +60,15 @@ const ChatContactBox: FC<chatContactProps> = ({
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const [lastMesText, setLastMesText] = useState(lastMessage)
     const [lastMesTime, setLastMesTime] = useState(lastMessageTime)
+    const [contextMenu, setContextMenu] = useState(initialContextMenu)
+    const [open, setOpen] = useState<boolean>(false)
+    const [folderId, setFolderId] = useState('')
+    const [showConfirm, setShowConfirm] = useState<boolean>(false)
+    const [confirmInfo, setConfirmInfo] = useState({
+        confirmDiscription: '',
+        confirmTitle: ''
+    })
+
 
     const date = new Date(lastMesTime);
     const time = date.getHours() + ":" + date.getMinutes()
@@ -84,28 +96,37 @@ const ChatContactBox: FC<chatContactProps> = ({
                 console.log(lastMesText)
 
                 //add chat on top of the list bc this chat have new message
-                // if (chatbox != undefined) {
-                //     const fromIndex = chatList.indexOf(chatbox)
-                //     // console.log(fromIndex)
-                //     dispatch(addChatToTop(fromIndex))
-                // }
+                if (chatbox != undefined) {
+                    // const fromIndex = chatList.indexOf(chatbox)
+                    // // console.log(fromIndex)
+                    // dispatch(addChatToTop(fromIndex))
+                    let counter = 0
+                    chatList.map(chat => {
+                        // @ts-ignore
+                        if (chat._id === chatbox._id) {
+                            counter = counter + 1
+                            if (counter === 1) {
+                                const filterChatList = chatList.filter(chat => chat._id !== chatbox._id)
+                                filterChatList.push(chatbox)
+                                dispatch(addChatList(filterChatList))
+                            }
+                        }
+                    })
+
+                }
             }
         }
         // })
     }, [chatMessages, chatOpenned])
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
-            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                // console.log('online contact : ' + CId)
                 setOnline(true)
             }
 
         });
         socket?.on('offlineContact', (CId) => {
-            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                // console.log('offline contact : ' + CId)
                 setOnline(false)
             }
 
@@ -132,15 +153,54 @@ const ChatContactBox: FC<chatContactProps> = ({
         }
     }
 
+
+
+    const contaxtMenuHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+        e.preventDefault()
+        const { clientX, clientY } = e
+        console.log(clientX, clientY)
+        // access to currentTarget = currentTarget = div:messageBox
+        setContextMenu({ show: true, x: clientX, y: clientY })
+        // const member = e.currentTarget
+    }
+
+    const closeContextMenu = () => setContextMenu(initialContextMenu)
+
+    const showConfirmModal = (title: string, folderId: string) => {
+        setOpen(true)
+        setShowConfirm(true)
+        setFolderId(folderId)
+        closeContextMenu()
+        setConfirmInfo({
+            confirmDiscription: 'Add Chat To Folder?',
+            confirmTitle: title
+        })
+
+    }
+    const addChatToFolder = () => {
+
+
+    }
+
+
+
     return (
 
-        <div
+        <div onContextMenuCapture={contaxtMenuHandler}
             onClick={handler}
             className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
         ${popup ? '' : 'tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center'} 
         ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]" :
-                    (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(53,55,59)]" : '')}`}>
+                    (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(132,153,196)]" : '')}`}>
+
+            {contextMenu.show && <ChatRightClick
+                x={contextMenu.x}
+                y={contextMenu.y}
+                closeContextMenu={closeContextMenu}
+                showConfirmModal={showConfirmModal}
+            />}
+
             <div className='relative contactProfile h-full'>
                 {(online) ?
                     <div className="rounded-full w-[15px] h-[15px] pt-[3px] flex justify-center bg-white absolute bottom-0 right-0 
@@ -206,6 +266,7 @@ const ChatContactBox: FC<chatContactProps> = ({
 
                 </div>
             </div>
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={addChatToFolder} confirmInfo={confirmInfo} />
         </div>
 
     )
