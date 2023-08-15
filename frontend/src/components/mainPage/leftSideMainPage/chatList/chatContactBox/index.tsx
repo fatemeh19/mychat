@@ -100,7 +100,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 if (chatbox != undefined) {
                     const fromIndex = chatList.indexOf(chatbox)
                     // console.log(fromIndex)
-                    dispatch(addChatToTop(fromIndex))
+                    // dispatch(addChatToTop(fromIndex))
                 }
             }
         }

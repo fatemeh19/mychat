@@ -72,8 +72,10 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const attachmentHandler = (e: any) => {
         // @ts-ignore
         const file = fileRef.current?.files[0]
+        console.log('file?.type:', file?.type)
         file ? setFile(file) : null
     }
+    const img = useRef<HTMLImageElement>(null)
 
     const sendHandler = async () => {
         firstChat ? chatId = await createChat(userInfo._id, [contactId], ChatType.private, '', dispatch) : null
@@ -124,7 +126,65 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             !isEdit && showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
             // showReply && isForward ? newMessage.append('forwarded[isForwarded]', isForward)
 
-            console.log('chatMessages before edit message', chatMessages)
+            // let blob2 = new Blob([file]);
+            // console.log('main blob: ', blob2)
+            // var blobToFile = new File([blob2], "name");
+            // console.log('blobToFile : ', blobToFile)
+
+
+            // if (isEdit) {
+            //     const url = editedMessage.messageInfo.content.url
+            //     // var blob = new Blob([url], { type: 'image/jpeg' })
+            //     // var blobToFile = new File([blob], `${editedMessage.messageInfo.content.originalName}`);
+            //     // console.log('blob : ', blob)
+            //     // console.log('imageFile : ', blobToFile)
+
+            //     // const propmis = new Promise((resolve, reject) => {
+            //     //     const reader = new FileReader()
+            //     //     reader.onloadend = () => resolve(reader.result)
+            //     //     reader.onerror = reject
+            //     //     reader.readAsDataURL(blob)
+
+            //     //     console.log('reader :: ', reader)
+            //     // })
+
+            //     // console.log('promis : ', propmis)
+
+
+
+            //     // setFile(blobToFile)
+
+            //     // console.log('add file to edited message')
+            //     // newMessage.append('file', blobToFile)
+
+            //     const toDataURL = url => fetch(url)
+            //         .then(response => response.blob())
+            //         .then(blob => new Promise((resolve, reject) => {
+            //             const reader = new FileReader()
+            //             reader.onloadend = () => resolve(reader.result)
+            //             reader.onerror = reject
+            //             reader.readAsDataURL(blob)
+            //         }))
+
+            //     const dataURLtoFile = (dataurl, filename) => {
+            //         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            //             bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            //         while (n--) {
+            //             u8arr[n] = bstr.charCodeAt(n);
+            //         }
+            //         return new File([u8arr], filename, { type: 'image/jpeg' });
+            //     }
+
+            //     toDataURL(url)
+            //         .then(dataUrl => {
+            //             console.log('Here is Base64 Url', dataUrl)
+            //             var fileData = dataURLtoFile(dataUrl, `${editedMessage.messageInfo.content.originalName}`);
+            //             console.log("Here is JavaScript File Object", fileData)
+            //             // fileArr.push(fileData)
+            //             newMessage.append('file', fileData)
+            //         })
+
+            // }
 
             let message = ''
             chatId
@@ -136,13 +196,11 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             setInput('')
             setFile(null)
             if (socket) {
-                console.log('socket is exist')
                 console.log('new message ::')
                 newMessage.forEach(item => console.log(item))
                 chatId && !isEdit && socket.emit('sendMessage', chatId, message)
                 chatId && isForward && !isEdit && socket.emit('forwardMessage', chatId, forwardMessageIds)
-                chatId && !isForward && isEdit && socket.emit('editMessage', chatId, message, editedMessage._id)
-                console.log('chatMessages after edit message', chatMessages)
+                // chatId && !isForward && isEdit && socket.emit('editMessage', chatId, message, editedMessage._id)
             }
             dispatch(setFirstChat(false))
             showReply && dispatch(setShowReply(false))
@@ -153,6 +211,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             isForward && dispatch(removeSelectedMessagesMainIds([]))
             isForward && dispatch(removeSelectMessage([]))
 
+            isEdit && dispatch(removeSelectMessage([]))
             isEdit && dispatch(setIsEdit(false))
 
 
@@ -200,6 +259,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                         <RiSendPlaneFill onClick={sendHandler} className='cursor-pointer dark:text-[#2563eb]' />
                     </div> */}
                 </div>
+                <img src="" ref={img} alt="" />
             </div>
         </div>
 
