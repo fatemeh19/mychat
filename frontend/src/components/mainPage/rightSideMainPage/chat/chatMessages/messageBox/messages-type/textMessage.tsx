@@ -35,8 +35,11 @@ const TextMessage = ({ dir, msg, messageBoxRef, sender }: { dir: string, msg: re
                     <p className="break-all whitespace-pre-line text-sm ">
                         {msg.messageInfo.content.text}
                     </p>
-                    <div className={`w-20 h-2 relative ${msg.pinStat.pinned ? 'w-24' : ''} `}>
+                    <div className={`w-20 h-2 relative ${msg.pinStat.pinned ? 'w-24' : ''} ${msg.messageInfo.edited ? 'w-28' : ''} `}>
                         <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
+                            {
+                                msg.messageInfo.edited && <p className="text-xs pr-1">edited</p>
+                            }
                             {
                                 msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
                             }

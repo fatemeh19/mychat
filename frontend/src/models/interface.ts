@@ -23,6 +23,7 @@ interface recievedMessageInterface {
             originalName?: string,
         },
         senderId: string,
+        edited: boolean,
         reply: {
             isReplied: boolean,
             messageId: string
