@@ -12,11 +12,12 @@ import * as Validators from "../validators/index.js";
 import * as fileController from "../utils/file.js";
 import { object } from "yup";
 import { objectId } from "../utils/typeConverter.js";
+import fileCreator from "../utils/fileCreator.js";
 const setInfo = async (req, res) => {
-  console.log(req.body);
   const {
     user: { userId },
     body: { name, phoneNumber, lastname, username },
+    file,
   } = req;
   // try {
   //   data =  setInfo.validate(req.body, {
@@ -35,18 +36,17 @@ const setInfo = async (req, res) => {
       Field: Fields.phoneNumber,
     });
   }
-
-  let url = consts.DEFAULT_PROFILE_PICTURE;
-
-  if (req.file) {
-    url = req.file.path;
+  let methodParameter = file? file:{
+    originalname: "default-profile",
+    mimetype: "image/jpg",
+    path: consts.DEFAULT_PROFILE_PICTURE,
   }
 
   const update = {
     name: name,
     phoneNumber: phoneNumber,
     lastname: lastname,
-    profilePic: url,
+    profilePic:file?file: await fileCreator(methodParameter),
     username: username ? username : undefined,
   };
   const updatedUser = await Services.findByIdAndUpdate("user", userId, update);
@@ -71,18 +71,28 @@ const getProfile = async (req, res) => {
     user: { userId },
   } = req;
 
-  const user = await Services.findOne(
-    "user",
-    { _id: userId },
+  const user = await Services.aggregate("user", [
+    { $match: { _id: await objectId(userId) } },
     {
-      name: 1,
-      lastname: 1,
-      phoneNumber: 1,
-      username: 1,
-      email: 1,
-      profilePic: 1,
-    }
-  );
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $project: {
+        name: 1,
+        lastname: 1,
+        phoneNumber: 1,
+        username: 1,
+        email: 1,
+        profilePic: 1,
+      },
+    },
+  ]);
   if (!user) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -95,7 +105,7 @@ const getProfile = async (req, res) => {
     statusCode: StatusCodes.OK,
     title: "ok",
     value: {
-      profile: user,
+      profile: user[0],
     },
   });
 };
@@ -103,21 +113,16 @@ const getProfile = async (req, res) => {
 const editProfile = async (req, res) => {
   const {
     user: { userId },
+    body,
   } = req;
-  console.log(req.body);
-  const User = await Services.findOne("user", { _id: userId });
 
   let data;
   try {
-    data = await Validators.editProfile.validate(req.body);
+    data = await Validators.editProfile.validate(body, {
+      stripUnknown: false,
+    });
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
-  if (req.file) {
-    if (User.profilePic != consts.DEFAULT_PROFILE_PICTURE) {
-      await fileController.deleteFile(User.profilePic);
-    }
-    data.profilePic = req.file.path;
   }
   const user = await Services.findAndUpdateBySave(
     "user",
@@ -166,14 +171,14 @@ const getUser = async (req, res) => {
 
 const blockUnblock = async (req, res) => {
   const {
-    body: { block,id },
+    body: { block, id },
     user: { userId },
   } = req;
   let updateOP;
   if (block) {
-    updateOP = '$push';
+    updateOP = "$push";
   } else {
-    updateOP = '$pull';
+    updateOP = "$pull";
   }
 
   const result = await Services.aggregate("user", [
@@ -206,6 +211,6 @@ const blockUnblock = async (req, res) => {
       new: true,
     }
   );
-  RH.SendResponse({res,statusCode:StatusCodes.OK,title:"ok"})
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 export { blockUnblock, setInfo, getProfile, editProfile, setStatus, getUser };

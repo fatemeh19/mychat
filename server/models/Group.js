@@ -25,7 +25,8 @@ const GroupChatSchema = new mongoose.Schema({
     required: true,
   },
   profilePic: {
-    type: String,
+    type:mongoose.Types.ObjectId,
+    ref:'File'
   },
   description: {
     type: String,

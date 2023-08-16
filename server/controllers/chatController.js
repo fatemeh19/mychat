@@ -13,6 +13,10 @@ import "../utils/loadEnv.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
 import indexFinder from "../utils/indexFinder.js";
 import { objectId } from "../utils/typeConverter.js";
+import fileTypeGetter from "../utils/fileTypeIdentifier.js";
+import fileCreator from "../utils/fileCreator.js";
+import * as consts from "../utils/consts.js";
+
 const createChat = async (req, res) => {
   const {
     body: body,
@@ -38,9 +42,15 @@ const createChat = async (req, res) => {
       });
     }
   } else {
-    if (file) {
-      data.profilePic = file.path;
-    }
+    let methodParameter = file
+      ? file
+      : {
+          originalname: "default-profile",
+          mimetype: "image/jpg",
+          path: consts.DEFAULT_PROFILE_PICTURE,
+        };
+    data.profilePic = await fileCreator(methodParameter);
+
     data.owner = userId;
     let primaryLink = {
       name: "primaryLink",
@@ -88,6 +98,9 @@ const getChat = async (req, res) => {
   } = req;
   const user = await Services.findOne("user", { _id: userId });
   const chat = await Services.findOne("chat", { _id: chatId });
+  if (chat.profilePic) {
+    chat.profilePic = await Services.findOne("file", { _id: chat.profilePic });
+  }
   let addedAt;
   user.chats.forEach((chat) => {
     if (chat.chatInfo.equals(chatId)) {
@@ -151,13 +164,25 @@ const getChats = async (req, res) => {
     user: { userId },
   } = req;
   const user = await Services.findOne("user", { _id: userId });
-  const chatIds = user.chats.map((chat) => chat.chatInfo);
-  const chats = await Services.findMany(
-    "chat",
-    { _id: { $in: chatIds } },
-    {},
-    { updatedAt: -1 }
-  );
+  let chatIds = user.chats.map((chat) => chat.chatInfo);
+  chatIds = await objectId(chatIds);
+  const chats = await Services.aggregate("chat", [
+    { $match: { _id: { $in: chatIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
   const messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
@@ -192,27 +217,6 @@ const getChats = async (req, res) => {
       index++;
     }
   });
-
-  // let index;
-  // let i = 0;
-  // let length = chats.length;
-  // for (index = 0; index < length; index++) {
-  //   if (messages[i].createdAt < addedAt) {
-  //     chat.messages.splice(index, 1);
-  //     index--;
-  //     length = chat.messages.length;
-  //     i++;
-  //     continue;
-  //   }
-  //   let messageIndex = indexFinder(
-  //     0,
-  //     messageIdss.length,
-  //     messageIdss,
-  //     chat.messages[index].messageInfo
-  //   );
-  //   chat.messages[index].messageInfo = messages[messageIndex];
-  //   i++;
-  // }
 
   await RH.SendResponse({
     res,
@@ -402,7 +406,7 @@ const deleteChat = async (req, res) => {
   res.send("ok");
 };
 
-const searchChat = async (userId,search) => {
+const searchChat = async (userId, search) => {
   // const {
   //   params: { search },
   //   user: { userId },
@@ -572,7 +576,7 @@ const searchChat = async (userId,search) => {
   //     chats.splice(index, 1);
   //   }
   // });
-  return chats
+  return chats;
   // RH.SendResponse({
   //   res,
   //   statusCode: StatusCodes.OK,

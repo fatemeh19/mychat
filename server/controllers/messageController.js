@@ -339,6 +339,18 @@ const searchMessage = async (chatId,search) => {
         as: "senderInfo",
       },
     },
+    {$unwind:"$senderInfo"},
+    
+    {
+      $lookup:{
+        from:"files",
+        localField:"senderInfo.profilePic",
+        foreignField:"_id",
+        as:"senderInfo.profilePic"
+      }
+
+    },
+    {$unwind:"senderInfo.profilePic"},
     {
       $project: {
         indexes: conditions,
@@ -378,14 +390,7 @@ const searchMessage = async (chatId,search) => {
   ]);
 
   return messages
-  // RH.SendResponse({
-  //   res,
-  //   statusCode: StatusCodes.OK,
-  //   title: "ok",
-  //   value: {
-  //     messages,
-  //   },
-  // });
+  
 };
 export {
   editMessage,

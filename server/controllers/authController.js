@@ -74,6 +74,7 @@ const verifyEmail = async (req, res) => {
   user.settingId = setting._id
   await user.save();
   setStatus({userId:user._id, online:false})
+  
   return RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,

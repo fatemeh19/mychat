@@ -42,7 +42,10 @@ const UserSchema = new mongoose.Schema(
       online: Boolean,
       lastseen: Date,
     },
-    profilePic: String,
+    profilePic: {
+      type:mongoose.Types.ObjectId,
+      ref:'File'
+    },
     isVerified: {
       type: Boolean,
       default: false,
