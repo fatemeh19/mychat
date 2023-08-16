@@ -11,18 +11,44 @@ interface member {
     joinedAt: string
 }
 
+interface userPermissionsInterface {
+    sendMessage: boolean,
+    sendMedia: {
+        photo: boolean,
+        videoMessage: boolean,
+        music: boolean,
+        file: boolean,
+        voice: boolean
+    },
+    addMember: boolean,
+    pinMessages: boolean,
+    changeGroupInfo: boolean
+}
+
+interface userExceptionsInterface {
+    userId: string,
+    restrictUntil: string,
+    specificTime: string,
+    permissions: userPermissionsInterface
+}
+
+interface userPermissionsAndExceptionsInterface {
+    permissions: userPermissionsInterface
+    exceptions: userExceptionsInterface[]
+}
+
 interface chatInterface {
     _id: string,
     name: string,
     profilePic: string,
-    adminsAndRights: [],
+    // adminsAndRights: [],
     chatType: string,
     members: member[],
     messages: recievedMessageInterface[],
     updatedAt: string,
     notifications: boolean,
     pinnedMessages: string[],
-    userPermissionsAndExceptions: [],
+    userPermissionsAndExceptions: userPermissionsAndExceptionsInterface,
     inviteLinks: string[],
     __v: number
 }
@@ -94,6 +120,9 @@ export const ChatSlice = createSlice({
         editMessage: (state, action: PayloadAction<{ index: number, message: any }>) => {
             state.Chat.messages[action.payload.index].messageInfo = action.payload.message
         },
+        setUsePermissionsAndExceptions: (state, action: PayloadAction<userPermissionsAndExceptionsInterface>) => {
+            state.Chat.userPermissionsAndExceptions = action.payload
+        },
     },
 });
 
@@ -112,6 +141,7 @@ export const {
     setGroupMembersInformation,
     addMemberToGroup,
     removeMemberFromGroup,
-    editMessage
+    editMessage,
+    setUsePermissionsAndExceptions
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
