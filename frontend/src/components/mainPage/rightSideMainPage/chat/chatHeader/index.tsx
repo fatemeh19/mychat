@@ -13,7 +13,7 @@ import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
 import { addSelectedMessagesMainIds, removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
-import { addMessage, updateArrayMessages } from '@/src/redux/features/chatSlice'
+import { addMessage, setIsEditChat, updateArrayMessages } from '@/src/redux/features/chatSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
 import findIndex from '@/src/helper/deleteMessage'
 import { recievedMessageInterface } from '@/src/models/interface'
@@ -25,7 +25,7 @@ import ChatListPopup from '@/src/components/basicComponents/chatListPopup'
 import PopUpMenu from '@/src/components/popUp/popUpMenu'
 import { BiSearch } from 'react-icons/bi'
 import { setIsSearch, setSearchType, setSearchedMessages } from '@/src/redux/features/searchSlice'
-import { SearchType } from '@/src/models/enum'
+import { ChatType, SearchType } from '@/src/models/enum'
 
 
 interface ChatHeaderProps {
@@ -56,7 +56,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
-    const isSearch = useAppSelector(state => state.search).isSearch
+    const chatType = useAppSelector(state => state.chat.Chat).chatType
+    const isEditChat = useAppSelector(state => state.chat).isEditChat
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -228,13 +229,22 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     open
                                         ? (
                                             <>
-                                                <CustomizedDialogs
-                                                    open={open}
-                                                    title={'User Info'}
-                                                    children={<ProfileInfo />}
-                                                    handelOpen={handelOpenDialog}
-                                                    ChildrenMore={<PopUpMenu />}
-                                                />
+                                                {
+                                                    isEditChat
+                                                        ? <CustomizedDialogs
+                                                            open={open}
+                                                            title={'Edit'}
+                                                            children={chatType === ChatType.group ? <button onClick={() => { dispatch(setIsEditChat(false)) }}> edit group chat </button> : <button onClick={() => { dispatch(setIsEditChat(false)) }}> edit private chat </button>}
+                                                            handelOpen={handelOpenDialog}
+                                                        />
+                                                        : <CustomizedDialogs
+                                                            open={open}
+                                                            title={'User Info'}
+                                                            children={<ProfileInfo />}
+                                                            handelOpen={handelOpenDialog}
+                                                            ChildrenMore={<PopUpMenu />}
+                                                        />
+                                                }
                                             </>
                                         )
                                         : null
