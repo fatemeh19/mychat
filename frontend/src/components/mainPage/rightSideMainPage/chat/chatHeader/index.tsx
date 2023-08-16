@@ -12,10 +12,8 @@ import { HiOutlineVideoCamera } from 'react-icons/hi'
 import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
-import { addSelectedMessagesMainIds, removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
-import { addMessage, setIsEditChat, updateArrayMessages } from '@/src/redux/features/chatSlice'
+import { removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
-import findIndex from '@/src/helper/deleteMessage'
 import { recievedMessageInterface } from '@/src/models/interface'
 import deleteMessage from '@/src/helper/deleteMessage'
 import PinnedMessage from './pinnedMessage'
@@ -39,6 +37,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const [open, setOpen] = useState<boolean>(false)
     const [forwardPopupOpen, setForwardPopupOpen] = useState(false)
 
+
     const [confirmInfo, setConfirmInfo] = useState({
         confirmTitle: '',
         confirmDiscription: '',
@@ -57,7 +56,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const chatType = useAppSelector(state => state.chat.Chat).chatType
-    const isEditChat = useAppSelector(state => state.chat).isEditChat
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -226,28 +224,13 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                             </div>
                             <>
                                 {
-                                    open
-                                        ? (
-                                            <>
-                                                {
-                                                    isEditChat
-                                                        ? <CustomizedDialogs
-                                                            open={open}
-                                                            title={'Edit'}
-                                                            children={chatType === ChatType.group ? <button onClick={() => { dispatch(setIsEditChat(false)) }}> edit group chat </button> : <button onClick={() => { dispatch(setIsEditChat(false)) }}> edit private chat </button>}
-                                                            handelOpen={handelOpenDialog}
-                                                        />
-                                                        : <CustomizedDialogs
-                                                            open={open}
-                                                            title={'User Info'}
-                                                            children={<ProfileInfo />}
-                                                            handelOpen={handelOpenDialog}
-                                                            ChildrenMore={<PopUpMenu />}
-                                                        />
-                                                }
-                                            </>
-                                        )
-                                        : null
+                                    open && <CustomizedDialogs
+                                        open={open}
+                                        title={chatType === ChatType.group ? 'Group Info' : 'User Info'}
+                                        children={<ProfileInfo />}
+                                        handelOpen={handelOpenDialog}
+                                        ChildrenMore={<PopUpMenu />}
+                                    />
                                 }
                             </>
                         </div>

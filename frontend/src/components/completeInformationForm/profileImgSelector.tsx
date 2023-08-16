@@ -1,17 +1,23 @@
 'use client'
-import { Dispatch, FC, SetStateAction, createRef, useContext } from "react";
+import { Dispatch, FC, SetStateAction, createRef, useContext, useEffect } from "react";
 import { HiOutlinePlus } from 'react-icons/hi'
 
 
 interface profileImgSelector {
     setImage: Dispatch<SetStateAction<string>>,
-    styleClassName?: string
+    styleClassName?: string,
+    chatProfilePicName?: any
 }
 
-const ProfileImgSelector: FC<profileImgSelector> = ({ setImage, styleClassName }) => {
+const ProfileImgSelector: FC<profileImgSelector> = ({ chatProfilePicName, setImage, styleClassName }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
+
+    useEffect(() => {
+        // @ts-ignore
+        profileImg.current.src = `/uploads/photo/${chatProfilePicName}`
+    }, [chatProfilePicName])
 
     const changeHandler = (e: any) => {
         // @ts-ignore
@@ -58,7 +64,7 @@ const ProfileImgSelector: FC<profileImgSelector> = ({ setImage, styleClassName }
                 `}
             `}>
                 <img
-                    src=""
+                    src=''
                     ref={profileImg}
                     alt=""
                     className="

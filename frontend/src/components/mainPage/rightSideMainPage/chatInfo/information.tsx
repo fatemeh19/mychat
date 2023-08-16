@@ -9,7 +9,6 @@ interface InformatinProps {
 const Informatin: FC<InformatinProps> = () => {
 
     const contact = useAppSelector(state => state.userContact).Contact
-    // console.log('user from redux : ', User)
 
     const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
 
