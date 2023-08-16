@@ -3,22 +3,30 @@
 import { useAppSelector } from '@/src/redux/hooks';
 import Image from 'next/image';
 import { FC, useEffect, useRef, MouseEvent } from 'react'
+import { BiCheck } from 'react-icons/bi';
 import { PiFolderSimplePlus, PiPushPinBold, PiSelection } from 'react-icons/pi'
+import { RiUnpinLine } from 'react-icons/ri';
 import style from './style.module.css'
 import { useOnClickOutside } from './useOnClickOutside';
 
 interface ChatRightClickProps {
     x: number,
     y: number,
+    chatId: string,
+    chatPin: boolean,
     closeContextMenu: () => void,
     showConfirmModal: (title: string, folderId: string) => void,
+    showConfirmModalPin: (title: string) => void,
 }
 
 const ChatRightClick: FC<ChatRightClickProps> = ({
     x,
     y,
+    chatId,
+    chatPin,
     closeContextMenu,
-    showConfirmModal
+    showConfirmModal,
+    showConfirmModalPin
 }) => {
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
@@ -90,10 +98,14 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
                 <div className={`${style.content}`}>
                     <ul className={`${style.menu}`}>
                         <li className={`${style.item}`}
-                        // onClick={() => }
+                            onClick={() => showConfirmModalPin('Pin/UnPin')}
                         >
-                            <PiPushPinBold className={`${style.icon}`} />
-                            <span>Pin</span>
+                            {chatPin ? <RiUnpinLine /> :
+                                <PiPushPinBold className={`${style.icon}`} />
+                            }
+                            <span>{
+                                chatPin ? 'UnPin' : 'Pin'
+                            }</span>
                         </li>
 
                         <li className={`${style.item} ${style.extend}`}>
@@ -106,8 +118,15 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
                                         {folders.map((folder) => (
 
                                             <li key={folder._id}
-                                                onClick={() => showConfirmModal('Add', folder._id)}
+                                                onClick={() => showConfirmModal('Add/Remove', folder._id)}
                                                 className={`${style.item}`}>
+                                                {
+                                                    folder.chats.map(chat => (
+                                                        chat.chatInfo == chatId ?
+                                                            <BiCheck className='' />
+                                                            : null
+                                                    ))
+                                                }
                                                 <span>{folder.name}</span>
                                             </li>
                                         )
