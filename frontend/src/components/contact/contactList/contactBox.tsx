@@ -33,11 +33,12 @@ const ContactBox: FC<ContactBoxProps> = ({
     selectMember,
 }) => {
     const dispatch = useAppDispatch()
-    const [online , setOnline] = useState(contact.status?.online)
-    const [lastSeen , setLastSeen] = useState(contact.status?.lastseen)
+    const [online, setOnline] = useState(contact.status?.online)
+    const [lastSeen, setLastSeen] = useState(contact.status?.lastseen)
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
-    const chatList = useAppSelector(state => state.userChatList).chatList
+    // change chatList to folderChatList state bc i add chats in this state 
+    const chatList = useAppSelector(state => state.userChatList).folderChatList
 
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
@@ -101,8 +102,8 @@ const ContactBox: FC<ContactBoxProps> = ({
                 <p className="status text-xs ">
                     {online ?
 
-                       <span className="text-sky-500">Online</span> 
-                        : <span className="text-gray-500">{lastSeen? (new Date(lastSeen).getHours() +':' + new Date(lastSeen).getMinutes()) : ''}</span>
+                        <span className="text-sky-500">Online</span>
+                        : <span className="text-gray-500">{lastSeen ? (new Date(lastSeen).getHours() + ':' + new Date(lastSeen).getMinutes()) : ''}</span>
                     }
                 </p>
             </div>

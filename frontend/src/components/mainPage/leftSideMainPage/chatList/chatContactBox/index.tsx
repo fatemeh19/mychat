@@ -56,7 +56,8 @@ const ChatContactBox: FC<chatContactProps> = ({
     const [online, setOnline] = useState(status?.online)
     const [chatOpenned, setChatOpenned] = useState(chatOpennedP)
     const socket = useAppSelector(state => state.socket).Socket
-    const chatList = useAppSelector(state => state.userChatList).chatList
+    // change chatList to folderChatList state bc i add chats in this state 
+    const chatList = useAppSelector(state => state.userChatList).folderChatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const [lastMesText, setLastMesText] = useState(lastMessage)
     const [lastMesTime, setLastMesTime] = useState(lastMessageTime)
