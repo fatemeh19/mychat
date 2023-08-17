@@ -16,17 +16,24 @@ const PermissionOptions: FC<PermissionOptionsProps> = ({ permissions, setPermiss
             <h1 className="text-blue-500 font-semibold">What can members of this group do?</h1>
             <ul className="flex flex-col w-full">
                 <Toggle id="sendMessage" text={'Send messages'} toggle={permissions.sendMessage}
-                // @ts-ignore
-                // dispatchHandler={() => setPermissions(prevState => {
-                //     let jasper = Object.assign({}, prevState);  // creating copy of state variable jasper
-                //     jasper.sendMessage = false;                     // update the name property, assign a new value                 
-                //     return { jasper };                                 // return new object jasper object
-                // })} 
+                    dispatchHandler={() => setPermissions(prevState => ({ ...prevState, sendMessage: !permissions.sendMessage }))}
                 />
-                <Toggle id="sendMessage" text={'Send media 9/9 > '} toggle={permissions.sendMessage} />
-                <Toggle id="sendMessage" text={'Add members'} toggle={permissions.sendMessage} />
-                <Toggle id="sendMessage" text={'Pin messages'} toggle={permissions.sendMessage} />
-                <Toggle id="sendMessage" text={'Change group info'} toggle={permissions.sendMessage} />
+                <Toggle id="sendMedia" text={'Send media 9/9 > '} toggle={permissions.sendMedia.all}
+                    dispatchHandler={() => setPermissions(prevState => {
+                        if (prevState.sendMedia.all === true) return { ...prevState, sendMedia: { all: !prevState.sendMedia.all, file: false, music: false, photo: false, videoMessage: false, voice: false } }
+                        else
+                            return { ...prevState, sendMedia: { all: !prevState.sendMedia.all, file: true, music: true, photo: true, videoMessage: true, voice: true } }
+                    })}
+                />
+                <Toggle id="addMember" text={'Add member'} toggle={permissions.addMember}
+                    dispatchHandler={() => setPermissions(prevState => ({ ...prevState, addMember: !permissions.addMember }))}
+                />
+                <Toggle id="pinMessages" text={'Pin messages'} toggle={permissions.pinMessages}
+                    dispatchHandler={() => setPermissions(prevState => ({ ...prevState, pinMessages: !permissions.pinMessages }))}
+                />
+                <Toggle id="changeGroupInfo" text={'Change group info'} toggle={permissions.changeGroupInfo}
+                    dispatchHandler={() => setPermissions(prevState => ({ ...prevState, changeGroupInfo: !permissions.changeGroupInfo }))}
+                />
             </ul>
         </div>
     );

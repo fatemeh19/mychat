@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import PopUpBtns from "../../../popUpBtns";
 import { useAppDispatch } from "@/src/redux/hooks";
 import { setIsEditChat, userPermissionsInterface } from "@/src/redux/features/chatSlice";
@@ -15,6 +15,7 @@ const Permissions: FC<PermissionsProps> = () => {
     const [permissions, setPermissions] = useState<userPermissionsInterface>({
         sendMessage: true,
         sendMedia: {
+            all: true,
             photo: true,
             videoMessage: true,
             music: true,
@@ -29,6 +30,9 @@ const Permissions: FC<PermissionsProps> = () => {
     const dispatch = useAppDispatch()
 
 
+    useEffect(() => {
+        console.log('permissions : ', permissions)
+    }, [permissions])
 
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 mb-[50px]">

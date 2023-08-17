@@ -14,6 +14,7 @@ interface member {
 export interface userPermissionsInterface {
     sendMessage: boolean,
     sendMedia: {
+        all: boolean,
         photo: boolean,
         videoMessage: boolean,
         music: boolean,
