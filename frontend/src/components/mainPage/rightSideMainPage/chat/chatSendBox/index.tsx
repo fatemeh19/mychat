@@ -234,6 +234,36 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         }
     }
+    const chat = useAppSelector(state => state.chat.Chat)
+    const chatFetched = useAppSelector(state => state.chat).chatFetched
+    const sendMediaRef = useRef<HTMLDivElement>(null)
+    const sendFilesRef = useRef<HTMLDivElement>(null)
+    const sendVoiceRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        // chatFetched : add this because before chat fetched this code runs and make error by userPermission undefined
+        if (chatFetched === true) {
+            const permissions = chat.userPermissionsAndExceptions.permissions
+            if (permissions) {
+                console.log('there is permitssions')
+                // ** بعد از اینکه فاطمه all رو اضافه کرد این قسمت باید از کامنت در بیاد
+                // !permissions.sendMedia.all
+                // @ts-ignore
+                // ? sendMediaRef.current.style.display = 'none'
+                // @ts-ignore
+                // : sendMediaRef.current.style.display = 'flex'
+                !permissions.sendMedia.photo || !permissions.sendMedia.music || !permissions.sendMedia.videoMessage || !permissions.sendMedia.file
+                    // @ts-ignore
+                    ? sendFilesRef.current.style.display = 'none'
+                    // @ts-ignore
+                    : sendFilesRef.current.style.display = 'flex'
+                !permissions.sendMedia.voice
+                    // @ts-ignore
+                    ? sendVoiceRef.current.style.display = 'none'
+                    // @ts-ignore
+                    : sendVoiceRef.current.style.display = 'flex'
+            }
+        }
+    }, [chatFetched ? chat : chatFetched])
 
     return (
         <div className='w-full relative'>
@@ -242,10 +272,14 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 <div className="w-full col-span-1 bg-[#f5f5f5] flex rounded-md p-3 items-center dark:bg-bgColorDark3">
                     <ChatInput sendHandler={sendHandler} input={input} setInput={setInput} />
                     <input type="file" ref={fileRef} onChange={attachmentHandler} hidden />
-                    <div className="icons flex text-md gap-2 mr-3 text-gray-500">
-                        <ImAttachment className='cursor-pointer' onClick={() => fileRef.current?.click()} />
+                    <div ref={sendMediaRef} className="icons flex text-md gap-2 mr-3 text-gray-500">
+                        <div ref={sendFilesRef}>
+                            <ImAttachment className='cursor-pointer' onClick={() => fileRef.current?.click()} />
+                        </div>
+                        <div ref={sendVoiceRef}>
+                            <VoiceRecord sendHandler={sendHandler} voice={voice} setVoice={setVoice} />
+                        </div>
                         {/* <FiMic className='cursor-pointer' /> */}
-                        <VoiceRecord sendHandler={sendHandler} voice={voice} setVoice={setVoice} />
                     </div>
                     {!isEdit
                         ? <div className="sendIcons border-l-2 border-gray-400 pl-3 text-xl">
@@ -255,22 +289,10 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                             <BsCheck className="text-white w-5 h-5" />
                         </button>
                     }
-                    {/* <div className="sendIcons border-l-2 border-gray-400 pl-3 text-xl">
-                        <RiSendPlaneFill onClick={sendHandler} className='cursor-pointer dark:text-[#2563eb]' />
-                    </div> */}
                 </div>
                 <img src="" ref={img} alt="" />
             </div>
         </div>
-
-        // {!isEdit
-        //     ? <div className="righ cursor-pointer" onClick={() => { dispatch(setShowReply(false)); dispatch(setIsForward(false)) }}>
-        //         <GrClose />
-        //     </div>
-        //     : <button className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-        //         <BsCheck className="text-white" />
-        //     </button>
-        // }
     )
 }
 export default ChatSendBox;

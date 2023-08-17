@@ -6,7 +6,7 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat, getGroupMembers } from "@/src/helper/useAxiosRequests"
-import { addMessage, addPinMessage, deleteMessageFromPinnedMessagesArray, editMessage, setChatCreated, setGroupMembersInformation, setPinState, updateArrayMessages } from "@/src/redux/features/chatSlice"
+import { addMessage, addPinMessage, deleteMessageFromPinnedMessagesArray, editMessage, setChatCreated, setChatFetched, setGroupMembersInformation, setPinState, updateArrayMessages } from "@/src/redux/features/chatSlice"
 import findIndex from "@/src/helper/findIndex"
 import { recievedMessageInterface } from "@/src/models/interface"
 import deleteMessage from "@/src/helper/deleteMessage"
@@ -51,12 +51,12 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     useEffect(() => {
         found = false
+        dispatch(setChatFetched(false))
         chatList.map(async cl => {
             if (cl._id === contactId) {
                 fetchChat(cl._id, dispatch)
                 dispatch(setChatCreated(true))
                 found = true
-
 
                 if (cl._id === contactId) {
                     // mean : chatType = group => useContact not found so chatInfo is place in it
@@ -67,8 +67,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                         }
                         // get group members information
                         const members = await getGroupMembers(cl._id, dispatch)
-                        console.log('members array : ', members)
-                        console.log('chatMessages in rightSide useEffect', chatMessages)
                         dispatch(addUserContact(userContact))
                         dispatch(setGroupMembersInformation(members))
                     } else { // mean: chatType = private => just get contact info
@@ -86,14 +84,11 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     }, [contactId, chatList])
 
     useEffect(() => {
-        console.log('clg chatMessages : ', chatMessages)
         socket?.on('sendMessage', (message) => {
             console.log('reply message send message : ', message)
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
-            console.log('chatMessages in delete socket: ', chatMessages)
-
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             for (let i = 0; i < data.messageIds.length; i++) {
                 deleteMessage(0, chatMessageIds.length, chatMessageIds, data.messageIds[i], dispatch)
@@ -115,26 +110,19 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
         })
         socket.on('forwardMessage', (forwardInfo) => {
-            console.log('forwardInfo:', forwardInfo)
             forwardInfo.map((fm: recievedMessageInterface) => {
                 dispatch(addMessage(fm))
 
             })
         })
         socket.on('editMessage', (message, subId) => {
-            console.log('message:', message)
-            console.log('subId:', subId)
-            console.log('chatMessages: ', chatMessages)
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
             const index = findIndex(0, chatMessageIds.length, chatMessageIds, subId)
-            console.log('index: ', index)
-            console.log('chatMessages[index]: ', chatMessages[index])
-
             dispatch(editMessage({ index, message }))
         })
 
         socket.on('deleteChat', deleteInfo => {
-            router.push('/chat  ')
+            router.push('/chat')
         })
         return () => {
             socket.removeAllListeners('sendMessage')

@@ -13,32 +13,28 @@ interface PermissionsProps {
 
 const Permissions: FC<PermissionsProps> = () => {
 
-    const [permissions, setPermissions] = useState<userPermissionsInterface>({
-        sendMessage: true,
-        sendMedia: {
-            all: true,
-            photo: true,
-            videoMessage: true,
-            music: true,
-            file: true,
-            voice: true
-        },
-        addMember: true,
-        pinMessages: true,
-        changeGroupInfo: true
-    })
+    const groupPermissions = useAppSelector(state => state.chat.Chat.userPermissionsAndExceptions).permissions
+
+    // const [permissions, setPermissions] = useState<userPermissionsInterface>({
+    //     sendMessage: true,
+    //     sendMedia: {
+    //         all: true,
+    //         photo: true,
+    //         videoMessage: true,
+    //         music: true,
+    //         file: true,
+    //         voice: true
+    //     },
+    //     addMember: true,
+    //     pinMessages: true,
+    //     changeGroupInfo: true
+    // })
+    const [permissions, setPermissions] = useState<userPermissionsInterface>(groupPermissions)
 
     const dispatch = useAppDispatch()
     const chatId = useAppSelector(state => state.chat.Chat)._id
 
-    useEffect(() => {
-        console.log('permissions : ', permissions)
-    }, [permissions])
-
-
     const savePermissionsHandler = () => {
-        console.log('save permissions!')
-        console.log('permissions : ', permissions)
         editGroupPermissions(chatId, permissions)
         dispatch(setUserPermissionsAndExceptions({ permissions: permissions, exceptions: [] }))
 

@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setChatFetched, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -18,12 +18,10 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
         res = await callApi().get(`/main/chat/${chatId}`, config)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
-            setFirstChat(false)
             dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
             dispatch(addChat(Chat))
-            // console.log('Chat in fetch Chat: ', Chat)
-            // save Chat in redux
+            dispatch(setChatFetched(true))
             return res.data.value.chat._id
         }
 

@@ -12,3 +12,6 @@ becase rightClick should positioned base on main html
 if found chat => getChat
 if not found chat => getContact and save it in userContact and use it for show information 
 then when send first message and chat create push to chat/chatId and reGet all chats => (rightSideMainPage reload because chatId in url and chatList change)
+
+# send media permition
+need some repair later becase for send file i have just one button and if photo is not allowed i just remove the button and then music and other files is become not allowed and this is not currect sooooooo it should be repair : click on button -> open a window contain file btn photo btn music btn and ...

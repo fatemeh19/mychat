@@ -59,7 +59,8 @@ interface initialStateInterface {
     firstChat: boolean,
     chatCreated: boolean,
     groupMembers: groupMemberInterface[],
-    isEditChat: boolean
+    isEditChat: boolean,
+    chatFetched: boolean
 }
 
 const initialState = {
@@ -67,7 +68,8 @@ const initialState = {
     chatType: ChatType.private,
     firstChat: true,
     chatCreated: false,
-    isEditChat: false
+    isEditChat: false,
+    chatFetched: false
 } as initialStateInterface
 
 export const ChatSlice = createSlice({
@@ -129,6 +131,9 @@ export const ChatSlice = createSlice({
         setUserPermissionsAndExceptions: (state, action: PayloadAction<userPermissionsAndExceptionsInterface>) => {
             state.Chat.userPermissionsAndExceptions = action.payload
         },
+        setChatFetched: (state, action: PayloadAction<boolean>) => {
+            state.chatFetched = action.payload
+        },
     },
 });
 
@@ -150,5 +155,6 @@ export const {
     editMessage,
     setIsEditChat,
     setUserPermissionsAndExceptions,
+    setChatFetched
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
