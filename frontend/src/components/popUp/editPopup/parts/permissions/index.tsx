@@ -1,11 +1,12 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import PopUpBtns from "../../../popUpBtns";
-import { useAppDispatch } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setIsEditChat, setUserPermissionsAndExceptions, userPermissionsInterface } from "@/src/redux/features/chatSlice";
 import { setOpenExceptions, setOpenPermissions } from "@/src/redux/features/openSlice";
 import PermissionOptions from "./permissionOptions";
 import PermissionExceptions from "./Exceptions/permissionsExceptions";
 import { LuKey } from "react-icons/lu";
+import { editGroupPermissions } from "@/src/helper/useAxiosRequests";
 
 interface PermissionsProps {
 }
@@ -28,7 +29,7 @@ const Permissions: FC<PermissionsProps> = () => {
     })
 
     const dispatch = useAppDispatch()
-
+    const chatId = useAppSelector(state => state.chat.Chat)._id
 
     useEffect(() => {
         console.log('permissions : ', permissions)
@@ -38,7 +39,11 @@ const Permissions: FC<PermissionsProps> = () => {
     const savePermissionsHandler = () => {
         console.log('save permissions!')
         console.log('permissions : ', permissions)
+        editGroupPermissions(chatId, permissions)
         dispatch(setUserPermissionsAndExceptions({ permissions: permissions, exceptions: [] }))
+
+        dispatch(setOpenPermissions(false))
+        dispatch(setIsEditChat(true))
     }
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 mb-[50px]">

@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -138,5 +138,18 @@ export const editMessage = async (id: string, editedMessage: any, dispatch: any)
         // dispatch(removeMemberFromGroup(memberIndex))
     } catch (error) {
         console.log('edit message error: ', error)
+    }
+}
+
+export const editGroupPermissions = async (chatId: string, permissions: userPermissionsInterface) => {
+    try {
+        const data = {
+            permissions,
+            exceptions: []
+        }
+        const res = await callApi().patch(`/main/chat/group/editGroupPermissions/${chatId}`, data, config)
+        console.log('edit group permissions res : ', res)
+    } catch (error) {
+        console.log('edit group permissions error : ', error)
     }
 }
