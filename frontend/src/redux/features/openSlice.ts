@@ -4,13 +4,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface initialStateInterface {
     openChat: boolean,
     openPinSectin: boolean,
-    openPermissions: boolean
+    openPermissions: boolean,
+    openExceptions: boolean
 }
 
 const initialState = {
     openChat: false,
     openPinSectin: false,
-    openPermissions: false
+    openPermissions: false,
+    openExceptions: false
 } as initialStateInterface
 
 export const OpenSlice = createSlice({
@@ -26,12 +28,16 @@ export const OpenSlice = createSlice({
         setOpenPermissions: (state, action: PayloadAction<boolean>) => {
             state.openPermissions = action.payload
         },
+        setOpenExceptions: (state, action: PayloadAction<boolean>) => {
+            state.openExceptions = action.payload
+        }
     },
 });
 
 export const {
     setOpenChat,
     setOpenPinSection,
-    setOpenPermissions
+    setOpenPermissions,
+    setOpenExceptions
 } = OpenSlice.actions;
 export default OpenSlice.reducer;

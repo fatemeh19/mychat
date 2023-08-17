@@ -11,7 +11,7 @@ interface member {
     joinedAt: string
 }
 
-interface userPermissionsInterface {
+export interface userPermissionsInterface {
     sendMessage: boolean,
     sendMedia: {
         photo: boolean,
@@ -25,7 +25,7 @@ interface userPermissionsInterface {
     changeGroupInfo: boolean
 }
 
-interface userExceptionsInterface {
+export interface userExceptionsInterface {
     userId: string,
     restrictUntil: string,
     specificTime: string,
