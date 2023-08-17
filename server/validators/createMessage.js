@@ -6,7 +6,7 @@ const createMessage = yup.object({
         // contentType:yup.string().oneOf(messageType,'EnumError').required('EmptyError'),
         text:yup.string()
     }),
-    senderId:yup.string().required('EmptyError'),
+    // senderId:yup.string().required('EmptyError'),
     reply:yup.object({
         isReplied:yup.boolean(),
         messageId:yup.string().when("isReplied",{

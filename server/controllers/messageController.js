@@ -13,6 +13,7 @@ const createMessage = async (req, res) => {
   const {
     params: { chatId },
     body: message,
+    user:{userId},
     file,
   } = req;
   console.log(file);
@@ -30,7 +31,7 @@ const createMessage = async (req, res) => {
       url: url,
       originalName,
     },
-    senderId: message.senderId,
+    senderId: userId,
   };
 
   let data;
