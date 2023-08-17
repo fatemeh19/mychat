@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import PopUpBtns from "../../../popUpBtns";
 import { useAppDispatch } from "@/src/redux/hooks";
-import { setIsEditChat, userPermissionsInterface } from "@/src/redux/features/chatSlice";
+import { setIsEditChat, setUserPermissionsAndExceptions, userPermissionsInterface } from "@/src/redux/features/chatSlice";
 import { setOpenExceptions, setOpenPermissions } from "@/src/redux/features/openSlice";
 import PermissionOptions from "./permissionOptions";
 import PermissionExceptions from "./Exceptions/permissionsExceptions";
@@ -34,6 +34,12 @@ const Permissions: FC<PermissionsProps> = () => {
         console.log('permissions : ', permissions)
     }, [permissions])
 
+
+    const savePermissionsHandler = () => {
+        console.log('save permissions!')
+        console.log('permissions : ', permissions)
+        dispatch(setUserPermissionsAndExceptions({ permissions: permissions, exceptions: [] }))
+    }
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 mb-[50px]">
             <div className="gap-3 flex flex-col ">
@@ -55,7 +61,7 @@ const Permissions: FC<PermissionsProps> = () => {
                     id2="save"
                     name2="save"
                     onClickHandler1={() => { dispatch(setOpenPermissions(false)); dispatch(setIsEditChat(true)) }}
-                    onClickHandler2={() => { console.log('save permissions!') }}
+                    onClickHandler2={savePermissionsHandler}
                     btnContainerClassName={'flex justify-end gap-5'}
                 />
             </div>

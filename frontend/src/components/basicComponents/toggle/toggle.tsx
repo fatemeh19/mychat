@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import style from './toggle.module.css'
 import { useAppDispatch } from "@/src/redux/hooks";
 import { setToggle } from "@/src/redux/features/toggleSlice";
@@ -8,10 +8,12 @@ interface ToggleProps {
     text: string,
     toggle: boolean,
     dispatchHandler?: () => void,
-    textClassName?: string
+    textClassName?: string,
+    state?: boolean,
+    setState?: Dispatch<SetStateAction<boolean>>
 }
 
-const Toggle: FC<ToggleProps> = ({ id, text, toggle, textClassName, dispatchHandler }) => {
+const Toggle: FC<ToggleProps> = ({ id, text, toggle, textClassName, dispatchHandler, state, setState }) => {
 
     const dispatch = useAppDispatch()
 
@@ -23,7 +25,7 @@ const Toggle: FC<ToggleProps> = ({ id, text, toggle, textClassName, dispatchHand
 
     return (
         <div className={`${style.container}`}>
-            <h4 className={`${style.h4} ${textClassName ?? ''}`}>{text}</h4>
+            <h4 className={`${style.h4} ${textClassName ?? ''}`} onClick={() => setState && setState(!state)} >{text}</h4>
             <input className={`${style.tgl} ${style.tgl_ios}`} id={id} type="checkbox" onChange={inputHandler} checked={toggle} />
             <label className={`${style.tgl_btn}`} htmlFor={id}></label>
         </div>

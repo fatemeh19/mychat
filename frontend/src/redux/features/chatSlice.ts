@@ -126,7 +126,7 @@ export const ChatSlice = createSlice({
         setIsEditChat: (state, action: PayloadAction<boolean>) => {
             state.isEditChat = action.payload
         },
-        setUsePermissionsAndExceptions: (state, action: PayloadAction<userPermissionsAndExceptionsInterface>) => {
+        setUserPermissionsAndExceptions: (state, action: PayloadAction<userPermissionsAndExceptionsInterface>) => {
             state.Chat.userPermissionsAndExceptions = action.payload
         },
     },
@@ -149,6 +149,6 @@ export const {
     removeMemberFromGroup,
     editMessage,
     setIsEditChat,
-    setUsePermissionsAndExceptions,
+    setUserPermissionsAndExceptions,
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
