@@ -3,6 +3,7 @@
 import ConfirmModal from "@/src/components/basicComponents/confirmModal";
 import ChatRightClick from "@/src/components/rightClick/chatRightClick";
 import callApi from "@/src/helper/callApi";
+import { checkChatPinOrUnpin, handler } from "@/src/helper/chatBoxFunctions";
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { addFoldersList, folderInterface } from "@/src/redux/features/folderSlice";
 import { setOpenChat } from "@/src/redux/features/openSlice";
@@ -29,7 +30,7 @@ interface chatContactProps {
     ContactName: string,
     chatOpennedP?: Boolean,
     profilePicName: string,
-    contactId?: string,
+    contactId: string,
     chatbox?: any,
     popup: boolean
 }
@@ -56,12 +57,14 @@ const ChatContactBox: FC<chatContactProps> = ({
 }) => {
     const dispatch = useAppDispatch()
     const [online, setOnline] = useState(status?.online)
-    const [chatOpenned, setChatOpenned] = useState(chatOpennedP)
+    // const [chatOpenned, setChatOpenned] = useState(chatOpennedP)
     const socket = useAppSelector(state => state.socket).Socket
     // change chatList to folderChatList state bc i add chats in this state 
     const chatList = useAppSelector(state => state.userChatList).folderChatList
+    const folderIdInPin = useAppSelector(state => state.userChatList).folderId
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
     const folders = useAppSelector(state => state.folders).folders
+    const User = useAppSelector(state => state.userInfo).User
     const [lastMesText, setLastMesText] = useState(lastMessage)
     const [lastMesTime, setLastMesTime] = useState(lastMessageTime)
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
@@ -75,7 +78,12 @@ const ChatContactBox: FC<chatContactProps> = ({
         confirmDiscription: '',
         confirmTitle: ''
     })
-
+    const token = localStorage.getItem('token')
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
 
     const date = new Date(lastMesTime);
     const time = date.getHours() + ":" + date.getMinutes()
@@ -83,9 +91,9 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     useEffect(() => {
         // socket?.on('sendMessage', (message) => {
-        console.log('chatOpennedP : ', chatOpenned)
+        console.log('chatOpennedP : ', chatOpennedP)
         console.log('chatMessages : ', chatMessages)
-        if (chatOpenned && (chatMessages != undefined)) {
+        if (chatOpennedP && (chatMessages != undefined)) {
             if (chatMessages?.length > 0) {
                 // if(chatMessages[chatMessages?.length - 1].messageInfo.senderId==contactId){
 
@@ -124,7 +132,7 @@ const ChatContactBox: FC<chatContactProps> = ({
             }
         }
         // })
-    }, [chatMessages, chatOpenned])
+    }, [chatMessages, chatOpennedP])
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
             if (contactId == CId) {
@@ -139,26 +147,7 @@ const ChatContactBox: FC<chatContactProps> = ({
 
         });
     }, [socket, contactId])
-    const handler = () => {
 
-        for (let i = 0; i < chatList.length; i++) {
-            if (chatList[i].open) {
-                dispatch(openHandle(i))
-            }
-            if (chatList[i].chatInfo._id == contactId) {
-                dispatch(openHandle(i))
-                setChatOpenned(true)
-                dispatch(setChatOpenInList(true))
-                popup ? dispatch(setShowReply(true)) : null
-                popup ? dispatch(setActiveSelection(false)) : null
-                break
-            }
-            else if (chatList.length - 1 == i) {
-                dispatch(setChatOpenInList(false))
-
-            }
-        }
-    }
 
 
 
@@ -194,16 +183,63 @@ const ChatContactBox: FC<chatContactProps> = ({
         })
 
     }
-    const pinChat = () => {
+    const pinUnpinChat = async () => {
+        try {
+            let body = {
+                pin: checkChatPinOrUnpin(folders, User.pinnedChats, chatbox._id, folderIdInPin),
+                allChats: true,
+                folderId: ''
+            }
+            if (folderIdInPin != '') {
+                body.allChats = false
+                body.folderId = folderIdInPin
 
+            }
+
+            const res = await callApi().patch(`/main/chat/pinUnpin/${chatbox._id}`, body, config)
+            console.log('pinUnpin res : ', res)
+            if (res.status === 200) {
+                let filteredSelectedfolder: folderInterface[] = []
+                let userInfo;
+                if (body.pin) {
+                    if (folderIdInPin != '') {
+                        for (let i = 0; i < folders.length; i++) {
+                            filteredSelectedfolder.push(folders[i])
+                            if (folders[i]._id == folderIdInPin) {
+                                filteredSelectedfolder[i].pinnedChats.push(chatbox._id)
+                            }
+                        }
+                        dispatch(addFoldersList(filteredSelectedfolder))
+                    }
+                    else {
+                        userInfo = User;
+                        userInfo.pinnedChats.push(chatbox._id)
+                    }
+                }
+                else if (!body.pin) {
+                    if (folderIdInPin != '') {
+                        for (let i = 0; i < folders.length; i++) {
+                            filteredSelectedfolder.push(folders[i])
+                            if (folders[i]._id == folderId) {
+                                filteredSelectedfolder[i].pinnedChats.filter(chat => chat !== chatbox._id)
+                            }
+                        }
+                        dispatch(addFoldersList(filteredSelectedfolder))
+                    }
+                    else {
+                        userInfo = User;
+                        userInfo.pinnedChats.filter(chat => chat !== chatbox._id)
+                    }
+                }
+
+            }
+
+
+        } catch (error) {
+            console.log('error in catch text info : ', error)
+        }
     }
     const addOrRemoveChatToFolder = () => {
-        const token = localStorage.getItem('token')
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
         folders.map(async (folder) => {
             if (folder._id === folderId) {
                 let body = {
@@ -254,18 +290,17 @@ const ChatContactBox: FC<chatContactProps> = ({
     return (
 
         <div onContextMenuCapture={contaxtMenuHandler}
-            onClick={handler}
-            className={`container cursor-pointer w-full flex p-5 gap-5 container-chatbox hover:bg-gray-50 
+            onClick={() => handler(chatList, dispatch, contactId, popup)}
+            className={`container cursor-pointer w-full flex p-5 relative gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
         ${popup ? '' : 'tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center'} 
-        ${chatOpenned ? "bg-gray-50 dark:bg-[rgb(53,55,59)]" :
-                    (chatOpennedP ? "bg-gray-50 dark:bg-[rgb(132,153,196)]" : '')}`}>
+        ${chatOpennedP ? "bg-gray-50 dark:bg-[rgb(132,153,196)]" : ''}`}>
 
             {contextMenu.show && <ChatRightClick
                 x={contextMenu.x}
                 y={contextMenu.y}
                 chatId={chatbox._id}
-                chatPin={chatbox.pinned}
+                chatPin={checkChatPinOrUnpin(folders, User.pinnedChats, chatbox._id, folderIdInPin)}
                 closeContextMenu={closeContextMenu}
                 showConfirmModal={showConfirmModal}
                 showConfirmModalPin={showConfirmModalPin}
@@ -337,7 +372,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 </div>
             </div>
             <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={addOrRemoveChatToFolder} confirmInfo={confirmInfo} />
-            <ConfirmModal showConfirm={showConfirmPin} setShowConfirm={setShowConfirmPin} open={openPin} setOpen={setOpenPin} confirmHandler={pinChat} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirmPin} setShowConfirm={setShowConfirmPin} open={openPin} setOpen={setOpenPin} confirmHandler={pinUnpinChat} confirmInfo={confirmInfo} />
         </div>
 
     )

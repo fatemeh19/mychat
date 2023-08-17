@@ -16,6 +16,7 @@ import CreateGroup from "../../group/createGroup";
 import Folders from "../../Folders";
 import { fetchUserChatList, getFolderChats } from "@/src/helper/userInformation";
 import { setCloseFolders, setOpenFolder } from "@/src/redux/features/folderSlice";
+import { setFolderId } from "@/src/redux/features/userChatListSlice";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
@@ -23,7 +24,7 @@ export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol
         setOpen(true)
         dispatch(setCloseFolders())
         fetchUserChatList(dispatch)
-
+        dispatch(setFolderId(''))
     }
     return (
 
@@ -46,6 +47,7 @@ export function ShowFolder({ folder, setOpen }: { folder: any, setOpen: (bol: bo
         setOpen(false)
         if (folder.open == false) {
             dispatch(setOpenFolder(folder._id))
+            dispatch(setFolderId(folder._id))
         }
 
         getFolderChats(folder._id, dispatch, chatList)

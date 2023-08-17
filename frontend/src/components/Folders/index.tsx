@@ -15,6 +15,7 @@ import AddChats from "./addChats";
 import callApi from "@/src/helper/callApi";
 import { addFolder, addFoldersList, folderInterface } from "@/src/redux/features/folderSlice";
 import Image from "next/image";
+import { findChatInfo } from "@/src/helper/chatBoxFunctions";
 interface FoldersProps {
 
 }
@@ -107,19 +108,7 @@ const Folders: FC<FoldersProps> = ({
             console.log('error in catch text info : ', error)
         }
     }
-    const findChatInfo = () => {
-        setChatsInfo([])
-        for (let i = 0; i < chatIds.length; i++) {
-            for (let j = 0; j < chatList.length; j++) {
-                if (chatIds[i] === chatList[j]._id) {
-                    setChatsInfo(chatInfo => [...chatInfo, chatList[j]]);
-                    break;
-                }
-            }
-        }
 
-
-    }
     const deleteFolder = async (folderId: string) => {
 
         try {
@@ -164,7 +153,7 @@ const Folders: FC<FoldersProps> = ({
 
     useEffect(() => {
         console.log('chatIds : ', chatIds)
-        findChatInfo();
+        findChatInfo(setChatsInfo, chatList, chatIds);
     }, [chatIds])
 
     return (

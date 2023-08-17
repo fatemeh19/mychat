@@ -5,7 +5,8 @@ export interface UserInterface {
     phoneNumber: string,
     profilePic: string,
     email: string,
-    _id: string
+    _id: string,
+    pinnedChats: any[]
 }
 interface initialStateInterface {
     User: UserInterface

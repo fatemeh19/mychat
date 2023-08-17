@@ -35,56 +35,56 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
     useOnClickOutside(contextMenuRef, closeContextMenu)
 
     // set the contextMenu cordinate 
-    useEffect(() => {
-        let
-            winWidth = window.innerWidth,
-            winHeight = window.innerHeight,
-            // @ts-ignore
-            cmWidth = contextMenuRef.current.offsetWidth,
-            // @ts-ignore
-            cmHeight = contextMenuRef.current.offsetHeight
+    // useEffect(() => {
+    //     let
+    //         winWidth = window.innerWidth,
+    //         winHeight = window.innerHeight,
+    //         // @ts-ignore
+    //         cmWidth = contextMenuRef.current.offsetWidth,
+    //         // @ts-ignore
+    //         cmHeight = contextMenuRef.current.offsetHeight
 
-        const distWidth = winWidth - cmWidth
-        const distHeight = winHeight - cmHeight
+    //     const distWidth = winWidth - cmWidth
+    //     const distHeight = winHeight - cmHeight
 
-        console.log(x, distWidth)
-        console.log(y, distHeight)
+    //     console.log(x, distWidth)
+    //     console.log(y, distHeight)
 
-        // contextMenu position : 
-        // @ts-ignore
-        if (x > distWidth) {
-            // @ts-ignore
-            contextMenuRef.current.style.left = `${distWidth - 10}px`
-        }
+    //     // contextMenu position : 
+    //     // @ts-ignore
+    //     if (x > distWidth) {
+    //         // @ts-ignore
+    //         contextMenuRef.current.style.left = `${distWidth - 10}px`
+    //     }
 
-        if (y > distHeight) {
-            // @ts-ignore
-            contextMenuRef.current.style.top = `${distHeight - 90}px`
-        }
+    //     if (y > distHeight) {
+    //         // @ts-ignore
+    //         contextMenuRef.current.style.top = `${distHeight - 90}px`
+    //     }
 
-        // @ts-ignore
-        let hmWidth = hiddenScroll.current.offsetWidth
+    //     // @ts-ignore
+    //     let hmWidth = hiddenScroll.current.offsetWidth
 
-        const distHiddenWidth = winWidth - hmWidth
+    //     const distHiddenWidth = winWidth - hmWidth
 
-        // hiddenMenu position :
-        if (x + cmWidth > distHiddenWidth) {
-            // @ts-ignore
-            hiddenScroll.current.style.right = '116px'
-        } else {
-            // @ts-ignore
-            hiddenScroll.current.style.left = ''
-        }
+    //     // hiddenMenu position :
+    //     if (x + cmWidth > distHiddenWidth) {
+    //         // @ts-ignore
+    //         hiddenScroll.current.style.right = '116px'
+    //     } else {
+    //         // @ts-ignore
+    //         hiddenScroll.current.style.left = ''
+    //     }
 
 
 
-        // child?.classList.add('select')
+    //     // child?.classList.add('select')
 
-        // return () => {
-        //     // child.style.background = 'white'
-        //     child?.classList.remove('select')
-        // }
-    }, [x, y])
+    //     // return () => {
+    //     //     // child.style.background = 'white'
+    //     //     child?.classList.remove('select')
+    //     // }
+    // }, [x, y])
     console.log('in')
     console.log(x, y)
     const folders = useAppSelector(state => state.folders).folders

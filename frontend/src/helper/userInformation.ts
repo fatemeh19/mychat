@@ -126,7 +126,7 @@ export const userHandler = async () => {
     const res = await callApi().get('/main/user/profile', config)
     if (res.statusText && res.statusText === 'OK') {
         user = res.data.value.profile;
-
+        console.log('user', user)
     }
     return user;
 }
@@ -151,6 +151,7 @@ export const getFolders = async (dispatch: any) => {
             folders.push(folder)
         })
         dispatch(addFoldersList(folders))
+
     }
 }
 export const getFolderChats = async (folderId: string, dispatch: any, chatList: any) => {
