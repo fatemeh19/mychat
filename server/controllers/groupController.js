@@ -3,7 +3,8 @@ import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as Services from "../services/dbServices.js";
 import * as Validators from "../validators/index.js";
-import * as fileController from "../utils/file.js"
+import * as fileController from "../utils/file.js";
+import { objectId } from "../utils/typeConverter.js";
 const addMember = async (req, res, next) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
@@ -14,7 +15,7 @@ const addMember = async (req, res, next) => {
   } = req;
   req.user.userId = memberId;
   req.params.id = groupId;
-  const updatedChat = await Services.findByIdAndUpdate('chat',groupId, {
+  const updatedChat = await Services.findByIdAndUpdate("chat", groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
   // res.locals.resData = {
@@ -35,7 +36,8 @@ const editGroupType = async (req, res) => {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
 
-  await Services.findByIdAndUpdate('chat',
+  await Services.findByIdAndUpdate(
+    "chat",
     groupId,
     {
       $set: { groupTypeSetting: data },
@@ -51,9 +53,13 @@ const removeMember = async (req, res, next) => {
   const {
     params: { chatId: groupId, memberId },
   } = req;
-  const removeFromGroupResult = await Services.findByIdAndUpdate('chat',groupId, {
-    $pull: { members: { memberId: memberId } },
-  });
+  const removeFromGroupResult = await Services.findByIdAndUpdate(
+    "chat",
+    groupId,
+    {
+      $pull: { members: { memberId: memberId } },
+    }
+  );
   req.body.deleteAll = false;
   req.params.id = groupId;
   req.user.userId = memberId;
@@ -90,7 +96,8 @@ const editGroupPermissions = async (req, res) => {
       };
     }
   });
-  const updated = await Services.findByIdAndUpdate('chat',
+  const updated = await Services.findByIdAndUpdate(
+    "chat",
     groupId,
     {
       $set: { userPermissionsAndExceptions: data },
@@ -103,7 +110,6 @@ const editGroupInfo = async (req, res) => {
   const {
     body,
     params: { chatId: groupId },
-    file,
   } = req;
   let data;
   try {
@@ -115,7 +121,7 @@ const editGroupInfo = async (req, res) => {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
 
-  const group = await Services.findOne('chat',{ _id: groupId });
+  const group = await Services.findOne("chat", { _id: groupId });
   if (!group) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -123,18 +129,17 @@ const editGroupInfo = async (req, res) => {
       Field: Fields.group,
     });
   }
-  if (file) {
-    group.profilePic = file.path;
-  } else {
-    group.profilePic = undefined;
-  }
-  await fileController.deleteFile(group.profilePic);
+  // if (file) {
+  //   group.profilePic = file.path;
+  // } else {
+  //   group.profilePic = undefined;
+  // }
+  // await fileController.deleteFile(group.profilePic);
 
-  const updated = await Services.findByIdAndUpdate('chat',groupId, {
+  const updated = await Services.findByIdAndUpdate("chat", groupId, {
     $set: {
       name: data.name,
       decription: data.description,
-      profilePic: group.profilePic,
     },
   });
 
@@ -143,11 +148,31 @@ const editGroupInfo = async (req, res) => {
 
 const getMembers = async (req, res) => {
   const { id: groupId } = req.params;
-  const chat = await Services.findOne('chat',{ _id: groupId });
-  const memberIds = chat.members.map((member) => member.memberId);
-  const members = await Services.findMany('user',
-    { _id: { $in: memberIds } },
-    { profilePic: 1 , name:1 , lastName:1, status:1 }
+  const chat = await Services.findOne("chat", { _id: groupId });
+  let memberIds = chat.members.map((member) => member.memberId);
+  memberIds = await objectId(memberIds);
+  const members = await Services.aggregate(
+    "user",
+    [
+      { $match: { _id: { $in: memberIds } } },
+      {
+        $lookup: {
+          from: "files",
+          localField: "profilePic",
+          foreignField: "_id",
+          as: "profilePic",
+        },
+      },
+      { $unwind: "$profilePic" },
+      {
+        $project: {
+          profilePic: 1,
+          name: 1,
+          lastName: 1,
+          status: 1,
+        },
+      },
+    ]
   );
   RH.SendResponse({
     res,
@@ -165,5 +190,5 @@ export {
   editGroupPermissions,
   editGroupType,
   removeMember,
-  getMembers
+  getMembers,
 };

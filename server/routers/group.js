@@ -13,5 +13,5 @@ router.delete("/removeMember/:chatId/:memberId", removeMember,deleteChat);
 router.get("/getMembers/:id",getMembers);
 router.patch("/editGroupType/:chatId", editGroupType);
 router.patch("/editGroupPermissions/:chatId",editGroupPermissions)
-router.patch("/editGroupInfo/:chatId",uploadFile.single('profilePic'),editGroupInfo)
+router.patch("/editGroupInfo/:chatId",editGroupInfo)
 export default router;

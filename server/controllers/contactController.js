@@ -5,6 +5,7 @@ import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import * as Validators from "../validators/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
+import { objectId } from "../utils/typeConverter.js";
 
 const addContact = async (req, res) => {
   const { userId } = req.user;
@@ -77,19 +78,58 @@ const addContact = async (req, res) => {
 const getContacts = async (req, res) => {
   const { userId } = req.user;
   const user = await Services.findOne("user", { _id: userId });
-  let contactIds = user.contacts;
   let userContacts = user.contacts;
 
-  contactIds = contactIds.map((contact) => contact.userId);
-  const contacts = await Services.findMany(
-    "user",
-    { _id: { $in: contactIds } },
-    { name: 1, lastname: 1, profilePic: 1, status: 1 },
-    { id: 1 }
-  );
-  contacts.forEach((contact, index) => {
-    contact.name = userContacts[index].name || contact.name;
-    contact.lastname = userContacts[index].lastname || contact.lastname;
+  let contactIds = user.contacts.map((contact) => contact.userId);
+  contactIds = await objectId(contactIds);
+  
+  const conditions = contactIds.map((value, index) => {
+    return { $cond: { if: { $eq: [value, "$_id"] }, then: index, else: -1 } };
+  });
+  const contacts = await Services.aggregate("user", [
+    { $match: { _id: { $in: contactIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $project: {
+        indexes: conditions,
+        name: 1,
+        lastname: 1,
+        profilePic: 1,
+        status: 1,
+        phoneNumber: 1,
+        username: 1,
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        lastname: 1,
+        profilePic: 1,
+        status: 1,
+        phoneNumber: 1,
+        username: 1,
+        index: {
+          $filter: {
+            input: "$indexes",
+            as: "indexes",
+            cond: { $ne: ["$$indexes", -1] },
+          },
+        },
+      },
+    },
+    { $unwind: "$index" },
+  ]);
+  contacts.forEach((contact) => {
+    contact.name = userContacts[contact.index].name || contact.name;
+    contact.lastname = userContacts[contact.index].lastname || contact.lastname;
   });
 
   await RH.SendResponse({
@@ -119,6 +159,8 @@ const getContact = async (req, res) => {
       username: 1,
     }
   );
+  const profilePic = await Services.findOne("file",{_id:contact.profilePic})
+  contact.profilePic = profilePic
   // if (!contact) {
   //   return await RH.CustomError({
   //     errorClass: CustomError.NotFoundError,
@@ -131,7 +173,6 @@ const getContact = async (req, res) => {
     userContact.userId.equals(contact._id)
   );
 
-  // if(userContact)
   if (userContact) {
     contact.name = userContact.name || contact.name;
     contact.lastname = userContact.lastname || contact.lastname;
@@ -160,8 +201,8 @@ const editContact = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  
-  data.userId = id
+
+  data.userId = id;
   await Services.findByIdAndUpdate(
     "user",
     userId,
@@ -170,9 +211,8 @@ const editContact = async (req, res) => {
     },
     {
       arrayFilters: [{ "contact.userId": id }],
-      new:true
-    },
-    
+      new: true,
+    }
   );
   await RH.SendResponse({
     res,

@@ -7,6 +7,7 @@ import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import folder from "../models/folder.js";
+import { objectId } from "../utils/typeConverter.js";
 
 const createFolder = async (req, res) => {
   const {
@@ -30,12 +31,13 @@ const createFolder = async (req, res) => {
     };
     chats.push(chat);
   });
-  const newFolder = await Services.create('folder',{
+  const newFolder = await Services.create("folder", {
     name: data.name,
     chats,
   });
 
-  const updated = await Services.findByIdAndUpdate('user',
+  const updated = await Services.findByIdAndUpdate(
+    "user",
     userId,
     {
       $push: {
@@ -58,11 +60,11 @@ const createFolder = async (req, res) => {
 const addRemoveChat = async (req, res) => {
   // tekrari chat
   let {
-    body:{chatId, add},
+    body: { chatId, add },
     params: { folderId },
     // user: { userId },
   } = req;
-  
+
   let updateQuery;
   if (add) {
     updateQuery = {
@@ -74,7 +76,7 @@ const addRemoveChat = async (req, res) => {
     };
   }
 
-  await Services.findByIdAndUpdate('folder',folderId, updateQuery, {
+  await Services.findByIdAndUpdate("folder", folderId, updateQuery, {
     new: true,
   });
   RH.SendResponse({
@@ -89,8 +91,9 @@ const deleteFolder = async (req, res) => {
     params: { id: folderId },
     user: { userId },
   } = req;
-  await Services.deleteOne('folder',{ _id: folderId });
-  const updated = await Services.findByIdAndUpdate('user',
+  await Services.deleteOne("folder", { _id: folderId });
+  const updated = await Services.findByIdAndUpdate(
+    "user",
     userId,
     {
       $pull: { folders: folderId },
@@ -109,18 +112,28 @@ const getFolder = async (req, res) => {
     params: { id: folderId },
   } = req;
 
-  const folder = await Services.findOne('folder',{ _id: folderId });
+  const folder = await Services.findOne("folder", { _id: folderId });
 
   let chatIds = folder.chats;
   chatIds = chatIds.map((chat) => chat.chatInfo);
-
-  const chats = await Services.findMany('chat',
+  chatIds = await objectId(chatIds);
+  const chats = await Services.aggregate("chat", [
+    { $match: { _id: { $in: chatIds } } },
     {
-      _id: { $in: chatIds },
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
     },
-    {},
-    {updatedAt:-1}
-  );
+    { $unwind: "$profilePic" },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
   folder.chats.forEach((chat, index) => {
     chat.chatInfo = chats[index];
@@ -130,12 +143,13 @@ const getFolder = async (req, res) => {
     (chat) =>
       chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo
   );
-  const messages = await Services.findMany('message',
+  const messages = await Services.findMany(
+    "message",
     {
       _id: { $in: messageIds },
     },
-    "",
-    "-updatedAt"
+    {},
+    { updatedAt: -1 }
   );
   let index = 0;
   chats.forEach((chat) => {
@@ -163,8 +177,8 @@ const getFolders = async (req, res) => {
   const {
     user: { userId },
   } = req;
-  const user = await Services.findOne('user',{ _id: userId }, { folders: 1 });
-  const folders = await Services.findMany('folder',{
+  const user = await Services.findOne("user", { _id: userId }, { folders: 1 });
+  const folders = await Services.findMany("folder", {
     _id: {
       $in: user.folders,
     },
@@ -200,7 +214,8 @@ const editFolder = async (req, res) => {
     };
     chats.push(chat);
   });
-  const updated = await Services.findByIdAndUpdate('folder',
+  const updated = await Services.findByIdAndUpdate(
+    "folder",
     folderId,
     {
       name: data.name,
@@ -211,8 +226,7 @@ const editFolder = async (req, res) => {
     }
   );
 
-  RH.SendResponse({res, statusCode:StatusCodes.OK,title:"ok"})
-
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };

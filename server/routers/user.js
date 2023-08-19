@@ -12,8 +12,7 @@ import {
   blockUnblock
 } from "../controllers/userController.js";
 
-// router.route('/:id').get(getUser)
 router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
-router.route('/profile').get(getProfile).patch(uploadFile.single("profilePic"),editProfile)
+router.route('/profile').get(getProfile).patch(editProfile)
 router.patch("/block",blockUnblock)
 export default router

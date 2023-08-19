@@ -9,9 +9,10 @@ import * as Services from "../services/dbServices.js"
 import * as Validators from "../validators/index.js"
 import * as RH from"../middlewares/ResponseHandler.js"
 import { setStatus } from "./userController.js";
+import { userDependencies } from "../utils/initialize.js";
 
 const register = async (req, res) => {
-  console.log(req.body);
+  
   let data;
   try {
     data = await  Validators.registerUser.validate(req.body, {
@@ -35,8 +36,8 @@ const register = async (req, res) => {
 
   const verificationToken = crypto.randomBytes(40).toString("hex");
   data.verificationToken = verificationToken;
+  
   let user;
-
   try {
     user = await Services.create('user',data);
     await  Util.sendVerificationEmail(data.email, verificationToken);
@@ -67,13 +68,14 @@ const verifyEmail = async (req, res) => {
       Field: Fields.verificationToken,
     });
   }
+  
 
   (user.isVerified = true), (user.verified = Date.now());
   user.verificationToken = "";
-  const setting = await Services.create("setting")
-  user.settingId = setting._id
-  await user.save();
-  setStatus({userId:user._id, online:false})
+
+  await userDependencies(user)
+  user.save();
+  
   return RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,

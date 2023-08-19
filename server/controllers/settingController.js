@@ -57,7 +57,7 @@ const editSetting = async (req, res) => {
     await fileController.deleteFile(setting[title].background);
   }
 
-  const updated = await Services.findByIdAndUpdate(
+  await Services.findByIdAndUpdate(
     "setting",
     { _id: settingId },
     {
