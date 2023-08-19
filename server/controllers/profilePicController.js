@@ -14,11 +14,7 @@ import { object } from "yup";
 import { objectId } from "../utils/typeConverter.js";
 import fileCreator from "../utils/fileCreator.js";
 
-const updateProfilePic = async (req, res) => {
-  const {
-    params: { id },
-    file,
-  } = req;
+const updateProfilePic = async (id, file) => {
 
   const oldPic = await Services.findByIdAndUpdate("file", id, {
     $set: {
@@ -28,7 +24,6 @@ const updateProfilePic = async (req, res) => {
   });
   await fileController.deleteFile(oldPic?.path);
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 export { updateProfilePic };

@@ -13,43 +13,37 @@ import * as fileController from "../utils/file.js";
 import { object } from "yup";
 import { objectId } from "../utils/typeConverter.js";
 import fileCreator from "../utils/fileCreator.js";
+import { updateProfilePic } from "./profilePicController.js";
 const setInfo = async (req, res) => {
   const {
     user: { userId },
-    body: { name, phoneNumber, lastname, username },
+    body,
     file,
   } = req;
-  // try {
-  //   data =  setInfo.validate(req.body, {
-  //     abortEarly: false,
-  //     stripUnknown: true,
-  //   });
-  // } catch (err) {
-  //    console.log("err")
-  //   // await RH.CustomError({ err, errorClass: ValidationError });
-  // }
-  const user = await Services.findOne("user", { phoneNumber: phoneNumber });
-  if (user && user._id != userId) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.DuplicateError,
-      Field: Fields.phoneNumber,
+  let data
+  try {
+    data =await Validators.setInfo.validate(body, {
+      abortEarly: false,
+      stripUnknown: true,
     });
+  } catch (err) {
+    console.log(err);
+    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  let methodParameter = file? file:{
-    originalname: "default-profile",
-    mimetype: "image/jpg",
-    path: consts.DEFAULT_PROFILE_PICTURE,
+  const user = await Services.findOne("user", { phoneNumber: data.phoneNumber });
+  const thisUser = await Services.findOne("user", { _id: userId })
+  // if (user && user._id != userId) {
+  //   await RH.CustomError({
+  //     errorClass: CustomError.BadRequestError,
+  //     errorType: ErrorMessages.DuplicateError,
+  //     Field: Fields.phoneNumber,
+  //   });
+  // }
+  if (file){
+    updateProfilePic(thisUser.profilePic,file)
   }
 
-  const update = {
-    name: name,
-    phoneNumber: phoneNumber,
-    lastname: lastname,
-    profilePic:file?file: await fileCreator(methodParameter),
-    username: username ? username : undefined,
-  };
-  const updatedUser = await Services.findByIdAndUpdate("user", userId, update);
+  const updatedUser = await Services.findByIdAndUpdate("user", userId, data);
 
   if (!updatedUser) {
     await RH.CustomError({
@@ -90,6 +84,7 @@ const getProfile = async (req, res) => {
         username: 1,
         email: 1,
         profilePic: 1,
+        bio:1
       },
     },
   ]);
@@ -124,6 +119,7 @@ const editProfile = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
+   
   const user = await Services.findAndUpdateBySave(
     "user",
     { _id: userId },

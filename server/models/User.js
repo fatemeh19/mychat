@@ -23,16 +23,11 @@ const UserSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      //   required: [true, "please provide phoneNumber"],
-      // validate: {
-      //   validator: validator.isMobilePhone('ir-IR'),
-      // },
       unique: true,
     },
     username: {
       type: String,
-      // minLength: [10, "username must be more than 10 characters"],
-      // maxLength: [20, "username must be less than 20 characters"],
+      unique: true,
     },
     bio: {
       type: String,
@@ -43,8 +38,8 @@ const UserSchema = new mongoose.Schema(
       lastseen: Date,
     },
     profilePic: {
-      type:mongoose.Types.ObjectId,
-      ref:'File'
+      type: mongoose.Types.ObjectId,
+      ref: "File",
     },
     isVerified: {
       type: Boolean,
@@ -74,14 +69,13 @@ const UserSchema = new mongoose.Schema(
         lastname: {
           type: String,
         },
-        
       },
     ],
     folders: [
       {
-        type:mongoose.Types.ObjectId,
-        ref:"Folder"
-      }
+        type: mongoose.Types.ObjectId,
+        ref: "Folder",
+      },
     ],
     chats: [
       {
@@ -93,10 +87,10 @@ const UserSchema = new mongoose.Schema(
           type: mongoose.Types.ObjectId,
           ref: "Chat",
         },
-        addedAt:{
-          type:Date,
-          default:Date.now()
-        }
+        addedAt: {
+          type: Date,
+          default: Date.now(),
+        },
       },
     ],
     pinnedChats: [
@@ -105,17 +99,31 @@ const UserSchema = new mongoose.Schema(
         ref: "Chat",
       },
     ],
-    settingId:{
-      type:mongoose.Types.ObjectId,
-      ref:'Setting'
-    }
+    settingId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Setting",
+    },
   },
   { timestamps: true }
-  
 );
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
+});
+
+UserSchema.pre("findByIdAndUpdate", async function () {
+  console.log("sjklsj")
+  const users = await Services.find({
+    $or: [
+      { username: this.username },
+      {
+        phoneNumber: this.phoneNumber,
+      },
+    ],
+  });
+  if(users.length){
+    throw new Error("it is not okkkk")
+  }
 });
 
 // UserSchema.methods.hashPassowrd = async function(){
