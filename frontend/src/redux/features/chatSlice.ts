@@ -42,6 +42,7 @@ interface chatInterface {
     _id: string,
     name: string,
     profilePic: string,
+    owner: string,
     // adminsAndRights: [],
     chatType: string,
     members: member[],

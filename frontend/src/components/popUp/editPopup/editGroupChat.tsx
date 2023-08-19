@@ -21,6 +21,7 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
 
     const editChatHandler = (values: any) => {
         setGroupName(values.chatName)
+        dispatch(setIsEditChat(false))
     }
 
     useEffect(() => {

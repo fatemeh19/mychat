@@ -20,13 +20,35 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
         confirmDiscription: '',
         confirmOption: ''
     })
+    const [showChangeGroupInfo, setShowChangeGroupInfo] = useState(true)
 
 
     const dispatch = useAppDispatch()
+    const userId = useAppSelector(state => state.userInfo.User)._id
     const chatId = useAppSelector(state => state.chat).Chat._id
     const socket = useAppSelector(state => state.socket).Socket
     const chatType = useAppSelector(state => state.chat.Chat).chatType
     const deleteToggle = useAppSelector(state => state.toggle).Toggle
+    const permissions = useAppSelector(state => state.chat.Chat).userPermissionsAndExceptions.permissions
+    const chat = useAppSelector(state => state.chat).Chat
+
+    useEffect(() => {
+        console.log(chatType)
+        if (chatType === ChatType.group) {
+            console.log(userId)
+            console.log(chat.owner)
+            console.log('userId === chat.owner:', userId === chat.owner)
+            console.log('permissions.changeGroupInfo:', permissions.changeGroupInfo)
+            userId === chat.owner
+                ? setShowChangeGroupInfo(true)
+                : permissions.changeGroupInfo
+                    ? setShowChangeGroupInfo(true)
+                    : setShowChangeGroupInfo(false)
+
+        } else {
+            setShowChangeGroupInfo(true)
+        }
+    }, [permissions])
 
 
     const showDeleteAndLeaveGroupConfirmModal = () => {
@@ -67,10 +89,14 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
         <>
             {openChildMenuInChild &&
                 <ul className="w-fit bg-white shadow-[0_1px_5px_-1px_rgba(0,0,0,0.3)] py-1">
-                    <li className="text-black py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2 font-normal" onClick={EditGroupHandler}>
-                        <BsPencil className={`w-5 h-5`} />
-                        <p>{chatType === ChatType.group ? 'Delete and Leave' : 'Edit contact'}</p>
-                    </li>
+                    {
+                        showChangeGroupInfo
+                            ? <li className="text-black py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2 font-normal" onClick={EditGroupHandler}>
+                                <BsPencil className={`w-5 h-5`} />
+                                <p>{chatType === ChatType.group ? 'Delete and Leave' : 'Edit contact'}</p>
+                            </li>
+                            : null
+                    }
                     <li className="text-red-500 py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2" onClick={showDeleteAndLeaveGroupConfirmModal}>
                         <BsTrash3 className={`w-5 h-5`} />
                         <p>{chatType === ChatType.group ? 'Delete and Leave' : 'Delete Chat'}</p>
