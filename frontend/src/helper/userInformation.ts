@@ -1,7 +1,7 @@
 "use client"
 
-import { addFoldersList, folderInterface } from "../redux/features/folderSlice"
-import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat } from "../redux/features/userChatListSlice"
+import { addFoldersList, folderInterface, setCloseFolders } from "../redux/features/folderSlice"
+import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
 import { useAppSelector } from "../redux/hooks"
@@ -41,11 +41,11 @@ export const fetchUserChatList = async (dispatch: any) => {
         if (res1.statusText && res1.statusText === 'OK') {
             contactList = res1.data.value.contacts;
 
+            console.log(contactList)
         }
         for (let i = 0; i < contactList.length; i++) {
             if (contactList[i]._id == contactId) {
                 contact = contactList[i]
-                // console.log("fond")
                 break;
             }
         }
@@ -70,9 +70,10 @@ export const fetchUserChatList = async (dispatch: any) => {
         const chatList = res.data.value.chats;
         console.log("all chatList:", chatList)
         dispatch(addChatList([]))
+        dispatch(setCloseFolders())
+        dispatch(setFolderId(''))
         for (let i = 0; i < chatList.length; i++) {
             let chatInfo = {}
-            // console.log(chatList[i].chatType)
             if (chatList[i].chatType == "private") {
                 chatInfo = await contactChatList(chatList[i])
             }
@@ -106,7 +107,7 @@ export const fetchUserChatList = async (dispatch: any) => {
             if (chat.chatType == "private") {
                 dispatch(addPrivateChat(chat))
             }
-            else if (chat.chatType == "private") {
+            else if (chat.chatType == "group") {
                 dispatch(addGroupChat(chat))
             }
             dispatch(addChat(chat))
@@ -126,6 +127,9 @@ export const userHandler = async () => {
     const res = await callApi().get('/main/user/profile', config)
     if (res.statusText && res.statusText === 'OK') {
         user = res.data.value.profile;
+        if (user.pinnedChats == undefined) {
+            Object.assign(user, { pinnedChats: [] })
+        }
         console.log('user', user)
     }
     return user;
@@ -162,7 +166,7 @@ export const getFolderChats = async (folderId: string, dispatch: any, chatList: 
         let chats = res.data.value.folder.chats;
         for (let i = 0; i < chats.length; i++) {
             for (let j = 0; j < chatList.length; j++) {
-                if (chats[i]._id === chatList[j]._id) {
+                if (chats[i].chatInfo._id === chatList[j]._id) {
                     folderChatList.push(chatList[j])
                     break;
                 }

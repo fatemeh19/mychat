@@ -26,7 +26,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                 }
             })
         }
-        else if (UserPinnedChats.length != 0) {
+        else if (UserPinnedChats && UserPinnedChats?.length != 0) {
             console.log('UserPinnedChats:', UserPinnedChats)
             findChatInfo(setChatPinInfo, chatList, UserPinnedChats)
         }
@@ -40,9 +40,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
             overflow-y-auto">
             <div>
                 {
-                    (Object.keys(Contact).length == 0) ? null
-                        :
-                        (chatOpenInList ? null :
+                    (chatOpenInList ? null :
+                        (Object.keys(Contact).length == 0) ? null
+                            :
                             <Link key={Contact._id} href={`/chat/${Contact._id}`} >
                                 <ChatContactBox
                                     profilePicName=
@@ -54,7 +54,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                     lastMessage={''} ContactSeen={false} lastMessageTime={''}
                                     numberOfUnSeen={''} recivedMessage={true} isTyping={false} popup={popup} />
                             </Link>
-                        )
+                    )
                 }
             </div>
             <div>
@@ -95,7 +95,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                     (folderChatList.length === 0) ? null :
 
                         folderChatList.map((chatBox) => (
-                            checkChatPinOrUnpin(folders, UserPinnedChats, chatBox._id, folderId) ? null :
+                            checkChatPinOrUnpin(folders, UserPinnedChats, chatBox._id, folderId) ?
                                 < Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                     {/* @ts-ignore */}
 
@@ -115,7 +115,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                         popup={popup}
                                     />
                                 </Link>
-
+                                : null
                         )
 
 

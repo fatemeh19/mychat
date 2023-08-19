@@ -10,6 +10,7 @@ import { setOpenChat } from "@/src/redux/features/openSlice";
 import { setShowReply } from "@/src/redux/features/repliedMessageSlice";
 import { setActiveSelection } from "@/src/redux/features/selectedMessagesSlice";
 import { addChatList, openHandle } from "@/src/redux/features/userChatListSlice";
+import { addUserInfo } from "@/src/redux/features/userInfoSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
 import { FC, MouseEvent, useEffect, useRef, useState } from "react"
@@ -213,7 +214,8 @@ const ChatContactBox: FC<chatContactProps> = ({
                     }
                     else {
                         userInfo = User;
-                        userInfo.pinnedChats.push(chatbox._id)
+                        userInfo.pinnedChats?.push(chatbox._id)
+                        dispatch(addUserInfo(userInfo))
                     }
                 }
                 else if (!body.pin) {
@@ -229,6 +231,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                     else {
                         userInfo = User;
                         userInfo.pinnedChats.filter(chat => chat !== chatbox._id)
+                        dispatch(addUserInfo(userInfo))
                     }
                 }
 
@@ -291,7 +294,7 @@ const ChatContactBox: FC<chatContactProps> = ({
 
         <div onContextMenuCapture={contaxtMenuHandler}
             onClick={() => handler(chatList, dispatch, contactId, popup)}
-            className={`container cursor-pointer w-full flex p-5 relative gap-5 container-chatbox hover:bg-gray-50 
+            className={`container cursor-pointer w-full flex p-5  gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
         ${popup ? '' : 'tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center'} 
         ${chatOpennedP ? "bg-gray-50 dark:bg-[rgb(132,153,196)]" : ''}`}>
@@ -300,7 +303,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 x={contextMenu.x}
                 y={contextMenu.y}
                 chatId={chatbox._id}
-                chatPin={checkChatPinOrUnpin(folders, User.pinnedChats, chatbox._id, folderIdInPin)}
+                chatPin={!checkChatPinOrUnpin(folders, User.pinnedChats, chatbox._id, folderIdInPin)}
                 closeContextMenu={closeContextMenu}
                 showConfirmModal={showConfirmModal}
                 showConfirmModalPin={showConfirmModalPin}

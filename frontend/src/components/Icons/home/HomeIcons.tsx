@@ -6,7 +6,7 @@ import {
     BiSolidFolder
 
 } from "react-icons/bi";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Contacts from "../../contact";
 import CustomizedDialogs from "../../popUp";
 import Menu from "../../mainPage/leftSideMainPage/menu";
@@ -20,6 +20,12 @@ import { setFolderId } from "@/src/redux/features/userChatListSlice";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
+    const folderId = useAppSelector(state => state.userChatList).folderId
+    useEffect(() => {
+        if (folderId == '' && !open) {
+            setOpen(true)
+        }
+    }, [folderId])
     const clickHandler = () => {
         setOpen(true)
         dispatch(setCloseFolders())

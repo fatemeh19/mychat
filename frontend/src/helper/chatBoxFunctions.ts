@@ -29,7 +29,7 @@ export const checkChatPinOrUnpin = (folders: folderInterface[], UserPinnedChats:
     let pin = true;
     if (folderId == '') {
 
-        UserPinnedChats.map(chat => {
+        UserPinnedChats?.map(chat => {
             if (chat.chatInfo == chatId) {
                 pin = false
             }

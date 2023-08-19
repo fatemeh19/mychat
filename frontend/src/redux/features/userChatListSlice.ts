@@ -42,6 +42,7 @@ export const contactSlice = createSlice({
         },
         addGroupTopList: (state, action: PayloadAction<any>) => {
             state.chatList = [action.payload].concat(state.chatList)
+            state.folderChatList = [action.payload].concat(state.folderChatList)
         },
         addChatList: (state, action: PayloadAction<any>) => {
             state.chatList = action.payload
@@ -52,7 +53,7 @@ export const contactSlice = createSlice({
             state.chatList.splice(state.chatList.length, 0, element)
         },
         openHandle: (state, action: PayloadAction<any>) => {
-            state.chatList[action.payload].open = !(state.chatList[action.payload].open);
+            state.folderChatList[action.payload].open = !(state.folderChatList[action.payload].open);
         },
         addPrivateChat: (state, action: PayloadAction<any>) => {
             state.privateChatList[state.privateChatList.length] = action.payload
