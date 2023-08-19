@@ -151,3 +151,23 @@ export const editGroupPermissions = async (chatId: string, permissions: userPerm
         console.log('edit group permissions error : ', error)
     }
 }
+
+export const editGroupInfo = async (chatId: string, data: any) => {
+    try {
+        const res = await callApi().patch(`/main/chat/group/editGroupInfo/${chatId}`, data, config)
+        console.log('edit group info res : ', res)
+    } catch (error) {
+        console.log('edit group info error : ', error)
+    }
+}
+
+export const addProfilePic = async (id: string, data: any) => {
+    try {
+        const res = await callApi().post(`/main/addprofile/${id}`, data, config)
+        console.log('add profile pic res : ', res)
+
+    } catch (error) {
+        console.log('add profile pic error : ', error)
+
+    }
+}

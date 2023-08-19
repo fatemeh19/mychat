@@ -87,6 +87,8 @@ const EditChatInfo: FC<EditChatInfoProps> = ({ setFormikbtnRef, setImage, chatNa
                                 maxRows={12}
                                 onChange={e => setChatDescription(e.target.value)}
                                 value={chatDescription}
+                                name="description"
+                                id="description"
                             />
                         </div>
                     </div>

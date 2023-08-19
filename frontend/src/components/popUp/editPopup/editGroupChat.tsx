@@ -5,6 +5,7 @@ import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import EditGeneralSettings from "./parts/editGeneralSetting";
 import EditPermissions from "./parts/editPermissions";
+import { addProfilePic, editGroupInfo } from "@/src/helper/useAxiosRequests";
 
 interface EditGroupChatProps {
 }
@@ -13,19 +14,31 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
 
     const dispatch = useAppDispatch()
 
+    const chatId = useAppSelector(state => state.chat.Chat)._id
     const chatName = useAppSelector(state => state.chat.Chat).name
 
     const [image, setImage] = useState('')
     const [groupName, setGroupName] = useState(chatName)
     const [formikbtnRef, setFormikbtnRef] = useState<any>()
+    // const imageId = useAppSelector(state => state.chat.Chat).profilePic._id
 
     const editChatHandler = (values: any) => {
         setGroupName(values.chatName)
+        console.log('values:', values)
+        const data = {
+            name: groupName,
+            ...(values.description && { description: values.description })
+        }
+        editGroupInfo(chatId, data)
         dispatch(setIsEditChat(false))
     }
 
+
     useEffect(() => {
         console.log("image : ", image)
+        // const formData = new FormData;
+        // formData.append('profilePic', image)
+        // addProfilePic(imageId,formData)
     }, [image])
     useEffect(() => {
         console.log("groupName : ", groupName)
