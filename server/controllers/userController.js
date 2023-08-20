@@ -30,15 +30,8 @@ const setInfo = async (req, res) => {
     console.log(err);
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-  const user = await Services.findOne("user", { phoneNumber: data.phoneNumber });
   const thisUser = await Services.findOne("user", { _id: userId })
-  // if (user && user._id != userId) {
-  //   await RH.CustomError({
-  //     errorClass: CustomError.BadRequestError,
-  //     errorType: ErrorMessages.DuplicateError,
-  //     Field: Fields.phoneNumber,
-  //   });
-  // }
+  
   if (file){
     updateProfilePic(thisUser.profilePic,file)
   }
@@ -119,12 +112,12 @@ const editProfile = async (req, res) => {
   } catch (err) {
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
-   
-  const user = await Services.findAndUpdateBySave(
+  
+  const user = await Services.findByIdAndUpdate(
     "user",
-    { _id: userId },
+    userId,
     data
-  );
+  )
   if (!user) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -140,8 +133,7 @@ const editProfile = async (req, res) => {
 };
 
 const setStatus = async ({ userId, online }) => {
-  //  if user does not exist
-  // error
+  
   Services.findByIdAndUpdate("user", userId, {
     status: {
       online,

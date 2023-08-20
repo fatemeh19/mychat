@@ -71,6 +71,10 @@ export default{
   "link":{
     "name":"link",
     "value":"لینک گروه"
+  },
+  "username":{
+    "name":"username",
+    "value":"نام کاربری"
   }
   
 }
