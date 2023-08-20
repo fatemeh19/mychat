@@ -4,7 +4,7 @@
 import { SearchType } from "@/src/models/enum";
 import { setIsSearch, setSearchType } from "@/src/redux/features/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
 export default function SearchBox() {
     const [search, setSearch] = useState('')
@@ -13,6 +13,12 @@ export default function SearchBox() {
     const socket = useAppSelector(state => state.socket).Socket
     const searchType = useAppSelector(state => state.search).searchType
     const chatId = useAppSelector(state => state.chat.Chat)._id
+
+    const isSearch = useAppSelector(state => state.search).isSearch
+
+    useEffect(() => {
+        if (!isSearch) setSearch('')
+    }, [isSearch])
 
     const searchChatHandler = (e: any) => {
         searchType === SearchType.chats && e.target.value === '' ? dispatch(setIsSearch(false)) : dispatch(setIsSearch(true))
