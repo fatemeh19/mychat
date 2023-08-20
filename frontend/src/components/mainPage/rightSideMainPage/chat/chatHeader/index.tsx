@@ -24,6 +24,7 @@ import PopUpMenu from '@/src/components/popUp/popUpMenu'
 import { BiSearch } from 'react-icons/bi'
 import { setIsSearch, setSearchType, setSearchedMessages } from '@/src/redux/features/searchSlice'
 import { ChatType, SearchType } from '@/src/models/enum'
+import { GrClose } from 'react-icons/gr'
 
 
 interface ChatHeaderProps {
@@ -186,7 +187,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
 
-                                    {isSearch && searchType === SearchType.messages ? <button onClick={closeSearchMessageHandleer}>close</button> : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />}
+                                    {isSearch && searchType === SearchType.messages ? <GrClose onClick={closeSearchMessageHandleer} className='text-lg text-gray-400 mr-2 mt-[3px]' /> : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />}
                                 </div>
                                 <div className="
                                     left
