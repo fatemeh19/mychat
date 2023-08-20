@@ -38,7 +38,7 @@ interface userPermissionsAndExceptionsInterface {
     exceptions: userExceptionsInterface[]
 }
 
-interface chatInterface {
+export interface chatInterface {
     _id: string,
     name: string,
     profilePic: profilePicInterface,
