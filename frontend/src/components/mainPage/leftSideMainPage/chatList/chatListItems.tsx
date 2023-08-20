@@ -3,10 +3,10 @@
 import ChatContactBox from './chatContactBox';
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import Link from 'next/link';
-import { profilePicNameHandler, } from '@/src/helper/userInformation';
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice';
 import findIndex from '@/src/helper/findIndex';
 import { SearchType, messageTypes } from '@/src/models/enum';
+import { profilePicHandler } from '@/src/helper/userInformation';
 export default function ChatListItems({ popup }: { popup: boolean }) {
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -17,11 +17,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
     const searchType = useAppSelector(state => state.search).searchType
     const chat = useAppSelector(state => state.chat).Chat
 
-    const dispatch = useAppDispatch()
-
-
     return (
-
         <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen
@@ -35,9 +31,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                         (chatOpenInList ? null :
                             <Link key={Contact._id} href={`/chat/${Contact._id}`} >
                                 <ChatContactBox
-                                    profilePicName=
-                                    {Contact.profilePic ? `/uploads/photo/${profilePicNameHandler(Contact)}`
-                                        : '/uploads/photo/defaultProfilePic.png'}
+                                    profilePicName={profilePicHandler(Contact)}
                                     contactId={Contact._id} chatOpennedP={true}
                                     lastMessegeByContact={false}
                                     ContactName={Contact.name} status={Contact.status}
@@ -53,17 +47,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                         ? searchType === SearchType.chats
                             ? searchedChats.map(searchedChat => {
                                 const findChat = chatList.filter(chat => chat._id === searchedChat._id)[0]
-                                console.log('findChat : ', findChat)
-
-                                // return <p key={searchedChat._id}>searching</p>
-
                                 return <Link key={findChat._id} href={`/chat/${findChat._id}`} >
-                                    {/* @ts-ignore */}
-
                                     <ChatContactBox
-                                        profilePicName=
-                                        {findChat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(findChat.chatInfo)}`
-                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        profilePicName={profilePicHandler(findChat.chatInfo)}
                                         contactId={findChat.chatInfo._id} chatOpennedP={findChat.open}
                                         lastMessegeByContact={false}
                                         ContactName={findChat.chatInfo.name}
@@ -78,14 +64,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                 </Link>
                             })
                             : searchedMessages.map(searchedMessage => {
-                                console.log('searchMessage : ', searchedMessage)
                                 return <a key={searchedMessage._id} href={`#${chat.messages[searchedMessage.index]._id}`} >
-                                    {/* @ts-ignore */}
-
                                     <ChatContactBox
-                                        profilePicName=
-                                        {searchedMessage.senderInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(searchedMessage.senderInfo)}`
-                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        profilePicName={profilePicHandler(searchedMessage.senderInfo)}
                                         contactId={''} chatOpennedP={false}
                                         lastMessegeByContact={false}
                                         ContactName={searchedMessage.senderInfo.name}
@@ -104,9 +85,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                     {/* @ts-ignore */}
 
                                     <ChatContactBox
-                                        profilePicName=
-                                        {chatBox.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.chatInfo)}`
-                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        profilePicName={profilePicHandler(chatBox.chatInfo)}
                                         contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
                                         lastMessegeByContact={false}
                                         ContactName={chatBox.chatInfo.name}

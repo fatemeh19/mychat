@@ -15,3 +15,11 @@ then when send first message and chat create push to chat/chatId and reGet all c
 
 # send media permition
 need some repair later becase for send file i have just one button and if photo is not allowed i just remove the button and then music and other files is become not allowed and this is not currect sooooooo it should be repair : click on button -> open a window contain file btn photo btn music btn and ...
+
+# profilePic in client
+src={ 
+    userContact.profilePic
+        ? `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
+        : '/uploads/photo/defaultProfilePic.png'
+}
+we need this structure for profilePic if we have multiple image for profile picture but now we hove one so just use src={ `${profilePicNameHandler(Contact)}` }

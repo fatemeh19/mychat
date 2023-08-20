@@ -1,6 +1,6 @@
 "use client"
 
-import { profilePicNameHandler, fetchUserChatList } from "@/src/helper/userInformation";
+import { profilePicHandler, fetchUserChatList } from "@/src/helper/userInformation";
 import { setChatOpenInList } from "@/src/redux/features/chatOpenInListSlice";
 import { openHandle } from "@/src/redux/features/userChatListSlice";
 import { contactInterface } from "@/src/redux/features/userContactListSlice";
@@ -10,17 +10,8 @@ import Image from "next/image"
 import { FC, LegacyRef, useEffect, useRef, useState } from "react"
 import { GiCheckMark } from 'react-icons/gi'
 
-type Contact = {
-    name: string;
-    _id: string;
-    profilePic: string;
-    status: {
-        online: boolean,
-        lastseen: string | Date | number
-    };
-}
 interface ContactBoxProps {
-    contact: Contact,
+    contact: contactInterface,
     isOpenChat: boolean
     handleOpen?: () => void,
     selectMember?: (contact: contactInterface, contactBoxRef: LegacyRef<HTMLDivElement> | undefined) => void,
@@ -33,8 +24,8 @@ const ContactBox: FC<ContactBoxProps> = ({
     selectMember,
 }) => {
     const dispatch = useAppDispatch()
-    const [online , setOnline] = useState(contact.status?.online)
-    const [lastSeen , setLastSeen] = useState(contact.status?.lastseen)
+    const [online, setOnline] = useState(contact.status?.online)
+    const [lastSeen, setLastSeen] = useState(contact.status?.lastseen)
     const contactId = contact._id;
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -87,10 +78,8 @@ const ContactBox: FC<ContactBoxProps> = ({
             }}>
             <div className={''} ref={contactBoxRef}>
                 <Image
-                    src={contact.profilePic ? `/uploads/photo/${profilePicNameHandler(contact)}`
-                        : '/uploads/photo/defaultProfilePic.png'}
-                    className="w-[56px] h-[56px] object-cover rounded-full
-                             border-2 border-white"
+                    src={profilePicHandler(contact)}
+                    className="w-[56px] h-[56px] object-cover rounded-full border-2 border-white"
                     width={500} height={50} alt="contact-profile" />
                 <div className="w-5 h-5 bg-blue-500 absolute bottom-0 right-0 rounded-full flex items-center justify-center">
                     <GiCheckMark className="text-white" />
@@ -100,9 +89,8 @@ const ContactBox: FC<ContactBoxProps> = ({
                 <p className="contact-name font-bold text-sm">{contact.name}</p>
                 <p className="status text-xs ">
                     {online ?
-
-                       <span className="text-sky-500">Online</span> 
-                        : <span className="text-gray-500">{lastSeen? (new Date(lastSeen).getHours() +':' + new Date(lastSeen).getMinutes()) : ''}</span>
+                        <span className="text-sky-500">Online</span>
+                        : <span className="text-gray-500">{lastSeen ? (new Date(lastSeen).getHours() + ':' + new Date(lastSeen).getMinutes()) : ''}</span>
                     }
                 </p>
             </div>

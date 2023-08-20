@@ -20,6 +20,7 @@ import { setIsForward, setForwardMessageIds, setForwardContent } from "@/src/red
 import { contactInterface } from "@/src/redux/features/userContactListSlice"
 import { UserInterface } from "@/src/redux/features/userInfoSlice"
 import { setEditedMessage, setIsEdit } from "@/src/redux/features/editMessageSlice"
+import { profilePicHandler } from "@/src/helper/userInformation"
 
 const initialContextMenu = {
     show: false,
@@ -72,6 +73,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const userContactList = useAppSelector(state => state.userContactsList).contacts
 
     const [sender, setSender] = useState<contactInterface | UserInterface>()
+
     useEffect(() => {
         if (msg.messageInfo.senderId === User._id) {
             // @ts-ignore
@@ -83,16 +85,14 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             setSender(userContactList[index])
         }
     }, [chatMessages])
+
     useEffect(() => {
-
-
-        const profilePic = sender?.profilePic ? (sender.profilePic.path).split(`\\`) : '';
-
         setInformation({
             dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
             // @ts-ignore
             name: sender?.name,
-            profilePic: sender?.profilePic ? profilePic[profilePic.length - 1] : ''
+            // @ts-ignore
+            profilePic: sender.profilePic
         })
     }, [sender])
 
@@ -278,31 +278,23 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     activeEdit={activeEdit}
                 />
             }
-            <div onContextMenu={handleContextMenu} className={`flex items-center gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
+            <div onContextMenu={handleContextMenu} className={`flex items-start gap-1 rounded-xl ${information.dir === 'rtl' ? 'flex-row-reverse' : ''} `}>
                 {activeSelectedMessages && <div ref={selectIconRef} className={` w-[15px] h-[15px] border-[1px] border-black rounded-full transition-all duration-100`} > </div>}
                 {
                     chatType !== ChatType.private
                         ? msg.messageInfo.senderId !== User._id
                             ? (
-                                <div className="profileImageBox relative">
+                                <div className="profileImageBox mt-6 relative">
                                     {/* this image for box width so the text dont go under the profile image and make the opacity - 0 so we can see the second image ... i use this method til find better way */}
                                     <Image
-                                        src={
-                                            information.profilePic
-                                                ? `/uploads/photo/${information.profilePic}`
-                                                : '/uploads/photo/defaultProfilePic.png'
-                                        }
+                                        src={profilePicHandler(information)}
                                         width={45}
                                         height={0}
                                         alt=""
                                         className="rounded-full opacity-0 max-w-lg "
                                     />
                                     <Image
-                                        src={
-                                            information.profilePic
-                                                ? `/uploads/photo/${information.profilePic}`
-                                                : '/uploads/photo/defaultProfilePic.png'
-                                        }
+                                        src={profilePicHandler(information)}
                                         width={45}
                                         height={0}
                                         alt=""

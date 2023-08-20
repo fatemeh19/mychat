@@ -25,6 +25,7 @@ import { BiSearch } from 'react-icons/bi'
 import { setIsSearch, setSearchType, setSearchedMessages } from '@/src/redux/features/searchSlice'
 import { ChatType, SearchType } from '@/src/models/enum'
 import { GrClose } from 'react-icons/gr'
+import { profilePicHandler } from '@/src/helper/userInformation'
 
 
 interface ChatHeaderProps {
@@ -151,8 +152,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         dispatch(setSearchedMessages([]))
     }
 
-    const profilePicName = userContact.profilePic ? (userContact.profilePic.path).split(`\\`) : '';
-
     return (
         <div>
             {
@@ -187,7 +186,10 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
 
-                                    {isSearch && searchType === SearchType.messages ? <GrClose onClick={closeSearchMessageHandleer} className='text-lg text-gray-400 mr-2 mt-[3px]' /> : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />}
+                                    {isSearch && searchType === SearchType.messages
+                                        ? <GrClose className='text-lg text-gray-400 mr-2 mt-[3px]' onClick={closeSearchMessageHandleer} />
+                                        : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />
+                                    }
                                 </div>
                                 <div className="
                                     left
@@ -200,11 +202,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                         <Image
                                             width={500}
                                             height={500}
-                                            src={
-                                                userContact.profilePic
-                                                    ? `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
-                                                    : '/uploads/photo/defaultProfilePic.png'
-                                            }
+                                            src={profilePicHandler(userContact)}
                                             alt='chat profile'
                                             className='rounded-full w-[50px] h-[50px] object-cover'
                                         />

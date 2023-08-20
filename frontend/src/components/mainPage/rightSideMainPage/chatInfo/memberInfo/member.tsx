@@ -2,6 +2,7 @@ import ConfirmModal from "@/src/components/basicComponents/confirmModal";
 import MemberRightClick from "@/src/components/rightClick/memberRightClick";
 import findIndex from "@/src/helper/findIndex";
 import { removeGroupMember } from "@/src/helper/useAxiosRequests";
+import { profilePicHandler } from "@/src/helper/userInformation";
 import { groupMemberInterface } from "@/src/models/interface";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { FC, MouseEvent, useState } from "react";
@@ -18,9 +19,6 @@ const initialContextMenu = {
 }
 
 const Member: FC<MemberProps> = ({ member }) => {
-
-    const profilePic = member?.profilePic ? (member.profilePic.path).split(`\\`) : '';
-    const profilePicName = profilePic[profilePic.length - 1]
 
     const [contextMenu, setContextMenu] = useState(initialContextMenu)
     const [open, setOpen] = useState<boolean>(false)
@@ -80,7 +78,7 @@ const Member: FC<MemberProps> = ({ member }) => {
                     
                 `}>
                 <img
-                    src={`/uploads/photo/${profilePicName}`}
+                    src={profilePicHandler(member)}
                     alt=""
                     className="
                         w-full 

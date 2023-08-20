@@ -109,10 +109,15 @@ export const fetchUserChatList = async (dispatch: any) => {
     }
 }
 
-export const profilePicNameHandler = (user: any) => {
+export const profilePicHandler = (user: any) => {
     const profilePicName = user.profilePic ? (user.profilePic.path).split(`\\`) : '';
-    return profilePicName[profilePicName.length - 1];
+    if (profilePicName[profilePicName.length - 2] === 'defaults') {
+        return `/defaults/${profilePicName[profilePicName.length - 1]}`
+    } else {
+        return `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
+    }
 }
+
 export const userHandler = async () => {
     let user;
     const res = await callApi().get('/main/user/profile', config)
