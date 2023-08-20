@@ -4,6 +4,10 @@ export default{
         default: true,
       },
       sendMedia: {
+        all:{
+          type:Boolean,
+          default:true
+        },
         photo: {
           type: Boolean,
           default: true,

@@ -3,6 +3,7 @@ import yup from 'yup'
 export default yup.object({
     sendMessage:yup.boolean().required('EmptyError'),
     sendMedia:yup.object({
+        all:yup.boolean().required('EmptyError'),
         photo:yup.boolean().required('EmptyError'),
         videoMessage:yup.boolean().required('EmptyError'),
         voice:yup.boolean().required('EmptyError'),

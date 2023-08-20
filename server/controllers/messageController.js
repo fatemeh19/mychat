@@ -351,7 +351,7 @@ const searchMessage = async (chatId,search) => {
       }
 
     },
-    {$unwind:"senderInfo.profilePic"},
+    {$unwind:"$senderInfo.profilePic"},
     {
       $project: {
         indexes: conditions,

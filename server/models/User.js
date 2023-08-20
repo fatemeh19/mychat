@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import * as Services from "../services/dbServices.js";
+import dupChecker from "../utils/dupChecker.js";
+import * as CustomError from "../errors/index.js";
+import * as RH from "../middlewares/ResponseHandler.js";
+import ErrorMessages from "../messages/errors.js";
+import Fields from "../messages/fields.js";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -14,20 +20,18 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "please provide email"],
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "please provide password"],
     },
     phoneNumber: {
       type: String,
-      unique: true,
+      // unique: true,
     },
     username: {
       type: String,
-      unique: true,
+      // unique: true,
     },
     bio: {
       type: String,
@@ -111,29 +115,14 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-UserSchema.pre("findByIdAndUpdate", async function () {
-  console.log("sjklsj")
-  const users = await Services.find({
-    $or: [
-      { username: this.username },
-      {
-        phoneNumber: this.phoneNumber,
-      },
-    ],
-  });
-  if(users.length){
-    throw new Error("it is not okkkk")
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const id = this.getQuery()._id;
+  let { dup, element } = await dupChecker("user", this.getUpdate());
+  if (dup && !dup._id.equals(id)) {
+    throw new Error(element)
   }
 });
 
-// UserSchema.methods.hashPassowrd = async function(){
-
-// }
-// UserSchema.methods.comparePassowrd = async function(password){
-//   const isMatch = await bcrypt.compare(password,this.password)
-//   return isMatch
-
-// }
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
