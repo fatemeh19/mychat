@@ -1,7 +1,7 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChatType } from "@/src/models/enum";
-import { groupMemberInterface, recievedMessageInterface } from "@/src/models/interface";
+import { groupMemberInterface, profilePicInterface, recievedMessageInterface } from "@/src/models/interface";
 
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 
@@ -41,7 +41,7 @@ interface userPermissionsAndExceptionsInterface {
 interface chatInterface {
     _id: string,
     name: string,
-    profilePic: string,
+    profilePic: profilePicInterface,
     owner: string,
     // adminsAndRights: [],
     chatType: string,

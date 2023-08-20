@@ -56,6 +56,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const chatType = useAppSelector(state => state.chat.Chat).chatType
+    const isSearch = useAppSelector(state => state.search).isSearch
+    const searchType = useAppSelector(state => state.search).searchType
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -148,7 +150,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         dispatch(setSearchedMessages([]))
     }
 
-    const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
+    const profilePicName = userContact.profilePic ? (userContact.profilePic.path).split(`\\`) : '';
 
     return (
         <div>
@@ -183,8 +185,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
                                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
-                                    <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />
-                                    <button onClick={closeSearchMessageHandleer}>close</button>
+
+                                    {isSearch && searchType === SearchType.messages ? <button onClick={closeSearchMessageHandleer}>close</button> : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />}
                                 </div>
                                 <div className="
                                     left

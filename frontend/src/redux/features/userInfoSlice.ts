@@ -1,9 +1,10 @@
+import { profilePicInterface } from "@/src/models/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserInterface {
     name: string,
     phoneNumber: string,
-    profilePic: string,
+    profilePic: profilePicInterface,
     email: string,
     _id: string
 }

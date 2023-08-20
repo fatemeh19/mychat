@@ -1,4 +1,5 @@
-import { ChatType, SearchType } from "@/src/models/enum";
+import { ChatType, SearchType, messageTypes } from "@/src/models/enum";
+import { profilePicInterface } from "@/src/models/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
@@ -13,15 +14,17 @@ interface searchChatInterface {
 interface senderInterface {
     lastname: string,
     name: string,
-    profilePic: string
+    profilePic: profilePicInterface
 }
 
 interface searchMessageInterface {
     _id: string,
     content: {
+        contentType: messageTypes
         text: string
     },
-    senderInfo: senderInterface[],
+    index: number,
+    senderInfo: senderInterface,
     createdAt: string,
 }
 

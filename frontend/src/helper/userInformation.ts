@@ -110,7 +110,7 @@ export const fetchUserChatList = async (dispatch: any) => {
 }
 
 export const profilePicNameHandler = (user: any) => {
-    const profilePicName = user.profilePic ? (user.profilePic).split(`\\`) : '';
+    const profilePicName = user.profilePic ? (user.profilePic.path).split(`\\`) : '';
     return profilePicName[profilePicName.length - 1];
 }
 export const userHandler = async () => {

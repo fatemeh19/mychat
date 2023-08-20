@@ -20,7 +20,7 @@ interface EditChatInfoProps {
 
 const EditChatInfo: FC<EditChatInfoProps> = ({ setFormikbtnRef, setImage, chatName, setChatName, formikSubmitHandler }) => {
 
-    const chatProfilePic = useAppSelector(state => state.chat).Chat.profilePic.split('\\')
+    const chatProfilePic = useAppSelector(state => state.chat).Chat.profilePic.path.split('\\')
     const [chatProfilePicName, setChatProfilePicName] = useState('')
     const [chatDescription, setChatDescription] = useState('')
     const formikbtnRef = useRef<HTMLButtonElement>(null)

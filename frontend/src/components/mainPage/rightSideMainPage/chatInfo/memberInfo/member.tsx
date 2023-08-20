@@ -19,7 +19,7 @@ const initialContextMenu = {
 
 const Member: FC<MemberProps> = ({ member }) => {
 
-    const profilePic = member?.profilePic ? (member.profilePic).split(`\\`) : '';
+    const profilePic = member?.profilePic ? (member.profilePic.path).split(`\\`) : '';
     const profilePicName = profilePic[profilePic.length - 1]
 
     const [contextMenu, setContextMenu] = useState(initialContextMenu)

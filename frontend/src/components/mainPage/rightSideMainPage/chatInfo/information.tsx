@@ -10,7 +10,7 @@ const Informatin: FC<InformatinProps> = () => {
 
     const contact = useAppSelector(state => state.userContact).Contact
 
-    const profilePicName = contact.profilePic ? (contact.profilePic).split(`\\`) : '';
+    const profilePicName = contact.profilePic ? (contact.profilePic.path).split(`\\`) : '';
 
     return (
         <div className={`w-full flex gap-5 items-center p-5 bg-white

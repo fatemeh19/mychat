@@ -5,6 +5,15 @@ interface infoFace {
     phone: string
 }
 
+interface profilePicInterface {
+    _id: string,
+    originalName: string,
+    path: string,
+    contentType: string,
+    createAt: string,
+    updateAt: string
+}
+
 interface recievedMessageInterface {
     _id: string,
     // content: {
@@ -47,6 +56,10 @@ interface recievedMessageInterface {
 interface groupMemberInterface {
     _id: string,
     name: string,
-    profilePic: string
+    status: {
+        online: boolean,
+        lastseen: string
+    }
+    profilePic: profilePicInterface
 }
-export type { infoFace, recievedMessageInterface, groupMemberInterface }
+export type { infoFace, profilePicInterface, recievedMessageInterface, groupMemberInterface }

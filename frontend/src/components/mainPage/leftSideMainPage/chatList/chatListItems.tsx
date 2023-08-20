@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { profilePicNameHandler, } from '@/src/helper/userInformation';
 import { setShowReply } from '@/src/redux/features/repliedMessageSlice';
 import findIndex from '@/src/helper/findIndex';
-import { SearchType } from '@/src/models/enum';
+import { SearchType, messageTypes } from '@/src/models/enum';
 export default function ChatListItems({ popup }: { popup: boolean }) {
     const Contact = useAppSelector(state => state.userContact).Contact
     const chatList = useAppSelector(state => state.userChatList).chatList
@@ -77,29 +77,27 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                             })
                             : searchedMessages.map(searchedMessage => {
                                 console.log('searchMessage : ', searchedMessage)
-
-                                return <Link key={searchedMessage._id} href={`#${searchedMessage._id}`} >
+                                return <a key={searchedMessage._id} href={`#${chat.messages[searchedMessage.index]._id}`} >
                                     {/* @ts-ignore */}
 
                                     <ChatContactBox
                                         profilePicName=
-                                        {searchedMessage.senderInfo[0].profilePic ? `/uploads/photo/${profilePicNameHandler(searchedMessage.senderInfo[0])}`
+                                        {searchedMessage.senderInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(searchedMessage.senderInfo)}`
                                             : '/uploads/photo/defaultProfilePic.png'}
                                         contactId={''} chatOpennedP={false}
                                         lastMessegeByContact={false}
-                                        ContactName={searchedMessage.senderInfo[0].name}
-                                        lastMessage={searchedMessage.content.text} ContactSeen={false}
+                                        ContactName={searchedMessage.senderInfo.name}
+                                        lastMessage={searchedMessage.content.contentType === messageTypes.text ? searchedMessage.content.text : searchedMessage.content.contentType} ContactSeen={false}
                                         lastMessageTime={''} numberOfUnSeen={''}
                                         recivedMessage={true} isTyping={false}
                                         chatbox={searchedMessage}
                                         popup={popup}
                                     />
-                                </Link>
+                                </a>
                             })
                         : (chatList.length === 0)
                             ? null
                             : chatList.map((chatBox) => {
-                                console.log('chatBox : ', chatBox)
                                 return <Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                     {/* @ts-ignore */}
 

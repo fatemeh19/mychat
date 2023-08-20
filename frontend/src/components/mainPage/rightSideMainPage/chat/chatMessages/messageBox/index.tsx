@@ -86,7 +86,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     useEffect(() => {
 
 
-        const profilePic = sender?.profilePic ? (sender.profilePic).split(`\\`) : '';
+        const profilePic = sender?.profilePic ? (sender.profilePic.path).split(`\\`) : '';
 
         setInformation({
             dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
