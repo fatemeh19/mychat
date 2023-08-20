@@ -61,12 +61,10 @@ const createChat = async (req, res) => {
     data.inviteLinks.push(primaryLink);
   }
   let members = [];
-  // console.log(data.memberIds)
   data.memberIds.forEach((memberId) => {
     members.push({
       memberId,
     });
-    // console.log(members)
   });
 
   data["members"] = members;
@@ -86,7 +84,7 @@ const createChat = async (req, res) => {
     statusCode: StatusCodes.CREATED,
     title: "ok",
     value: {
-      chatId: chat._id,
+      chat,
     },
   });
 };

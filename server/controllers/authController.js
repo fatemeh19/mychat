@@ -42,9 +42,9 @@ const register = async (req, res) => {
     user = await Services.create('user',data);
     await  Util.sendVerificationEmail(data.email, verificationToken);
   } catch (error) {
+    console.log(error)
     if (user) {
       await User.findByIdAndDelete(user._id);
-      throw new Error(error.message);
     }
   }
 

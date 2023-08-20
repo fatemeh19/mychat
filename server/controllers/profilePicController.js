@@ -21,6 +21,9 @@ const updateProfilePic = async (id, file) => {
       path: file ? file.path : consts.DEFAULT_PROFILE_PICTURE,
       originalName: file ? file.originalname : "default-profile",
     },
+    
+  },{
+    runValidators:true
   });
   await fileController.deleteFile(oldPic?.path);
 
