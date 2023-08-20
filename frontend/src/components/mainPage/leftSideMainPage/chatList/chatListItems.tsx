@@ -25,7 +25,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
         <div className="chat-scrollbar w-full 
             h-[80%] 
             tablet:h-screen
-            overflow-y-auto">
+            overflow-y-auto
+            overflow-x-hidden
+            ">
             <div>
                 {
                     (Object.keys(Contact).length == 0) ? null
