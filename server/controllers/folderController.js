@@ -9,11 +9,8 @@ import { StatusCodes } from "http-status-codes";
 import folder from "../models/folder.js";
 import { objectId } from "../utils/typeConverter.js";
 
-const createFolder = async (req, res) => {
-  const {
-    user: { userId },
-    body,
-  } = req;
+const createFolder = async (userId,body) => {
+  
   let data;
   try {
     data = await Validators.createFolder.validate(body, {
@@ -47,23 +44,13 @@ const createFolder = async (req, res) => {
     { new: true }
   );
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    value: {
-      folderId: newFolder._id,
-    },
-    title: "ok",
-  });
+  return newFolder
 };
 
-const addRemoveChat = async (req, res) => {
-  // tekrari chat
-  let {
-    body: { chatId, add },
-    params: { folderId },
-    // user: { userId },
-  } = req;
+const addRemoveChat = async (body,folderId) => {
+  
+  
+  const {chatId, add } = body
 
   let updateQuery;
   if (add) {
@@ -79,18 +66,11 @@ const addRemoveChat = async (req, res) => {
   await Services.findByIdAndUpdate("folder", folderId, updateQuery, {
     new: true,
   });
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  
 };
 
-const deleteFolder = async (req, res) => {
-  const {
-    params: { id: folderId },
-    user: { userId },
-  } = req;
+const deleteFolder = async (userId,folderId) => {
+  
   await Services.deleteOne("folder", { _id: folderId });
   const updated = await Services.findByIdAndUpdate(
     "user",
@@ -100,18 +80,11 @@ const deleteFolder = async (req, res) => {
     },
     { new: true }
   );
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  
 };
 
-const getFolder = async (req, res) => {
-  const {
-    params: { id: folderId },
-  } = req;
-
+const getFolder = async (folderId) => {
+ 
   const folder = await Services.findOne("folder", { _id: folderId });
 
   let chatIds = folder.chats;
@@ -165,18 +138,11 @@ const getFolder = async (req, res) => {
     chat.chatInfo = chats[index];
   });
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: { folder },
-  });
+  return folder
 };
 
-const getFolders = async (req, res) => {
-  const {
-    user: { userId },
-  } = req;
+const getFolders = async (userId) => {
+  
   const user = await Services.findOne("user", { _id: userId }, { folders: 1 });
   const folders = await Services.findMany("folder", {
     _id: {
@@ -184,19 +150,11 @@ const getFolders = async (req, res) => {
     },
   });
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: { folders },
-  });
+  return folders
 };
 
-const editFolder = async (req, res) => {
-  const {
-    params: { id: folderId },
-    body,
-  } = req;
+const editFolder = async (body,folderId) => {
+  
   let data;
   try {
     data = await Validators.createFolder.validate(body, {
@@ -226,9 +184,7 @@ const editFolder = async (req, res) => {
     }
   );
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 
-  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
 export {

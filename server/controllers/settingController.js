@@ -9,13 +9,8 @@ import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
-const editSetting = async (req, res) => {
-  const {
-    body,
-    user: { userId },
-    params: { id: settingId, title },
-    files,
-  } = req;
+const editSetting = async (body,settingId,title,files) => {
+  
 
   const setting = await Services.findOne(
     "setting",
@@ -67,24 +62,13 @@ const editSetting = async (req, res) => {
       new: true,
     }
   );
-  return RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const getSetting = async (req, res) => {
-  const {
-    params: { id: settingId },
-  } = req;
-  // if does not exist
+const getSetting = async (settingId) => {
+  
   const setting = await Services.findOne("setting", { _id: settingId });
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      setting,
-    },
-  });
+  return setting
 };
 
 export { editSetting, getSetting };

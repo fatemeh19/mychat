@@ -11,11 +11,11 @@ import * as RH from"../middlewares/ResponseHandler.js"
 import { setStatus } from "./userController.js";
 import { userDependencies } from "../utils/initialize.js";
 
-const register = async (req, res) => {
+const register = async (body) => {
   
   let data;
   try {
-    data = await  Validators.registerUser.validate(req.body, {
+    data = await  Validators.registerUser.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -48,11 +48,10 @@ const register = async (req, res) => {
     }
   }
 
-  return RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "confirm" });
 };
 
-const verifyEmail = async (req, res) => {
-  const { email, verificationToken } = req.body;
+const verifyEmail = async (email,verificationToken) => {
+  
   const user = await Services.findOne('user',{ email: email });
   if (!user) {
     await RH.CustomError({
@@ -76,17 +75,13 @@ const verifyEmail = async (req, res) => {
   await userDependencies(user)
   user.save();
   
-  return RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "confirmed",
-  });
+  
 };
 
-const login = async (req, res) => {
+const login = async (body) => {
   let data
   try {
-    data = await  Validators.loginUser.validate(req.body, {
+    data = await  Validators.loginUser.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -125,16 +120,7 @@ const login = async (req, res) => {
     user.save();
   }
 
-  return RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "successLogin",
-    value: {
-      token,
-      isFirstTimeLogin,
-      
-    },
-  });
+  return {token , isFirstTimeLogin}
 };
 export {
   register,

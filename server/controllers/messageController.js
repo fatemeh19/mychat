@@ -9,14 +9,8 @@ import { StatusCodes } from "http-status-codes";
 import * as fileController from "../utils/file.js";
 
 import { objectId } from "../utils/typeConverter.js";
-const createMessage = async (req, res) => {
-  const {
-    params: { chatId },
-    body: message,
-    user:{userId},
-    file,
-  } = req;
-  console.log(file);
+const createMessage = async (chatId,message,userId,file) => {
+  
   let url = file ? file.path : undefined;
   let originalName = file ? req.file.originalname : undefined;
 
@@ -97,14 +91,7 @@ const createMessage = async (req, res) => {
   }
   let msg = chat.messages.pop();
   msg.messageInfo = Message;
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      message: msg,
-    },
-  });
+  return msg
 };
 const DeleteMessage = async (userId, deleteInfo) => {
   let { chatId, messageIds, deleteAll } = deleteInfo;
@@ -178,14 +165,10 @@ const DeleteMessage = async (userId, deleteInfo) => {
     );
   }
 
-  // res.status(200).send("OK");
+ 
 };
-const forwardMessage = async (req, res) => {
-  const {
-    params: { chatId },
-    body: { messageIds },
-    user: { userId },
-  } = req;
+const forwardMessage = async (chatId,messageIds,userId) => {
+  
 
   const forwardedMessages = await Services.findMany("message", {
     _id: { $in: messageIds },
@@ -214,7 +197,7 @@ const forwardMessage = async (req, res) => {
     forwardedBy: userId,
     chat,
   };
-  res.send(forwardInfo);
+  return forwardInfo
 };
 const pinUnPinMessage = async (userId, pinnedInfo) => {
   let { messageId, chatId, pin } = pinnedInfo;
@@ -246,12 +229,8 @@ const pinUnPinMessage = async (userId, pinnedInfo) => {
     new: true,
   });
 };
-const editMessage = async (req, res) => {
-  const {
-    body,
-    file,
-    params: { id: messageId },
-  } = req;
+const editMessage = async (body,file,messageId) => {
+  
   let data;
   try {
     data = await Validators.editMessage.validate(body, {
@@ -295,14 +274,7 @@ const editMessage = async (req, res) => {
   message.content = data.content;
   message.edited = true;
   const editedMessage = await message.save();
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      message: editedMessage,
-    },
-  });
+  return editedMessage
 };
 
 const searchMessage = async (chatId,search) => {

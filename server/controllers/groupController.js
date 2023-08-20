@@ -5,30 +5,25 @@ import * as Services from "../services/dbServices.js";
 import * as Validators from "../validators/index.js";
 import * as fileController from "../utils/file.js";
 import { objectId } from "../utils/typeConverter.js";
-const addMember = async (req, res, next) => {
+const addMember = async (groupId, memberId) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
   // limitations for number of members
-  const {
-    body: { memberId },
-    params: { chatId: groupId },
-  } = req;
-  req.user.userId = memberId;
-  req.params.id = groupId;
-  const updatedChat = await Services.findByIdAndUpdate("chat", groupId, {
+  // const {
+  //   body: { memberId },
+  //   params: { chatId: groupId },
+  // } = req;
+  // req.user.userId = memberId;
+  // req.params.id = groupId;
+  await Services.findByIdAndUpdate("chat", groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
-  // res.locals.resData = {
-  //   res:updatedChat.members.pop()
-  // }
-  next();
 };
 
-const editGroupType = async (req, res) => {
-  const { chatId: groupId } = req.params;
+const editGroupType = async (groupId, body) => {
   let data;
   try {
-    data = await Validators.editGroupType.validate(req.body, {
+    data = await Validators.editGroupType.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -46,32 +41,16 @@ const editGroupType = async (req, res) => {
       new: true,
     }
   );
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const removeMember = async (req, res, next) => {
-  const {
-    params: { chatId: groupId, memberId },
-  } = req;
-  const removeFromGroupResult = await Services.findByIdAndUpdate(
-    "chat",
-    groupId,
-    {
-      $pull: { members: { memberId: memberId } },
-    }
-  );
-  req.body.deleteAll = false;
-  req.params.id = groupId;
-  req.user.userId = memberId;
-  next();
-  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+const removeMember = async (groupId, memberId) => {
+  await Services.findByIdAndUpdate("chat", groupId, {
+    $pull: { members: { memberId: memberId } },
+  });
 };
 
-const editGroupPermissions = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId },
-  } = req;
+const editGroupPermissions = async (groupId,body) => {
+  
   let data;
   try {
     data = await Validators.editGroupPermsAndExps.validate(body, {
@@ -96,7 +75,7 @@ const editGroupPermissions = async (req, res) => {
       };
     }
   });
-  const updated = await Services.findByIdAndUpdate(
+  await Services.findByIdAndUpdate(
     "chat",
     groupId,
     {
@@ -104,13 +83,10 @@ const editGroupPermissions = async (req, res) => {
     },
     { new: true }
   );
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
-const editGroupInfo = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId },
-  } = req;
+const editGroupInfo = async (groupId,body) => {
+  
   let data;
   try {
     data = await Validators.editGroupInfo.validate(body, {
@@ -129,59 +105,43 @@ const editGroupInfo = async (req, res) => {
       Field: Fields.group,
     });
   }
-  // if (file) {
-  //   group.profilePic = file.path;
-  // } else {
-  //   group.profilePic = undefined;
-  // }
-  // await fileController.deleteFile(group.profilePic);
-
-  const updated = await Services.findByIdAndUpdate("chat", groupId, {
+  
+  await Services.findByIdAndUpdate("chat", groupId, {
     $set: {
       name: data.name,
       decription: data.description,
     },
   });
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const getMembers = async (req, res) => {
-  const { id: groupId } = req.params;
+const getMembers = async (groupId) => {
   const chat = await Services.findOne("chat", { _id: groupId });
   let memberIds = chat.members.map((member) => member.memberId);
   memberIds = await objectId(memberIds);
-  const members = await Services.aggregate(
-    "user",
-    [
-      { $match: { _id: { $in: memberIds } } },
-      {
-        $lookup: {
-          from: "files",
-          localField: "profilePic",
-          foreignField: "_id",
-          as: "profilePic",
-        },
+  const members = await Services.aggregate("user", [
+    { $match: { _id: { $in: memberIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
       },
-      { $unwind: "$profilePic" },
-      {
-        $project: {
-          profilePic: 1,
-          name: 1,
-          lastName: 1,
-          status: 1,
-        },
-      },
-    ]
-  );
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      members,
     },
-  });
+    { $unwind: "$profilePic" },
+    {
+      $project: {
+        profilePic: 1,
+        name: 1,
+        lastName: 1,
+        status: 1,
+      },
+    },
+  ]);
+
+  return members
+  
 };
 
 export {

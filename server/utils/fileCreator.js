@@ -6,7 +6,7 @@ const fileCreator = async (file) => {
     contentType: await fileTypeGetter(file.mimetype),
     path: file.path,
   });
-  return newFile._id
+  return newFile
 };
 
 export default fileCreator

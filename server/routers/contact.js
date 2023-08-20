@@ -2,16 +2,16 @@ import express from 'express';
 const router = express.Router()
 
 import {
-  addContact,
-  getContacts,
-  getContact,
-  editContact
-} from "../controllers/contactController.js";
+  addContactI,
+  getContactsI,
+  getContactI,
+  editContactI
+} from "../inters/contact.js";
 
-router.post("/", addContact);
-router.get("/", getContacts);
-router.get("/:id", getContact);
-router.put("/:id", editContact);
+router.post("/", addContactI);
+router.get("/", getContactsI);
+router.get("/:id", getContactI);
+router.put("/:id", editContactI);
 
 
 export default router

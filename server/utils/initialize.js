@@ -16,8 +16,8 @@ const userDependencies = async (user) => {
     mimetype: "image/jpg",
     path: consts.DEFAULT_PROFILE_PICTURE,
   };
-  const fileId = await fileCreator(defaultProfileAsFile);
-  user.profilePic = fileId
+  const file = await fileCreator(defaultProfileAsFile);
+  user.profilePic = file._id
 };
 
 export { userDependencies };

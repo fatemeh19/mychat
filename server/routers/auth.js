@@ -1,9 +1,9 @@
 import express from 'express'
 const router = express.Router()
-import { register, verifyEmail, login } from "../controllers/authController.js"
+import { registerI, verifyEmailI, loginI } from "../inters/auth.js"
 
-router.post("/register", register);
-router.post("/verifyEmail", verifyEmail);
-router.post("/login", login)
+router.post("/register", registerI);
+router.post("/verifyEmail", verifyEmailI);
+router.post("/login", loginI)
 
 export default router 

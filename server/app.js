@@ -16,7 +16,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import notFound from './middlewares/notfound.js'
 import errorHandlerMiddleware from './middlewares/error-handler.js'
-
+import errorHandler from './middlewares/errorHandler.js'
 
 import authRouter from './routers/auth.js'
 import mainRouter from './routers/main.js'
@@ -39,7 +39,6 @@ app.use('/api/v1/main',mainRouter)
 // middlewares
 app.use(notFound)
 app.use(errorHandlerMiddleware)
-
 // 
 
 

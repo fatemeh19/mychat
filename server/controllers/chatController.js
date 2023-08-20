@@ -17,12 +17,8 @@ import fileTypeGetter from "../utils/fileTypeIdentifier.js";
 import fileCreator from "../utils/fileCreator.js";
 import * as consts from "../utils/consts.js";
 
-const createChat = async (req, res) => {
-  const {
-    body: body,
-    user: { userId },
-    file,
-  } = req;
+const createChat = async (body,userId,file) => {
+  let profilePic
   const data = await Validators.createChat.validate(body);
   // if type of chat is private
   if (data.chatType == chatType[1]) {
@@ -49,7 +45,8 @@ const createChat = async (req, res) => {
           mimetype: "image/jpg",
           path: consts.DEFAULT_PROFILE_PICTURE,
         };
-    data.profilePic = await fileCreator(methodParameter);
+    profilePic = await fileCreator(methodParameter)
+    data.profilePic = profilePic._id
 
     data.owner = userId;
     let primaryLink = {
@@ -79,21 +76,12 @@ const createChat = async (req, res) => {
       $push: { chats: { chatInfo: chat._id } },
     }
   );
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.CREATED,
-    title: "ok",
-    value: {
-      chat,
-    },
-  });
+  chat.profilePic = profilePic
+  return chat
 };
 
-const getChat = async (req, res) => {
-  const {
-    user: { userId },
-    params: { id: chatId },
-  } = req;
+const getChat = async (userId,chatId) => {
+ 
   const user = await Services.findOne("user", { _id: userId });
   const chat = await Services.findOne("chat", { _id: chatId });
   if (chat.profilePic) {
@@ -146,21 +134,11 @@ const getChat = async (req, res) => {
     i++;
   }
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chat,
-    },
-  });
-  // }
+  return chat
 };
 
-const getChats = async (req, res) => {
-  const {
-    user: { userId },
-  } = req;
+const getChats = async (userId) => {
+  
   const user = await Services.findOne("user", { _id: userId });
   let chatIds = user.chats.map((chat) => chat.chatInfo);
   chatIds = await objectId(chatIds);
@@ -216,35 +194,17 @@ const getChats = async (req, res) => {
     }
   });
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chats,
-    },
-  });
+  return chats
 };
-const addToChats = async (req, res) => {
-  const {
-    params: { id: chatId },
-    user: { userId },
-  } = req;
-
-  // if chat does not exists
-  // error
-
+const addToChats = async (userId,chatId) => {
+  
   await Services.findByIdAndUpdate("user", userId, {
     $push: { chats: { chatInfo: chatId, addedAt: Date.now() } },
   });
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
-const pinUnpinChat = async (req, res) => {
-  const {
-    body,
-    params: { id: chatId },
-    user: { userId },
-  } = req;
+const pinUnpinChat = async (body,userId,chatId) => {
+  
   let data;
   try {
     data = await Validators.pinUnpinChat.validate(body, {
@@ -342,66 +302,7 @@ const DeleteChat = async (userId, deleteInfo) => {
     });
   }
 
-  res.send("ok");
-};
-const deleteChat = async (req, res) => {
-  const {
-    params: { id: chatId },
-    user: { userId },
-    body: { deleteAll },
-  } = req;
-  const chat = await Services.findOne("chat", { _id: chatId });
-  const user = await Services.findOne("user", { _id: userId });
-  if (deleteAll) {
-    if (chat.chatType == "group") {
-      if (!chat.owner.equals(userId)) {
-        return res.send("no access");
-      }
-    }
-    await Services.deleteOne("chat", { _id: chatId });
-    await Services.updateMany(
-      "folder",
-      {
-        "chats.chatInfo": chatId,
-      },
-      {
-        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
-      }
-    );
-    // pinned chats
-    const memberIds = chat.members.map((member) => member.memberId);
-    await Services.updateMany(
-      "user",
-      {
-        _id: { $in: memberIds },
-      },
-      {
-        $pull: { pinnedChats: chatId, chats: { chatInfo: chatId } },
-      }
-    );
-  } else {
-    if (chat.chatType == "group") {
-      await Services.findByIdAndUpdate("chat", chatId, {
-        $pull: { members: { memberId: userId } },
-      });
-    }
-
-    await Services.updateMany(
-      "folder",
-      {
-        _id: { $in: user.folders },
-      },
-      {
-        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
-      }
-    );
-
-    await Services.findByIdAndUpdate("user", userId, {
-      $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
-    });
-  }
-
-  res.send("ok");
+ 
 };
 
 const searchChat = async (userId, search) => {
@@ -588,7 +489,6 @@ const searchChat = async (userId, search) => {
 export {
   addToChats,
   DeleteChat,
-  deleteChat,
   pinUnpinChat,
   createChat,
   getChat,

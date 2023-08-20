@@ -7,11 +7,11 @@ import * as Validators from "../validators/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { objectId } from "../utils/typeConverter.js";
 
-const addContact = async (req, res) => {
-  const { userId } = req.user;
+const addContact = async (userId,body) => {
+  
   let data;
   try {
-    data = await Validators.addContact.validate(req.body, {
+    data = await Validators.addContact.validate(body, {
       stripUnknown: true,
       abortEarly: false,
     });
@@ -68,15 +68,11 @@ const addContact = async (req, res) => {
     $push: { contacts: newContact },
   });
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  
 };
 
-const getContacts = async (req, res) => {
-  const { userId } = req.user;
+const getContacts = async (userId) => {
+  
   const user = await Services.findOne("user", { _id: userId });
   let userContacts = user.contacts;
 
@@ -132,18 +128,10 @@ const getContacts = async (req, res) => {
     contact.lastname = userContacts[contact.index].lastname || contact.lastname;
   });
 
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
-    value: { contacts },
-  });
+  return contacts
 };
-const getContact = async (req, res) => {
-  const {
-    params: { id: contactId },
-    user: { userId },
-  } = req;
+const getContact = async (userId,contactId) => {
+  
   const user = await Services.findOne("user", { _id: userId });
 
   const contact = await Services.findOne(
@@ -178,20 +166,11 @@ const getContact = async (req, res) => {
     contact.lastname = userContact.lastname || contact.lastname;
   }
 
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
-    value: { contact },
-  });
+  return contact
 };
 
-const editContact = async (req, res) => {
-  const {
-    params: { id },
-    body,
-    user: { userId },
-  } = req;
+const editContact = async (body,userId,id) => {
+  
   let data;
   try {
     data = await Validators.editContact.validate(body, {
@@ -214,11 +193,7 @@ const editContact = async (req, res) => {
       new: true,
     }
   );
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
-  });
+  
 };
 
 export { editContact, addContact, getContacts, getContact };
