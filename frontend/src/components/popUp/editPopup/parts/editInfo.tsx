@@ -8,6 +8,7 @@ import InputField from "@/src/components/auth/input/inputField";
 import PopUpBtns from "../../popUpBtns";
 import Image from "next/image";
 import { TextareaAutosize } from "@mui/material";
+import { profilePicHandler } from "@/src/helper/userInformation";
 
 
 interface EditChatInfoProps {
@@ -20,13 +21,15 @@ interface EditChatInfoProps {
 
 const EditChatInfo: FC<EditChatInfoProps> = ({ setFormikbtnRef, setImage, chatName, setChatName, formikSubmitHandler }) => {
 
-    const chatProfilePic = useAppSelector(state => state.chat).Chat.profilePic.path.split('\\')
+    // const chatProfilePic = useAppSelector(state => state.chat).Chat.profilePic.path.split('\\')
+    const chat = useAppSelector(state => state.chat).Chat
     const [chatProfilePicName, setChatProfilePicName] = useState('')
     const [chatDescription, setChatDescription] = useState('')
     const formikbtnRef = useRef<HTMLButtonElement>(null)
 
     useEffect(() => {
-        setChatProfilePicName(chatProfilePic[chatProfilePic.length - 1])
+        // setChatProfilePicName(chatProfilePic[chatProfilePic.length - 1])
+        setChatProfilePicName(profilePicHandler(chat))
         setFormikbtnRef(formikbtnRef)
     }, [])
 

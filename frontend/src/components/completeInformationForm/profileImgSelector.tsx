@@ -16,7 +16,7 @@ const ProfileImgSelector: FC<profileImgSelector> = ({ chatProfilePicName, setIma
 
     useEffect(() => {
         // @ts-ignore
-        profileImg.current.src = `/uploads/photo/${chatProfilePicName}`
+        profileImg.current.src = chatProfilePicName
     }, [chatProfilePicName])
 
     const changeHandler = (e: any) => {
