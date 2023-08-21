@@ -13,6 +13,7 @@ import editGroupInfo from "./editGroupInfo.js"
 import createFolder from "./createFolder.js";
 import pinUnpinChat from "./pinUnpinChat.js"
 import editMessage from "./editMessage.js";
+import editContact from "./editContact.js";
 export {
   loginUser,
   registerUser,
@@ -28,5 +29,6 @@ export {
   editGroupInfo,
   createFolder,
   pinUnpinChat,
-  editMessage
+  editMessage,
+  editContact
 };

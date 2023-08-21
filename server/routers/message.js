@@ -3,24 +3,26 @@ const router = express.Router();
 import uploadFile from "../utils/multer.js";
 import bodyParser from "body-parser";
 import {
-  pinUnPinMessage,
-  forwardMessage,
-  createMessage,
-  editMessage
-} from "../controllers/messageController.js";
+  pinUnPinMessageI,
+  forwardMessageI,
+  createMessageI,
+  editMessageI,
+  
+} from "../inters/message.js";
 import permissionChecker from "../middlewares/permissionChecker.js";
 import messageTypeChecker from "../middlewares/messageTypeChecker.js";
 
 router
   .route("/:chatId")
   .post(
-    [uploadFile.single("file"), messageTypeChecker, permissionChecker("")],
-    createMessage
+    [uploadFile.single("file")],
+    createMessageI
   )
-  .patch(forwardMessage);
+  .patch(forwardMessageI);
 
-router.patch("/:pin/:chatId/:messageId", pinUnPinMessage);
-router.put("/:id",uploadFile.single("file"),editMessage)
+router.patch("/:pin/:chatId/:messageId", pinUnPinMessageI);
+router.put("/:id",uploadFile.single("file"),editMessageI)
+// router.get("/search/:chatId/:search",searchMessageI)
 // router.patch("/seen/:chatId/:messageId",seenMessage)
 
 // .delete(DeleteMessageHttp)

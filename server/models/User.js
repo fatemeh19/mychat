@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import * as Services from "../services/dbServices.js";
+import dupChecker from "../utils/dupChecker.js";
+import * as CustomError from "../errors/index.js";
+import * as RH from "../middlewares/ResponseHandler.js";
+import ErrorMessages from "../messages/errors.js";
+import Fields from "../messages/fields.js";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -14,26 +20,18 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "please provide email"],
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "please provide password"],
     },
     phoneNumber: {
       type: String,
-      //   required: [true, "please provide phoneNumber"],
-      // validate: {
-      //   validator: validator.isMobilePhone('ir-IR'),
-      // },
-      unique: true,
+      // unique: true,
     },
     username: {
       type: String,
-      unique: true,
-      // minLength: [10, "username must be more than 10 characters"],
-      // maxLength: [20, "username must be less than 20 characters"],
+      // unique: true,
     },
     bio: {
       type: String,
@@ -43,7 +41,10 @@ const UserSchema = new mongoose.Schema(
       online: Boolean,
       lastseen: Date,
     },
-    profilePic: String,
+    profilePic: {
+      type: mongoose.Types.ObjectId,
+      ref: "File",
+    },
     isVerified: {
       type: Boolean,
       default: false,
@@ -72,14 +73,13 @@ const UserSchema = new mongoose.Schema(
         lastname: {
           type: String,
         },
-        
       },
     ],
     folders: [
       {
-        type:mongoose.Types.ObjectId,
-        ref:"Folder"
-      }
+        type: mongoose.Types.ObjectId,
+        ref: "Folder",
+      },
     ],
     chats: [
       {
@@ -91,10 +91,10 @@ const UserSchema = new mongoose.Schema(
           type: mongoose.Types.ObjectId,
           ref: "Chat",
         },
-        addedAt:{
-          type:Date,
-          default:Date.now()
-        }
+        addedAt: {
+          type: Date,
+          default: Date.now(),
+        },
       },
     ],
     pinnedChats: [
@@ -103,27 +103,26 @@ const UserSchema = new mongoose.Schema(
         ref: "Chat",
       },
     ],
-    settingId:{
-      type:mongoose.Types.ObjectId,
-      ref:'Setting'
-    }
+    settingId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Setting",
+    },
   },
   { timestamps: true }
-  
 );
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-// UserSchema.methods.hashPassowrd = async function(){
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const id = this.getQuery()._id;
+  let { dup, element } = await dupChecker("user", this.getUpdate());
+  if (dup && !dup._id.equals(id)) {
+    throw new Error(element)
+  }
+});
 
-// }
-// UserSchema.methods.comparePassowrd = async function(password){
-//   const isMatch = await bcrypt.compare(password,this.password)
-//   return isMatch
-
-// }
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;

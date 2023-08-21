@@ -2,12 +2,13 @@ import express from 'express'
 const router = express.Router()
 import groupRouter from "./group.js"
 import uploadFile from "../utils/multer.js"
-import {addToChats,deleteChat,pinUnpinChat,createChat,getChat,getChats} from '../controllers/chatController.js'
+import {deleteChatI,searchChatI,addToChatsI,pinUnpinChatI,createChatI,getChatI,getChatsI} from '../inters/chat.js'
 router.use('/group', groupRouter)
-router.route('/').post(uploadFile.single('profilePic'),createChat).get(getChats)
-router.route('/:id').get(getChat)
-router.patch("/pinUnpin/:id",pinUnpinChat)
-router.patch("/addToChats/:id",addToChats)
+router.route('/').post(uploadFile.single('profilePic'),createChatI).get(getChatsI)
+router.route('/:id').get(getChatI)
+router.patch("/pinUnpin/:id",pinUnpinChatI)
+router.patch("/addToChats/:id",addToChatsI)
+router.get('/search/:search',searchChatI)
 
 
 

@@ -9,7 +9,6 @@ import Chat from "../models/Chat.js";
 const create = async (model, data) => {
   const Model = await modelSelector(model);
   const newDocument = await Model.create(data);
-  console.log(newDocument)
   return newDocument;
   
 };
@@ -31,10 +30,10 @@ const findOne = async (model, Query, select = {}) => {
   return document;
 };
 
-const findByIdAndUpdate = async (model, id, Query, options) => {
+const findByIdAndUpdate = async (model, id, Query, options={}) => {
     let Model
     if(model == 'chat'){
-        console.log(id)
+        
         const chatType = await Chat.findById(id, { chatType: 1 });
         
         Model = await modelSelector(chatType.chatType);
@@ -45,9 +44,9 @@ const findByIdAndUpdate = async (model, id, Query, options) => {
     }
   
   let document;
-
+  
   try {
-    document = await Model.findByIdAndUpdate(id, Query, options).select({
+    document = await Model.findOneAndUpdate({_id:id}, Query, options).select({
       password: 0,
     });
   } catch (err) {
@@ -60,7 +59,7 @@ const findByIdAndUpdate = async (model, id, Query, options) => {
       Field: Fields[field],
     });
   }
-
+ 
   return document;
 };
 

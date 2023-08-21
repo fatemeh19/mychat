@@ -1,12 +1,17 @@
-import express from 'express';
-const router = express.Router()
-
+import express from "express";
+const router = express.Router();
 
 import uploadFile from "../utils/multer.js";
 
-import {
-  editSetting
-} from "../controllers/settingController.js";
+import { editSettingI, getSettingI } from "../inters/setting.js";
 
-router.patch("/:title",uploadFile.single('notifSound'),editSetting)
-export default router
+router.patch(
+  "/:id/:title",
+  uploadFile.fields([
+    { name: "notifSound", maxCount: 1 },
+    { name: "background", maxCount: 1 },
+  ]),
+  editSettingI
+);
+router.get("/:id",getSettingI);
+export default router;

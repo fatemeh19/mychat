@@ -12,16 +12,17 @@ import crypto from "crypto";
 import "../utils/loadEnv.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
 import indexFinder from "../utils/indexFinder.js";
-const createChat = async (req, res) => {
-  const {
-    body: body,
-    user: { userId },
-    file,
-  } = req;
+import { objectId } from "../utils/typeConverter.js";
+import fileTypeGetter from "../utils/fileTypeIdentifier.js";
+import fileCreator from "../utils/fileCreator.js";
+import * as consts from "../utils/consts.js";
+
+const createChat = async (body,userId,file) => {
+  let profilePic
   const data = await Validators.createChat.validate(body);
   // if type of chat is private
   if (data.chatType == chatType[1]) {
-    const chatExists = await Services.findOne('chat',{
+    const chatExists = await Services.findOne("chat", {
       and: [
         { "members.0.memberId": { $in: data.memberIds } },
         { "members.1.memberId": { $in: data.memberIds } },
@@ -37,9 +38,16 @@ const createChat = async (req, res) => {
       });
     }
   } else {
-    if (file) {
-      data.profilePic = file.path;
-    }
+    let methodParameter = file
+      ? file
+      : {
+          originalname: "default-profile",
+          mimetype: "image/jpg",
+          path: consts.DEFAULT_PROFILE_PICTURE,
+        };
+    profilePic = await fileCreator(methodParameter)
+    data.profilePic = profilePic._id
+
     data.owner = userId;
     let primaryLink = {
       name: "primaryLink",
@@ -50,43 +58,35 @@ const createChat = async (req, res) => {
     data.inviteLinks.push(primaryLink);
   }
   let members = [];
-  // console.log(data.memberIds)
   data.memberIds.forEach((memberId) => {
     members.push({
       memberId,
     });
-    // console.log(members)
   });
 
   data["members"] = members;
-  
 
-  const chat = await Services.create(data.chatType,data);
-  await Services.updateMany('user',
+  const chat = await Services.create(data.chatType, data);
+  await Services.updateMany(
+    "user",
     {
       _id: { $in: data.memberIds },
     },
     {
-      $push: {chats:{chatInfo:chat._id} },
+      $push: { chats: { chatInfo: chat._id } },
     }
   );
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.CREATED,
-    title: "ok",
-    value: {
-      chatId: chat._id,
-    },
-  });
+  chat.profilePic = profilePic
+  return chat
 };
 
-const getChat = async (req, res) => {
-  const {
-    user: { userId },
-    params: { id: chatId },
-  } = req;
-  const user = await Services.findOne('user',{_id:userId})
-  const chat = await Services.findOne('chat',{ _id: chatId });
+const getChat = async (userId,chatId) => {
+ 
+  const user = await Services.findOne("user", { _id: userId });
+  const chat = await Services.findOne("chat", { _id: chatId });
+  if (chat.profilePic) {
+    chat.profilePic = await Services.findOne("file", { _id: chat.profilePic });
+  }
   let addedAt;
   user.chats.forEach((chat) => {
     if (chat.chatInfo.equals(chatId)) {
@@ -111,7 +111,7 @@ const getChat = async (req, res) => {
   // });
   const messageIds = chat.messages.map((message) => message.messageInfo);
 
-  const messages = await Services.findMany('message',{
+  const messages = await Services.findMany("message", {
     _id: { $in: messageIds },
     // createdAt: { $gte: joinedAt },
   });
@@ -129,40 +129,42 @@ const getChat = async (req, res) => {
       i++;
       continue;
     }
-    
+
     chat.messages[index].messageInfo = messages[i];
     i++;
   }
 
-  
-
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chat,
-    },
-  });
-  // }
+  return chat
 };
 
-const getChats = async (req, res) => {
-  const {
-    user: { userId },
-  } = req;
-  const user = await Services.findOne('user',{_id:userId})
-  const chatIds = user.chats.map((chat)=>chat.chatInfo)
-  const chats = await Services.findMany('chat',
-    { _id: {$in:chatIds} },
-    {},
-    {updatedAt:-1}
-  );
+const getChats = async (userId) => {
+  
+  const user = await Services.findOne("user", { _id: userId });
+  let chatIds = user.chats.map((chat) => chat.chatInfo);
+  chatIds = await objectId(chatIds);
+  const chats = await Services.aggregate("chat", [
+    { $match: { _id: { $in: chatIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
   const messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
   );
-  const messages = await Services.findMany('message',
+  const messages = await Services.findMany(
+    "message",
     {
       _id: { $in: messageIds },
     },
@@ -175,80 +177,34 @@ const getChats = async (req, res) => {
     if (!chat.messages.length) {
       return;
     }
-  
-    chat.messages.splice(0, chat.messages.length - 1);
-    if(!messages[index] || !chat.messages[0].messageInfo.equals(messages[index]._id) ){
-      messages.forEach((message,i)=>{
-        if(message._id.equals(chat.messages[0].messageInfo)){
-          chat.messages[0].messageInfo = messages[i];
 
+    chat.messages.splice(0, chat.messages.length - 1);
+    if (
+      !messages[index] ||
+      !chat.messages[0].messageInfo.equals(messages[index]._id)
+    ) {
+      messages.forEach((message, i) => {
+        if (message._id.equals(chat.messages[0].messageInfo)) {
+          chat.messages[0].messageInfo = messages[i];
         }
-      })
-    }else{
+      });
+    } else {
       chat.messages[0].messageInfo = messages[index];
       index++;
-
     }
-    
   });
-  
-  // let index;
-  // let i = 0;
-  // let length = chats.length;
-  // for (index = 0; index < length; index++) {
-  //   if (messages[i].createdAt < addedAt) {
-  //     chat.messages.splice(index, 1);
-  //     index--;
-  //     length = chat.messages.length;
-  //     i++;
-  //     continue;
-  //   }
-  //   let messageIndex = indexFinder(
-  //     0,
-  //     messageIdss.length,
-  //     messageIdss,
-  //     chat.messages[index].messageInfo
-  //   );
-  //   chat.messages[index].messageInfo = messages[messageIndex];
-  //   i++;
-  // }
 
-
-
-
-
-
-
-
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chats,
-    },
-  });
+  return chats
 };
-const addToChats = async (req, res)=>{
-  const {params:{id:chatId}, user:{userId}} = req
-
-  // if chat does not exists
-  // error
-
-  await Services.findByIdAndUpdate('user',userId,{
-    $push:{chats:{chatInfo:chatId , addedAt:Date.now()}}
-  })
-  res.send("ok")
-
-
-
-}
-const pinUnpinChat = async (req, res) => {
-  const {
-    body,
-    params: { id: chatId },
-    user: { userId },
-  } = req;
+const addToChats = async (userId,chatId) => {
+  
+  await Services.findByIdAndUpdate("user", userId, {
+    $push: { chats: { chatInfo: chatId, addedAt: Date.now() } },
+  });
+  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+};
+const pinUnpinChat = async (body,userId,chatId) => {
+  
   let data;
   try {
     data = await Validators.pinUnpinChat.validate(body, {
@@ -276,13 +232,13 @@ const pinUnpinChat = async (req, res) => {
   updateQuery[op]["pinnedChats"] = chatId;
 
   if (data.allChats) {
-    await Services.findByIdAndUpdate('user',userId, updateQuery);
-    await Services.findByIdAndUpdate('chat',chatId, {
+    await Services.findByIdAndUpdate("user", userId, updateQuery);
+    await Services.findByIdAndUpdate("chat", chatId, {
       $set: { pinned: data.pin },
     });
   } else {
     updateQuery["$set"]["chats.$[chat].pinned"] = data.pin;
-    await Services.findByIdAndUpdate('folder',data.folderId, updateQuery, {
+    await Services.findByIdAndUpdate("folder", data.folderId, updateQuery, {
       arrayFilters: [{ "chat.chatInfo": chatId }],
     });
   }
@@ -293,22 +249,19 @@ const pinUnpinChat = async (req, res) => {
   });
 };
 
-const DeleteChat = async (deleteInfo) => {
-  const {
-    chatId ,
-    userId ,
-    deleteAll
-  } = deleteInfo;
-  const chat = await Services.findOne('chat',{ _id: chatId });
-  const user = await Services.findOne('user',{ _id: userId });
+const DeleteChat = async (userId, deleteInfo) => {
+  const { chatId, deleteAll } = deleteInfo;
+  const chat = await Services.findOne("chat", { _id: chatId });
+  const user = await Services.findOne("user", { _id: userId });
   if (deleteAll) {
     if (chat.chatType == "group") {
       if (!chat.owner.equals(userId)) {
-        return res.send("no access")
+        return res.send("no access");
       }
     }
-    await Services.deleteOne('chat',{ _id: chatId });
-    await Services.updateMany('folder',
+    await Services.deleteOne("chat", { _id: chatId });
+    await Services.updateMany(
+      "folder",
       {
         "chats.chatInfo": chatId,
       },
@@ -318,78 +271,24 @@ const DeleteChat = async (deleteInfo) => {
     );
     // pinned chats
     const memberIds = chat.members.map((member) => member.memberId);
-    await Services.updateMany('user',
+    await Services.updateMany(
+      "user",
       {
         _id: { $in: memberIds },
       },
       {
-        $pull: { pinnedChats: chatId , chats:{chatInfo:chatId} },
+        $pull: { pinnedChats: chatId, chats: { chatInfo: chatId } },
       }
     );
   } else {
-    if(chat.chatType == "group"){
-      await Services.findByIdAndUpdate('chat',chatId, {
-        $pull: { members: { memberId: userId } },
-      });
-    }
-    
-    await Services.updateMany('folder',
-      {
-        _id: { $in: user.folders },
-      },
-      {
-        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
-      }
-    );
-
-    await Services.findByIdAndUpdate('user',userId, {
-      $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
-    });
-  }
-
-  res.send("ok");
-};
-const deleteChat = async (req, res) => {
-  const {
-    params: { id: chatId },
-    user: { userId },
-    body: { deleteAll },
-  } = req;
-  const chat = await Services.findOne('chat',{ _id: chatId });
-  const user = await Services.findOne('user',{ _id: userId });
-  if (deleteAll) {
     if (chat.chatType == "group") {
-      if (!chat.owner.equals(userId)) {
-        return res.send("no access")
-      }
-    }
-    await Services.deleteOne('chat',{ _id: chatId });
-    await Services.updateMany('folder',
-      {
-        "chats.chatInfo": chatId,
-      },
-      {
-        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
-      }
-    );
-    // pinned chats
-    const memberIds = chat.members.map((member) => member.memberId);
-    await Services.updateMany('user',
-      {
-        _id: { $in: memberIds },
-      },
-      {
-        $pull: { pinnedChats: chatId , chats:{chatInfo:chatId} },
-      }
-    );
-  } else {
-    if(chat.chatType == "group"){
-      await Services.findByIdAndUpdate('chat',chatId, {
+      await Services.findByIdAndUpdate("chat", chatId, {
         $pull: { members: { memberId: userId } },
       });
     }
-    
-    await Services.updateMany('folder',
+
+    await Services.updateMany(
+      "folder",
       {
         _id: { $in: user.folders },
       },
@@ -398,12 +297,201 @@ const deleteChat = async (req, res) => {
       }
     );
 
-    await Services.findByIdAndUpdate('user',userId, {
-      $pull: { chats:{chatInfo:chatId} ,pinnedChats: chatId },
+    await Services.findByIdAndUpdate("user", userId, {
+      $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
     });
   }
 
-  res.send("ok");
+ 
 };
 
-export {addToChats,DeleteChat,deleteChat, pinUnpinChat, createChat, getChat, getChats };
+const searchChat = async (userId, search) => {
+  // const {
+  //   params: { search },
+  //   user: { userId },
+  // } = req;
+  const user = await Services.findOne("user", { _id: userId });
+  let userChats = user.chats.map((chat) => chat.chatInfo);
+  userChats = await objectId(userChats);
+  let groupNameRegex1 = new RegExp(`^${search}`, "i");
+  let groupNameRegex2 = new RegExp(` ${search}`, "i");
+  const result = await Services.aggregate("user", [
+    {
+      $match: { _id: await objectId(userId) },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        contacts: {
+          $filter: {
+            input: "$contacts",
+            as: "contact",
+            cond: {
+              $or: [
+                {
+                  $regexFind: {
+                    input: "$$contact.name",
+                    regex: groupNameRegex1,
+                  },
+                },
+                {
+                  $regexFind: {
+                    input: "$$contact.lastname",
+                    regex: groupNameRegex1,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  ]);
+  let contacts = result[0].contacts.map((contact) => contact.userId);
+  contacts = await objectId(contacts);
+  const chats = await Services.aggregate("chat", [
+    {
+      $match: {
+        _id: { $in: userChats },
+      },
+    },
+    {
+      $addFields: {
+        returnObject1: {
+          $regexFind: { input: "$name", regex: groupNameRegex1 },
+        },
+      },
+    },
+    {
+      $addFields: {
+        returnObject2: {
+          $regexFind: { input: "$name", regex: groupNameRegex2 },
+        },
+      },
+    },
+
+    { $unwind: "$members" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "members.memberId",
+        foreignField: "_id",
+        as: "membersInfo",
+      },
+    },
+    { $unwind: "$membersInfo" },
+    {
+      $addFields: {
+        returnObject3: {
+          $regexFind: { input: "$membersInfo.name", regex: groupNameRegex1 },
+        },
+      },
+    },
+    {
+      $addFields: {
+        returnObject4: {
+          $regexFind: {
+            input: "$membersInfo.lastname",
+            regex: groupNameRegex1,
+          },
+        },
+      },
+    },
+
+    // Group back to arrays
+    {
+      $group: {
+        name: { $first: "$name" },
+        obj1: { $first: "$returnObject1" },
+        obj2: { $first: "$returnObject2" },
+        chatType: { $first: "$chatType" },
+        _id: "$_id",
+        members: { $push: "$members" },
+        membersInfo: { $push: "$membersInfo" },
+      },
+    },
+
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        chatType: 1,
+        obj1: 1,
+        obj2: 1,
+        membersInfo: {
+          $filter: {
+            input: "$membersInfo",
+            as: "memberInfo",
+            cond: {
+              $and: [
+                {
+                  $or: [
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.name",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.lastname",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.username",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $in: ["$$memberInfo._id", contacts],
+                    },
+                  ],
+                },
+                { $ne: ["$$memberInfo._id", await objectId(userId)] },
+                { $eq: ["$chatType", "private"] },
+              ],
+            },
+          },
+        },
+      },
+    },
+  ]);
+
+  for (let index = 0; index < chats.length; index++) {
+    if (
+      !chats[index].obj1 &&
+      !chats[index].obj2 &&
+      !chats[index].membersInfo.length
+    ) {
+      chats.splice(index, 1);
+      index--;
+    }
+  }
+  // chats.forEach((chat, index) => {
+  //   if (!chat.obj1 && !chat.obj2 && !chat.membersInfo.length) {
+  //     chats.splice(index, 1);
+  //   }
+  // });
+  return chats;
+  // RH.SendResponse({
+  //   res,
+  //   statusCode: StatusCodes.OK,
+  //   title: "ok",
+  //   value: {
+  //     chats,
+  //   },
+  // });
+};
+
+export {
+  addToChats,
+  DeleteChat,
+  pinUnpinChat,
+  createChat,
+  getChat,
+  getChats,
+  searchChat,
+};

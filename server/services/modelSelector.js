@@ -4,6 +4,8 @@ import Message from "../models/message.js";
 import Folder from "../models/folder.js";
 import Group from "../models/Group.js";
 import privateChat from "../models/privateChat.js";
+import Setting from "../models/Setting.js";
+import file from "../models/file.js";
 
 const modelSelector = async (model) => {
   switch (model) {
@@ -19,6 +21,12 @@ const modelSelector = async (model) => {
       return Chat;
     case "folder":
       return Folder;
+    case "setting":
+      return Setting
+    case "file":
+      return file
+
+
   }
 };
 
