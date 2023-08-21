@@ -66,10 +66,13 @@ const Folders: FC<FoldersProps> = ({
                 const res = await callApi().put(`/main/folder/${folderIdForEdit}`, formData, config)
                 console.log('editFolder res : ', res)
                 if (res.status === 200) {
+                    const editedFolderId = res.data.value.Folder._id
                     const folderIds = folders.map(folder => folder._id)
-                    const folderIndex = findIndex(0, folderIds.length, folderIds, res.data._id)
+                    const folderIndex = findIndex(0, folderIds.length, folderIds, editedFolderId)
+                    console.log('folderIndex : ', folderIndex)
+                    console.log('folders[folderIndex] : ', folders[folderIndex])
                     const editedFolder = {
-                        ...res.data,
+                        ...res.data.value.Folder,
                         numOfChat: chatIds.length,
                         open: false
                     }
