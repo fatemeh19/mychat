@@ -133,6 +133,8 @@ const Folders: FC<FoldersProps> = ({
         }
     }
     const editFolderHandler = (folder: folderInterface) => {
+        console.log('all folders : ', folders)
+        console.log('folder in edit : ', folder)
         setEdit(true)
         setFolderIdForEdit(folder._id)
         let folderChatIds: string[];

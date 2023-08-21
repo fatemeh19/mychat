@@ -21,7 +21,7 @@ import Input from "../auth/input";
 import InputField from "../auth/input/inputField";
 import PopUpBtns from "../popUp/popUpBtns";
 import ChatBox from "./chatBox";
-import { profilePicNameHandler } from "@/src/helper/userInformation";
+import { profilePicHandler } from "@/src/helper/userInformation";
 import Image from "next/image";
 interface AddChatsProps {
     chatIds: string[],
@@ -101,8 +101,7 @@ const AddChats: FC<AddChatsProps> = ({
                             chatsInfo.map((chat) => (
                                 <div key={chat._id} className="w-full select-none cursor-pointer bg-gray-100 py-1 px-2 flex justify-center gap-1 rounded-full mr-3">
                                     <Image
-                                        src={chat.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chat.chatInfo)}`
-                                            : '/uploads/photo/defaultProfilePic.png'}
+                                        src={profilePicHandler(chat.chatInfo)}
                                         className="w-[40px] h-[40px] object-cover rounded-full"
                                         width={500} height={50} alt="contact-profile" />
                                     <span className="m-auto">{chat.chatInfo.name}</span>
@@ -123,8 +122,7 @@ const AddChats: FC<AddChatsProps> = ({
                                 <ChatBox
                                     key={chatBox._id}
                                     profilePicName=
-                                    {chatBox.chatInfo.profilePic ? `/uploads/photo/${profilePicNameHandler(chatBox.chatInfo)}`
-                                        : '/uploads/photo/defaultProfilePic.png'}
+                                    {profilePicHandler(chatBox.chatInfo)}
                                     chatId={chatBox._id}
                                     chatName={chatBox.chatInfo.name}
                                     // chatBoxClickHandler={chatBoxClickHandler}
