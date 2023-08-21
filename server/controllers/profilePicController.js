@@ -16,6 +16,7 @@ import fileCreator from "../utils/fileCreator.js";
 
 const updateProfilePic = async (id, file) => {
 
+  console.log(id)
   const oldPic = await Services.findByIdAndUpdate("file", id, {
     $set: {
       path: file ? file.path : consts.DEFAULT_PROFILE_PICTURE,

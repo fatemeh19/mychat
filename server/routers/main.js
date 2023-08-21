@@ -9,7 +9,7 @@ import folderRouter from './folder.js'
 import settingRouter from './setting.js'
 import authMiddleware from '../middlewares/Authoriztion.js'
 import upload from '../utils/multer.js';
-import { updateProfilePic } from '../controllers/profilePicController.js';
+import { updateProfilePicRoute } from '../inters/profilePic.js';
 router.use('/dev',devRouter)
 
 router.use(authMiddleware)
@@ -19,7 +19,7 @@ router.use("/contact", contactRouter);
 router.use('/message',messageRouter)
 router.use('/folder', folderRouter)
 router.use('/setting',settingRouter)
-router.patch('/profilePic/:id',upload.single('profilePic'),updateProfilePic)
+router.patch('/profilePic/:id',upload.single('profilePic'),updateProfilePicRoute)
 
 
 
