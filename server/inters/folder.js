@@ -7,14 +7,21 @@ import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import { objectId } from "../utils/typeConverter.js";
-import {editFolder,getFolders,getFolder,deleteFolder,addRemoveChat,createFolder} from '../controllers/folderController.js' 
+import {
+  editFolder,
+  getFolders,
+  getFolder,
+  deleteFolder,
+  addRemoveChat,
+  createFolder,
+} from "../controllers/folderController.js";
 
 const createFolderI = async (req, res) => {
   const {
     user: { userId },
     body,
   } = req;
-  const newFolder = await createFolder(userId,body)
+  const newFolder = await createFolder(userId, body);
 
   RH.SendResponse({
     res,
@@ -32,7 +39,7 @@ const addRemoveChatI = async (req, res) => {
     body,
     params: { folderId },
   } = req;
-  await addRemoveChat(body,folderId)
+  await addRemoveChat(body, folderId);
 
   RH.SendResponse({
     res,
@@ -46,8 +53,8 @@ const deleteFolderI = async (req, res) => {
     params: { id: folderId },
     user: { userId },
   } = req;
-  await deleteFolder(userId, folderId)
- 
+  await deleteFolder(userId, folderId);
+
   RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
@@ -60,8 +67,8 @@ const getFolderI = async (req, res) => {
     params: { id: folderId },
   } = req;
 
-  const folder = await getFolder(folderId)
-  console.log("haay")
+  const folder = await getFolder(folderId);
+  console.log("haay");
   RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
@@ -75,8 +82,7 @@ const getFoldersI = async (req, res) => {
     user: { userId },
   } = req;
 
-  const folders = await getFolders(userId)
- 
+  const folders = await getFolders(userId);
 
   RH.SendResponse({
     res,
@@ -92,10 +98,16 @@ const editFolderI = async (req, res) => {
     body,
   } = req;
 
-  await editFolder(body,folderId)
- 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  const Folder = await editFolder(body, folderId);
 
+  RH.SendResponse({
+    res,
+    statusCode: StatusCodes.OK,
+    title: "ok",
+    value: {
+      Folder,
+    },
+  });
 };
 
 export {
