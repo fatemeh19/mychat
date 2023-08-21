@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import CustomError from "./CustomError.js";
 class BadRequestError extends CustomError {
-  constructor(message, errors) {
-    super(message, errors);
+  constructor(errorTypeDetail,field) {
+    super('Bad Request Error!',errorTypeDetail,field)
     this.statusCode = StatusCodes.BAD_REQUEST;
   }
 }

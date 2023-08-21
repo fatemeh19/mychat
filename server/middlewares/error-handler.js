@@ -13,7 +13,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   } else {
     let errors = [];
     let error = {
-      msg: err.message || "Something went wrong please try later",
+      msg: err || "Something went wrong please try later",
     };
     errors.push(error)
     Error ={

@@ -10,6 +10,7 @@ import * as Validators from "../validators/index.js"
 import * as RH from"../middlewares/ResponseHandler.js"
 import { setStatus } from "./userController.js";
 import { userDependencies } from "../utils/initialize.js";
+import fields from "../messages/fields.js";
 
 const register = async (body) => {
   
@@ -20,13 +21,14 @@ const register = async (body) => {
       stripUnknown: true,
     });
   } catch (err) {
-    
+   
     await RH.CustomError({ err, errorClass: CustomError.ValidationError });
   }
   const emailAlreadyExists = await Services.findOne('user',{
     email: data.email,
   });
   if (emailAlreadyExists) {
+    // throw new CustomError.BadRequestError(ErrorMessages.DuplicateError,fields.email)
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
       errorType: ErrorMessages.DuplicateError,
