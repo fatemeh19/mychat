@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import {CustomError} from '../errors/index.js'
 const errorHandlerMiddleware = (err, req, res, next) => {
-  console.log("eerrror=",err);
+  console.log("error=",err);
 
   let Error;
   if (err instanceof CustomError) {

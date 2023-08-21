@@ -112,10 +112,18 @@ const getFolder = async (folderId) => {
     chat.chatInfo = chats[index];
   });
 
-  const messageIds = folder.chats.map(
-    (chat) =>
-      chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo
-  );
+  // const messageIds = folder.chats.map(
+  //   (chat) =>
+  //     chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo
+  // );
+  let messageIds = []
+  folder.chats.forEach(chat => {
+    if (!chat.messages.length) {
+      return;
+    }
+    messageIds.push(chat.chatInfo?.messages[chat.chatInfo.messages.length - 1]?.messageInfo)
+
+  });
   const messages = await Services.findMany(
     "message",
     {
