@@ -1,8 +1,9 @@
+import { profilePicInterface } from "@/src/models/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface chatInfoInterface {
     _id: string,
     name: string,
-    profilePic: string,
+    profilePic: profilePicInterface,
     status: {
         online: boolean,
         lastseen: string | Date | number
