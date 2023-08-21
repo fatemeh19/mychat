@@ -193,6 +193,7 @@ const editFolder = async (body, folderId) => {
       new: true,
     }
   );
+  return updated
 };
 
 export {
