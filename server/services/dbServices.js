@@ -50,7 +50,7 @@ const findByIdAndUpdate = async (model, id, Query, options={}) => {
       password: 0,
     });
   } catch (err) {
-    console.log(err);
+    
     const { errorType, field } = await mongooseErrorExtractor(err);
 
     return await RH.CustomError({

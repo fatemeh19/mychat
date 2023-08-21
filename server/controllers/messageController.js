@@ -12,7 +12,7 @@ import { objectId } from "../utils/typeConverter.js";
 const createMessage = async (chatId,message,userId,file) => {
   
   let url = file ? file.path : undefined;
-  let originalName = file ? req.file.originalname : undefined;
+  let originalName = file ? file.originalname : undefined;
 
   let newMessage = {
     reply: {

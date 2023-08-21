@@ -61,6 +61,7 @@ const getFolderI = async (req, res) => {
   } = req;
 
   const folder = await getFolder(folderId)
+  console.log("haay")
   RH.SendResponse({
     res,
     statusCode: StatusCodes.OK,
