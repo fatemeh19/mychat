@@ -12,6 +12,10 @@ export default function SideBar() {
     const folders = useAppSelector(state => state.folders).folders
     const [open, setOpen] = useState(true)
 
+    useEffect(() => {
+        console.log('folders : ', folders)
+    }, [folders])
+
     return (
         <div className="h-screen bg-mainColor relative  dark:bg-bgColorDark">
 

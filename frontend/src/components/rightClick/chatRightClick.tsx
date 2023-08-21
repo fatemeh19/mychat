@@ -9,6 +9,7 @@ import { RiUnpinLine } from 'react-icons/ri';
 import style from './style.module.css'
 import { useOnClickOutside } from './useOnClickOutside';
 
+
 interface ChatRightClickProps {
     x: number,
     y: number,
@@ -92,7 +93,7 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
         <>
             <div
                 className={`absolute z-20 ${style.wrapper} ${style.p} ${style.li}`}
-                style={{ top: `${0}px`, right: `${0}px` }}
+                style={{ top: `${0}px`, right: `${120}px` }}
                 ref={contextMenuRef}
             >
                 <div className={`${style.content}`}>
@@ -113,7 +114,7 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
                             <span>Add to folder</span>
                             <div className={`${style.extend_box} extend-box`}>
                                 <span className={`${style.extend_icon}`}> {'>'} </span>
-                                <div ref={hiddenScroll} className={`${style.hidden_scroll} hidden-scroll`}>
+                                <div ref={hiddenScroll} className={`${style.hidden_scroll} hidden-scroll !right-[-100px]`}>
                                     <ul className={`${style.extend_menu}`}>
                                         {folders.map((folder) => (
 

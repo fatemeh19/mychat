@@ -13,9 +13,10 @@ import CustomizedDialogs from "../popUp";
 import CreateFolder from "./createFolder";
 import AddChats from "./addChats";
 import callApi from "@/src/helper/callApi";
-import { addFolder, addFoldersList, folderInterface } from "@/src/redux/features/folderSlice";
+import { addFolder, addFoldersList, folderInterface, editFolder } from "@/src/redux/features/folderSlice";
 import Image from "next/image";
 import { findChatInfo } from "@/src/helper/chatBoxFunctions";
+import findIndex from "@/src/helper/findIndex";
 interface FoldersProps {
 
 }
@@ -29,7 +30,7 @@ const Folders: FC<FoldersProps> = ({
     const [addChat, setAddChat] = useState(false)
     const [edit, setEdit] = useState(false)
     const [chatIds, setChatIds] = useState<string[]>([])
-    const [folderName, setFolderName] = useState('')
+    const [folderName, setFolderName] = useState<string>('')
     const [chatsInfo, setChatsInfo] = useState<any[]>([])
     const [folderIdForEdit, setFolderIdForEdit] = useState('')
     // redux states
@@ -45,12 +46,13 @@ const Folders: FC<FoldersProps> = ({
     const addChatOpen = () => {
         setAddChat(!addChat)
     }
-    const saveFolderHandler = async () => {
-
+    const saveFolderHandler = async (name: string) => {
+        console.log('chatIds : ', chatIds)
+        console.log('folderName:', name)
         try {
 
             let formData = {
-                name: folderName,
+                name: name,
                 chatIds: chatIds
             }
             const token = localStorage.getItem('token')
@@ -64,26 +66,14 @@ const Folders: FC<FoldersProps> = ({
                 const res = await callApi().put(`/main/folder/${folderIdForEdit}`, formData, config)
                 console.log('editFolder res : ', res)
                 if (res.status === 200) {
-                    let editFolder = {
-                        _id: res.data._id,
-                        name: folderName
+                    const folderIds = folders.map(folder => folder._id)
+                    const folderIndex = findIndex(0, folderIds.length, folderIds, res.data._id)
+                    const editedFolder = {
+                        ...res.data,
+                        numOfChat: chatIds.length,
+                        open: false
                     }
-                    let newFolders: folderInterface[] = []
-                    for (let i = 0; i < folders.length; i++) {
-                        if (folders[i]._id === editFolder._id) {
-                            folders[i].name = editFolder.name
-                            folders[i].numOfChat = folders[i].chats.length
-                            let j = 0;
-                            chatIds.map((chatId) => {
-                                folders[i].chats[j].chatInfo = chatId
-                                folders[i].chats[j].pinned = false
-                                j = j + 1
-
-                            })
-                        }
-                        newFolders.push(folders[i])
-                    }
-                    dispatch(addFoldersList(newFolders))
+                    dispatch(editFolder({ index: folderIndex, editedFolder: editedFolder }))
                     setChatIds([])
                     setFolderName('')
                 }
@@ -95,9 +85,13 @@ const Folders: FC<FoldersProps> = ({
                 if (res.status === 200) {
                     let newFolder = {
                         _id: res.data.value.folderId,
-                        name: folderName,
-                        numOfChat: chatIds.length
+                        name: name,
+                        numOfChat: chatIds.length,
+                        pinnedChats: [],
+                        open: false
                     }
+                    console.log('newFolder : ', newFolder)
+
                     dispatch(addFolder(newFolder))
                     setChatIds([])
                     setFolderName('')
@@ -138,7 +132,7 @@ const Folders: FC<FoldersProps> = ({
             console.log('error in catch text info : ', error)
         }
     }
-    const editFolder = (folder: folderInterface) => {
+    const editFolderHandler = (folder: folderInterface) => {
         setEdit(true)
         setFolderIdForEdit(folder._id)
         let folderChatIds: string[];
@@ -180,7 +174,7 @@ const Folders: FC<FoldersProps> = ({
                             : folders.map((folder) => (
 
                                 <div className="flow-root mt-3 cursor-pointer" key={folder._id}>
-                                    <div onClick={() => editFolder(folder)} className="float-left flex gap-3">
+                                    <div onClick={() => editFolderHandler(folder)} className="float-left flex gap-3">
                                         <BiSolidFolder className="m-auto text-xl text-blue-500" />
                                         <div className="grid">
                                             <span className='text-sm'>{folder.name}</span>

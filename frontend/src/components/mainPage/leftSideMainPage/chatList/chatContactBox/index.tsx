@@ -214,7 +214,8 @@ const ChatContactBox: FC<chatContactProps> = ({
                     }
                     else {
                         userInfo = User;
-                        userInfo.pinnedChats?.push(chatbox._id)
+                        console.log('userInfo:', userInfo)
+                        userInfo.pinnedChats.push(chatbox._id)
                         dispatch(addUserInfo(userInfo))
                     }
                 }

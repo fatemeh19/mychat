@@ -134,8 +134,8 @@
 .hidden_scroll
 {
     position: absolute;
-    bottom: 30px;
-    right: -182px;
+    bottom: -60px;
+    right: -102px;
     opacity: 0;
     pointer-events: none;
     transition: .2s ease;

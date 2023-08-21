@@ -15,7 +15,7 @@ interface CreateFolderProps {
     addChatOpen: () => void,
     createForlderOpen: () => void,
     folderName: string,
-    saveFolderHandler: () => void
+    saveFolderHandler: (name: string) => void
     setFolderName: Dispatch<SetStateAction<string>>,
     chatsInfo: any[],
     chatIds: string[],
@@ -46,9 +46,10 @@ const CreateFolder: FC<CreateFolderProps> = ({
     })
 
     const submitHandler = (values: any) => {
+        console.log('folder values : ', values)
         setFolderName(values.folderName)
-        if (folderName !== '') {
-            saveFolderHandler()
+        if (values.folderName !== '') {
+            saveFolderHandler(values.folderName)
             console.log('create or edit folder', values)
         }
         createForlderOpen()

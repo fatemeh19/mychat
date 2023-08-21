@@ -29,7 +29,7 @@ export const folderSlice = createSlice({
             state.folders = action.payload
         },
         addFolder: (state, action: PayloadAction<any>) => {
-            state.folders[state.folders.length - 1] = action.payload
+            state.folders.push(action.payload)
         },
         setOpenFolder: (state, action: PayloadAction<any>) => {
             state.folders.map(folder => {
@@ -46,6 +46,9 @@ export const folderSlice = createSlice({
                 folder.open = false
             })
         },
+        editFolder: (state, action: PayloadAction<{ index: number, editedFolder: folderInterface }>) => {
+            state.folders[action.payload.index] = action.payload.editedFolder
+        }
     },
 });
 
@@ -53,6 +56,7 @@ export const {
     addFolder,
     addFoldersList,
     setOpenFolder,
-    setCloseFolders
+    setCloseFolders,
+    editFolder
 } = folderSlice.actions;
 export default folderSlice.reducer;
