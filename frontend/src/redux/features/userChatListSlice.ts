@@ -8,7 +8,7 @@ interface chatInfoInterface {
         lastseen: string | Date | number
     },
 }
-interface chatBoxInterface {
+export interface chatBoxInterface {
     _id: string,
     lastMessage: string,
     lastMessageTime: string,

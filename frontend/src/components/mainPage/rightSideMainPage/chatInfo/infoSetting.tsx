@@ -7,7 +7,7 @@ import { BiBell } from 'react-icons/bi'
 import { useAppSelector } from '@/src/redux/hooks'
 import { ChatType } from '@/src/models/enum'
 interface InfoSettingProps {
-    chatType: ChatType
+    chatType: ChatType | string
 }
 const InfoSetting: FC<InfoSettingProps> = ({ chatType }) => {
 

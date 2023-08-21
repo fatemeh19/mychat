@@ -129,6 +129,9 @@ const ChatContactBox: FC<chatContactProps> = ({
                         }
                     })
 
+                    const fromIndex = chatList.indexOf(chatbox)
+                    // console.log(fromIndex)
+                    // dispatch(addChatToTop(fromIndex))
                 }
             }
         }

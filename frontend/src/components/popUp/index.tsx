@@ -9,6 +9,8 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Slide } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
+import { setIsEditChat } from '@/src/redux/features/chatSlice';
 // @ts-ignore
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiPaper-root ': {
@@ -113,6 +115,9 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, Childre
     //     })
     // }, 50);
 
+    const dispatch = useAppDispatch()
+    const isEditChat = useAppSelector(state => state.chat).isEditChat
+
     const [openChildMenu, setOpenChildMenu] = React.useState(false)
     const [openChildMenuInChild, setOpenChildMenuInChild] = React.useState(true)
 
@@ -140,14 +145,16 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, Childre
                     // aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    {title && <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
+                    {title && <BootstrapDialogTitle id="customized-dialog-title" onClose={() => { handelOpen(); isEditChat && dispatch(setIsEditChat(false)) }}>
                         {title}
                         {ChildrenMore && <button className='relative'>
                             <p className='rotate-90' onClick={() => { setOpenChildMenu(!openChildMenu); setOpenChildMenuInChild(true) }}>...</p>
                             {openChildMenu && <div className='absolute right-0 w-max font-[Vazir]'>
                                 {
+
+
                                     // @ts-ignore
-                                    React.cloneElement(ChildrenMore, { setOpenChildMenu: setOpenChildMenu, openChildMenuInChild: openChildMenuInChild, setOpenChildMenuInChild: setOpenChildMenuInChild })
+                                    React.cloneElement(ChildrenMore, { setOpenChildMenu: setOpenChildMenu, openChildMenuInChild: openChildMenuInChild, setOpenChildMenuInChild: setOpenChildMenuInChild, handelOpen: handelOpen })
                                 }
                             </div>}
                         </button>

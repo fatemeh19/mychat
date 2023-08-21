@@ -1,7 +1,8 @@
 "use client"
 
+import { useAppSelector } from "@/src/redux/hooks";
 // import EmojiPicker from "emoji-picker-react";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface ChatInputProps {
@@ -14,17 +15,38 @@ interface ChatInputProps {
 
 const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
 
+    const chat = useAppSelector(state => state.chat.Chat)
+    const chatFetched = useAppSelector(state => state.chat).chatFetched
+
+    const textareaAutosizeParentRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        // chatFetched : add this because before chat fetched this code runs and make error by userPermission undefined
+        if (chatFetched === true) {
+            const permissions = chat.userPermissionsAndExceptions.permissions
+            if (permissions) {
+                const textarea = textareaAutosizeParentRef.current?.children[0]
+                if (!permissions.sendMessage) {
+                    textarea?.setAttribute('placeholder', '× Text not allowed ×')
+                    // @ts-ignore
+                    textarea.disabled = true
+                } else {
+                    textarea?.setAttribute('placeholder', 'Write a message ...')
+                    // @ts-ignore
+                    textarea.disabled = false
+                }
+            }
+        }
+    }, [chatFetched ? chat : chatFetched])
+
+
     const snedMessage = async () => {
         sendHandler()
         setInput('')
     }
 
-    const onEmojiClickHandler = (e: any, emojiObject: any) => {
-        setInput(prevInput => prevInput + emojiObject.emoji)
-    }
-
     return (
-        <div className={`w-full flex justify-center font-[vazir] placeholder:justify-center`}>
+        <div ref={textareaAutosizeParentRef} className={`w-full flex justify-center font-[vazir] placeholder:justify-center`}>
             <TextareaAutosize
                 placeholder="Write a message ..."
                 className="
@@ -38,6 +60,7 @@ const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
                     placeholder:leading-[1.8rem]
                     leading-5
                     untvisible-scrollbar
+                    font-[Arial,FontAwesome]
                 "
                 maxRows={8}
                 onKeyDown={e => {
@@ -49,11 +72,6 @@ const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
                 onChange={e => setInput(e.target.value)}
                 value={input}
             />
-            {/* <EmojiPicker
-                width='100%'
-                onEmojiClick={onEmojiClickHandler}
-
-            /> */}
         </div>
     );
 }

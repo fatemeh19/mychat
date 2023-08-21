@@ -1,7 +1,7 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChatType } from "@/src/models/enum";
-import { groupMemberInterface, recievedMessageInterface } from "@/src/models/interface";
+import { groupMemberInterface, profilePicInterface, recievedMessageInterface } from "@/src/models/interface";
 
 // باید به اطلاعات چند نوع چت هم اضافه بشه که از سمت سرور گرفته میشه
 
@@ -11,16 +11,46 @@ interface member {
     joinedAt: string
 }
 
-interface chatInterface {
+export interface userPermissionsInterface {
+    sendMessage: boolean,
+    sendMedia: {
+        all: boolean,
+        photo: boolean,
+        videoMessage: boolean,
+        music: boolean,
+        file: boolean,
+        voice: boolean
+    },
+    addMember: boolean,
+    pinMessages: boolean,
+    changeGroupInfo: boolean
+}
+
+export interface userExceptionsInterface {
+    userId: string,
+    restrictUntil: string,
+    specificTime: string,
+    permissions: userPermissionsInterface
+}
+
+interface userPermissionsAndExceptionsInterface {
+    permissions: userPermissionsInterface
+    exceptions: userExceptionsInterface[]
+}
+
+export interface chatInterface {
     _id: string,
-    adminsAndRights: [],
+    name: string,
+    profilePic: profilePicInterface,
+    owner: string,
+    // adminsAndRights: [],
     chatType: string,
     members: member[],
     messages: recievedMessageInterface[],
     updatedAt: string,
     notifications: boolean,
     pinnedMessages: string[],
-    userPermissionsAndExceptions: [],
+    userPermissionsAndExceptions: userPermissionsAndExceptionsInterface,
     inviteLinks: string[],
     __v: number
 }
@@ -29,14 +59,18 @@ interface initialStateInterface {
     chatType: ChatType,
     firstChat: boolean,
     chatCreated: boolean,
-    groupMembers: groupMemberInterface[]
+    groupMembers: groupMemberInterface[],
+    isEditChat: boolean,
+    chatFetched: boolean
 }
 
 const initialState = {
     Chat: {},
     chatType: ChatType.private,
     firstChat: true,
-    chatCreated: false
+    chatCreated: false,
+    isEditChat: false,
+    chatFetched: false
 } as initialStateInterface
 
 export const ChatSlice = createSlice({
@@ -89,6 +123,18 @@ export const ChatSlice = createSlice({
         removeMemberFromGroup: (state, action: PayloadAction<number>) => {
             state.groupMembers.splice(action.payload, 1)
         },
+        editMessage: (state, action: PayloadAction<{ index: number, message: any }>) => {
+            state.Chat.messages[action.payload.index].messageInfo = action.payload.message
+        },
+        setIsEditChat: (state, action: PayloadAction<boolean>) => {
+            state.isEditChat = action.payload
+        },
+        setUserPermissionsAndExceptions: (state, action: PayloadAction<userPermissionsAndExceptionsInterface>) => {
+            state.Chat.userPermissionsAndExceptions = action.payload
+        },
+        setChatFetched: (state, action: PayloadAction<boolean>) => {
+            state.chatFetched = action.payload
+        },
     },
 });
 
@@ -106,6 +152,10 @@ export const {
     addSeenIds,
     setGroupMembersInformation,
     addMemberToGroup,
-    removeMemberFromGroup
+    removeMemberFromGroup,
+    editMessage,
+    setIsEditChat,
+    setUserPermissionsAndExceptions,
+    setChatFetched
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

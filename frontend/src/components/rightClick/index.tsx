@@ -26,6 +26,7 @@ interface RightClickProps {
     activeReply: (e: MouseEvent<HTMLDivElement | HTMLLIElement, globalThis.MouseEvent>) => void
     pinMessage: () => void
     forwardMessage: () => void;
+    activeEdit: () => void
 }
 
 const RightClick: FC<RightClickProps> = ({
@@ -38,10 +39,12 @@ const RightClick: FC<RightClickProps> = ({
     activeSelection,
     activeReply,
     pinMessage,
-    forwardMessage
+    forwardMessage,
+    activeEdit
 }) => {
 
     const chat = useAppSelector(state => state.chat).Chat
+    const permissions = useAppSelector(state => state.chat.Chat.userPermissionsAndExceptions).permissions
 
     const contextMenuRef = useRef<HTMLDivElement>(null)
     const hiddenScroll = useRef<HTMLDivElement>(null)
@@ -115,7 +118,7 @@ const RightClick: FC<RightClickProps> = ({
                             <BsReply className={`${style.icon}`} />
                             <span>Reply</span>
                         </li>
-                        <li className={`${style.item}`}>
+                        <li className={`${style.item}`} onClick={activeEdit}>
                             <FiEdit2 className={`${style.icon}`} />
                             <span>Edit</span>
                         </li>
@@ -128,7 +131,7 @@ const RightClick: FC<RightClickProps> = ({
                             <span>Copy Message Link</span>
                         </li> */}
                         <>
-                            {
+                            {permissions.pinMessages ?
                                 msg.pinStat.pinned
                                     ? <li className={`${style.item}`} onClick={pinMessage}>
                                         <PiPushPinSlashLight className={`${style.icon}`} />
@@ -138,6 +141,7 @@ const RightClick: FC<RightClickProps> = ({
                                         <PiPushPinLight className={`${style.icon}`} />
                                         <span>Pin</span>
                                     </li>
+                                : null
                             }
                         </>
                         {

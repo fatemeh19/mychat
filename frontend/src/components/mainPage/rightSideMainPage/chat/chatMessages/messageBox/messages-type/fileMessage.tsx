@@ -82,6 +82,9 @@ const FileMessage: FC<FileMessageProps> = ({ dir, msg }) => {
             </div>
             <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
                 {
+                    msg.messageInfo.edited && <p className="text-xs pr-1">edited</p>
+                }
+                {
                     msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
                 }
                 <span>{time} AM</span>

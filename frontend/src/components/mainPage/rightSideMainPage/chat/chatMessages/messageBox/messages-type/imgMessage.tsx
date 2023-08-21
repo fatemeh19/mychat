@@ -88,6 +88,9 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                                         :
                                         <div className={`date absolute right-1 bottom-1 bg-[#000000ab] rounded-full py-[7px] px-[10px] text-xs text-white ml-1 mb-[.5px] whitespace-nowrap flex`}>
                                             {
+                                                msg.messageInfo.edited && <p className="text-xs pr-1">edited</p>
+                                            }
+                                            {
                                                 msg.pinStat.pinned ? <PiPushPinFill className='mx-1' /> : null
                                             }
                                             <span>{time} AM</span>

@@ -21,6 +21,7 @@ const ForwardContentSection: FC<ForwardContentSectionProps> = ({
     const userContactList = useAppSelector(state => state.userContactsList).contacts
     const user = useAppSelector(state => state.userInfo).User
     const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
+    const isEdit = useAppSelector(state => state.editMessage).isEdit
 
 
     let sender: contactInterface | UserInterface
@@ -54,7 +55,10 @@ const ForwardContentSection: FC<ForwardContentSectionProps> = ({
                 </div>
             }
             <div className="flex flex-col">
-                <p className="username text-blue-500 font-semibold text-sm">{sender.name}</p>
+                {!isEdit
+                    ? <p className="username text-blue-500 font-semibold text-sm">{sender.name}</p>
+                    : <p className="title text-blue-500 font-semibold text-sm">Edit Message</p>
+                }
                 <p className="text-black text-sm font-light">
                     {
                         forwaredMessage?.messageInfo.content.text !== ''

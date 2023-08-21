@@ -14,6 +14,8 @@ import toggleReducer from './features/toggleSlice'
 import repledMessageReducer from './features/repliedMessageSlice'
 import foldersReducer from './features/folderSlice'
 import forwardMessageReducer from './features/forwardMessageSlice'
+import editMessageReducer from './features/editMessageSlice';
+import searchReducer from './features/searchSlice'
 // ...
 export const store = configureStore({
   reducer: {
@@ -31,7 +33,9 @@ export const store = configureStore({
     toggle: toggleReducer,
     repledMessage: repledMessageReducer,
     folders: foldersReducer,
-    forwardMessage: forwardMessageReducer
+    forwardMessage: forwardMessageReducer,
+    editMessage: editMessageReducer,
+    search: searchReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

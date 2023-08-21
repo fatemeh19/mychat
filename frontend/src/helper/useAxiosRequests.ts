@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setChatFetched, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -18,12 +18,10 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
         res = await callApi().get(`/main/chat/${chatId}`, config)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
-            setFirstChat(false)
             dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
             dispatch(addChat(Chat))
-            // console.log('Chat in fetch Chat: ', Chat)
-            // save Chat in redux
+            dispatch(setChatFetched(true))
             return res.data.value.chat._id
         }
 
@@ -119,10 +117,57 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
 
 export const removeGroupMember = async (chatId: string, memberId: string, memberIndex: number, dispatch: any) => {
     try {
-        const res = callApi().delete(`/main/chat/group/removeMember/${chatId}/${memberId}`, config)
+        const res = await callApi().delete(`/main/chat/group/removeMember/${chatId}/${memberId}`, config)
         console.log('remove group member res: ', res)
         dispatch(removeMemberFromGroup(memberIndex))
     } catch (error) {
         console.log('remove group member error: ', error)
+    }
+}
+
+export const editMessage = async (id: string, editedMessage: any, dispatch: any) => {
+    console.log('id : ', id),
+        console.log('editedMessage : ', editedMessage)
+    try {
+        const res = await callApi().put(`/main/message/${id}`, editedMessage, config)
+        console.log('edit message res: ', res)
+
+        return res.data.value.message
+        // dispatch(removeMemberFromGroup(memberIndex))
+    } catch (error) {
+        console.log('edit message error: ', error)
+    }
+}
+
+export const editGroupPermissions = async (chatId: string, permissions: userPermissionsInterface) => {
+    try {
+        const data = {
+            permissions,
+            exceptions: []
+        }
+        const res = await callApi().patch(`/main/chat/group/editGroupPermissions/${chatId}`, data, config)
+        console.log('edit group permissions res : ', res)
+    } catch (error) {
+        console.log('edit group permissions error : ', error)
+    }
+}
+
+export const editGroupInfo = async (chatId: string, data: any) => {
+    try {
+        const res = await callApi().patch(`/main/chat/group/editGroupInfo/${chatId}`, data, config)
+        console.log('edit group info res : ', res)
+    } catch (error) {
+        console.log('edit group info error : ', error)
+    }
+}
+
+export const addProfilePic = async (id: string, data: any) => {
+    try {
+        const res = await callApi().post(`/main/addprofile/${id}`, data, config)
+        console.log('add profile pic res : ', res)
+
+    } catch (error) {
+        console.log('add profile pic error : ', error)
+
     }
 }

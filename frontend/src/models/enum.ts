@@ -27,4 +27,8 @@ enum ChatType {
     channel = 'channel'
 }
 
-export { messageTypes, MessageBoxDir, ChatType, fileType }
+enum SearchType {
+    chats = 'chats',
+    messages = 'messages'
+}
+export { messageTypes, MessageBoxDir, ChatType, fileType, SearchType }

@@ -13,6 +13,7 @@ import { FC, useState } from "react";
 import Image from 'next/image'
 import { useAppSelector } from "@/src/redux/hooks";
 import Group from "@/src/components/group/createGroup";
+import { profilePicHandler } from "@/src/helper/userInformation";
 interface MenuProps {
     handleMenu: () => void,
     contactListOpenHandler: () => void,
@@ -28,17 +29,14 @@ const Menu: FC<MenuProps> = ({
     createGroupOpenHandler,
     folderSettingHandler
 }) => {
-    const selector = useAppSelector(state => state.userInfo)
-    const userInfo = selector.User
-    const profilePicName = userInfo.profilePic ? (userInfo.profilePic.split(`\\`)) : '';
+    const userInfo = useAppSelector(state => state.userInfo).User
 
     return (
         <>
             <div className="overflow-hidden  w-full h-[80vh] relative select-none">
                 <div className="bg-mainColor w-full h-auto px-2 pt-3 pb-1">
                     <Image
-                        src={userInfo.profilePic ? `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
-                            : '/uploads/photo/defaultProfilePic.png'}
+                        src={profilePicHandler(userInfo)}
                         className="mt-3 h-[50px] w-[50px] min-h-[70px] min-w-[70px]  object-cover rounded-full  "
                         width={500} height={0} alt="contact-profile" />
 

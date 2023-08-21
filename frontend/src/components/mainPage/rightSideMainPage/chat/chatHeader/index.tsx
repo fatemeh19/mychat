@@ -12,10 +12,8 @@ import { HiOutlineVideoCamera } from 'react-icons/hi'
 import ProfileInfo from '@/src/components/profileInfo'
 import CustomizedDialogs from '@/src/components/popUp'
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks'
-import { addSelectedMessagesMainIds, removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
-import { addMessage, updateArrayMessages } from '@/src/redux/features/chatSlice'
+import { removeSelectMessage, removeSelectMessageContent, setActiveSelection } from '@/src/redux/features/selectedMessagesSlice'
 import ConfirmModal from '@/src/components/basicComponents/confirmModal'
-import findIndex from '@/src/helper/deleteMessage'
 import { recievedMessageInterface } from '@/src/models/interface'
 import deleteMessage from '@/src/helper/deleteMessage'
 import PinnedMessage from './pinnedMessage'
@@ -23,6 +21,11 @@ import { setShowReply } from '@/src/redux/features/repliedMessageSlice'
 import { setForwardMessageIds, setIsForward } from '@/src/redux/features/forwardMessageSlice'
 import ChatListPopup from '@/src/components/basicComponents/chatListPopup'
 import PopUpMenu from '@/src/components/popUp/popUpMenu'
+import { BiSearch } from 'react-icons/bi'
+import { setIsSearch, setSearchType, setSearchedMessages } from '@/src/redux/features/searchSlice'
+import { ChatType, SearchType } from '@/src/models/enum'
+import { GrClose } from 'react-icons/gr'
+import { profilePicHandler } from '@/src/helper/userInformation'
 
 
 interface ChatHeaderProps {
@@ -35,6 +38,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
     const [forwardPopupOpen, setForwardPopupOpen] = useState(false)
+
 
     const [confirmInfo, setConfirmInfo] = useState({
         confirmTitle: '',
@@ -53,6 +57,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
     const chatMessages = useAppSelector(state => state.chat.Chat).messages
     const pinnedMessages = useAppSelector(state => state.chat.Chat).pinnedMessages
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
+    const chatType = useAppSelector(state => state.chat.Chat).chatType
+    const isSearch = useAppSelector(state => state.search).isSearch
+    const searchType = useAppSelector(state => state.search).searchType
     // const [online , setOnline] = useState(userContact.status.online)
     // const [lastSeen , setLastSeen] = useState(userContact.status.lastseen)
     const contactId = userContact._id
@@ -132,7 +139,18 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         console.log('forwarding ...')
     }
 
-    const profilePicName = userContact.profilePic ? (userContact.profilePic).split(`\\`) : '';
+    const searchMessageHandler = () => {
+        dispatch(setIsSearch(true))
+        dispatch(setSearchType(SearchType.messages))
+        console.log('type for search ...')
+    }
+
+    const closeSearchMessageHandleer = () => {
+        dispatch(setIsSearch(false))
+        dispatch(setSearchType(SearchType.chats))
+        console.log('message search closed!')
+        dispatch(setSearchedMessages([]))
+    }
 
     return (
         <div>
@@ -167,6 +185,11 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                     <CgMoreO onClick={closeInfoSide} className='text-gray-400 text-xl cursor-pointer' />
                                     <FiPhone className='text-gray-400 text-xl font-extrabold cursor-pointer' />
                                     <HiOutlineVideoCamera className='text-gray-400 text-2xl cursor-pointer' />
+
+                                    {isSearch && searchType === SearchType.messages
+                                        ? <GrClose className='text-lg text-gray-400 mr-2 mt-[3px]' onClick={closeSearchMessageHandleer} />
+                                        : <BiSearch className="text-xl text-gray-400 mr-2 mt-[3px]" onClick={searchMessageHandler} />
+                                    }
                                 </div>
                                 <div className="
                                     left
@@ -179,11 +202,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                         <Image
                                             width={500}
                                             height={500}
-                                            src={
-                                                userContact.profilePic
-                                                    ? `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
-                                                    : '/uploads/photo/defaultProfilePic.png'
-                                            }
+                                            src={profilePicHandler(userContact)}
                                             alt='chat profile'
                                             className='rounded-full w-[50px] h-[50px] object-cover'
                                         />
@@ -206,19 +225,13 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                             </div>
                             <>
                                 {
-                                    open
-                                        ? (
-                                            <>
-                                                <CustomizedDialogs
-                                                    open={open}
-                                                    title={'User Info'}
-                                                    children={<ProfileInfo />}
-                                                    handelOpen={handelOpenDialog}
-                                                    ChildrenMore={<PopUpMenu />}
-                                                />
-                                            </>
-                                        )
-                                        : null
+                                    open && <CustomizedDialogs
+                                        open={open}
+                                        title={chatType === ChatType.group ? 'Group Info' : 'User Info'}
+                                        children={<ProfileInfo />}
+                                        handelOpen={handelOpenDialog}
+                                        ChildrenMore={<PopUpMenu />}
+                                    />
                                 }
                             </>
                         </div>

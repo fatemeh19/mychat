@@ -3,15 +3,21 @@
 import SearchBox from './searchBox';
 import { BiEdit } from "react-icons/bi";
 import { BiArrowBack } from "react-icons/bi";
-import { useAppSelector } from '@/src/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import { useEffect, useState } from 'react';
 import ChatListHeader from './chatListHeader';
 import { userHandler } from '@/src/helper/userInformation';
 import ChatListItems from './chatListItems';
 import callApi from '@/src/helper/callApi';
+import { setSearchedChats, setSearchedMessages } from '@/src/redux/features/searchSlice';
 export default function ChatList() {
+
+    const dispatch = useAppDispatch()
+
     const socket = useAppSelector(state => state.socket).Socket
     const openChat = useAppSelector(state => state.open).openChat;
+    const isSearch = useAppSelector(state => state.search).isSearch
+
     const [userId, setUserId] = useState('')
 
     const userIdHandler = async () => {
@@ -23,8 +29,28 @@ export default function ChatList() {
     }
 
     useEffect(() => {
+        socket.on('searchChat', chats => {
+            console.log('search chats:', chats)
+            dispatch(setSearchedChats(chats))
+        })
+        socket.on('searchMessage', messages => {
+            console.log('search messages:', messages)
+            dispatch(setSearchedMessages(messages))
+        })
+
+        return () => {
+            socket.removeAllListeners('searchChat')
+            socket.removeAllListeners('searchMessage')
+        }
+    }, [socket])
+    useEffect(() => {
         userIdHandler()
     }, [socket, userId])
+
+    useEffect(() => {
+        console.log('isSearch : ', isSearch)
+
+    }, [isSearch])
 
     return (
 

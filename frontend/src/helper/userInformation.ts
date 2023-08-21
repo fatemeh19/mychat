@@ -2,6 +2,7 @@
 
 import { addFoldersList, folderInterface, setCloseFolders } from "../redux/features/folderSlice"
 import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
+import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
 import { useAppSelector } from "../redux/hooks"
@@ -32,39 +33,41 @@ export const fetchUserProfileData = async (dispatch: any) => {
 
 }
 
+const findContact = async (contactId: any) => {
+    let contact = {}
+    let contactList = []
+    const res1 = await callApi().get('/main/contact/', config)
+    if (res1.statusText && res1.statusText === 'OK') {
+        contactList = res1.data.value.contacts;
+
+    }
+    for (let i = 0; i < contactList.length; i++) {
+        if (contactList[i]._id == contactId) {
+            contact = contactList[i]
+            // console.log("fond")
+            break;
+        }
+    }
+    return contact;
+
+}
+
+const contactChatList = async (chatBox: any) => {
+    let contact = {}
+    let user = await userHandler();
+
+    if (chatBox.members[0].memberId == user._id) {
+        contact = await findContact(chatBox.members[1].memberId)
+    }
+    else {
+        contact = await findContact(chatBox.members[0].memberId)
+    }
+
+    return contact;
+}
+
 export const fetchUserChatList = async (dispatch: any) => {
     let allChatList = []
-    const findContact = async (contactId: any) => {
-        let contact = {}
-        let contactList = []
-        const res1 = await callApi().get('/main/contact/', config)
-        if (res1.statusText && res1.statusText === 'OK') {
-            contactList = res1.data.value.contacts;
-
-            console.log(contactList)
-        }
-        for (let i = 0; i < contactList.length; i++) {
-            if (contactList[i]._id == contactId) {
-                contact = contactList[i]
-                break;
-            }
-        }
-        return contact;
-
-    }
-    const contactChatList = async (chatBox: any) => {
-        let contact = {}
-        let user = await userHandler();
-
-        if (chatBox.members[0].memberId == user._id) {
-            contact = await findContact(chatBox.members[1].memberId)
-        }
-        else {
-            contact = await findContact(chatBox.members[0].memberId)
-        }
-
-        return contact;
-    }
     const res = await callApi().get('/main/chat/', config)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
@@ -118,10 +121,47 @@ export const fetchUserChatList = async (dispatch: any) => {
     }
 }
 
-export const profilePicNameHandler = (user: any) => {
-    const profilePicName = user.profilePic ? (user.profilePic).split(`\\`) : '';
-    return profilePicName[profilePicName.length - 1];
+export const addChatToUserChatList = async (newChat: chatInterface, dispatch: any) => {
+    let chatInfo = {}
+    if (newChat.chatType == "private") {
+        chatInfo = await contactChatList(newChat)
+    }
+    else if (newChat.chatType == "group") {
+        chatInfo = {
+            name: newChat.name,
+            profilePic: newChat.profilePic,
+            _id: newChat._id,
+            status: {}
+        }
+    }
+    let lastMessage = ''
+    let lastMessageTime = ''
+    if (newChat.messages[0] != null) {
+        lastMessage = newChat.messages[0].messageInfo.content.text
+        lastMessageTime = newChat.messages[0].messageInfo.updatedAt
+    }
+    else if (newChat.messages[0] == null) {
+        lastMessageTime = newChat.updatedAt
+    }
+    let chat = {
+        chatInfo: chatInfo,
+        _id: newChat._id,
+        lastMessage: lastMessage,
+        lastMessageTime: lastMessageTime,
+        open: false,
+    }
+    dispatch(addChat(chat))
 }
+
+export const profilePicHandler = (user: any) => {
+    const profilePicName = user.profilePic ? (user.profilePic.path).split(`\\`) : '';
+    if (profilePicName[profilePicName.length - 2] === 'defaults') {
+        return `/defaults/${profilePicName[profilePicName.length - 1]}`
+    } else {
+        return `/uploads/photo/${profilePicName[profilePicName.length - 1]}`
+    }
+}
+
 export const userHandler = async () => {
     let user;
     const res = await callApi().get('/main/user/profile', config)

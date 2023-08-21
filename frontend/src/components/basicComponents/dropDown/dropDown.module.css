@@ -1,0 +1,113 @@
+.dropDown
+{
+    position: relative;
+    width: max-content;
+}
+
+.dropDown_box
+{
+    width: 100%;
+}
+
+.dropDown_btn
+{
+    color: #181818;
+    padding: 0 6px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: all 150ms;
+}
+
+.dropDown_btn:hover
+{
+    color: rgb(51, 108, 221)
+}
+
+.icon
+{
+    font-size: 10px;
+    transition: .1s;
+}
+
+.rotate
+{
+    transform: rotate(180deg);
+}
+
+.show
+{
+    display: flex !important;
+    position: absolute;
+}
+
+.wrapper
+{
+    position: absolute;
+    top: 30px;
+    right: 0;
+    display: flex;
+    width: max-content;
+    background-color: white;
+    box-shadow: 0px 1px 7px 1px rgba(0, 0, 0, .1);
+    max-height: 300px;
+    border-radius: 10px;
+    display: none;
+
+    z-index: 10;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.wrapper::-webkit-scrollbar .wrapper::-webkit-scrollbar-thumb .wrapper::-webkit-scrollbar-thumb:hover .menu
+{
+    width: 100%;
+}
+
+.li
+{
+    width: 100%;
+    padding: .6rem 1rem;
+    margin: .1rem 0;
+
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.li:first-child
+{
+    border-radius: 10px 10px 0 0;
+}
+
+.li:last-child
+{
+    border-radius: 0 0 10px 10px;
+}
+
+.li:hover
+{
+    background-color: rgb(211, 211, 211);
+}
+
+/* @media screen and (min-width : 990px)
+{
+    .dropDown
+    {
+        width: 22% !important;
+
+    }
+}
+
+@media screen and (min-width : 1400px)
+{
+    .min-dropDown
+    {
+        width: 22% !important;
+
+    }
+} */
