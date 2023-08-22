@@ -2,6 +2,8 @@ import * as Validators from "../validators/index.js";
 import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
+import ValidationError from "../errors/ValidationError.js";
+
 import ErrorMessages from "../messages/errors.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
@@ -28,14 +30,14 @@ const createChat = async (body,userId,file) => {
         { "members.1.memberId": { $in: data.memberIds } },
       ],
       chatType: chatType[1],
-    });
+    },{},false);
 
     if (chatExists) {
-      await RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.DuplicateError,
-        Field: fields.chat,
-      });
+      throw new CustomError.BadRequestError(
+        ErrorMessages.DuplicateError,
+        fields.chat
+      );
+      
     }
   } else {
     let methodParameter = file
@@ -93,13 +95,7 @@ const getChat = async (userId,chatId) => {
       addedAt = chat.addedAt;
     }
   });
-  if (!chat) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: fields.chat,
-    });
-  }
+  
   // chat.messages.forEach((message, index) => {
   //   console.log("message.createdAt=",message.createdAt)
   //   console.log("joined=",joinedAt)
@@ -201,7 +197,6 @@ const addToChats = async (userId,chatId) => {
   await Services.findByIdAndUpdate("user", userId, {
     $push: { chats: { chatInfo: chatId, addedAt: Date.now() } },
   });
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 const pinUnpinChat = async (body,userId,chatId) => {
   
@@ -211,9 +206,10 @@ const pinUnpinChat = async (body,userId,chatId) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
   let updateQuery;
   let op;
   if (data.pin) {
@@ -242,11 +238,7 @@ const pinUnpinChat = async (body,userId,chatId) => {
       arrayFilters: [{ "chat.chatInfo": chatId }],
     });
   }
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+ 
 };
 
 const DeleteChat = async (userId, deleteInfo) => {

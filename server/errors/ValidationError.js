@@ -7,6 +7,9 @@ class ValidationError extends Error{
         this.statusCode = StatusCodes.BAD_REQUEST
         
     }
+    // set errors(errors){
+    //     this.errors = errors
+    // }
 }
 
 export default ValidationError

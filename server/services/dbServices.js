@@ -1,9 +1,12 @@
 import modelSelector from "./modelSelector.js";
+import ErrorMessages from "../messages/errors.js";
 
 import Fields from "../messages/fields.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import mongooseErrorExtractor from "../utils/mongooseErrorExtractor.js";
 import * as CustomError from "../errors/index.js";
+import ValidationError from "../errors/ValidationError.js";
+
 import { deleteFileMessages } from "./ExtraServices.js";
 import Chat from "../models/Chat.js";
 const create = async (model, data) => {
@@ -12,7 +15,7 @@ const create = async (model, data) => {
   return newDocument;
   
 };
-const findOne = async (model, Query, select = {}) => {
+const findOne = async (model, Query, select = {},notFoundError=true) => {
   const Model = await modelSelector(model);
 
   let document;
@@ -20,12 +23,14 @@ const findOne = async (model, Query, select = {}) => {
     document = await Model.findOne(Query).select(select);
   } catch (err) {
     const { errorType, field } = await mongooseErrorExtractor(err);
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType,
-      Field: Fields[field],
-    });
+    throw new CustomError.BadRequestError(errorType,Fields[field])
+   
   }
+  if(!document && notFoundError){
+    throw new CustomError.NotFoundError(ErrorMessages.NotFoundError,Fields[model])
+
+  }
+ 
 
   return document;
 };
@@ -35,13 +40,17 @@ const findByIdAndUpdate = async (model, id, Query, options={}) => {
     if(model == 'chat'){
         
         const chatType = await Chat.findById(id, { chatType: 1 });
-        
+        if(!chatType){
+          throw new CustomError.NotFoundError(ErrorMessages.NotFoundError,Fields[model])
+
+        }
         Model = await modelSelector(chatType.chatType);
 
     }else{
         Model = await modelSelector(model);
 
     }
+    
   
   let document;
   
@@ -50,14 +59,16 @@ const findByIdAndUpdate = async (model, id, Query, options={}) => {
       password: 0,
     });
   } catch (err) {
-    
+    console.log(err)
     const { errorType, field } = await mongooseErrorExtractor(err);
 
-    return await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType,
-      Field: Fields[field],
-    });
+    throw new CustomError.BadRequestError(errorType,Fields[field])
+
+  }
+  console.log(document)
+  if(!document ){
+    throw new CustomError.NotFoundError(ErrorMessages.NotFoundError,Fields[model])
+
   }
  
   return document;
@@ -81,12 +92,10 @@ const findAndUpdateBySave = async (model, Query, data) => {
   } catch (err) {
     const { errorType, field } = await mongooseErrorExtractor(err);
 
-    return await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType,
-      Field: Fields[field],
-    });
+    throw new CustomError.BadRequestError(errorType,Fields[field])
+
   }
+  
   return document;
 };
 const aggregate = async (model, pipeLine) => {

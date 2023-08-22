@@ -7,6 +7,7 @@ import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
 import * as fileController from "../utils/file.js";
+import ValidationError from "../errors/ValidationError.js";
 
 const getGroupByLink = async (req, res) => {
   const {
@@ -28,13 +29,7 @@ const getGroupByLink = async (req, res) => {
       },
     },
   });
-  if (!group ) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.ExpiredError,
-      Field: Fields.link,
-    });
-  }
+  
  let outOfLimit = false
   group.inviteLinks.forEach((inviteLink) => {
     if (inviteLink.link == link) {
@@ -50,11 +45,11 @@ const getGroupByLink = async (req, res) => {
     }
   });
   if (outOfLimit ) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.ExpiredError,
-      Field: Fields.link,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.ExpiredError,
+      Fields.link,
+    );
+    
   }
 
   //   const group = await Services.aggregate('chat',[
@@ -148,20 +143,20 @@ const joinGroupViaLink = async (req, res) => {
     group.inviteLinks[inviteLinkIndex].limitForJoin.joinedUsers.length + 1 >
       group.inviteLinks[inviteLinkIndex].limitForJoin.limit
   ) {
-    return RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.FullError,
-      Field: Fields.joinUsersLimit,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.FullError,
+      Fields.joinUsersLimit,
+    );
+    
   }
   group.members.forEach((member) => {
     if (member.memberId.equals(userId)) {
       // is a member already
-      return RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.DuplicateError,
-        Field: Fields.member,
-      });
+      throw new CustomError.BadRequestError(
+        ErrorMessages.DuplicateError,
+        Fields.member,
+      );
+      
       // return console.log("is a member already");
     }
   });
@@ -189,17 +184,12 @@ const createInviteLink = async (req, res) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
   const group = await Services.findOne('chat',{ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
+  
   const newInviteLink = {
     name: "",
     expireDate: {
@@ -234,17 +224,12 @@ const editInviteLink = async (req, res) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
   const group = await Services.findOne('chat',{ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
+  
   const InviteLink = {
     name: "",
     expireDate: {

@@ -3,15 +3,15 @@ import { messageType } from '../utils/enums.js'
 
 const createMessage = yup.object({
     content:yup.object({
-        // contentType:yup.string().oneOf(messageType,'EnumError').required('EmptyError'),
+        // contentType:yup.string().oneOf(messageType,'EnumError'). required(),
         text:yup.string()
     }),
-    // senderId:yup.string().required('EmptyError'),
+    // senderId:yup.string(). required(),
     reply:yup.object({
         isReplied:yup.boolean(),
         messageId:yup.string().when("isReplied",{
             is:true,
-            then:(schema)=> schema.required('EmptyError')
+            then:(schema)=> schema. required()
         })
     })
 

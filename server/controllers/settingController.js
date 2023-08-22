@@ -9,6 +9,8 @@ import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
+import ValidationError from "../errors/ValidationError.js";
+
 const editSetting = async (body,settingId,title,files) => {
   
 
@@ -25,9 +27,8 @@ const editSetting = async (body,settingId,title,files) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    return RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
+  } catch (errors) {
+    throw new ValidationError(errors);  }
 
   if (files.notifSound) {
     if (setting[title].sound != consts.DEFAULT_NOTIF_SOUND) {

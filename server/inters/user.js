@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import * as RH from "../middlewares/ResponseHandler.js";
+import messages from "../messages/messages.js";
 import {
   setInfo,
   getProfile,
@@ -7,7 +8,7 @@ import {
   blockUnblock
 } from "../controllers/userController.js";
 
-const setInfoI = async (req, res) => {
+const setInfoI = async (req, res, next) => {
   const {
     user: { userId },
     body,
@@ -16,31 +17,31 @@ const setInfoI = async (req, res) => {
   await setInfo(userId,body,file)
   
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getProfileI = async (req, res) => {
+const getProfileI = async (req, res, next) => {
   const {
     user: { userId },
   } = req;
   const profile = await getProfile(userId)
 
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
       profile
     },
-  });
+    responseType:messages.ok
+  }
+   next()
 };
 
-const editProfileI = async (req, res) => {
+const editProfileI = async (req, res, next) => {
   const {
     user: { userId },
     body,
@@ -48,24 +49,29 @@ const editProfileI = async (req, res) => {
 
   await editProfile(userId,body)
   
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
 
 
 
 
-const blockUnblockI = async (req, res) => {
+
+const blockUnblockI = async (req, res, next) => {
   const {
     body,
     user: { userId },
   } = req;
   await blockUnblock(body,userId)
   
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 export { blockUnblockI, setInfoI, getProfileI, editProfileI};

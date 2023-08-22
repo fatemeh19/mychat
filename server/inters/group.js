@@ -1,6 +1,7 @@
 import * as RH from "../middlewares/ResponseHandler.js";
 
 import { StatusCodes } from "http-status-codes";
+import messages from "../messages/messages.js";
 
 import { addMember,editGroupInfo,editGroupPermissions,editGroupType, getMembers, removeMember } from "../controllers/groupController.js";
 const addMemberI = async (req, res, next) => {
@@ -11,66 +12,87 @@ const addMemberI = async (req, res, next) => {
     body: { memberId },
     params: { chatId: groupId },
   } = req;
-  addMember(groupId, memberId);
+  await addMember(groupId, memberId);
 
   // pass parameters to addToChats
   req.user.userId = memberId;
   req.params.id = groupId;
 
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+
   next();
 };
 
-const editGroupTypeI = async (req, res) => {
+const editGroupTypeI = async (req, res, next) => {
   const {
     params: { chatId: groupId },
     body,
   } = req;
-  editGroupType()
+  await editGroupType(groupId,body)
   
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
 const removeMemberI = async (req, res, next) => {
   const {
     params: { chatId: groupId, memberId },
   } = req;
-  removeMember(groupId,memberId)
+  await removeMember(groupId,memberId)
   req.body.deleteAll = false;
   req.params.id = groupId;
   req.user.userId = memberId;
+
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
   next();
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const editGroupPermissionsI = async (req, res) => {
+const editGroupPermissionsI = async (req, res, next) => {
   const {
     body,
     params: { chatId: groupId },
   } = req;
-  editGroupPermissions(groupId,body)
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
-const editGroupInfoI = async (req, res) => {
+  await editGroupPermissions(groupId,body)
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()};
+const editGroupInfoI = async (req, res, next) => {
   const {
     body,
     params: { chatId: groupId },
   } = req;
-  editGroupInfo(groupId,body)
+  await editGroupInfo(groupId,body)
   
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getMembersI = async (req, res) => {
+const getMembersI = async (req, res, next) => {
   const { id: groupId } = req.params;
   const members = await getMembers(groupId)
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
-      members,
+      members
     },
-  });
+    responseType:messages.ok
+  }
+  next()
 };
 
 export{

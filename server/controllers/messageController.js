@@ -7,6 +7,7 @@ import messages from "../messages/messages.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import * as fileController from "../utils/file.js";
+import ValidationError from "../errors/ValidationError.js";
 
 import { objectId } from "../utils/typeConverter.js";
 const createMessage = async (chatId,message,userId,file) => {
@@ -34,9 +35,10 @@ const createMessage = async (chatId,message,userId,file) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
   if (!file || !newMessage.content.contentType) {
     // threw Error
     // console.log(file)
@@ -65,11 +67,11 @@ const createMessage = async (chatId,message,userId,file) => {
       },
     ]);
     if (!repliedMessage[0].messages.length) {
-      return await RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.NotFoundError,
-        Field: fields.message,
-      });
+      throw new CustomError.BadRequestError(
+        ErrorMessages.NotFoundError,
+        fields.message,
+      );
+      
     }
   }
 
@@ -82,13 +84,7 @@ const createMessage = async (chatId,message,userId,file) => {
     },
     { new: true }
   );
-  if (!chat) {
-    return await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: fields.chat,
-    });
-  }
+  
   let msg = chat.messages.pop();
   msg.messageInfo = Message;
   return msg
@@ -237,9 +233,9 @@ const editMessage = async (body,file,messageId) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    return RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
+  } catch (errors) {
+    throw new ValidationError(errors);
+    }
   // if message exists
   const message = await Services.findOne("message", { _id: messageId });
 
@@ -248,19 +244,18 @@ const editMessage = async (body,file,messageId) => {
     (message.content.contentType != "text" && !file)
   ) {
     // error
-    return RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.ContentMatchError,
-      Field: fields.file,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.ContentMatchError,
+      fields.file,
+    );
+    
   }
   if (!message.content.text) {
     if (!file) {
-      return RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.NoFileFoundError,
-        Field: fields.file,
-      });
+      throw new CustomError.BadRequestError(
+        ErrorMessages.NoFileFoundError,
+        fields.file,
+      );
       // error
     }
   }

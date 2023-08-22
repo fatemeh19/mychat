@@ -1,13 +1,15 @@
 import * as CustomError from "../errors/index.js";
 import { StatusCodes } from "http-status-codes";
 import * as RH from "../middlewares/ResponseHandler.js";
+import messages from "../messages/messages.js";
+
 import {
   addContact,
   getContacts,
   getContact,
   editContact,
 } from "../controllers/contactController.js";
-const addContactI = async (req, res) => {
+const addContactI = async (req, res,next) => {
   const {
     body,
     user: { userId },
@@ -15,51 +17,52 @@ const addContactI = async (req, res) => {
 
   await addContact(userId, body);
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getContactsI = async (req, res) => {
+const getContactsI = async (req, res,next) => {
   const { userId } = req.user;
   const contacts = await getContacts(userId);
 
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
+  
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: { contacts },
-  });
+    responseType:messages.ok
+  }
+  next()
 };
-const getContactI = async (req, res) => {
+const getContactI = async (req, res,next) => {
   const {
     params: { id: contactId },
     user: { userId },
   } = req;
   const contact = await getContact(userId, contactId);
 
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: { contact },
-  });
+    responseType:messages.ok
+  }
+  next()
 };
 
-const editContactI = async (req, res) => {
+const editContactI = async (req, res,next) => {
   const {
     params: { id },
     body,
     user: { userId },
   } = req;
   await editContact(body, userId, id);
-  await RH.SendResponse({
-    res,
-    statusCode: 200,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
 export { editContactI, addContactI, getContactsI, getContactI };

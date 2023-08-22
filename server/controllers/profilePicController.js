@@ -13,20 +13,25 @@ import * as fileController from "../utils/file.js";
 import { object } from "yup";
 import { objectId } from "../utils/typeConverter.js";
 import fileCreator from "../utils/fileCreator.js";
+import ValidationError from "../errors/ValidationError.js";
 
 const updateProfilePic = async (id, file) => {
 
-  console.log(id)
-  const oldPic = await Services.findByIdAndUpdate("file", id, {
-    $set: {
-      path: file ? file.path : consts.DEFAULT_PROFILE_PICTURE,
-      originalName: file ? file.originalname : "default-profile",
-    },
+  const profilePic = await Services.findOne("file",{_id:id})
+  await fileController.deleteFile(profilePic?.path);
+  profilePic.path = file ? file.path : consts.DEFAULT_PROFILE_PICTURE
+  profilePic.originalName= file ? file.originalname : "default-profile",
+  await profilePic.save()
+  // const oldPic = await Services.findByIdAndUpdate("file", id, {
+  //   $set: {
+  //     path: file ? file.path : consts.DEFAULT_PROFILE_PICTURE,
+  //     originalName: file ? file.originalname : "default-profile",
+  //   },
     
-  },{
-    runValidators:true
-  });
-  await fileController.deleteFile(oldPic?.path);
+  // },{
+  //   runValidators:true
+  // });
+  return profilePic
 
 };
 
