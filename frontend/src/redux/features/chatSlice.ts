@@ -38,12 +38,19 @@ interface userPermissionsAndExceptionsInterface {
     exceptions: userExceptionsInterface[]
 }
 
+interface groupTypeSettingInterface {
+    groupType: 'private' | 'public'
+    restricSavingContent: boolean,
+    approveNewMembers: boolean
+}
+
 export interface chatInterface {
     _id: string,
     name: string,
+    description: string,
     profilePic: profilePicInterface,
     owner: string,
-    // adminsAndRights: [],
+    groupTypeSetting: groupTypeSettingInterface,
     chatType: string,
     members: member[],
     messages: recievedMessageInterface[],
@@ -135,6 +142,13 @@ export const ChatSlice = createSlice({
         setChatFetched: (state, action: PayloadAction<boolean>) => {
             state.chatFetched = action.payload
         },
+        setGroupTypeSetting: (state, action: PayloadAction<any>) => {
+            state.Chat.groupTypeSetting = action.payload
+        },
+        setGroupInfo: (state, action: PayloadAction<{ name: string, description: string }>) => {
+            state.Chat.name = action.payload.name
+            state.Chat.description = action.payload.description
+        }
     },
 });
 
@@ -156,6 +170,8 @@ export const {
     editMessage,
     setIsEditChat,
     setUserPermissionsAndExceptions,
-    setChatFetched
+    setChatFetched,
+    setGroupTypeSetting,
+    setGroupInfo
 } = ChatSlice.actions;
 export default ChatSlice.reducer;

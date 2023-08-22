@@ -5,7 +5,8 @@ import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import EditGeneralSettings from "./parts/editGeneralSetting";
 import EditPermissions from "./parts/editPermissions";
-import { addProfilePic, editGroupInfo } from "@/src/helper/useAxiosRequests";
+import { addProfilePic, editGroupInfo, editGroupType } from "@/src/helper/useAxiosRequests";
+import { setDropDownValue } from "@/src/redux/features/dropDownSlice";
 
 interface EditGroupChatProps {
 }
@@ -14,8 +15,9 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
 
     const dispatch = useAppDispatch()
 
-    const chatId = useAppSelector(state => state.chat.Chat)._id
+    const chat = useAppSelector(state => state.chat).Chat
     const chatName = useAppSelector(state => state.chat.Chat).name
+    const dropDownValue = useAppSelector(state => state.dropDown).DropDownValue
 
     const [image, setImage] = useState('')
     const [groupName, setGroupName] = useState(chatName)
@@ -25,12 +27,45 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
     const editChatHandler = (values: any) => {
         setGroupName(values.chatName)
         console.log('values:', values)
-        const data = {
+        const groupInfoData = {
             name: groupName,
             ...(values.description && { description: values.description })
         }
-        editGroupInfo(chatId, data)
+
+        // --------------------------------------------------------- change group
+        // const groupTypeData = {
+        //     groupType: dropDownValue,
+        //     ...(dropDownValue === 'public'
+        //         ? {
+        //             restrictSavingContent: false,
+        //             url: chat.inviteLinks,
+        //             approveNewMembers: true
+        //         }
+        //         : {
+        //             restrictSavingContent: true,
+        //             url: '',
+        //             approveNewMembers: false
+        //         })
+        // }
+        // console.log('groupTypeData:', groupTypeData)
+        // if (chat.groupTypeSetting.groupType !== dropDownValue) {
+        //     console.log('groupType changed : ', dropDownValue)
+        //     // editGroupType(chat._id, groupTypeData, dispatch)
+        // }
+        // --------------------------------------------------------- end change group
+
+        console.log('groupInfoData:', groupInfoData)
+        if (image !== '') {
+            // editProfilePic()
+        }
+        if (chatName !== values.chatName || chat.description !== values.description) {
+            console.log('name or description changed : ', values.chatName, '_chat.description: ', chat.description)
+            editGroupInfo(chat._id, groupInfoData, dispatch)
+        }
+
         dispatch(setIsEditChat(false))
+
+        // dispatch(setDropDownValue(''))
     }
 
 

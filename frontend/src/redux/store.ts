@@ -16,6 +16,7 @@ import foldersReducer from './features/folderSlice'
 import forwardMessageReducer from './features/forwardMessageSlice'
 import editMessageReducer from './features/editMessageSlice';
 import searchReducer from './features/searchSlice'
+import dropDownReducer from './features/dropDownSlice'
 // ...
 export const store = configureStore({
   reducer: {
@@ -35,7 +36,8 @@ export const store = configureStore({
     folders: foldersReducer,
     forwardMessage: forwardMessageReducer,
     editMessage: editMessageReducer,
-    search: searchReducer
+    search: searchReducer,
+    dropDown: dropDownReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

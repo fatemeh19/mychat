@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setChatFetched, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, setGroupInfo, setGroupTypeSetting, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -152,12 +152,38 @@ export const editGroupPermissions = async (chatId: string, permissions: userPerm
     }
 }
 
-export const editGroupInfo = async (chatId: string, data: any) => {
+export const editGroupInfo = async (chatId: string, data: any, dispatch: any) => {
     try {
         const res = await callApi().patch(`/main/chat/group/editGroupInfo/${chatId}`, data, config)
         console.log('edit group info res : ', res)
+        if (res.status === 200) {
+            // dispatch(setGroupInfo({name : data.name, description:data.description}))
+        }
     } catch (error) {
         console.log('edit group info error : ', error)
+    }
+}
+
+export const editGroupType = async (chatId: string, data: any, dispatch: any) => {
+    try {
+        const res = await callApi().patch(`/main/chat/group/editGroupType/${chatId}`, data, config)
+        console.log('edit group type res : ', res)
+        if (res.status === 200) {
+            // dispatch(setGroupTypeSetting(data))
+        }
+    } catch (error) {
+        console.log('edit group type error : ', error)
+    }
+}
+
+export const editProfilePic = async (profilePicId: string, formData: any, dispatch: any) => {
+    try {
+        const res = await callApi().patch(`/main/profilePic/${profilePicId}`, formData, config)
+        console.log('edit profile pic res : ', res)
+        dispatch()
+
+    } catch (error) {
+        console.log('edit profile pic error : ', error)
     }
 }
 

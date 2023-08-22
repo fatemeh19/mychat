@@ -23,3 +23,9 @@ src={
         : '/uploads/photo/defaultProfilePic.png'
 }
 we need this structure for profilePic if we have multiple image for profile picture but now we hove one so just use src={ `${profilePicNameHandler(Contact)}` }
+
+# optional object arguments
+const data = {
+    name: groupName, <!--> this is fixed argument <-->
+    ...(values.description && { description: values.description }) <!--> this is optional argument : ...(conditional && {a sub object that if condition is true it is added to the main object} ) <-->
+}

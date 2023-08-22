@@ -2,7 +2,7 @@ import { ChatType } from "@/src/models/enum";
 import { FC, useState } from "react";
 import style from '@/src/components/basicComponents/dropDown/dropDown.module.css'
 import { useAppDispatch } from "@/src/redux/hooks";
-import { setDropDownValue } from "@/src/redux/features/dropDown";
+import { setDropDownValue } from "@/src/redux/features/dropDownSlice";
 
 interface DropDownProps {
     title: string,
