@@ -20,6 +20,10 @@ const GroupChatSchema = new mongoose.Schema({
       default: false,
     },
   },
+  // description: {
+  //   type: String,
+  //   default:"group desc"
+  // },
   name: {
     type: String,
     required: true,
@@ -28,9 +32,7 @@ const GroupChatSchema = new mongoose.Schema({
     type:mongoose.Types.ObjectId,
     ref:'File'
   },
-  description: {
-    type: String,
-  },
+  
   owner: {
     type: mongoose.Types.ObjectId,
     ref: "User",
