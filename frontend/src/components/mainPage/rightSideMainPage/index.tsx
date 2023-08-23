@@ -52,6 +52,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         found = false
         dispatch(setChatFetched(false))
+        console.log('chatList in right : ', chatList)
         chatList.map(async cl => {
             if (cl._id === contactId) {
                 fetchChat(cl._id, dispatch)
@@ -81,7 +82,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
             const contact = userContacts.filter(contact => contact._id === contactId)[0]
             contact && dispatch(addUserContact(contact))
         }
-    }, [contactId, chatList])
+    }, [contactId, chatList.length])
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
