@@ -5,14 +5,16 @@ interface initialStateInterface {
     openChat: boolean,
     openPinSectin: boolean,
     openPermissions: boolean,
-    openExceptions: boolean
+    openExceptions: boolean,
+    openGroupType: boolean
 }
 
 const initialState = {
     openChat: false,
     openPinSectin: false,
     openPermissions: false,
-    openExceptions: false
+    openExceptions: false,
+    openGroupType: false
 } as initialStateInterface
 
 export const OpenSlice = createSlice({
@@ -30,6 +32,9 @@ export const OpenSlice = createSlice({
         },
         setOpenExceptions: (state, action: PayloadAction<boolean>) => {
             state.openExceptions = action.payload
+        },
+        setOpenGroupType: (state, action: PayloadAction<boolean>) => {
+            state.openGroupType = action.payload
         }
     },
 });
@@ -38,6 +43,7 @@ export const {
     setOpenChat,
     setOpenPinSection,
     setOpenPermissions,
-    setOpenExceptions
+    setOpenExceptions,
+    setOpenGroupType
 } = OpenSlice.actions;
 export default OpenSlice.reducer;
