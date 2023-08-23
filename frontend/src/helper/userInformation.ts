@@ -43,7 +43,6 @@ const findContact = async (contactId: any) => {
     for (let i = 0; i < contactList.length; i++) {
         if (contactList[i]._id == contactId) {
             contact = contactList[i]
-            // console.log("fond")
             break;
         }
     }
@@ -70,7 +69,6 @@ export const fetchUserChatList = async (dispatch: any) => {
     const res = await callApi().get('/main/chat/', config)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
-        console.log("all chatList:", chatList)
         dispatch(addChatList([]))
         dispatch(setCloseFolders())
         dispatch(setFolderId(''))
@@ -90,7 +88,6 @@ export const fetchUserChatList = async (dispatch: any) => {
             let lastMessage = ''
             let lastMessageTime = ''
             if (chatList[i].messages[0] != null) {
-                console.log('chatList[i].messages:', chatList[i].messages)
                 lastMessage = chatList[i].messages[0].messageInfo.content.text
                 lastMessageTime = chatList[i].messages[0].messageInfo.updatedAt
             }
@@ -169,7 +166,6 @@ export const userHandler = async () => {
         if (user.pinnedChats == undefined) {
             Object.assign(user, { pinnedChats: [] })
         }
-        console.log('user', user)
     }
     return user;
 }
@@ -177,7 +173,6 @@ export const userHandler = async () => {
 export const getFolders = async (dispatch: any) => {
     const res = await callApi().get('/main/folder/', config)
     if (res.statusText && res.statusText === 'OK') {
-        console.log('folders:', res.data)
         let folders: folderInterface[] = [];
 
         // @ts-ignore
@@ -199,7 +194,7 @@ export const getFolders = async (dispatch: any) => {
 }
 export const getFolderChats = async (folderId: string, dispatch: any, chatList: any) => {
     const res = await callApi().get(`/main/folder/${folderId}`, config)
-    console.log(res)
+    console.log('getFolderChats res', res)
     if (res.statusText && res.statusText === 'OK') {
         let folderChatList = []
         let chats = res.data.value.folder.chats;
