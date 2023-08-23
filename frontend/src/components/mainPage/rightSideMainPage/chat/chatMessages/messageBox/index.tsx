@@ -72,21 +72,19 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
 
-    const [sender, setSender] = useState<contactInterface | UserInterface>()
 
     useEffect(() => {
+        let sender: contactInterface | UserInterface = User
+        console.log('msg.messageInfo.senderId:', msg.messageInfo.senderId)
+        console.log('userId : ', User._id)
         if (msg.messageInfo.senderId === User._id) {
-            // @ts-ignore
-            setSender(User)
+            sender = User
         } else {
             const userContactListIds = userContactList.map(uc => uc._id)
             let index = findIndex(0, userContactListIds.length, userContactListIds, msg.messageInfo.senderId)
-            // @ts-ignore
-            setSender(userContactList[index])
+            sender = userContactList[index]
         }
-    }, [chatMessages])
 
-    useEffect(() => {
         setInformation({
             dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
             // @ts-ignore
@@ -94,7 +92,18 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             // @ts-ignore
             profilePic: sender.profilePic
         })
-    }, [sender])
+    }, [chatMessages])
+
+    // useEffect(() => {
+    //     console.log('sender in messageBox : ', sender)
+    //     setInformation({
+    //         dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
+    //         // @ts-ignore
+    //         name: sender?.name,
+    //         // @ts-ignore
+    //         profilePic: sender.profilePic
+    //     })
+    // }, [sender])
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
