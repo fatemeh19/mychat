@@ -96,28 +96,64 @@ const getChat = async (userId,chatId) => {
     }
   });
   
-  // chat.messages.forEach((message, index) => {
-  //   console.log("message.createdAt=",message.createdAt)
-  //   console.log("joined=",joinedAt)
+  
+  let messageIds = chat.messages.map((message) => message.messageInfo);
+  messageIds = await objectId(messageIds)
+  const messages = await Services.aggregate("message", [
+    {
+      $match: {
+        _id: { $in: messageIds },
+      },
+    },
+    {
+      $lookup: {
+        from: "files",
+        localField: "content.file",
+        foreignField: "_id",
+        as: "content.file",
+      },
+    },
+    {$unwind:"$content.file"},
+    
+    {
+      $lookup: {
+        from: "users",
+        localField: "senderId",
+        foreignField: "_id",
+        as: "senderInfo",
+      },
+    },
+    {$unwind:"$senderInfo"},
+    
+    {
+      $lookup:{
+        from:"files",
+        localField:"senderInfo.profilePic",
+        foreignField:"_id",
+        as:"senderInfo.profilePic"
+      }
 
-  //   if(message.createdAt<joinedAt){
-  //     chat.messages.splice(index,1)
-  //   }
+    },
+    {$unwind:"$senderInfo.profilePic"},
+    {
+      $project: {
+        "content.file":1,
+        "content.text": 1,
+        "senderInfo.name": 1,
+        "senderInfo.lastname": 1,
+        "senderInfo.profilePic": 1,
+        "createdAt": 1,
+      },
+    },
+   
+  ]);
 
-  // });
-  const messageIds = chat.messages.map((message) => message.messageInfo);
-
-  const messages = await Services.findMany("message", {
-    _id: { $in: messageIds },
-    // createdAt: { $gte: joinedAt },
-  });
-
-  const messageIdss = messages.map((message) => message._id);
-
+console.log(messages)
   let index;
   let i = 0;
   let length = chat.messages.length;
   for (index = 0; index < length; index++) {
+    
     if (messages[i].createdAt < addedAt) {
       chat.messages.splice(index, 1);
       index--;
@@ -156,17 +192,58 @@ const getChats = async (userId) => {
     },
   ]);
 
-  const messageIds = chats.map(
+  let messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
   );
-  const messages = await Services.findMany(
-    "message",
+  messageIds = await objectId(messageIds)
+  // const messages = await Services.findMany(
+  //   "message",
+  //   {
+  //     _id: { $in: messageIds },
+  //   },
+  //   {},
+  //   {updatedAt:-1}
+  // );
+  const messages = await Services.aggregate("message", [
     {
-      _id: { $in: messageIds },
+      $match: {
+        _id: { $in: messageIds },
+      },
     },
-    "",
-    "-updatedAt"
-  );
+    {
+      $lookup: {
+        from: "files",
+        localField: "content.file",
+        foreignField: "_id",
+        as: "content.file",
+      },
+    },
+    {$unwind:"$content.file"},
+    
+    {
+      $lookup: {
+        from: "users",
+        localField: "senderId",
+        foreignField: "_id",
+        as: "senderInfo",
+      },
+    },
+    {$unwind:"$senderInfo"},
+    {
+      $project: {
+        "content.file":1,
+        "content.text": 1,
+        "senderInfo.name": 1,
+        "senderInfo.lastname": 1,
+        createdAt: 1,
+      },
+    },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
   let index = 0;
   chats.forEach((chat) => {
