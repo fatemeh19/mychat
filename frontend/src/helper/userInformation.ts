@@ -5,7 +5,6 @@ import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat, 
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
-import { useAppSelector } from "../redux/hooks"
 import callApi from "./callApi"
 
 const token = localStorage.getItem('token')

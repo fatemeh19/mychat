@@ -23,14 +23,10 @@ const PinnedSection: FC<PinSectionProps> = () => {
     const socket = useAppSelector(state => state.socket).Socket
     const chatId = useAppSelector(state => state.chat).Chat._id
 
-    // let sortArray = quickSort(pinnedMessages)
-    // console.log('sortArray:', sortArray)
-
     useEffect(() => {
         const chatMessageIds = ChatMessages.map(cm => cm._id)
         for (let i = 0; i < pinnedMessages.length; i++) {
             let index = findIndex(0, chatMessageIds.length, chatMessageIds, pinnedMessages[i])
-            console.log(i, ':', index)
             setPinnedMessagesInfo(prev => [...prev, ChatMessages[index]])
         }
     }, [PinnedMessages])
@@ -38,7 +34,6 @@ const PinnedSection: FC<PinSectionProps> = () => {
     const unPinAllMessageHandler = () => {
         pinnedMessagesInfo.map(pm => {
             let pinState = false
-            console.log('msg.pinStat.pinned:', pm)
             pm.pinStat.pinned ? pinState = false : pinState = true
 
             const pinnedInfo = {

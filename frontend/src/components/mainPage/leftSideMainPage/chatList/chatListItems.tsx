@@ -138,11 +138,9 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                 {
                                     (folderChatList.length === 0) ? null :
 
-                                        folderChatList.map((chatBox) => {
-                                            console.log('folderChatList:', folderChatList)
-                                            console.log('chatbox in all chats : ', chatBox)
-                                            // checkChatPinOrUnpin(folders, UserPinnedChats, chatBox._id, folderId) &&
-                                            return < Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
+                                        folderChatList.map((chatBox) => (
+                                            checkChatPinOrUnpin(folders, UserPinnedChats, chatBox._id, folderId) &&
+                                            < Link key={chatBox._id} href={`/chat/${chatBox._id}`} >
                                                 {/* @ts-ignore */}
 
                                                 <ChatContactBox
@@ -161,8 +159,8 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                                 />
                                             </Link>
 
-                                        }
 
+                                        )
 
 
                                         )

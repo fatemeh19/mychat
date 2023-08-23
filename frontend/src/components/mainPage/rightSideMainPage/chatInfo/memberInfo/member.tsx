@@ -34,13 +34,11 @@ const Member: FC<MemberProps> = ({ member }) => {
     const contaxtMenuHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
         const { clientX, clientY } = e
-        console.log(clientX, clientY)
         // access to currentTarget = currentTarget = div:messageBox
         setContextMenu({ show: true, x: clientX, y: clientY })
         // const member = e.currentTarget
     }
     const deleteMember = () => {
-        console.log('remove member from group')
         const groupMemberIds = groupMembers.map(groupMember => groupMember._id)
         const memberIndex = findIndex(0, groupMemberIds.length, groupMemberIds, member._id)
         removeGroupMember(chatId, member._id, memberIndex, dispatch)
@@ -62,10 +60,7 @@ const Member: FC<MemberProps> = ({ member }) => {
     return (
         <div key={member._id} className="flex px-5 py-2 gap-2 relative items-center w-full cursor-pointer hover:bg-gray-200 transition-all duration-100" onContextMenuCapture={contaxtMenuHandler}>
             {contextMenu.show && <MemberRightClick
-                x={contextMenu.x}
-                y={contextMenu.y}
                 closeContextMenu={closeContextMenu}
-                member={member}
                 showConfirmModal={showConfirmModal}
             />}
             <div className={`

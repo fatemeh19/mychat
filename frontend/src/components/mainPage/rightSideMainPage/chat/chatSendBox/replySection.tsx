@@ -32,19 +32,12 @@ const ReplySection: FC<ReplySectionProps> = ({ showReply }) => {
     const selectedMessagesContent = useAppSelector(state => state.selectedMessage).selectedMessagesContent
 
 
-    // console.log('forwardMessage : ', selectedMessagesContent)
-    // console.log('repliedMessage : ', repliedMessage)
-
-
     useEffect(() => {
         if (!isForward && !isEdit) {
             setMessage(repliedMessage)
         } else if (isForward || isEdit) {
             setMessage(selectedMessagesContent[0])
         }
-        // isForward
-        //     ? setMessage(selectedMessagesContent[0])
-        //     : setMessage(repliedMessage)
     })
 
     return (

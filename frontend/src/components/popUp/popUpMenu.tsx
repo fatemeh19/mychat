@@ -33,12 +33,7 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
     const chat = useAppSelector(state => state.chat).Chat
 
     useEffect(() => {
-        console.log(chatType)
         if (chatType === ChatType.group) {
-            console.log(userId)
-            console.log(chat.owner)
-            console.log('userId === chat.owner:', userId === chat.owner)
-            console.log('permissions.changeGroupInfo:', permissions.changeGroupInfo)
             userId === chat.owner
                 ? setShowChangeGroupInfo(true)
                 : permissions.changeGroupInfo
@@ -52,7 +47,6 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
 
 
     const showDeleteAndLeaveGroupConfirmModal = () => {
-        console.log('show')
         setShowConfirm(true)
         setOpen(true)
         setConfirmInfo({
@@ -63,7 +57,6 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
 
     }
     const deleteAndLeaveGroupHandler = () => {
-        console.log('delete and remove')
         setOpenChildMenu && setOpenChildMenu(false)
         const deleteInfo = {
             chatId: chatId,
@@ -73,7 +66,6 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
     }
 
     const EditGroupHandler = () => {
-        console.log('EditGroupHandler')
         setOpenChildMenu && setOpenChildMenu(false)
         // handelOpen && handelOpen()
 

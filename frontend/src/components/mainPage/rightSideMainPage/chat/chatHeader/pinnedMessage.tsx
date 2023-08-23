@@ -27,14 +27,11 @@ const PinnedMessage: FC<PinnedMessageProps> = () => {
             }
         }
 
-        console.log('id : ', id)
         // پیدا کردن ایندکس این پیام در پیام های چت
         const chatMessageIds = chatMessages.map(cm => cm._id)
         const index = findIndex(0, chatMessages.length, chatMessageIds, id)
 
         setMsg(chatMessages[index])
-        console.log('msg:', msg)
-
     }, [pinnedMessages])
 
 

@@ -56,8 +56,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         chatCreated === false && dispatch(setFirstChat(true))
     })
     useEffect(() => {
-        console.log('in')
-
         isEdit ? editedMessage.messageInfo.content.contentType === messageTypes.text ? setInput(editedMessage.messageInfo.content.text) : setInput('Caption') : setInput('')
     }, [isEdit])
     useEffect(() => {
@@ -72,7 +70,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const attachmentHandler = (e: any) => {
         // @ts-ignore
         const file = fileRef.current?.files[0]
-        console.log('file?.type:', file?.type)
         file ? setFile(file) : null
     }
     const img = useRef<HTMLImageElement>(null)
@@ -105,7 +102,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         if (type === messageTypes.text && input.length == 0) {
             console.log('empty text')
             if (isForward) {
-                console.log('forward msg: ', forwardMessageIds)
                 socket.emit('forwardMessage', chatId, forwardMessageIds)
                 isForward && dispatch(setIsForward(false))
                 showReply && dispatch(setShowReply(false))
@@ -113,8 +109,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 isForward && dispatch(setActiveSelection(false))
             }
         } else {
-            console.log('type : ', type)
-            console.log('input : content[text] : ', input)
             let newMessage = new FormData()
 
             // newMessage.append('content[contentType]', type)
@@ -196,7 +190,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             setInput('')
             setFile(null)
             if (socket) {
-                console.log('new message ::')
                 newMessage.forEach(item => console.log(item))
                 chatId && !isEdit && socket.emit('sendMessage', chatId, message)
                 chatId && isForward && !isEdit && socket.emit('forwardMessage', chatId, forwardMessageIds)
@@ -244,13 +237,11 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         if (chatFetched === true) {
             const permissions = chat.userPermissionsAndExceptions.permissions
             if (permissions) {
-                console.log('there is permitssions')
-                // ** بعد از اینکه فاطمه all رو اضافه کرد این قسمت باید از کامنت در بیاد
-                // !permissions.sendMedia.all
-                // @ts-ignore
-                // ? sendMediaRef.current.style.display = 'none'
-                // @ts-ignore
-                // : sendMediaRef.current.style.display = 'flex'
+                !permissions.sendMedia.all
+                    // @ts-ignore
+                    ? sendMediaRef.current.style.display = 'none'
+                    // @ts-ignore
+                    : sendMediaRef.current.style.display = 'flex'
                 !permissions.sendMedia.photo || !permissions.sendMedia.music || !permissions.sendMedia.videoMessage || !permissions.sendMedia.file
                     // @ts-ignore
                     ? sendFilesRef.current.style.display = 'none'

@@ -85,7 +85,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
-            console.log('reply message send message : ', message)
             dispatch(addMessage(message))
         })
         socket.on('deleteMessage', (data: any) => {
@@ -134,11 +133,11 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     })
 
     useEffect(() => {
-        console.log('pinnedMessages : ', pinnedMessages)
+        // console.log('pinnedMessages : ', pinnedMessages)
 
     }, [pinnedMessages])
     useEffect(() => {
-        console.log('chatMessages : ', chatMessages)
+        // console.log('chatMessages : ', chatMessages)
 
     }, [chatMessages])
     return (

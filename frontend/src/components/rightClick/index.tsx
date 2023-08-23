@@ -65,9 +65,6 @@ const RightClick: FC<RightClickProps> = ({
         const distWidth = winWidth - cmWidth
         const distHeight = winHeight - cmHeight
 
-        console.log(x, distWidth)
-        console.log(y, distHeight)
-
         // contextMenu position : 
         // @ts-ignore
         if (x > distWidth) {

@@ -30,11 +30,9 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on('searchChat', chats => {
-            console.log('search chats:', chats)
             dispatch(setSearchedChats(chats))
         })
         socket.on('searchMessage', messages => {
-            console.log('search messages:', messages)
             dispatch(setSearchedMessages(messages))
         })
 
@@ -46,11 +44,6 @@ export default function ChatList() {
     useEffect(() => {
         userIdHandler()
     }, [socket, userId])
-
-    useEffect(() => {
-        console.log('isSearch : ', isSearch)
-
-    }, [isSearch])
 
     return (
 

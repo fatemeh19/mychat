@@ -19,7 +19,6 @@ const Members: FC<MembersProps> = () => {
 
     useEffect(() => {
         if (permissions) {
-            console.log('there is permitssions')
             !permissions.addMember
                 // @ts-ignore
                 ? setSetshowAddMembers(false)

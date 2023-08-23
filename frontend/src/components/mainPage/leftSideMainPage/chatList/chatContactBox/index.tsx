@@ -91,9 +91,6 @@ const ChatContactBox: FC<chatContactProps> = ({
 
 
     useEffect(() => {
-        // socket?.on('sendMessage', (message) => {
-        console.log('chatOpennedP : ', chatOpennedP)
-        console.log('chatMessages : ', chatMessages)
         if (chatOpennedP && (chatMessages != undefined)) {
             if (chatMessages?.length > 0) {
                 // if(chatMessages[chatMessages?.length - 1].messageInfo.senderId==contactId){
@@ -109,7 +106,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                     setLastMesText(chatMessages[chatMessages?.length - 1].messageInfo.content.text)
                 }
                 setLastMesTime(chatMessages[chatMessages?.length - 1].messageInfo.updatedAt)
-                console.log(lastMesText)
+                // console.log(lastMesText)
 
                 //add chat on top of the list bc this chat have new message
                 if (chatbox != undefined) {
@@ -158,7 +155,6 @@ const ChatContactBox: FC<chatContactProps> = ({
     const contaxtMenuHandler = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
         const { clientX, clientY } = e
-        console.log(clientX, clientY)
         // access to currentTarget = currentTarget = div:messageBox
         setContextMenu({ show: true, x: clientX, y: clientY })
         // const member = e.currentTarget
@@ -217,7 +213,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                     }
                     else {
                         userInfo = User;
-                        console.log('userInfo:', userInfo)
+                        // console.log('userInfo:', userInfo)
                         userInfo.pinnedChats.push(chatbox._id)
                         dispatch(addUserInfo(userInfo))
                     }

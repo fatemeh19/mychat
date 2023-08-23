@@ -75,8 +75,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
     useEffect(() => {
         let sender: contactInterface | UserInterface = User
-        console.log('msg.messageInfo.senderId:', msg.messageInfo.senderId)
-        console.log('userId : ', User._id)
         if (msg.messageInfo.senderId === User._id) {
             sender = User
         } else {
@@ -93,17 +91,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             profilePic: sender.profilePic
         })
     }, [chatMessages])
-
-    // useEffect(() => {
-    //     console.log('sender in messageBox : ', sender)
-    //     setInformation({
-    //         dir: sender?._id === User._id ? MessageBoxDir.rtl : MessageBoxDir.ltr,
-    //         // @ts-ignore
-    //         name: sender?.name,
-    //         // @ts-ignore
-    //         profilePic: sender.profilePic
-    //     })
-    // }, [sender])
 
     const handleContextMenu = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
         e.preventDefault()
@@ -144,7 +131,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
 
     const deleteHandler_oneMessage = () => {
-        console.log('delete msg Done!')
         const deleteInfo = {
             chatId,
             messageIds: [msg._id],
@@ -212,7 +198,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     }
 
     const pinMessage = () => {
-        console.log('pin message done')
         let pinState = false
         msg.pinStat.pinned ? pinState = false : pinState = true
 
@@ -258,7 +243,6 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
 
         socket.on('seenMessage', (messageId, userId) => {
             if ((messageId === msg._id) && (User._id === msg.messageInfo.senderId) && (User._id !== userId)) {
-                console.log('your message seen')
                 const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
                 let messageIndex = findIndex(0, chatMessages.length, chatMessageIds, msg._id)
                 dispatch(addSeenIds({ index: messageIndex, userId: userId }))

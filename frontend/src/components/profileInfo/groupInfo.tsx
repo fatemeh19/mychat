@@ -26,8 +26,6 @@ const GroupInfo: FC<GroupInfoProps> = () => {
     const openExceptions = useAppSelector(state => state.open).openExceptions
     const openGroupType = useAppSelector(state => state.open).openGroupType
 
-    console.log('openGroupType', openGroupType)
-
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100">
             <div className="gap-3 flex flex-col ">

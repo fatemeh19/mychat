@@ -66,17 +66,17 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
     useEffect(() => {
         socket?.on('onlineContact', (CId) => {
-            console.log('contactId : ' + contactId)
+            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                console.log('online contact : ' + CId)
+                // console.log('online contact : ' + CId)
                 // setOnline(true)
             }
 
         });
         socket?.on('offlineContact', (CId) => {
-            console.log('contactId : ' + contactId)
+            // console.log('contactId : ' + contactId)
             if (contactId == CId) {
-                console.log('offline contact : ' + CId)
+                // console.log('offline contact : ' + CId)
                 // setOnline(false)
                 const now = Date.now();
                 // setLastSeen(now)
@@ -111,7 +111,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
 
     const deleteHandler_multipleMessage = () => {
-        console.log('delete msg Done!')
         const deleteInfo = {
             chatId,
             messageIds: selectedMessages,
@@ -136,19 +135,16 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
         dispatch(setShowReply(true))
         dispatch(setIsForward(true))
         dispatch(setForwardMessageIds(SelectedMessagesMainIds))
-        console.log('forwarding ...')
     }
 
     const searchMessageHandler = () => {
         dispatch(setIsSearch(true))
         dispatch(setSearchType(SearchType.messages))
-        console.log('type for search ...')
     }
 
     const closeSearchMessageHandleer = () => {
         dispatch(setIsSearch(false))
         dispatch(setSearchType(SearchType.chats))
-        console.log('message search closed!')
         dispatch(setSearchedMessages([]))
     }
 

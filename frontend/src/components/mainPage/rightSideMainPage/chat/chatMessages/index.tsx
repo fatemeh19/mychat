@@ -30,7 +30,6 @@ export default function ChatMessages() {
                             // if flag == true => show messages / flag = false => dont show deleted messages
                             // we are checking if userId is in the message deletedIds then => dont show this message to this user
                             chat.messages?.map((msg, index) => {
-                                // console.log('msg:', msg)
                                 let flag = true
                                 msg.deletedIds.map(delId => {
                                     if (delId === userId) flag = false

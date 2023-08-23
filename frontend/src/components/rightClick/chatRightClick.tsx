@@ -86,8 +86,6 @@ const ChatRightClick: FC<ChatRightClickProps> = ({
     //     //     child?.classList.remove('select')
     //     // }
     // }, [x, y])
-    console.log('in')
-    console.log(x, y)
     const folders = useAppSelector(state => state.folders).folders
     return (
         <>
