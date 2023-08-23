@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import EditChatInfo from "./parts/editInfo";
-import PopUpBtns from "../popUpBtns";
 import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import EditGeneralSettings from "./parts/editGeneralSetting";
 import EditPermissions from "./parts/editPermissions";
-import { addProfilePic, editGroupInfo, editGroupType } from "@/src/helper/useAxiosRequests";
-import { setDropDownValue } from "@/src/redux/features/dropDownSlice";
+import { editGroupInfo } from "@/src/helper/useAxiosRequests";
+import PopUpBtns from "../../popUp/popUpBtns";
 
 interface EditGroupChatProps {
 }

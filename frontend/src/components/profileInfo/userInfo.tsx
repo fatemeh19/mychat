@@ -5,10 +5,9 @@ import InfoFiles from "../mainPage/rightSideMainPage/chatInfo/infoFiles";
 import MoreAction from "../mainPage/rightSideMainPage/chatInfo/moreAction";
 import { ChatType } from "@/src/models/enum";
 import CustomizedDialogs from "../popUp";
-import EditPrivateChat from "../popUp/editPopup/editPrivateChat";
 import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { setOpenPermissions } from "@/src/redux/features/openSlice";
+import EditPrivateChat from "./editPopup/editPrivateChat";
 
 interface UserInfoProps {
 }
@@ -17,7 +16,6 @@ const UserInfo: FC<UserInfoProps> = () => {
 
     const dispatch = useAppDispatch()
     const isEditChat = useAppSelector(state => state.chat).isEditChat
-    const openPermissions = useAppSelector(state => state.open).openPermissions
     const chatType = useAppSelector(state => state.chat.Chat).chatType
 
     return (
@@ -32,9 +30,6 @@ const UserInfo: FC<UserInfoProps> = () => {
             {
                 isEditChat
                     ?
-                    // openPermissions
-                    //     ? <CustomizedDialogs title="Permissions" open={openPermissions} handelOpen={() => dispatch(setOpenPermissions(!openPermissions))} children={<Permissions />} />
-                    //     : 
                     <CustomizedDialogs
                         open={isEditChat}
                         title={'Edit'}

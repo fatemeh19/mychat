@@ -1,12 +1,11 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
-import PopUpBtns from "../../../popUpBtns";
+import { FC, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setOpenGroupType } from "@/src/redux/features/openSlice";
 import { setIsEditChat } from "@/src/redux/features/chatSlice";
-import DropDown from "@/src/components/basicComponents/dropDown/dropDown";
 import GroupType from "./groupType";
 import InviteLink from "./inviteLink";
 import ContentProtection from "./contentProtection";
+import PopUpBtns from "@/src/components/popUp/popUpBtns";
 
 interface PermissionsProps {
 }

@@ -1,12 +1,11 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
-import PopUpBtns from "../../../popUpBtns";
+import { FC, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setIsEditChat, setUserPermissionsAndExceptions, userPermissionsInterface } from "@/src/redux/features/chatSlice";
 import { setOpenExceptions, setOpenPermissions } from "@/src/redux/features/openSlice";
 import PermissionOptions from "./permissionOptions";
-import PermissionExceptions from "./Exceptions/permissionsExceptions";
 import { LuKey } from "react-icons/lu";
 import { editGroupPermissions } from "@/src/helper/useAxiosRequests";
+import PopUpBtns from "@/src/components/popUp/popUpBtns";
 
 interface PermissionsProps {
 }
@@ -15,20 +14,6 @@ const Permissions: FC<PermissionsProps> = () => {
 
     const groupPermissions = useAppSelector(state => state.chat.Chat.userPermissionsAndExceptions).permissions
 
-    // const [permissions, setPermissions] = useState<userPermissionsInterface>({
-    //     sendMessage: true,
-    //     sendMedia: {
-    //         all: true,
-    //         photo: true,
-    //         videoMessage: true,
-    //         music: true,
-    //         file: true,
-    //         voice: true
-    //     },
-    //     addMember: true,
-    //     pinMessages: true,
-    //     changeGroupInfo: true
-    // })
     const [permissions, setPermissions] = useState<userPermissionsInterface>(groupPermissions)
 
     const dispatch = useAppDispatch()
