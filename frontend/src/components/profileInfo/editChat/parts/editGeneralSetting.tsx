@@ -1,4 +1,3 @@
-import DropDown from "@/src/components/basicComponents/dropDown/dropDown";
 import { setOpenGroupType } from "@/src/redux/features/openSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { FC } from "react";

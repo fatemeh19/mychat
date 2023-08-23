@@ -7,7 +7,7 @@ import { ChatType } from "@/src/models/enum";
 import CustomizedDialogs from "../popUp";
 import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import EditPrivateChat from "./editPopup/editPrivateChat";
+import EditPrivateChat from "./editChat/editPrivateChat";
 
 interface UserInfoProps {
 }

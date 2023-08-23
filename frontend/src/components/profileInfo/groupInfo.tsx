@@ -7,11 +7,11 @@ import { ChatType } from "@/src/models/enum";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import CustomizedDialogs from "../popUp";
 import { setOpenExceptions, setOpenGroupType, setOpenPermissions } from "@/src/redux/features/openSlice";
-import EditGroupChat from "./editPopup/editGroupChat";
+import EditGroupChat from "./editChat/editGroupChat";
 import { setIsEditChat } from "@/src/redux/features/chatSlice";
-import Permissions from "./editPopup/parts/permissions";
-import PermissionExceptions from "./editPopup/parts/permissions/Exceptions/permissionsExceptions";
-import GroupSettings from "./editPopup/parts/groupSettings";
+import Permissions from "./editChat/parts/permissions";
+import PermissionExceptions from "./editChat/parts/permissions/Exceptions/permissionsExceptions";
+import GroupSettings from "./editChat/parts/groupSettings";
 
 interface GroupInfoProps {
 
