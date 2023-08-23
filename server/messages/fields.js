@@ -23,6 +23,11 @@ export default{
     "name":"name",
     "value":"نام"
   },
+  "lastname":{
+    "name":"lastname",
+    "value":"نام خانوادگی"
+
+  },
   "contact":{
     "name":"contact",
     "value":"مخاطب"

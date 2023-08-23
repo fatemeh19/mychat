@@ -1,25 +1,20 @@
-import * as CustomError from "../errors/index.js";
-import { StatusCodes } from "http-status-codes";
 import * as Services from "../services/dbServices.js";
-import ErrorMessages from "../messages/errors.js";
-import Fields from "../messages/fields.js";
-import path from "path";
-import * as RH from "../middlewares/ResponseHandler.js";
-import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
 import ValidationError from "../errors/ValidationError.js";
-
-const editSetting = async (body,settingId,title,files) => {
+import * as Validators from "../validators/index.js";
+const editSetting = async (body, settingId, files) => {
   
-
-  const setting = await Services.findOne(
-    "setting",
-    { _id: settingId },
-    { [title]: 1 }
-  );
-
+  try {
+    await Validators.editSetting.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (errors) {
+    throw new ValidationError(errors);
+  }
+  const {title} = body
   let data;
   try {
     let validator = await validatorSelector(title);
@@ -28,7 +23,13 @@ const editSetting = async (body,settingId,title,files) => {
       abortEarly: false,
     });
   } catch (errors) {
-    throw new ValidationError(errors);  }
+    throw new ValidationError(errors);
+  }
+  const setting = await Services.findOne(
+    "setting",
+    { _id: settingId },
+    { [title]: 1 }
+  );
 
   if (files.notifSound) {
     if (setting[title].sound != consts.DEFAULT_NOTIF_SOUND) {
@@ -66,10 +67,9 @@ const editSetting = async (body,settingId,title,files) => {
 };
 
 const getSetting = async (settingId) => {
-  
   const setting = await Services.findOne("setting", { _id: settingId });
 
-  return setting
+  return setting;
 };
 
 export { editSetting, getSetting };

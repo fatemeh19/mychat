@@ -15,10 +15,10 @@ import messages from "../messages/messages.js";
 const editSettingI = async (req, res, next) => {
   const {
     body,
-    params: { id: settingId, title },
+    params: { id: settingId},
     files,
   } = req;
-  await editSetting(body,settingId,title,files)
+  await editSetting(body,settingId,files)
 
 
   res.locals.response = {

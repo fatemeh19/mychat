@@ -22,6 +22,7 @@ const findOne = async (model, Query, select = {},notFoundError=true) => {
   try {
     document = await Model.findOne(Query).select(select);
   } catch (err) {
+    console.log("err=",err.message)
     const { errorType, field } = await mongooseErrorExtractor(err);
     throw new CustomError.BadRequestError(errorType,Fields[field])
    
@@ -59,13 +60,12 @@ const findByIdAndUpdate = async (model, id, Query, options={}) => {
       password: 0,
     });
   } catch (err) {
-    console.log(err)
+    
     const { errorType, field } = await mongooseErrorExtractor(err);
 
     throw new CustomError.BadRequestError(errorType,Fields[field])
 
   }
-  console.log(document)
   if(!document ){
     throw new CustomError.NotFoundError(ErrorMessages.NotFoundError,Fields[model])
 
