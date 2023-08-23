@@ -5,7 +5,7 @@ export default async (model, update) => {
   for (const element of uniques[model]) {
     
     if (update[element]) {
-      const dup = await Services.findOne(model, { [element]: update[element] });
+      const dup = await Services.findOne(model, { [element]: update[element] },{},false);
       if (dup) {
         
         return {dup, element};

@@ -2,6 +2,8 @@ import * as Services from "../services/dbServices.js";
 import * as fileController from "../utils/file.js";
 import * as RH from "./ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
+import ValidationError from "../errors/ValidationError.js";
+
 import ErrorMessages from "../messages/errors.js";
 const permissionChecker = (routeName) => {
   return async function (req, res, next) {
@@ -59,10 +61,8 @@ const permissionChecker = (routeName) => {
       if (file) {
         await fileController.deleteFile(file.path);
       }
-      await RH.CustomError({
-        errorClass: CustomError.UnauthorizedError,
-        errorType: ErrorMessages.notAllowedError,
-      });
+      throw new CustomError.UnauthenticatedError(ErrorMessages.notAllowedError,)
+      
     }
   };
 };

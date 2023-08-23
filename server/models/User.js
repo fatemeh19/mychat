@@ -7,6 +7,7 @@ import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
+import fields from "../messages/fields.js";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -119,7 +120,9 @@ UserSchema.pre("findOneAndUpdate", async function (next) {
   const id = this.getQuery()._id;
   let { dup, element } = await dupChecker("user", this.getUpdate());
   if (dup && !dup._id.equals(id)) {
-    throw new Error(element)
+    // throw new Error(element)
+    throw new CustomError.BadRequestError(ErrorMessages.DuplicateError,fields[element])
+
   }
 });
 

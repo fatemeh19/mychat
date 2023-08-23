@@ -75,6 +75,14 @@ export default{
   "username":{
     "name":"username",
     "value":"نام کاربری"
+  },
+  "setting":{
+    "name":"setting",
+    "value":"تنظیمات"
+  },
+  "folder":{
+    "name":"folder",
+    "value":"پوشه"
   }
   
 }

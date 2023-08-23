@@ -1,10 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 import CustomError from "./CustomError.js";
-class UnauthorizedError extends CustomError{
-    constructor(message, errors){
-        super(message, errors)
-        this.statusCode = StatusCodes.FORBIDDEN
-    }
+class UnauthorizedError extends CustomError {
+  constructor(errorTypeDetail, field) {
+    super("Unauthorized Error!", errorTypeDetail, field);
+    this.statusCode = StatusCodes.FORBIDDEN;
+  }
 }
 
-export default UnauthorizedError
+export default UnauthorizedError;

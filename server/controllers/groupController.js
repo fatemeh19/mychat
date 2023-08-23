@@ -5,6 +5,7 @@ import * as Services from "../services/dbServices.js";
 import * as Validators from "../validators/index.js";
 import * as fileController from "../utils/file.js";
 import { objectId } from "../utils/typeConverter.js";
+import ValidationError from "../errors/ValidationError.js";
 const addMember = async (groupId, memberId) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
@@ -27,8 +28,8 @@ const editGroupType = async (groupId, body) => {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+    throw new ValidationError(errors);
   }
 
   await Services.findByIdAndUpdate(
@@ -57,9 +58,10 @@ const editGroupPermissions = async (groupId,body) => {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
 
   data.exceptions.forEach((exception) => {
     if (exception.restrictUntil != "forever") {
@@ -93,18 +95,12 @@ const editGroupInfo = async (groupId,body) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
 
-  const group = await Services.findOne("chat", { _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
+
+
   
   await Services.findByIdAndUpdate("chat", groupId, {
     $set: {

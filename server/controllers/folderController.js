@@ -8,6 +8,7 @@ import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
 import folder from "../models/folder.js";
 import { objectId } from "../utils/typeConverter.js";
+import ValidationError from "../errors/ValidationError.js";
 
 const createFolder = async (userId, body) => {
   let data;
@@ -16,9 +17,10 @@ const createFolder = async (userId, body) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
 
   let chats = [];
   data.chatIds.forEach((chatId) => {
@@ -171,9 +173,10 @@ const editFolder = async (body, folderId) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
 
   let chats = [];
   data.chatIds.forEach((chatId) => {

@@ -6,14 +6,14 @@ const editGroupPermsAndExps = yup.object({
   permissions: permissions,
   exceptions: yup.array().of(
     yup.object().shape({
-      userId: yup.string().required("EmptyError"),
+      userId: yup.string().required(),
       restrictUntil: yup
         .string()
         .oneOf(restrictUserDate)
-        .required("EmptyError"),
+        .required(),
       specificTime:yup.date().when("restrictUntil",{
         is:"specificTime",
-        then:(schema)=>schema.required("EmptyError")
+        then:(schema)=>schema.required()
       
 
       }),

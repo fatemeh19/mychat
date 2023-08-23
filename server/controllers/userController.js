@@ -14,6 +14,8 @@ import { object } from "yup";
 import { objectId } from "../utils/typeConverter.js";
 import fileCreator from "../utils/fileCreator.js";
 import { updateProfilePic } from "./profilePicController.js";
+import ValidationError from "../errors/ValidationError.js";
+
 const setInfo = async (userId, body, file) => {
   let data;
   try {
@@ -22,9 +24,8 @@ const setInfo = async (userId, body, file) => {
       stripUnknown: true,
     });
   } catch (err) {
-    console.log(err);
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
-  }
+    
+    throw new ValidationError(errors);  }
   const thisUser = await Services.findOne("user", { _id: userId });
 
   if (file) {
@@ -66,13 +67,7 @@ const getProfile = async (userId) => {
       },
     },
   ]);
-  if (!user) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: fields.user,
-    });
-  }
+  
   return user[0];
 };
 
@@ -82,9 +77,10 @@ const editProfile = async (userId, body) => {
     data = await Validators.editProfile.validate(body, {
       stripUnknown: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
 
   const user = await Services.findByIdAndUpdate("user", userId, data);
   if (!user) {

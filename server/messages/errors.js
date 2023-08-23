@@ -11,7 +11,7 @@ export default{
     "name":"CompareError",
     "message": "اشتباه است"
   },
-  "EmptyError": {
+  "required": {
     "name":"EmptyError",
     "message": "نباید خالی باشد"
   },
@@ -19,7 +19,7 @@ export default{
     "name":"ConfirmError",
     "message": "لطفا اول ایمیل خود را تایید کنید"
   },
-  "FormatError":{
+  "matches":{
     "name":"FormatError",
     "message": "در فرمت صحیحی نیست"
 

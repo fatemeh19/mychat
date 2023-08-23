@@ -1,17 +1,17 @@
 import yup from 'yup'
 
 export default yup.object({
-    sendMessage:yup.boolean().required('EmptyError'),
+    sendMessage:yup.boolean(). required(),
     sendMedia:yup.object({
-        all:yup.boolean().required('EmptyError'),
-        photo:yup.boolean().required('EmptyError'),
-        videoMessage:yup.boolean().required('EmptyError'),
-        voice:yup.boolean().required('EmptyError'),
-        music:yup.boolean().required('EmptyError'),
-        file:yup.boolean().required('EmptyError'),
+        all:yup.boolean(). required(),
+        photo:yup.boolean(). required(),
+        videoMessage:yup.boolean(). required(),
+        voice:yup.boolean(). required(),
+        music:yup.boolean(). required(),
+        file:yup.boolean(). required(),
 
     }),
-    addMember:yup.boolean().required('EmptyError'),
-    pinMessages:yup.boolean().required('EmptyError'),
-    changeGroupInfo:yup.boolean().required('EmptyError')
+    addMember:yup.boolean(). required(),
+    pinMessages:yup.boolean(). required(),
+    changeGroupInfo:yup.boolean(). required()
 })

@@ -16,24 +16,25 @@ import {
   createFolder,
 } from "../controllers/folderController.js";
 
-const createFolderI = async (req, res) => {
+const createFolderI = async (req, res, next) => {
   const {
     user: { userId },
     body,
   } = req;
   const newFolder = await createFolder(userId, body);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
       folderId: newFolder._id,
     },
-    title: "ok",
-  });
+    responseType:messages.ok
+  }
+  next()
+  
 };
 
-const addRemoveChatI = async (req, res) => {
+const addRemoveChatI = async (req, res,next) => {
   // tekrari chat
   let {
     body,
@@ -41,58 +42,63 @@ const addRemoveChatI = async (req, res) => {
   } = req;
   await addRemoveChat(body, folderId);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const deleteFolderI = async (req, res) => {
+const deleteFolderI = async (req, res, next) => {
   const {
     params: { id: folderId },
     user: { userId },
   } = req;
   await deleteFolder(userId, folderId);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getFolderI = async (req, res) => {
+const getFolderI = async (req, res, next) => {
   const {
     params: { id: folderId },
   } = req;
 
   const folder = await getFolder(folderId);
-  console.log("haay");
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: { folder },
-  });
+
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    value:{
+      folder
+    },
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getFoldersI = async (req, res) => {
+const getFoldersI = async (req, res, next) => {
   const {
     user: { userId },
   } = req;
 
   const folders = await getFolders(userId);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: { folders },
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    value: {
+      folders
+    },
+    responseType:messages.ok
+  }
+  
+  next()
 };
 
-const editFolderI = async (req, res) => {
+const editFolderI = async (req, res, next) => {
   const {
     params: { id: folderId },
     body,
@@ -100,14 +106,15 @@ const editFolderI = async (req, res) => {
 
   const Folder = await editFolder(body, folderId);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
-      Folder,
+      Folder
     },
-  });
+    responseType:messages.ok
+  }
+  next()
+  
 };
 
 export {

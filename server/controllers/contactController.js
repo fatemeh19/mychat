@@ -6,6 +6,7 @@ import Fields from "../messages/fields.js";
 import * as Validators from "../validators/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { objectId } from "../utils/typeConverter.js";
+import ValidationError from "../errors/ValidationError.js";
 
 const addContact = async (userId,body) => {
   
@@ -15,9 +16,10 @@ const addContact = async (userId,body) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
   const contact = await Services.findOne("user", {
     // $or: [
     // {
@@ -27,29 +29,29 @@ const addContact = async (userId,body) => {
     //   username: data.username,
     // },
     // ],
-  });
+  },{},false);
   if (!contact) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotSignUpYet,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.NotSignUpYet,
+     
+    );
+    
   }
   data.userId = contact._id;
 
   const user = await Services.findOne("user", { _id: userId });
   if (user.phoneNumber == contact.phoneNumber) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.notAllowedError,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.notAllowedError,
+    );
   }
   const { contactExists } = await user.hasThisContact(data);
   if (contactExists) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.DuplicateError,
-      Field: Fields.phoneNumber,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.DuplicateError,
+      Fields.phoneNumber,
+    );
+    
   }
   // if (contactNameExists) {
   //   await RH.CustomError({
@@ -177,11 +179,12 @@ const editContact = async (body,userId,id) => {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
 
-  data.userId = id;
+
+  // data.userId = id;
   await Services.findByIdAndUpdate(
     "user",
     userId,

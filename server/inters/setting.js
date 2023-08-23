@@ -10,7 +10,9 @@ import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
 import { getSetting,editSetting } from "../controllers/settingController.js";
-const editSettingI = async (req, res) => {
+import messages from "../messages/messages.js";
+
+const editSettingI = async (req, res, next) => {
   const {
     body,
     params: { id: settingId, title },
@@ -19,23 +21,26 @@ const editSettingI = async (req, res) => {
   await editSetting(body,settingId,title,files)
 
 
-  return RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
-};
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()};
 
-const getSettingI = async (req, res) => {
+const getSettingI = async (req, res, next) => {
   const {
     params: { id: settingId },
   } = req;
   const setting = await getSetting(settingId)
  
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
-      setting,
+      setting
     },
-  });
+    responseType:messages.ok
+  }
+   next()
 };
 
 export { editSettingI, getSettingI };

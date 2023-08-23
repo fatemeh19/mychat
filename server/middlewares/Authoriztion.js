@@ -6,10 +6,9 @@ import * as RH from "./ResponseHandler.js";
 const authMiddleware = async (req, res, next) => {
   const { authorization: authHeader } = req.headers;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    await RH.CustomError({
-      errorClass: CustomError.UnauthenticatedError,
-      errorType: ErrorMessages.NoTokenProvided,
-    });
+    throw new CustomError.UnauthenticatedError(ErrorMessages.NoTokenProvided,
+    )
+    
   }
 
   const token = authHeader.split(" ")[1];
@@ -21,11 +20,9 @@ const authMiddleware = async (req, res, next) => {
     req.user = { userId };
     next();
   } catch (err) {
-    console.log(err)
-    await RH.CustomError({
-      errorClass: CustomError.UnauthenticatedError,
-      errorType: ErrorMessages.UnauthorizedError,
-    });
+    throw new CustomError.UnauthenticatedError(ErrorMessages.UnauthorizedError,
+      )
+   
 
   }
 };

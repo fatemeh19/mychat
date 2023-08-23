@@ -3,6 +3,7 @@ import * as RH from "../middlewares/ResponseHandler.js";
 import { StatusCodes } from "http-status-codes";
 
 import "../utils/loadEnv.js";
+import messages from "../messages/messages.js";
 
 import {
   searchChat,
@@ -14,65 +15,71 @@ import {
   getChats,
 } from "../controllers/chatController.js";
 
-const createChatI = async (req, res) => {
+const createChatI = async (req, res,next) => {
   const {
     body: body,
     user: { userId },
     file,
   } = req;
   const chat = await createChat(body, userId, file);
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.CREATED,
-    title: "ok",
-    value: {
-      chat,
+  res.locals.response = {
+    statusCode : StatusCodes.CREATED,
+    value:{
+      chat
     },
-  });
+    responseType:messages.ok
+  }
+  next()
+  
 };
 
-const getChatI = async (req, res) => {
+const getChatI = async (req, res,next) => {
   const {
     user: { userId },
     params: { id: chatId },
   } = req;
   const chat = await getChat(userId, chatId);
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chat,
+  
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    value:{
+      chat
     },
-  });
+    responseType:messages.ok
+  }
+  next()
 };
 
-const getChatsI = async (req, res) => {
+const getChatsI = async (req, res,next) => {
   const {
     user: { userId },
   } = req;
   const chats = await getChats(userId);
-
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chats,
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    value:{
+      chats
     },
-  });
+    responseType:messages.ok
+  }
+  next()
+  
 };
-const addToChatsI = async (req, res) => {
+const addToChatsI = async (req, res, next) => {
   const {
     params: { id: chatId },
     user: { userId },
   } = req;
   await addToChats(userId, chatId);
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
-const pinUnpinChatI = async (req, res) => {
+const pinUnpinChatI = async (req, res, next) => {
   const {
     body,
     params: { id: chatId },
@@ -80,14 +87,14 @@ const pinUnpinChatI = async (req, res) => {
   } = req;
   await pinUnpinChat(body, userId, chatId);
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const deleteChatI = async (req, res) => {
+const deleteChatI = async (req, res, next) => {
   const {
     params: { id: chatId },
     user: { userId },
@@ -95,26 +102,14 @@ const deleteChatI = async (req, res) => {
   } = req;
   await DeleteChat(userId, { deleteAll, chatId });
 
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const searchChatI = async (userId, search) => {
- 
-  const chats = await searchChat(userId, search);
 
-  RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chats,
-    },
-  });
-};
 
 export {
   addToChatsI,
@@ -123,5 +118,4 @@ export {
   createChatI,
   getChatI,
   getChatsI,
-  searchChatI,
 };

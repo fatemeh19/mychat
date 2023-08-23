@@ -12,13 +12,9 @@ var storage = multer.diskStorage({
 
     fileType = await fileTypeGetter(file.mimetype);
     if (!fileType) {
-      return cb(
-        new CustomError.BadRequestError(errors.notAllowedToSend, [
-          {
-            errorType: errors.notAllowedToSend.name,
-            message: errors.notAllowedToSend.message,
-          },
-        ])
+      throw new CustomError.BadRequestError(
+        ErrorMessages.notAllowedToSend,
+        fields.file,
       );
     }
 

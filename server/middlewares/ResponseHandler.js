@@ -1,6 +1,5 @@
 import MessageCreator from "../utils/MessageCreator.js";
 import Messages from "../messages/messages.js";
-import { ValidationError } from "../errors/index.js";
 import errorExtractor from "../utils/errorExtractor.js";
 
 const CustomError = async ({ err, errorClass, errorType, Field, socket = false }) => {

@@ -1,36 +1,42 @@
 import { StatusCodes } from "http-status-codes";
 import * as RH from "../middlewares/ResponseHandler.js";
 import { register, verifyEmail, login } from "../controllers/authController.js";
-
-const registerI = async (req, res) => {
+import messages from "../messages/messages.js";
+const registerI = async (req, res,next) => {
   const { body } = req;
   await register(body);
 
-  return RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "confirm" });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.confirm
+  }
+  next()
+
 };
 
-const verifyEmailI = async (req, res) => {
+const verifyEmailI = async (req, res,next) => {
   const { email, verificationToken } = req.body;
   await verifyEmail(email, verificationToken);
 
-  return RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "confirmed",
-  });
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
 };
 
-const loginI = async (req, res) => {
+const loginI = async (req, res,next) => {
   const { token, isFirstTimeLogin } = await login(req.body);
 
-  return RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "successLogin",
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
     value: {
       token,
       isFirstTimeLogin,
     },
-  });
+    responseType:messages.successLogin
+  }
+  
+  next()
 };
 export { registerI, verifyEmailI, loginI };
