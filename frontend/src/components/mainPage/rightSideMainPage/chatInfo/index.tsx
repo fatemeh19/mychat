@@ -22,9 +22,6 @@ export default function ChatInfo() {
         const element = elementRef.current;
 
         const runOnScroll = () => {
-            console.log('scrolling')
-            console.log('top: ', scrollWrap?.scrollTop)
-
             // @ts-ignore
             if (scrollWrap?.scrollTop >= 100) {
                 // @ts-ignore

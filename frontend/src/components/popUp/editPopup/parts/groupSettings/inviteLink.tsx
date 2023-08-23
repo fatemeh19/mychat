@@ -14,7 +14,6 @@ const InviteLink: FC<InviteLinkProps> = ({ publicLink, setPublicLink }) => {
     const inviteLinkRef = useRef<HTMLParagraphElement>(null)
 
     const openHiddenMenuHandler = () => {
-        console.log('opening')
         setOpenHiddenMenu(!openHiddenMenu);
         inviteLinkRef.current ? inviteLinkRef.current.style.background = 'white' : null
     }
