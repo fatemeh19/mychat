@@ -35,6 +35,7 @@ const GroupSettings: FC<PermissionsProps> = () => {
     }, [typeSetting.groupType])
 
     const saveGroupTypeSettingHandler = () => {
+        console.log('typeSetting : ', typeSetting)
         editGroupType(chatId, typeSetting, dispatch)
     }
     return (

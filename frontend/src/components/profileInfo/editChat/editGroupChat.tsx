@@ -4,8 +4,10 @@ import { setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import EditGeneralSettings from "./parts/editGeneralSetting";
 import EditPermissions from "./parts/editPermissions";
-import { editGroupInfo } from "@/src/helper/useAxiosRequests";
+import { editGroupInfo, editProfilePic } from "@/src/helper/useAxiosRequests";
 import PopUpBtns from "../../popUp/popUpBtns";
+// import findIndex from "@/src/helper/findIndex";
+import { editNameInChatOfChatList } from "@/src/redux/features/userChatListSlice";
 
 interface EditGroupChatProps {
 }
@@ -16,7 +18,10 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
 
     const chat = useAppSelector(state => state.chat).Chat
     const chatName = useAppSelector(state => state.chat.Chat).name
+    const chatDescription = useAppSelector(state => state.chat.Chat).description
     const dropDownValue = useAppSelector(state => state.dropDown).DropDownValue
+    const chatList = useAppSelector(state => state.userChatList).chatList
+    const folderChatList = useAppSelector(state => state.userChatList).folderChatList
 
     const [image, setImage] = useState('')
     const [groupName, setGroupName] = useState(chatName)
@@ -27,44 +32,23 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
         setGroupName(values.chatName)
         console.log('values:', values)
         const groupInfoData = {
-            name: groupName,
+            name: values.chatName,
             ...(values.description && { description: values.description })
         }
 
-        // --------------------------------------------------------- change group
-        // const groupTypeData = {
-        //     groupType: dropDownValue,
-        //     ...(dropDownValue === 'public'
-        //         ? {
-        //             restrictSavingContent: false,
-        //             url: chat.inviteLinks,
-        //             approveNewMembers: true
-        //         }
-        //         : {
-        //             restrictSavingContent: true,
-        //             url: '',
-        //             approveNewMembers: false
-        //         })
-        // }
-        // console.log('groupTypeData:', groupTypeData)
-        // if (chat.groupTypeSetting.groupType !== dropDownValue) {
-        //     console.log('groupType changed : ', dropDownValue)
-        //     // editGroupType(chat._id, groupTypeData, dispatch)
-        // }
-        // --------------------------------------------------------- end change group
-
         console.log('groupInfoData:', groupInfoData)
+
+        const index = chatList.findIndex(c => c.chatInfo._id === chat._id)
         if (image !== '') {
-            // editProfilePic()
+            const formData = new FormData()
+            formData.append('profilePic', image)
+            editProfilePic(chat.profilePic._id, formData, index, dispatch)
         }
         if (chatName !== values.chatName || chat.description !== values.description) {
-            console.log('name or description changed : ', values.chatName, '_chat.description: ', chat.description)
-            editGroupInfo(chat._id, groupInfoData, dispatch)
+            editGroupInfo(chat._id, groupInfoData, index, dispatch)
         }
 
         dispatch(setIsEditChat(false))
-
-        // dispatch(setDropDownValue(''))
     }
 
 
@@ -81,7 +65,7 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 mb-[50px]">
             <div className="gap-3 flex flex-col ">
-                <EditChatInfo setFormikbtnRef={setFormikbtnRef} setImage={setImage} chatName={groupName} setChatName={setGroupName} formikSubmitHandler={editChatHandler} />
+                <EditChatInfo setFormikbtnRef={setFormikbtnRef} setImage={setImage} chatName={groupName} chatDescription={chatDescription} setChatName={setGroupName} formikSubmitHandler={editChatHandler} />
                 <EditGeneralSettings />
                 <EditPermissions />
 

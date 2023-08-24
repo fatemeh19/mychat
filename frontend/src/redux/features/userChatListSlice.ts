@@ -68,6 +68,18 @@ export const contactSlice = createSlice({
         setFolderId: (state, action: PayloadAction<any>) => {
             state.folderId = action.payload
         },
+        editNameInChatOfChatList: (state, action: PayloadAction<{ index: number, name: string }>) => {
+            state.chatList[action.payload.index].chatInfo.name = action.payload.name
+        },
+        editProfilePicInChatOfChatList: (state, action: PayloadAction<{ index: number, profilePic: profilePicInterface }>) => {
+            state.chatList[action.payload.index].chatInfo.profilePic = action.payload.profilePic
+        },
+        editNameInChatOfFolderChatList: (state, action: PayloadAction<{ index: number, name: string }>) => {
+            state.folderChatList[action.payload.index].chatInfo.name = action.payload.name
+        },
+        editProfilePicInChatOfFolderChatList: (state, action: PayloadAction<{ index: number, profilePic: profilePicInterface }>) => {
+            state.folderChatList[action.payload.index].chatInfo.profilePic = action.payload.profilePic
+        },
     },
 });
 
@@ -80,6 +92,10 @@ export const {
     addPrivateChat,
     addGroupChat,
     addFolderChatList,
-    setFolderId
+    setFolderId,
+    editNameInChatOfChatList,
+    editProfilePicInChatOfChatList,
+    editNameInChatOfFolderChatList,
+    editProfilePicInChatOfFolderChatList
 } = contactSlice.actions;
 export default contactSlice.reducer;

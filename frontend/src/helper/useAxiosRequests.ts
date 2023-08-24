@@ -2,8 +2,10 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, editProfilePicAction, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
+import { editUserContactName, editUserContactProfilePic } from '../redux/features/userContactSlice';
+import { editNameInChatOfChatList, editNameInChatOfFolderChatList, editProfilePicInChatOfChatList, editProfilePicInChatOfFolderChatList } from '../redux/features/userChatListSlice';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -152,12 +154,20 @@ export const editGroupPermissions = async (chatId: string, permissions: userPerm
     }
 }
 
-export const editGroupInfo = async (chatId: string, data: any, dispatch: any) => {
+export const editGroupInfo = async (chatId: string, data: any, index: number, dispatch: any) => {
     try {
         const res = await callApi().patch(`/main/chat/group/editGroupInfo/${chatId}`, data, config)
         console.log('edit group info res : ', res)
         if (res.status === 200) {
+            // edit in chat
             dispatch(editGroupInfoAction({ name: data.name, description: data.description }))
+            // edit in chatInfo
+            dispatch(editUserContactName(data.name))
+            // edit in chatList
+            dispatch(editNameInChatOfChatList({ index: index, name: data.name }))
+            // edit in folderChatList
+            dispatch(editNameInChatOfFolderChatList({ index: index, name: data.name }))
+
         }
     } catch (error) {
         console.log('edit group info error : ', error)
@@ -177,11 +187,19 @@ export const editGroupType = async (chatId: string, data: any, dispatch: any) =>
     }
 }
 
-export const editProfilePic = async (profilePicId: string, formData: any, dispatch: any) => {
+export const editProfilePic = async (profilePicId: string, formData: any, index: number, dispatch: any) => {
     try {
         const res = await callApi().patch(`/main/profilePic/${profilePicId}`, formData, config)
         console.log('edit profile pic res : ', res)
-        dispatch()
+        // edit in chat
+        dispatch(editProfilePicAction(res.data.value.profilePic))
+        // edit in chatInfo
+        dispatch(editUserContactProfilePic(res.data.value.profilePic))
+        // edit in chatList
+        dispatch(editProfilePicInChatOfChatList({ index: index, profilePic: res.data.value.profilePic }))
+        // edit in folderChatList
+        dispatch(editProfilePicInChatOfFolderChatList({ index: index, profilePic: res.data.value.profilePic }))
+
 
     } catch (error) {
         console.log('edit profile pic error : ', error)

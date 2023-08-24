@@ -25,12 +25,19 @@ export const UserContactSlice = createSlice({
     reducers: {
         addUserContact: (state, action: PayloadAction<any>) => {
             state.Contact = action.payload
-            // console.log('action : ', action)
+        },
+        editUserContactName: (state, action: PayloadAction<string>) => {
+            state.Contact.name = action.payload
+        },
+        editUserContactProfilePic: (state, action: PayloadAction<profilePicInterface>) => {
+            state.Contact.profilePic = action.payload
         },
     },
 });
 
 export const {
     addUserContact,
+    editUserContactName,
+    editUserContactProfilePic
 } = UserContactSlice.actions;
 export default UserContactSlice.reducer;

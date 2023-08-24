@@ -26,6 +26,17 @@ const GroupInfo: FC<GroupInfoProps> = () => {
     const openExceptions = useAppSelector(state => state.open).openExceptions
     const openGroupType = useAppSelector(state => state.open).openGroupType
 
+
+    const chat = useAppSelector(state => state.chat.Chat)
+    const userContact = useAppSelector(state => state.userContact.Contact)
+    const chatList = useAppSelector(state => state.userChatList.chatList)
+    const folderChatList = useAppSelector(state => state.userChatList.folderChatList)
+
+    console.log('chat:', chat)
+    console.log('userContact:', userContact)
+    console.log('chatList:', chatList)
+    console.log('folderChatList:', folderChatList)
+
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100">
             <div className="gap-3 flex flex-col ">

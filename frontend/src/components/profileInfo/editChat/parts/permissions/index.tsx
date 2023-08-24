@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { setIsEditChat, setUserPermissionsAndExceptions, userPermissionsInterface } from "@/src/redux/features/chatSlice";
+import { setIsEditChat, editUserPermissionsAndExceptions, userPermissionsInterface } from "@/src/redux/features/chatSlice";
 import { setOpenExceptions, setOpenPermissions } from "@/src/redux/features/openSlice";
 import PermissionOptions from "./permissionOptions";
 import { LuKey } from "react-icons/lu";
@@ -21,7 +21,7 @@ const Permissions: FC<PermissionsProps> = () => {
 
     const savePermissionsHandler = () => {
         editGroupPermissions(chatId, permissions)
-        dispatch(setUserPermissionsAndExceptions({ permissions: permissions, exceptions: [] }))
+        dispatch(editUserPermissionsAndExceptions({ permissions: permissions, exceptions: [] }))
 
         dispatch(setOpenPermissions(false))
         dispatch(setIsEditChat(true))

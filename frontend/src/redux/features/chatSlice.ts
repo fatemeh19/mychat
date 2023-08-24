@@ -149,7 +149,10 @@ export const ChatSlice = createSlice({
         editGroupInfoAction: (state, action: PayloadAction<{ name: string, description: string }>) => {
             state.Chat.name = action.payload.name
             state.Chat.description = action.payload.description
-        }
+        },
+        editProfilePicAction: (state, action: PayloadAction<profilePicInterface>) => {
+            state.Chat.profilePic = action.payload
+        },
     },
 });
 
@@ -173,6 +176,7 @@ export const {
     editUserPermissionsAndExceptions,
     setChatFetched,
     editGroupTypeSetting,
-    editGroupInfoAction
+    editGroupInfoAction,
+    editProfilePicAction
 } = ChatSlice.actions;
 export default ChatSlice.reducer;
