@@ -19,25 +19,29 @@ import fileTypeGetter from "../utils/fileTypeIdentifier.js";
 import fileCreator from "../utils/fileCreator.js";
 import * as consts from "../utils/consts.js";
 
-const createChat = async (body,userId,file) => {
-  let profilePic
+const createChat = async (body, userId, file) => {
+  let profilePic;
   const data = await Validators.createChat.validate(body);
   // if type of chat is private
   if (data.chatType == chatType[1]) {
-    const chatExists = await Services.findOne("chat", {
-      and: [
-        { "members.0.memberId": { $in: data.memberIds } },
-        { "members.1.memberId": { $in: data.memberIds } },
-      ],
-      chatType: chatType[1],
-    },{},false);
+    const chatExists = await Services.findOne(
+      "chat",
+      {
+        and: [
+          { "members.0.memberId": { $in: data.memberIds } },
+          { "members.1.memberId": { $in: data.memberIds } },
+        ],
+        chatType: chatType[1],
+      },
+      {},
+      false
+    );
 
     if (chatExists) {
       throw new CustomError.BadRequestError(
         ErrorMessages.DuplicateError,
         fields.chat
       );
-      
     }
   } else {
     let methodParameter = file
@@ -47,8 +51,8 @@ const createChat = async (body,userId,file) => {
           mimetype: "image/jpg",
           path: consts.DEFAULT_PROFILE_PICTURE,
         };
-    profilePic = await fileCreator(methodParameter)
-    data.profilePic = profilePic._id
+    profilePic = await fileCreator(methodParameter);
+    data.profilePic = profilePic._id;
 
     data.owner = userId;
     let primaryLink = {
@@ -78,99 +82,165 @@ const createChat = async (body,userId,file) => {
       $push: { chats: { chatInfo: chat._id } },
     }
   );
-  chat.profilePic = profilePic
-  return chat
+  chat.profilePic = profilePic;
+  return chat;
 };
 
-const getChat = async (userId,chatId) => {
- 
+const getChat = async (userId, chatId) => {
   const user = await Services.findOne("user", { _id: userId });
-  const chat = await Services.findOne("chat", { _id: chatId });
-  if (chat.profilePic) {
-    chat.profilePic = await Services.findOne("file", { _id: chat.profilePic });
-  }
-  let addedAt;
-  user.chats.forEach((chat) => {
-    if (chat.chatInfo.equals(chatId)) {
-      addedAt = chat.addedAt;
-    }
-  });
-  
-  
-  let messageIds = chat.messages.map((message) => message.messageInfo);
-  messageIds = await objectId(messageIds)
-  const messages = await Services.aggregate("message", [
+
+  let chatAddedDate = user.chats.find((chat) => chat.chatInfo.equals(chatId));
+  const chat = await Services.aggregate("chat", [
     {
-      $match: {
-        _id: { $in: messageIds },
-      },
+      $match: { _id: await objectId(chatId) },
     },
     {
       $lookup: {
         from: "files",
-        localField: "content.file",
+        localField: "profilePic",
         foreignField: "_id",
-        as: "content.file",
+        as: "profilePic",
       },
     },
-    {$unwind:"$content.file"},
-    
+    {
+      $unwind: "$profilePic",
+    },
+    {
+      $unwind: "$messages",
+    },
+    {
+      $lookup: {
+        from: "messages",
+        localField: "messages.messageInfo",
+        foreignField: "_id",
+        as: "messages.messageInfo",
+      },
+    },
+    {
+      $unwind: "$messages.messageInfo",
+    },
+    {
+      $group: {
+        _id: "$_id",
+        groupTypeSetting: { $first: "$groupTypeSetting" },
+        name: { $first: "$name" },
+        profilePic: { $first: "$profilePic" },
+        owner: { $first: "$owner" },
+        userPermissionsAndExceptions: {
+          $first: "$userPermissionsAndExceptions",
+        },
+        members: { $first: "$members" },
+        chatType: { $first: "$chatType" },
+        notifications: { $first: "$notifications" },
+        pinnedMessages: { $first: "$pinnedMessages" },
+
+        messages: { $push: "$messages" },
+      },
+    },
+    {
+      $project: {
+        groupTypeSetting: 1,
+        name: 1,
+        profilePic: 1,
+        owner: 1,
+        userPermissionsAndExceptions: 1,
+        chatType: 1,
+        notifications: 1,
+        pinnedMessages: 1,
+        messages: 1,
+        messages: {
+          $filter: {
+            input: "$messages",
+            as: "message",
+            cond: {
+              $gte: ["$$message.messageInfo.createdAt", chatAddedDate.addedAt],
+            },
+          },
+        },
+      },
+    },
+    {
+      $unwind: "$messages",
+    },
     {
       $lookup: {
         from: "users",
-        localField: "senderId",
+        localField: "messages.messageInfo.senderId",
         foreignField: "_id",
-        as: "senderInfo",
+        as: "messages.messageInfo.senderInfo",
       },
     },
-    {$unwind:"$senderInfo"},
-    
     {
-      $lookup:{
-        from:"files",
-        localField:"senderInfo.profilePic",
-        foreignField:"_id",
-        as:"senderInfo.profilePic"
-      }
+      $unwind: "$messages.messageInfo.senderInfo",
+    },
+    {
+      $group: {
+        _id: "$_id",
+        groupTypeSetting: { $first: "$groupTypeSetting" },
+        name: { $first: "$name" },
+        profilePic: { $first: "$profilePic" },
+        owner: { $first: "$owner" },
+        userPermissionsAndExceptions: {
+          $first: "$userPermissionsAndExceptions",
+        },
+        chatType: { $first: "$chatType" },
+        notifications: { $first: "$notifications" },
+        pinnedMessages: { $first: "$pinnedMessages" },
 
-    },
-    {$unwind:"$senderInfo.profilePic"},
-    {
-      $project: {
-        "content.file":1,
-        "content.text": 1,
-        "senderInfo.name": 1,
-        "senderInfo.lastname": 1,
-        "senderInfo.profilePic": 1,
-        "createdAt": 1,
+        messages: { $push: "$messages" },
       },
     },
-   
+    {
+      $unwind: "$messages",
+    },
+    {
+      $lookup: {
+        from: "files",
+        localField: "messages.messageInfo.senderInfo.profilePic",
+        foreignField: "_id",
+        as: "messages.messageInfo.senderInfo.profilePic",
+      },
+    },
+    {
+      $unwind: "$messages.messageInfo.senderInfo.profilePic",
+    },
+    {
+      $group: {
+        _id: "$_id",
+        groupTypeSetting: { $first: "$groupTypeSetting" },
+        name: { $first: "$name" },
+        profilePic: { $first: "$profilePic" },
+        owner: { $first: "$owner" },
+        userPermissionsAndExceptions: {
+          $first: "$userPermissionsAndExceptions",
+        },
+        members: { $first: "$members" },
+        chatType: { $first: "$chatType" },
+        notifications: { $first: "$notifications" },
+        pinnedMessages: { $first: "$pinnedMessages" },
+
+        messages: { $push: "$messages" },
+      },
+    },
+    
   ]);
+  let fileIds = chat[0].messages.map((message)=>message.messageInfo.content.file)
 
-console.log(messages)
-  let index;
-  let i = 0;
-  let length = chat.messages.length;
-  for (index = 0; index < length; index++) {
-    
-    if (messages[i].createdAt < addedAt) {
-      chat.messages.splice(index, 1);
-      index--;
-      length = chat.messages.length;
-      i++;
-      continue;
+  const files = await Services.findMany("file",{_id:{$in:fileIds}})
+  let index = 0
+  chat[0].messages.forEach((message)=>{
+    if(message.messageInfo.content.file){
+      message.messageInfo.content.file = files[index]
+      index++
     }
 
-    chat.messages[index].messageInfo = messages[i];
-    i++;
-  }
+  })
+  
 
-  return chat
+  return chat;
 };
 
 const getChats = async (userId) => {
-  
   const user = await Services.findOne("user", { _id: userId });
   let chatIds = user.chats.map((chat) => chat.chatInfo);
   chatIds = await objectId(chatIds);
@@ -195,31 +265,15 @@ const getChats = async (userId) => {
   let messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
   );
-  messageIds = await objectId(messageIds)
-  // const messages = await Services.findMany(
-  //   "message",
-  //   {
-  //     _id: { $in: messageIds },
-  //   },
-  //   {},
-  //   {updatedAt:-1}
-  // );
+  messageIds = await objectId(messageIds);
+   
   const messages = await Services.aggregate("message", [
     {
       $match: {
         _id: { $in: messageIds },
       },
     },
-    {
-      $lookup: {
-        from: "files",
-        localField: "content.file",
-        foreignField: "_id",
-        as: "content.file",
-      },
-    },
-    {$unwind:"$content.file"},
-    
+
     {
       $lookup: {
         from: "users",
@@ -228,11 +282,10 @@ const getChats = async (userId) => {
         as: "senderInfo",
       },
     },
-    {$unwind:"$senderInfo"},
+    { $unwind: "$senderInfo" },
     {
       $project: {
-        "content.file":1,
-        "content.text": 1,
+        content: 1,
         "senderInfo.name": 1,
         "senderInfo.lastname": 1,
         createdAt: 1,
@@ -267,16 +320,14 @@ const getChats = async (userId) => {
     }
   });
 
-  return chats
+  return chats;
 };
-const addToChats = async (userId,chatId) => {
-  
+const addToChats = async (userId, chatId) => {
   await Services.findByIdAndUpdate("user", userId, {
     $push: { chats: { chatInfo: chatId, addedAt: Date.now() } },
   });
 };
-const pinUnpinChat = async (body,userId,chatId) => {
-  
+const pinUnpinChat = async (body, userId, chatId) => {
   let data;
   try {
     data = await Validators.pinUnpinChat.validate(body, {
@@ -284,7 +335,7 @@ const pinUnpinChat = async (body,userId,chatId) => {
       abortEarly: false,
     });
   } catch (errors) {
-   throw new ValidationError(errors);
+    throw new ValidationError(errors);
   }
 
   let updateQuery;
@@ -315,7 +366,6 @@ const pinUnpinChat = async (body,userId,chatId) => {
       arrayFilters: [{ "chat.chatInfo": chatId }],
     });
   }
- 
 };
 
 const DeleteChat = async (userId, deleteInfo) => {
@@ -370,8 +420,6 @@ const DeleteChat = async (userId, deleteInfo) => {
       $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
     });
   }
-
- 
 };
 
 const searchChat = async (userId, search) => {
