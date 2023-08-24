@@ -15,7 +15,7 @@ const Informatin: FC<InformatinProps> = () => {
     return (
         <div className={`w-full flex flex-col gap-1 p-5 bg-white
                         shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]`}>
-            <div className={`w-full flex gap-5 items-center p-5 `}>
+            <div className={`w-full flex gap-5 items-center `}>
                 <Image
                     width={500}
                     height={0}
