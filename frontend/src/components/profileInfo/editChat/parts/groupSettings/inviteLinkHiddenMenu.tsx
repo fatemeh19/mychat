@@ -52,13 +52,13 @@ const InviteLinkHiddenMenu: FC<InviteLinkHiddenMenuProps> = ({ openHiddenMenu, s
         <>
             {
                 openHiddenMenu &&
-                <div className='absolute right-0 bottom-0 w-max font-[Vazir]'>
+                <div className={`absolute right-0 top-14 w-max font-[Vazir] z-10 `}>
                     <ul className="w-fit bg-white shadow-[0_1px_5px_-1px_rgba(0,0,0,0.3)] py-1">
-                        <li className="text-black py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2 font-normal" onClick={getQRCodeHandler}>
+                        <li className="text-black py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2 font-normal cursor-pointer" onClick={getQRCodeHandler}>
                             <BsPencil className={`w-5 h-5`} />
                             <p>Get QR code</p>
                         </li>
-                        <li className="text-red-500 py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2" onClick={showRevokeLinkConfirmModal}>
+                        <li className="text-red-500 py-2 px-4 hover:bg-gray-100 w-full transition-all duration-150 text-[15px] flex gap-2 cursor-pointer" onClick={showRevokeLinkConfirmModal}>
                             <BsTrash3 className={`w-5 h-5`} />
                             <p>Revoke Link</p>
                         </li>

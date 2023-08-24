@@ -2,7 +2,7 @@
 
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, addMemberToGroup, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, setGroupInfo, setGroupTypeSetting, userPermissionsInterface } from "../redux/features/chatSlice";
+import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
 import { groupMemberInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
@@ -157,7 +157,7 @@ export const editGroupInfo = async (chatId: string, data: any, dispatch: any) =>
         const res = await callApi().patch(`/main/chat/group/editGroupInfo/${chatId}`, data, config)
         console.log('edit group info res : ', res)
         if (res.status === 200) {
-            // dispatch(setGroupInfo({name : data.name, description:data.description}))
+            dispatch(editGroupInfoAction({ name: data.name, description: data.description }))
         }
     } catch (error) {
         console.log('edit group info error : ', error)
@@ -169,7 +169,8 @@ export const editGroupType = async (chatId: string, data: any, dispatch: any) =>
         const res = await callApi().patch(`/main/chat/group/editGroupType/${chatId}`, data, config)
         console.log('edit group type res : ', res)
         if (res.status === 200) {
-            // dispatch(setGroupTypeSetting(data))
+            dispatch(editGroupTypeSetting(data))
+
         }
     } catch (error) {
         console.log('edit group type error : ', error)
