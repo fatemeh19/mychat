@@ -1,7 +1,7 @@
 "use client"
 
 import { addFoldersList, folderInterface, setCloseFolders } from "../redux/features/folderSlice"
-import { addChat, addChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
+import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
 import { addUserInfo } from "../redux/features/userInfoSlice"
@@ -147,6 +147,7 @@ export const addChatToUserChatList = async (newChat: chatInterface, dispatch: an
         open: false,
     }
     dispatch(addChat(chat))
+    dispatch(addChatToFolderChatList(chat))
 }
 
 export const profilePicHandler = (user: any) => {

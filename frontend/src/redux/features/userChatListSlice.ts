@@ -65,6 +65,9 @@ export const contactSlice = createSlice({
         addFolderChatList: (state, action: PayloadAction<any>) => {
             state.folderChatList = action.payload
         },
+        addChatToFolderChatList: (state, action: PayloadAction<any>) => {
+            state.folderChatList.push(action.payload)
+        },
         setFolderId: (state, action: PayloadAction<any>) => {
             state.folderId = action.payload
         },
@@ -92,6 +95,7 @@ export const {
     addPrivateChat,
     addGroupChat,
     addFolderChatList,
+    addChatToFolderChatList,
     setFolderId,
     editNameInChatOfChatList,
     editProfilePicInChatOfChatList,
