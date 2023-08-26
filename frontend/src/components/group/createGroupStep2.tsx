@@ -4,6 +4,7 @@ import { BiSearch } from "react-icons/bi";
 import { useAppSelector } from "@/src/redux/hooks";
 import ContactBox from "../contact/contactList/contactBox";
 import { contactInterface } from "@/src/redux/features/userContactListSlice";
+import NoContact from "../contact/contactList/noContact";
 
 
 interface CreateGroupStep2Props {
