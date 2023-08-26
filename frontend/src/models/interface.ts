@@ -5,23 +5,34 @@ interface infoFace {
     phone: string
 }
 
-interface recievedMessageInterface {
-    _id: string,
+interface sendMessageInterface {
     content: {
-        contentType: string,
-        url: string,
+        contentType: string | undefined,
         text: string,
-        originalName?: string,
+    },
+    file?: any,
+    senderId : string,
+    // reply: {
+    //     isReplied: boolean,
+    //     messageId?: string
+    // },
+    // createdAt : number
+}
+
+interface recievedMessageInterface {
+    _id?: string,
+    content: {
+        contentType: string ,
+        url: string,
+        text: string
     },
     reply: {
-        isReplied: boolean,
-        messageId: string
+        isReplied: boolean
     },
     senderId: string,
     seenIds: string[],
-    deletedIds: string[],
     createdAt?: any,
     updatedAt?: any,
     __v?: number
 }
-export type { infoFace, recievedMessageInterface }
+export type { infoFace, sendMessageInterface, recievedMessageInterface }

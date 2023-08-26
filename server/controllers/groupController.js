@@ -1,37 +1,39 @@
-import * as Services from "../services/index.js";
-import * as Validators from "../validators/index.js";
+import { StatusCodes } from "http-status-codes";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
-import { StatusCodes } from "http-status-codes";
-
-const addMember = async (req, res) => {
+import * as Services from "../services/dbServices.js";
+import * as Validators from "../validators/index.js";
+import * as fileController from "../utils/file.js";
+import { objectId } from "../utils/typeConverter.js";
+import ValidationError from "../errors/ValidationError.js";
+const addMember = async (groupId, memberId) => {
   // if it has joined by link
   // if new member has privacy limitations send suitable error
   // limitations for number of members
-  const {
-    body: { memberId },
-    params: { chatId: groupId },
-  } = req;
-  const addToGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $push: { memberIds: memberId },
+  // const {
+  //   body: { memberId },
+  //   params: { chatId: groupId },
+  // } = req;
+  // req.user.userId = memberId;
+  // req.params.id = groupId;
+  await Services.findByIdAndUpdate("chat", groupId, {
+    $push: { members: { memberId, joinedAt: Date.now() } },
   });
-  // console.log(addToGroupResult);
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const editGroupType = async (req, res) => {
-  const { chatId: groupId } = req.params;
+const editGroupType = async (groupId, body) => {
   let data;
   try {
-    data = await Validators.editGroupType.validate(req.body, {
+    data = await Validators.editGroupType.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+    throw new ValidationError(errors);
   }
 
-  await Services.Chat.findAndUpdateChat(
+  await Services.findByIdAndUpdate(
+    "chat",
     groupId,
     {
       $set: { groupTypeSetting: data },
@@ -40,34 +42,26 @@ const editGroupType = async (req, res) => {
       new: true,
     }
   );
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const removeMember = async (req, res) => {
-  const {
-    params: { chatId: groupId, memberId },
-  } = req;
-  const removeFromGroupResult = await Services.Chat.findAndUpdateChat(groupId, {
-    $pull: { memberIds: memberId },
+const removeMember = async (groupId, memberId) => {
+  await Services.findByIdAndUpdate("chat", groupId, {
+    $pull: { members: { memberId: memberId } },
   });
-  console.log(removeFromGroupResult);
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
-const editGroupPermissions = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId },
-  } = req;
+const editGroupPermissions = async (groupId,body) => {
+  
   let data;
   try {
     data = await Validators.editGroupPermsAndExps.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
+
 
   data.exceptions.forEach((exception) => {
     if (exception.restrictUntil != "forever") {
@@ -83,64 +77,74 @@ const editGroupPermissions = async (req, res) => {
       };
     }
   });
-  const updated = await Services.Chat.findAndUpdateChat(
+  await Services.findByIdAndUpdate(
+    "chat",
     groupId,
     {
       $set: { userPermissionsAndExceptions: data },
     },
     { new: true }
   );
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
-const editGroupInfo = async (req, res) => {
-  const {
-    body,
-    params: { chatId: groupId },
-    file,
-  } = req;
+const editGroupInfo = async (groupId,body) => {
+  console.log(body)
   let data;
   try {
     data = await Validators.editGroupInfo.validate(body, {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
 
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
-  if (file) {
-    group.profilePic = file.path;
-  } else {
-    group.profilePic = undefined;
-  }
-  await fileController.deleteFile(group.profilePic);
 
-  const updated = await Services.Chat.findAndUpdateChat(groupId, {
+
+  
+  await Services.findByIdAndUpdate("chat", groupId, {
     $set: {
       name: data.name,
-      decription: data.description,
-      profilePic: group.profilePic,
+      description: data.description,
     },
   });
 
-  RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 
+const getMembers = async (groupId) => {
+  const chat = await Services.findOne("chat", { _id: groupId });
+  let memberIds = chat.members.map((member) => member.memberId);
+  memberIds = await objectId(memberIds);
+  const members = await Services.aggregate("user", [
+    { $match: { _id: { $in: memberIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $project: {
+        profilePic: 1,
+        name: 1,
+        lastName: 1,
+        status: 1,
+      },
+    },
+  ]);
 
+  return members
+  
+};
 
 export {
   addMember,
+  editGroupInfo,
+  editGroupPermissions,
   editGroupType,
   removeMember,
-  editGroupPermissions,
-  editGroupInfo,
-
+  getMembers,
 };

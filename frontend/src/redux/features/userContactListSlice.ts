@@ -1,20 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface contactInterface {
-    _id: string,
+interface contactInterface {
     name: string,
+    phoneNumber: string,
     profilePic: string,
-    status: {
-        online: boolean,
-        lastseen: string | Date | number
-    },
 }
 interface initialStateInterface {
-    contacts: contactInterface[]
+    contacts : contactInterface[]
 }
 
 const initialState = {
-    contacts: []
+    contacts : []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
@@ -23,9 +19,11 @@ export const contactSlice = createSlice({
     reducers: {
         addContact: (state, action: PayloadAction<any>) => {
             state.contacts[state.contacts.length] = action.payload
+            // console.log('action : ', action)
         },
         addContactsList: (state, action: PayloadAction<any>) => {
             state.contacts = action.payload
+            // console.log('action : ', action)
         },
     },
 });

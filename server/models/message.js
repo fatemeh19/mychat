@@ -13,27 +13,21 @@ const MessageSchema = new mongoose.Schema(
       },
     },
     content: {
-      contentType:String,
-      url: String,
-      originalName:String,
       text: String,
+      file:{
+        type:mongoose.Types.ObjectId,
+        ref:'File'
+      }
     },
     senderId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
-    seenIds: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    deletedIds: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    edited:{
+      type:Boolean,
+      default:false
+    }
+    
   },
   { timestamps: true }
 );

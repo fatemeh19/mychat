@@ -1,6 +1,13 @@
-import mongoose from 'mongoose'
-import validator from 'validator'
-import bcrypt from 'bcryptjs'
+import mongoose from "mongoose";
+import validator from "validator";
+import bcrypt from "bcryptjs";
+import * as Services from "../services/dbServices.js";
+import dupChecker from "../utils/dupChecker.js";
+import * as CustomError from "../errors/index.js";
+import * as RH from "../middlewares/ResponseHandler.js";
+import ErrorMessages from "../messages/errors.js";
+import Fields from "../messages/fields.js";
+import fields from "../messages/fields.js";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -9,31 +16,23 @@ const UserSchema = new mongoose.Schema(
       // minLength: [4, "name must be more than 4 characters"],
       // maxLength: [2, "name must be less than 20 characters"],
     },
-    lastname:{
-      type:String
+    lastname: {
+      type: String,
     },
     email: {
       type: String,
-      required: [true, "please provide email"],
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "please provide password"],
     },
     phoneNumber: {
       type: String,
-    //   required: [true, "please provide phoneNumber"],
-      // validate: {
-      //   validator: validator.isMobilePhone('ir-IR'),
-      // },
-      unique: true,
+      // unique: true,
     },
     username: {
       type: String,
-      unique: true,
-      // minLength: [10, "username must be more than 10 characters"],
-      // maxLength: [20, "username must be less than 20 characters"],
+      // unique: true,
     },
     bio: {
       type: String,
@@ -43,11 +42,13 @@ const UserSchema = new mongoose.Schema(
       online: Boolean,
       lastseen: Date,
     },
-    contacts: [],
-    profilePic: String,
-    isVerified:{
-        type:Boolean,
-        default:false
+    profilePic: {
+      type: mongoose.Types.ObjectId,
+      ref: "File",
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     isFirstTimeLogin: {
       type: Boolean,
@@ -71,46 +72,73 @@ const UserSchema = new mongoose.Schema(
           type: String,
         },
         lastname: {
-          type:String
+          type: String,
         },
-        profilePic:{
-          type:String
-        }
       },
     ],
+    folders: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Folder",
+      },
+    ],
+    chats: [
+      {
+        pinned: {
+          type: Boolean,
+          default: false,
+        },
+        chatInfo: {
+          type: mongoose.Types.ObjectId,
+          ref: "Chat",
+        },
+        addedAt: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
+    pinnedChats: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Chat",
+      },
+    ],
+    settingId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Setting",
+    },
   },
   { timestamps: true }
 );
-UserSchema.pre("save",async function(){
-  if (!this.isModified('password')) return
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-})
+});
 
-// UserSchema.methods.hashPassowrd = async function(){
-  
-// }
-// UserSchema.methods.comparePassowrd = async function(password){
-//   const isMatch = await bcrypt.compare(password,this.password)
-//   return isMatch 
-  
-// }
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const id = this.getQuery()._id;
+  let { dup, element } = await dupChecker("user", this.getUpdate());
+  if (dup && !dup._id.equals(id)) {
+    // throw new Error(element)
+    throw new CustomError.BadRequestError(ErrorMessages.DuplicateError,fields[element])
+
+  }
+});
+
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
- 
 };
-UserSchema.methods.hasThisContact = async function(contact){
+UserSchema.methods.hasThisContact = async function (contact) {
   // let contactNameExists = false
-  let contactExists = false
-  this.contacts.forEach((value, index)=>{
-    if(value.userId.equals(contact.userId)){
-      contactExists = true
+  let contactExists = false;
+  this.contacts.forEach((value, index) => {
+    if (value.userId.equals(contact.userId)) {
+      contactExists = true;
     }
-
-  })
-  return {contactExists}
-
-}
-
+  });
+  return { contactExists };
+};
 
 export default mongoose.model("User", UserSchema);

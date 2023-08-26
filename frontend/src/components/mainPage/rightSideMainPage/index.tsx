@@ -6,9 +6,7 @@ import Chat from "./chat"
 import ChatInfo from "./chatInfo"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { fetchChat } from "@/src/helper/useAxiosRequests"
-import { addMessage, setChatCreated, updateArrayMessages } from "@/src/redux/features/chatSlice"
-import { ChatType } from "@/src/models/enum"
-import CustomizedDialogs from "../../popUp"
+import { addMessage } from "@/src/redux/features/chatSlice"
 
 interface IUserInfo {
     name: string,
@@ -21,52 +19,31 @@ interface IUserInfo {
 export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
     const [infoState, setInfoVState] = useState(false)
-    // const [online, setOnline] = useState(false)
+    const [online, setOnline] = useState(false)
     const userInfo = useAppSelector(state => state.userInfo).User
     const dispatch = useAppDispatch()
     const socket = useAppSelector(state => state.socket).Socket
-    const chatList = useAppSelector(state => state.userChatList).chatList
-    const chatMessages = useAppSelector(state => state.chat).Chat.messages
 
-    let found = false
+    // socket.on('onlineOnChat', (contactId: any) => {
+    //     console.log('online on chat in client')
+    //     // console.log(contactId)
+    //     // setOnline(true)
+    // });
+    // socket.emit('online', userId)
+    // }, 5000);
 
     useEffect(() => {
-        found = false
-        chatList.map(cl => {
-            if (cl.contact._id === contactId) {
-                console.log('chat is exist')
-                fetchChat(cl._id, dispatch)
-                dispatch(setChatCreated(true))
-                found = true
-            }
-        })
-        found === false && dispatch(setChatCreated(false))
-    }, [chatList])
+        fetchChat(userInfo._id, contactId, dispatch)
+    }, [])
 
     useEffect(() => {
         socket?.emit('onChat', contactId)
-    }, [socket])
 
-    useEffect(() => {
         socket?.on('sendMessage', (message) => {
             console.log('i got new Message: ', message)
             dispatch(addMessage(message))
         })
-        socket.on('deleteMessage', (data: any) => {
-            const msg = chatMessages.filter(CM => {
-                let flag = true
-                for (let i = 0; i < data.messageIds.length; i++) {
-                    CM._id === data.messageIds[i] ? flag = false : null
-                }
-                if (flag) return CM._id
-            })
-            dispatch(updateArrayMessages(msg))
-        })
-        return () => {
-            socket.removeAllListeners('sendMessage')
-            socket.removeAllListeners('deleteMessage')
-        }
-    })
+    }, [socket])
 
     return (
         <>
@@ -75,7 +52,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     ? (
                         <div className="flex gap-[1px] justify-end">
                             <div className="w-full ">
-                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
+                                <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
                             </div>
                             <div className="min-w-fit">
                                 <ChatInfo />
@@ -84,7 +61,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
                     )
                     : (
                         <div className="">
-                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} />
+                            <Chat infoState={infoState} setInfoVState={setInfoVState} contactId={contactId} online={online} />
                         </div>
                     )
             }
@@ -92,4 +69,15 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
         </>
     )
+
+    // <div className="grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-[2px] ">
+    //         <div className="col-span-10  ">
+    //             <Chat setOpen={setOpen} />
+    //         </div>
+    //         <div className="col-span-4 bg-purple-400 ">
+    //             <ChatInfo />
+    //         </div>
+    //     </div>
+
+
 }

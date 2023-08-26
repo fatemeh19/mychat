@@ -1,7 +1,9 @@
 import * as Validators from "../validators/index.js";
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
+import ValidationError from "../errors/ValidationError.js";
+import getChatQuery from '../queries/getChat.js'
 import ErrorMessages from "../messages/errors.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
@@ -11,134 +13,488 @@ import Group from "../models/Group.js";
 import crypto from "crypto";
 import "../utils/loadEnv.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
-const createChat = async (req, res) => {
-  const {
-    body: body,
-    user: { userId },
-    file
-  } = req;
-  const data = await Validators.createChat.validate(body);
-  // if type of chat is group
-  if (data.chatType == chatType[1]) {
-    const chatExists = await Services.Chat.getChat({
-      memberIds: { $size: 2, $all: data.memberIds },
-      chatType: chatType[1],
-    });
+import indexFinder from "../utils/indexFinder.js";
+import { objectId } from "../utils/typeConverter.js";
+import fileTypeGetter from "../utils/fileTypeIdentifier.js";
+import fileCreator from "../utils/fileCreator.js";
+import * as consts from "../utils/consts.js";
 
-    if (chatExists) {
-      await RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.DuplicateError,
-        Field: fields.chat,
-      });
-    }
+const createChat = async (body, userId, file) => {
+  let profilePic;
+  const data = await Validators.createChat.validate(body);
+  // if type of chat is private
+  if (data.chatType == chatType[1]) {
+  //   const chatExists = await Services.findOne(
+  //     "chat",
+  //     {
+  //       and: [
+  //         { "members.0.memberId": { $in: data.memberIds } },
+  //         { "members.1.memberId": { $in: data.memberIds } },
+  //       ],
+  //       chatType: chatType[1],
+  //     },
+  //     {},
+  //     false
+  //   );
+
+    // if (chatExists) {
+    //   throw new CustomError.BadRequestError(
+    //     ErrorMessages.DuplicateError,
+    //     fields.chat
+    //   );
+    // }
   } else {
-    if(file){
-      data.profilePic = file.path
-    }
+    let methodParameter = file
+      ? file
+      : {
+          originalname: "default-profile",
+          mimetype: "image/jpg",
+          path: consts.DEFAULT_PROFILE_PICTURE,
+        };
+    profilePic = await fileCreator(methodParameter);
+    data.profilePic = profilePic._id;
+
     data.owner = userId;
     let primaryLink = {
-      name:'primaryLink',
+      name: "primaryLink",
       link: createRandomInviteLink(),
-      creator: userId, 
+      creator: userId,
     };
-    data.inviteLinks = []
-    data.inviteLinks.push(primaryLink)
+    data.inviteLinks = [];
+    data.inviteLinks.push(primaryLink);
   }
+  let members = [];
+  data.memberIds.forEach((memberId) => {
+    members.push({
+      memberId,
+    });
+  });
+
+  data["members"] = members;
+
+  const chat = await Services.create(data.chatType, data);
+  await Services.updateMany(
+    "user",
+    {
+      _id: { $in: data.memberIds },
+    },
+    {
+      $push: { chats: { chatInfo: chat._id } },
+    }
+  );
+  chat.profilePic = profilePic;
+  return chat;
+};
+
+const getChat = async (userId, chatId) => {
+  const user = await Services.findOne("user", { _id: userId });
+ 
+  let userChat = user.chats.find((chat) => chat.chatInfo.equals(chatId));
+  let chatInfo = await Services.findOne("chat",{_id:userChat.chatInfo})
+  let stages = await getChatQuery(chatInfo.messages.length,chatInfo)
+  const chat = await Services.aggregate("chat", [
+    {
+      $match: { _id: await objectId(chatId) },
+    },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    {
+      $unwind: "$profilePic",
+    },
+    ...stages
+  ]);
+ 
+  let fileIds = chat[0]?.messages.map((message)=>message.messageInfo.content.file)
+
+  const files = await Services.findMany("file",{_id:{$in:fileIds}})
+  let index = 0
+  chat[0]?.messages.forEach((message)=>{
+    if(message.messageInfo.content.file){
+      message.messageInfo.content.file = files[index]
+      index++
+    }
+
+  })
   
 
-  const chat = await Services.Chat.createChat(data);
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.CREATED,
-    title: "ok",
-    value: {
-      chatId: chat._id,
-    },
-  });
+  return chat[0];
 };
 
-const getChat = async (req, res) => {
-  const { params: {id:chatId} } = req;
+const getChats = async (userId) => {
+  const user = await Services.findOne("user", { _id: userId });
+  let chatIds = user.chats.map((chat) => chat.chatInfo);
+  chatIds = await objectId(chatIds);
+  const chats = await Services.aggregate("chat", [
+    { $match: { _id: { $in: chatIds } } },
+    {
+      $lookup: {
+        from: "files",
+        localField: "profilePic",
+        foreignField: "_id",
+        as: "profilePic",
+      },
+    },
+    { $unwind: "$profilePic" },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
-  // // const {
-  // //   user: { userId },
-  // //   params: { contactId },
-  // // } = req;
-  // // const memberIds = [userId, contactId];
+  let messageIds = chats.map(
+    (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
+  );
+  messageIds = await objectId(messageIds);
+   
+  const messages = await Services.aggregate("message", [
+    {
+      $match: {
+        _id: { $in: messageIds },
+      },
+    },
 
-  // const data = await Validators.getChat.validate(body);
-  // console.log(data);
-  // let findQuery;
-  // // find by memberIds
-  // if (data.findBy == chatSearchType[0]) {
-  //   findQuery = { memberIds: { $size: 2, $all: data.memberIds } };
-  // }
-  // // find by chatId
-  // else {
-  //   findQuery = { _id: data.id };
-  // }
-  const chat = await Services.Chat.getChat( { _id: chatId });
+    {
+      $lookup: {
+        from: "users",
+        localField: "senderId",
+        foreignField: "_id",
+        as: "senderInfo",
+      },
+    },
+    { $unwind: "$senderInfo" },
+    {
+      $project: {
+        content: 1,
+        "senderInfo.name": 1,
+        "senderInfo.lastname": 1,
+        createdAt: 1,
+      },
+    },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+  ]);
 
-  if (!chat) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: fields.chat,
+  let index = 0;
+  chats.forEach((chat) => {
+    if (!chat.messages.length) {
+      return;
+    }
+
+    chat.messages.splice(0, chat.messages.length - 1);
+    if (
+      !messages[index] ||
+      !chat.messages[0].messageInfo.equals(messages[index]._id)
+    ) {
+      messages.forEach((message, i) => {
+        if (message._id.equals(chat.messages[0].messageInfo)) {
+          chat.messages[0].messageInfo = messages[i];
+        }
+      });
+    } else {
+      chat.messages[0].messageInfo = messages[index];
+      index++;
+    }
+  });
+
+  return chats;
+};
+const addToChats = async (userId, chatId) => {
+  await Services.findByIdAndUpdate("user", userId, {
+    $push: { chats: { chatInfo: chatId, addedAt: Date.now() } },
+  });
+};
+const pinUnpinChat = async (body, userId, chatId) => {
+  let data;
+  try {
+    data = await Validators.pinUnpinChat.validate(body, {
+      stripUnknown: true,
+      abortEarly: false,
+    });
+  } catch (errors) {
+    throw new ValidationError(errors);
+  }
+
+  let updateQuery;
+  let op;
+  if (data.pin) {
+    op = "$push";
+    updateQuery = {
+      $push: {},
+      $set: {},
+    };
+  } else {
+    op = "$pull";
+    updateQuery = {
+      $pull: {},
+      $set: {},
+    };
+  }
+  updateQuery[op]["pinnedChats"] = chatId;
+
+  if (data.allChats) {
+    await Services.findByIdAndUpdate("user", userId, updateQuery);
+    await Services.findByIdAndUpdate("chat", chatId, {
+      $set: { pinned: data.pin },
+    });
+  } else {
+    updateQuery["$set"]["chats.$[chat].pinned"] = data.pin;
+    await Services.findByIdAndUpdate("folder", data.folderId, updateQuery, {
+      arrayFilters: [{ "chat.chatInfo": chatId }],
     });
   }
-  const messages = await Services.Message.getMessages({
-    _id: { $in: chat.messages },
-  });
-
-  chat.messages.splice(0, chat.messages.length);
-  chat.messages = messages;
-
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chat,
-    },
-  });
 };
 
-const getChats = async (req, res) => {
-  const {
-    user: { userId },
-  } = req;
-  const chats = await Services.Chat.getChats(
-    { memberIds: userId },
-    "",
-    "-updatedAt"
-  );
-  // res.send(chats);
-  const messageIds = chats.map(
-    (chat) => chat.messages[chat.messages.length - 1]
-  );
-  const messages = await Services.Message.getMessages(
+const DeleteChat = async (userId, deleteInfo) => {
+  const { chatId, deleteAll } = deleteInfo;
+  const chat = await Services.findOne("chat", { _id: chatId });
+  const user = await Services.findOne("user", { _id: userId });
+  if (deleteAll) {
+    if (chat.chatType == "group") {
+      if (!chat.owner.equals(userId)) {
+        return res.send("no access");
+      }
+    }
+    await Services.deleteOne("chat", { _id: chatId });
+    await Services.updateMany(
+      "folder",
+      {
+        "chats.chatInfo": chatId,
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+    // pinned chats
+    const memberIds = chat.members.map((member) => member.memberId);
+    await Services.updateMany(
+      "user",
+      {
+        _id: { $in: memberIds },
+      },
+      {
+        $pull: { pinnedChats: chatId, chats: { chatInfo: chatId } },
+      }
+    );
+  } else {
+    if (chat.chatType == "group") {
+      await Services.findByIdAndUpdate("chat", chatId, {
+        $pull: { members: { memberId: userId } },
+      });
+    }
+
+    await Services.updateMany(
+      "folder",
+      {
+        _id: { $in: user.folders },
+      },
+      {
+        $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+      }
+    );
+
+    await Services.findByIdAndUpdate("user", userId, {
+      $pull: { chats: { chatInfo: chatId }, pinnedChats: chatId },
+    });
+  }
+};
+
+const searchChat = async (userId, search) => {
+  // const {
+  //   params: { search },
+  //   user: { userId },
+  // } = req;
+  const user = await Services.findOne("user", { _id: userId });
+  let userChats = user.chats.map((chat) => chat.chatInfo);
+  userChats = await objectId(userChats);
+  let groupNameRegex1 = new RegExp(`^${search}`, "i");
+  let groupNameRegex2 = new RegExp(` ${search}`, "i");
+  const result = await Services.aggregate("user", [
     {
-      _id: { $in: messageIds },
+      $match: { _id: await objectId(userId) },
     },
-    "",
-    "-updatedAt"
-  );
-  await chats.forEach((chat, index) => {
-    chat.messages.splice(0, chat.messages.length);
-    // console.log(chat)
-    // console.log(messages[index])
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        contacts: {
+          $filter: {
+            input: "$contacts",
+            as: "contact",
+            cond: {
+              $or: [
+                {
+                  $regexFind: {
+                    input: "$$contact.name",
+                    regex: groupNameRegex1,
+                  },
+                },
+                {
+                  $regexFind: {
+                    input: "$$contact.lastname",
+                    regex: groupNameRegex1,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  ]);
+  let contacts = result[0].contacts.map((contact) => contact.userId);
+  contacts = await objectId(contacts);
+  const chats = await Services.aggregate("chat", [
+    {
+      $match: {
+        _id: { $in: userChats },
+      },
+    },
+    {
+      $addFields: {
+        returnObject1: {
+          $regexFind: { input: "$name", regex: groupNameRegex1 },
+        },
+      },
+    },
+    {
+      $addFields: {
+        returnObject2: {
+          $regexFind: { input: "$name", regex: groupNameRegex2 },
+        },
+      },
+    },
 
-    chat.messages.push(messages[index]);
-  });
-  await RH.SendResponse({
-    res,
-    statusCode: StatusCodes.OK,
-    title: "ok",
-    value: {
-      chats,
+    { $unwind: "$members" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "members.memberId",
+        foreignField: "_id",
+        as: "membersInfo",
+      },
     },
-  });
+    { $unwind: "$membersInfo" },
+    {
+      $addFields: {
+        returnObject3: {
+          $regexFind: { input: "$membersInfo.name", regex: groupNameRegex1 },
+        },
+      },
+    },
+    {
+      $addFields: {
+        returnObject4: {
+          $regexFind: {
+            input: "$membersInfo.lastname",
+            regex: groupNameRegex1,
+          },
+        },
+      },
+    },
+
+    // Group back to arrays
+    {
+      $group: {
+        name: { $first: "$name" },
+        obj1: { $first: "$returnObject1" },
+        obj2: { $first: "$returnObject2" },
+        chatType: { $first: "$chatType" },
+        _id: "$_id",
+        members: { $push: "$members" },
+        membersInfo: { $push: "$membersInfo" },
+      },
+    },
+
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        chatType: 1,
+        obj1: 1,
+        obj2: 1,
+        membersInfo: {
+          $filter: {
+            input: "$membersInfo",
+            as: "memberInfo",
+            cond: {
+              $and: [
+                {
+                  $or: [
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.name",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.lastname",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $regexFind: {
+                        input: "$$memberInfo.username",
+                        regex: groupNameRegex1,
+                      },
+                    },
+                    {
+                      $in: ["$$memberInfo._id", contacts],
+                    },
+                  ],
+                },
+                { $ne: ["$$memberInfo._id", await objectId(userId)] },
+                { $eq: ["$chatType", "private"] },
+              ],
+            },
+          },
+        },
+      },
+    },
+  ]);
+
+  for (let index = 0; index < chats.length; index++) {
+    if (
+      !chats[index].obj1 &&
+      !chats[index].obj2 &&
+      !chats[index].membersInfo.length
+    ) {
+      chats.splice(index, 1);
+      index--;
+    }
+  }
+  // chats.forEach((chat, index) => {
+  //   if (!chat.obj1 && !chat.obj2 && !chat.membersInfo.length) {
+  //     chats.splice(index, 1);
+  //   }
+  // });
+  return chats;
+  // RH.SendResponse({
+  //   res,
+  //   statusCode: StatusCodes.OK,
+  //   title: "ok",
+  //   value: {
+  //     chats,
+  //   },
+  // });
 };
 
-export { createChat, getChat, getChats };
+export {
+  addToChats,
+  DeleteChat,
+  pinUnpinChat,
+  createChat,
+  getChat,
+  getChats,
+  searchChat,
+};

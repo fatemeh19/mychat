@@ -5,13 +5,13 @@ const router = express.Router()
 import uploadFile from "../utils/multer.js";
 
 import {
-  setInfo,
-  getProfile,
-  editProfile
-} from "../controllers/userController.js";
+  setInfoI,
+  getProfileI,
+  editProfileI,
+  blockUnblockI
+} from "../inters/user.js";
 
-
-router.patch("/setInfo", uploadFile.single("profilePic"), setInfo);
-router.route('/profile').get(getProfile).patch(uploadFile.single("profilePic"),editProfile)
-
+router.patch("/setInfo", uploadFile.single("profilePic"), setInfoI);
+router.route('/profile').get(getProfileI).patch(editProfileI)
+router.patch("/block",blockUnblockI)
 export default router

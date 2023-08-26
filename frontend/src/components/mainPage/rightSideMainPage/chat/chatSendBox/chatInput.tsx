@@ -1,12 +1,13 @@
 "use client"
 
-// import EmojiPicker from "emoji-picker-react";
-import { Dispatch, FC, SetStateAction } from "react";
+import ValidationError from "@/src/errors/validationError";
+import callApi from "@/src/helper/callApi";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
-
+// import style from './chatInput.module.css'
 interface ChatInputProps {
-    input: string,
-    setInput: Dispatch<SetStateAction<string>>
+    input : string,
+    setInput : Dispatch<SetStateAction<string>>
     sendHandler: () => void,
 }
 
@@ -15,13 +16,13 @@ interface ChatInputProps {
 const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
 
     const snedMessage = async () => {
+        console.log('start sending message')
         sendHandler()
+        console.log('message sended')
+
         setInput('')
     }
 
-    const onEmojiClickHandler = (e: any, emojiObject: any) => {
-        setInput(prevInput => prevInput + emojiObject.emoji)
-    }
 
     return (
         <div className={`w-full flex justify-center font-[vazir] placeholder:justify-center`}>
@@ -49,11 +50,6 @@ const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
                 onChange={e => setInput(e.target.value)}
                 value={input}
             />
-            {/* <EmojiPicker
-                width='100%'
-                onEmojiClick={onEmojiClickHandler}
-
-            /> */}
         </div>
     );
 }

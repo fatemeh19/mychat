@@ -1,30 +1,80 @@
 import mongoose from "mongoose";
 import { chatType } from "../utils/enums.js";
 import { boolean } from "yup";
+import { mongo } from "mongoose";
 
 const ChatSchema = new mongoose.Schema(
   {
-    
-    memberIds: [
+    pinned: {
+      type: Boolean,
+      default: false,
+    },
+    members: [
       {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
+        memberId: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+        joinedAt:{
+          type:Date,
+          default:Date.now()
+        }
       },
     ],
     messages: [
       {
-        type: mongoose.Types.ObjectId,
-        ref: "Message",
+        pinStat: {
+          pinned: {
+            type: Boolean,
+            default: false,
+          },
+          by: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        },
+        messageInfo: {
+          type: mongoose.Types.ObjectId,
+          ref: "Message",
+        },
+        forwarded: {
+          isForwarded: {
+            type: Boolean,
+            default: false,
+          },
+          by: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        },
+        seenIds: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        ],
+        deletedIds: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+        ],
       },
     ],
     chatType: {
-      type:String,
-      enum:chatType,
+      type: String,
+      enum: chatType,
     },
     notifications: {
       type: Boolean,
       default: true,
     },
+    pinnedMessages: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Message",
+      },
+    ],
   },
   { timestamps: true }
 );

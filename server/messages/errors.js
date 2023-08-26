@@ -11,7 +11,7 @@ export default{
     "name":"CompareError",
     "message": "اشتباه است"
   },
-  "EmptyError": {
+  "required": {
     "name":"EmptyError",
     "message": "نباید خالی باشد"
   },
@@ -19,10 +19,18 @@ export default{
     "name":"ConfirmError",
     "message": "لطفا اول ایمیل خود را تایید کنید"
   },
-  "FormatError":{
-    "name":"FormatError",
+  "matches":{
+    "name":"matches",
     "message": "در فرمت صحیحی نیست"
 
+  },
+  "optionality":{
+    "message":"یک فیلد ضروری است"
+
+  },
+  "FormatError":{
+    "name":"FormatError",
+    "message":"فرمت صحیحی ندارد"
   },
   "UnauthorizedError":{
     "name":"UnauthorizedError",
@@ -48,7 +56,7 @@ export default{
     "name":"EnumError",
     "message":" معتبر نیست"
   },
-  "ContentError":{
+  "ContentMatchError":{
     "name":"ContentError",
     "message":"نوع پیام مشخص شده با پیام ارسال شده مطابقت ندارد"
   },
@@ -63,6 +71,24 @@ export default{
   "ExpiredError":{
     "name":"ExpiredError",
     "message":"منقضی شده است"
+  },
+  "changeContentError":{
+    "name":"changeContentError",
+    "message":"اجازه تغییر نوع پیام را ندارید"
+  },
+  "changeContentError":{
+    "name":"changeContentError",
+    "message":"اجازه تغییر نوع پیام را ندارید"
+  },
+  "NoFileFoundError":{
+    "name":"NoFileFoundError",
+    "message":"لطفا فایل را ارسال کنید"
+
+  },
+  "notAllowedToSend":{
+    "name":"notAllowedToSend",
+    "message":"شما مجاز به ارسال این نوع فایل نیستید"
   }
+
   
 }

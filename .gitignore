@@ -3,7 +3,7 @@
 
 # dependencies
 /frontend/node_modules
-/.history
+/frontend/.history
 /frontend/.pnp
 /frontend/.pnp.js
 /frontend/public/uploads
@@ -38,6 +38,8 @@
 /frontend/next-env.d.ts
 
 /frontend/public/uploads
+/frontend/public/defaults
+
 # ----------------------------------------------- END frontend ignore
 # backend gitignore
 /server/node_modules

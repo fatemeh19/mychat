@@ -1,6 +1,5 @@
 import MessageCreator from "../utils/MessageCreator.js";
 import Messages from "../messages/messages.js";
-import { ValidationError } from "../errors/index.js";
 import errorExtractor from "../utils/errorExtractor.js";
 
 const CustomError = async ({ err, errorClass, errorType, Field, socket = false }) => {
@@ -25,12 +24,8 @@ const CustomError = async ({ err, errorClass, errorType, Field, socket = false }
     };
     errors.push(error);
   }
-  if(socket){
-    return socket.emit('socketError',{Error:errors})
-
-  }else{
-    throw new errorClass("err.message", errors);
-  }
+  throw new errorClass("error message : ", errors);
+  
   
 };
 

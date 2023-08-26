@@ -3,10 +3,10 @@
 import { FC } from "react";
 import { BiSearch } from "react-icons/bi";
 import ContactBox from "./contactBox";
+import ContactListBtn from "./contactListBtn";
 import Link from "next/link";
 import NoContact from "./noContact";
-import { useAppSelector } from "@/src/redux/hooks";
-import PopUpBtns from "../../popUp/popUpBtns";
+import {useAppSelector } from "@/src/redux/hooks";
 interface ContactsProps {
     handleAddContact: () => void,
     handleOpen: () => void
@@ -35,26 +35,17 @@ const ContactList: FC<ContactsProps> = ({
                                 // @ts-ignore
                                 <Link key={contact._id} href={`/chat/${contact._id}`} >
                                     {/* @ts-ignore */}
-                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={true} />
+                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} />
                                 </Link>
 
                             ))
+
                     }
 
                 </div>
 
-                {/* <ContactListBtn handleOpen={handleOpen}
-                    handleAddContact={handleAddContact} /> */}
-                <PopUpBtns
-                    title1="Add Contact"
-                    title2="Close"
-                    id1="add-contact"
-                    id2="close"
-                    name1="add-contact"
-                    name2="close"
-                    onClickHandler1={handleAddContact}
-                    onClickHandler2={handleOpen}
-                />
+                <ContactListBtn handleOpen={handleOpen}
+                    handleAddContact={handleAddContact} />
             </div>
 
         </>

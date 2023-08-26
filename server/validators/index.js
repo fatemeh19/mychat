@@ -10,6 +10,11 @@ import editGroupType from "./editGroupType.js";
 import editGroupPermsAndExps from "./editGroupPermsandExps.js";
 import createInviteLink from "./createInviteLink.js";
 import editGroupInfo from "./editGroupInfo.js"
+import createFolder from "./createFolder.js";
+import pinUnpinChat from "./pinUnpinChat.js"
+import editMessage from "./editMessage.js";
+import editContact from "./editContact.js";
+import editSetting from "./editSetting.js";
 export {
   loginUser,
   registerUser,
@@ -22,5 +27,10 @@ export {
   editGroupType,
   editGroupPermsAndExps,
   createInviteLink,
-  editGroupInfo
+  editGroupInfo,
+  createFolder,
+  pinUnpinChat,
+  editMessage,
+  editContact,
+  editSetting
 };

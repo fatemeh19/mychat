@@ -17,6 +17,9 @@ import cors from 'cors'
 import notFound from './middlewares/notfound.js'
 import errorHandlerMiddleware from './middlewares/error-handler.js'
 
+import responseHandler from './middlewares/resHandler.js'
+import errorHandler from './middlewares/errorHandler.js'
+
 
 import authRouter from './routers/auth.js'
 import mainRouter from './routers/main.js'
@@ -28,19 +31,20 @@ app.use(morgan('common'))
 import connectDB from './db/connect.js'
 
 app.use(cors({
-    origin: "http://localhost:3001",
-    credentials: true
+    origin: "*",
+    credentials:true
 }))
 
 // routers
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/main', mainRouter)
+app.use('/api/v1/main',mainRouter)
 
 // middlewares
 app.use(notFound)
+app.use(responseHandler)
+app.use(errorHandler)
 app.use(errorHandlerMiddleware)
 
-// 
 
 
 

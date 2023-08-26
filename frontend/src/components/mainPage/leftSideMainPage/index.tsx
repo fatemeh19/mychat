@@ -3,7 +3,7 @@
 import SideBar from "./sidebar"
 import ChatList from "./chatList"
 import { useEffect } from "react"
-import { fetchUserChatList, fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
+import { fetchUserContactsListData, fetchUserProfileData } from "@/src/helper/userInformation"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
 import { io } from "socket.io-client";
 import { addSocket } from "@/src/redux/features/socketSlice"
@@ -11,14 +11,21 @@ import { addSocket } from "@/src/redux/features/socketSlice"
 
 export default function LeftSideMainPage() {
     const dispatch = useAppDispatch()
+
+    const userInfo = useAppSelector(state => state.userInfo).User
+    const contactId = useAppSelector(state => state.userContact).Contact._id
+    const socket = useAppSelector(state => state.socket).Socket
+
     const token = localStorage.getItem('token')
     let barearToken = 'Bearer ' + token
+    // socket.emit('online', userInfo._id)
 
 
     useEffect(() => {
         fetchUserContactsListData(dispatch);
         fetchUserProfileData(dispatch);
-        fetchUserChatList(dispatch)
+
+        console.log('socket created in client')
         const socketIO = io('http://localhost:3000', {
             auth: {
                 token: barearToken
@@ -26,8 +33,6 @@ export default function LeftSideMainPage() {
         })
         dispatch(addSocket(socketIO))
     }, [])
-
-    
 
     return (
         <div className="

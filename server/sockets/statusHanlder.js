@@ -1,32 +1,19 @@
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
+import { setStatus } from "../controllers/userController.js";
 export default function (io) {
   const online = function () {
     const socket = this;
-    const userId = socket.user.userId
-    Services.User.findAndUpdateUser(
-      userId,
-      {
-        status: {
-          online: true,
-          lastseen: Date.now(),
-        },
-      },
-      socket
-    );
+    const userId = socket.user.userId;
+    setStatus({ userId, online: true });
     // socket.data.userId = userId
     socket.broadcast.emit("onlineContact", userId);
   };
 
   const offline = function () {
-    const socket = this
-    const userId = socket.user.userId
+    const socket = this;
+    const userId = socket.user.userId;
     // console.log(socket.data.userId)
-    Services.User.findAndUpdateUser(userId, {
-      status: {
-        online: false,
-        lastseen: Date.now(),
-      },
-    });
+    setStatus({ userId, online: false });
     socket.broadcast.emit("offlineContact", userId);
 
     //   socket.on("disconnecting", () => {

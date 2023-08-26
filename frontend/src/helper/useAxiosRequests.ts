@@ -1,8 +1,10 @@
 "use client"
 
-import ValidationError from '@/src/errors/validationError';
+import ValidationError  from '@/src/errors/validationError';
 import callApi from "./callApi"
-import { addChat, setChatCreated, setFirstChat } from "../redux/features/chatSlice";
+import { addChat, setFirstChat } from "../redux/features/chatSlice";
+import { addMessage } from "../redux/features/chatSlice";
+import { sendMessageInterface } from '../models/interface';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -11,10 +13,11 @@ const config = {
     }
 };
 
-export const fetchChat = async (chatId: string, dispatch: any) => {
+export const fetchChat = async (userId: string, contactId: string, dispatch: any) => {
     let res: any;
     try {
-        res = await callApi().get(`/main/chat/${chatId}`, config)
+        res = await callApi().get(`/main/chat/${contactId}`, config)
+        // console.log('getChat res : ', res)
         // check if chat is availeble : get chat
         if (res.statusText && res.statusText === 'OK') {
             setFirstChat(false)
@@ -37,28 +40,25 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
             // check if chat is not availeble : creat chat
             // @ts-ignore
             if (error.Error.statusCode === 400 && err.errorType === 'NotFoundError') {
+                // console.log('error message : ', err.message)
+                setFirstChat(true)
                 dispatch(setFirstChat(true))
             }
         }
     }
 }
 
-export const createChat = async (userId: string, memberIds: string[], chatType: string, groupName: string = '', dispatch: any) => {
-    memberIds.push(userId)
-    // chatType
+export const createChat = async (userId: string, contactId: string) => {
+    // console.log('start create chat')
     const data = {
-        chatType: chatType,
-        memberIds,
-        name: groupName
+        memberIds: [userId, contactId]
     }
     let res: any;
     // not found chat => create chat
     try {
         res = await callApi().post('/main/chat/', data, config)
         if (res.statusText && res.statusText === 'Created') {
-            const chatId = res.data.value.chatId
-            await fetchChat(chatId, dispatch)
-            dispatch(setChatCreated(true))
+            // console.log('chat created.')
             return res.data.value.chatId
 
 
@@ -73,19 +73,24 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
             console.log(err.message)
         }
     }
+
+
+    // console.log('res from createChat : ', res)
 }
 
-export const createMessage = async (chatId: string, newMessage: any, dispatch: any,) => {
+export const createMessage = async (chatId: string, newMessage:any, dispatch: any,) => {
+    // console.log('start create message')
     let res: any;
+    // not found chat => create chat
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
         if (res.statusText && res.statusText === 'OK') {
-            console.log(res)
             return res.data.value.message
 
         }
     } catch (error) {
-        console.log('createMessage error : ', error)
+        console.log(error)
     }
 
+    // console.log('res from createMessage : ', res)
 }

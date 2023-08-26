@@ -1,15 +1,17 @@
 import express from "express";
 const router = express.Router();
-import {editGroupInfo, addMember, editGroupType, removeMember,editGroupPermissions } from "../controllers/groupController.js";
+import {getMembersI,editGroupInfoI, addMemberI, editGroupTypeI, removeMemberI,editGroupPermissionsI } from "../inters/group.js";
 import permissionChecker from "../middlewares/permissionChecker.js";
 import inviteLinkRouter from './inviteLink.js'
 import uploadFile from '../utils/multer.js'
+import { deleteChatI,addToChatsI } from "../inters/chat.js";
 router.use('/inviteLink',inviteLinkRouter)
 
-router.post("/addMember/:chatId",permissionChecker('addMember'),addMember);
+router.post("/addMember/:chatId",permissionChecker('addMember'),addMemberI,addToChatsI);
 
-router.delete("/removeMember/:chatId/:memberId", removeMember);
-router.patch("/editGroupType/:chatId", editGroupType);
-router.patch("/editGroupPermissions/:chatId",editGroupPermissions)
-router.patch("/editGroupInfo/:chatId",uploadFile.single('profilePic'),editGroupInfo)
+router.delete("/removeMember/:chatId/:memberId", removeMemberI,deleteChatI);
+router.get("/getMembers/:id",getMembersI);
+router.patch("/editGroupType/:chatId", editGroupTypeI);
+router.patch("/editGroupPermissions/:chatId",editGroupPermissionsI)
+router.patch("/editGroupInfo/:chatId",editGroupInfoI)
 export default router;

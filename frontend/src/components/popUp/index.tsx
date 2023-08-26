@@ -38,7 +38,7 @@ const BootstrapDialogMenu = styled(Dialog)(({ theme }) => ({
         position: 'absolute',
         top: 0,
         minHeight: '100vh',
-        margin: 0
+        margin:0
     },
     '& .MuiDialogContent-root': {
         // padding: theme.spacing(2),
@@ -89,19 +89,18 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
         </DialogTitle>
     );
 }
-const Transition = React.forwardRef(function Transition(props, ref) {
-    // @ts-ignore
+const Transition=React.forwardRef(function Transition(props,ref){
     return <Slide direction="left" mountOnEnter ref={ref}  {...props} />
 })
 interface CustomizedDialogsProps {
     children: React.ReactNode,
     open: boolean,
-    title?: string,
+    title: string,
     handelOpen: () => void,
-    menuDailog?: Boolean
+    menuDailog?:Boolean
 }
 
-const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen, menuDailog }) => {
+const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen ,menuDailog }) => {
 
     // let scrollWrap = React.createRef<HTMLDivElement>()
     // setTimeout(() => {
@@ -113,42 +112,40 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
 
 
     return (
-
+        
         <div>
-            {menuDailog ?
-                <BootstrapDialogMenu
-                    onClose={() => handelOpen()}
-                    aria-labelledby="customized-dialog-menu"
-                    open={open}
-                    // @ts-ignore
-                    transitioncomponent={Transition}
-                    keepMounted
-                >
-                    <DialogContent dividers
-                        className='no-scrollbar'
+            { menuDailog ? 
+                    <BootstrapDialogMenu
+                        onClose={() => handelOpen()}
+                        aria-labelledby="customized-dialog-menu"
+                        open={open}
+                        transitionComponent={Transition}
+                        keepMounted
                     >
-                        {children}
-                    </DialogContent>
-                </BootstrapDialogMenu>
+                        <DialogContent dividers
+                            className='no-scrollbar'
+                        >
+                            {children}
+                        </DialogContent>
+                    </BootstrapDialogMenu>
                 :
                 <BootstrapDialog
-                    onClose={() => handelOpen()}
-                    // aria-labelledby="customized-dialog-title"
-                    open={open}
+                onClose={() => handelOpen()}
+                aria-labelledby="customized-dialog-title"
+                open={open}
+            >
+                <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
+                    {title}
+                </BootstrapDialogTitle>
+                <DialogContent dividers
+                    className='no-scrollbar'
                 >
-                    {title && <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
-                        {title}
-                    </BootstrapDialogTitle>
-                    }
-                    <DialogContent dividers
-                        className='no-scrollbar'
-                    >
-                        {children}
-                    </DialogContent>
-                </BootstrapDialog>
+                    {children}
+                </DialogContent>
+            </BootstrapDialog>
 
             }
-
+            
         </div>
     );
 }

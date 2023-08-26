@@ -1,4 +1,4 @@
-import * as Services from "../services/index.js";
+import * as Services from "../services/dbServices.js";
 import * as Validators from "../validators/index.js";
 import * as CustomError from "../errors/index.js";
 import * as RH from "../middlewares/ResponseHandler.js";
@@ -7,13 +7,14 @@ import ErrorMessages from "../messages/errors.js";
 import Fields from "../messages/fields.js";
 import createRandomInviteLink from "../utils/createInviteLink.js";
 import * as fileController from "../utils/file.js";
+import ValidationError from "../errors/ValidationError.js";
 
 const getGroupByLink = async (req, res) => {
   const {
     params: { link },
     user: { userId },
   } = req;
-  const group = await Services.Chat.getChat({
+  const group = await Services.findOne('chat',{
     inviteLinks: {
       $elemMatch: {
         $and: [
@@ -28,13 +29,7 @@ const getGroupByLink = async (req, res) => {
       },
     },
   });
-  if (!group ) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.ExpiredError,
-      Field: Fields.link,
-    });
-  }
+  
  let outOfLimit = false
   group.inviteLinks.forEach((inviteLink) => {
     if (inviteLink.link == link) {
@@ -50,14 +45,14 @@ const getGroupByLink = async (req, res) => {
     }
   });
   if (outOfLimit ) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.ExpiredError,
-      Field: Fields.link,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.ExpiredError,
+      Fields.link,
+    );
+    
   }
 
-  //   const group = await Services.Chat.aggregateChats([
+  //   const group = await Services.aggregate('chat',[
   //     {
   //       $project: {
   //         inviteLinks:1,
@@ -103,8 +98,8 @@ const getGroupByLink = async (req, res) => {
 
   
   let isMember = false;
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
+  group.members.forEach((member) => {
+    if (member.memberId.equals(userId)) {
       isMember = true;
     }
   });
@@ -129,7 +124,7 @@ const joinGroupViaLink = async (req, res) => {
     params: { link },
     user: { userId },
   } = req;
-  const group = await Services.Chat.getChat({ "inviteLinks.link": link });
+  const group = await Services.findOne('chat',{ "inviteLinks.link": link });
   if (!group) {
     await RH.CustomError({
       errorClass: CustomError.NotFoundError,
@@ -148,29 +143,29 @@ const joinGroupViaLink = async (req, res) => {
     group.inviteLinks[inviteLinkIndex].limitForJoin.joinedUsers.length + 1 >
       group.inviteLinks[inviteLinkIndex].limitForJoin.limit
   ) {
-    return RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.FullError,
-      Field: Fields.joinUsersLimit,
-    });
+    throw new CustomError.BadRequestError(
+      ErrorMessages.FullError,
+      Fields.joinUsersLimit,
+    );
+    
   }
-  group.memberIds.forEach((memberId) => {
-    if (memberId.equals(userId)) {
+  group.members.forEach((member) => {
+    if (member.memberId.equals(userId)) {
       // is a member already
-      return RH.CustomError({
-        errorClass: CustomError.BadRequestError,
-        errorType: ErrorMessages.DuplicateError,
-        Field: Fields.member,
-      });
+      throw new CustomError.BadRequestError(
+        ErrorMessages.DuplicateError,
+        Fields.member,
+      );
+      
       // return console.log("is a member already");
     }
   });
   let updateQuery = { $push: {} };
-  updateQuery["$push"]["memberIds"] = userId;
+  updateQuery["$push"]["members"] = {memberId:userId};
   updateQuery["$push"][
     "inviteLinks." + inviteLinkIndex + ".limitForJoin.joinedUsers"
   ] = userId;
-  const updated = await Services.Chat.findAndUpdateChat(
+  const updated = await Services.findByIdAndUpdate('chat',
     group._id,
     updateQuery,
     { new: true }
@@ -189,17 +184,12 @@ const createInviteLink = async (req, res) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
+
+  const group = await Services.findOne('chat',{ _id: groupId });
+  
   const newInviteLink = {
     name: "",
     expireDate: {
@@ -234,17 +224,12 @@ const editInviteLink = async (req, res) => {
       stripUnknown: true,
       abortEarly: false,
     });
-  } catch (err) {
-    await RH.CustomError({ err, errorClass: CustomError.ValidationError });
+  } catch (errors) {
+   throw new ValidationError(errors);
   }
-  const group = await Services.Chat.getChat({ _id: groupId });
-  if (!group) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.group,
-    });
-  }
+
+  const group = await Services.findOne('chat',{ _id: groupId });
+  
   const InviteLink = {
     name: "",
     expireDate: {
@@ -266,7 +251,7 @@ const editInviteLink = async (req, res) => {
 
   let updateQuery = { $set: {} };
   updateQuery["$set"]["inviteLinks." + index] = InviteLink;
-  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+  const updated = await Services.findByIdAndUpdate('chat',groupId, updateQuery, {
     new: true,
   });
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
@@ -276,7 +261,7 @@ const deleteInviteLink = async (req, res) => {
   const {
     params: { chatId: groupId, index },
   } = req;
-  const group = await Services.Chat.getChat({ _id: groupId });
+  const group = await Services.findOne('chat',{ _id: groupId });
   if (!group) {
     await RH.CustomError({
       errorClass: CustomError.BadRequestError,
@@ -291,10 +276,10 @@ const deleteInviteLink = async (req, res) => {
   let updateQuery = { $unset: {} };
   updateQuery["$unset"]["inviteLinks." + index] = 1;
 
-  await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+  await Services.findByIdAndUpdate('chat',groupId, updateQuery, {
     new: true,
   });
-  const updated = await Services.Chat.findAndUpdateChat(
+  const updated = await Services.findByIdAndUpdate('chat',
     groupId,
     { $pull: { inviteLinks: null } },
     {
@@ -318,7 +303,7 @@ const revokeLink = async (req, res) => {
     updateQuery["$set"]["inviteLinks." + index + ".revoked"] = true;
   }
 
-  const updated = await Services.Chat.findAndUpdateChat(groupId, updateQuery, {
+  const updated = await Services.findByIdAndUpdate('chat',groupId, updateQuery, {
     new: true,
   });
   RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });

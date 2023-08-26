@@ -20,16 +20,20 @@ const GroupChatSchema = new mongoose.Schema({
       default: false,
     },
   },
+  
   name: {
     type: String,
     required: true,
   },
-  profilePic: {
-    type: String,
-  },
   description: {
     type: String,
+    // default:"group desc"
   },
+  profilePic: {
+    type:mongoose.Types.ObjectId,
+    ref:'File'
+  },
+  
   owner: {
     type: mongoose.Types.ObjectId,
     ref: "User",
@@ -136,5 +140,6 @@ const GroupChatSchema = new mongoose.Schema({
       },
     },
   ],
+  
 });
 export default Chat.discriminator("GroupChat", GroupChatSchema, "chats");
