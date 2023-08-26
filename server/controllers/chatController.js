@@ -3,7 +3,7 @@ import * as Services from "../services/dbServices.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import ValidationError from "../errors/ValidationError.js";
-
+import getChatQuery from '../queries/getChat.js'
 import ErrorMessages from "../messages/errors.js";
 import fields from "../messages/fields.js";
 import { StatusCodes } from "http-status-codes";
@@ -24,25 +24,25 @@ const createChat = async (body, userId, file) => {
   const data = await Validators.createChat.validate(body);
   // if type of chat is private
   if (data.chatType == chatType[1]) {
-    const chatExists = await Services.findOne(
-      "chat",
-      {
-        and: [
-          { "members.0.memberId": { $in: data.memberIds } },
-          { "members.1.memberId": { $in: data.memberIds } },
-        ],
-        chatType: chatType[1],
-      },
-      {},
-      false
-    );
+  //   const chatExists = await Services.findOne(
+  //     "chat",
+  //     {
+  //       and: [
+  //         { "members.0.memberId": { $in: data.memberIds } },
+  //         { "members.1.memberId": { $in: data.memberIds } },
+  //       ],
+  //       chatType: chatType[1],
+  //     },
+  //     {},
+  //     false
+  //   );
 
-    if (chatExists) {
-      throw new CustomError.BadRequestError(
-        ErrorMessages.DuplicateError,
-        fields.chat
-      );
-    }
+    // if (chatExists) {
+    //   throw new CustomError.BadRequestError(
+    //     ErrorMessages.DuplicateError,
+    //     fields.chat
+    //   );
+    // }
   } else {
     let methodParameter = file
       ? file
@@ -88,8 +88,10 @@ const createChat = async (body, userId, file) => {
 
 const getChat = async (userId, chatId) => {
   const user = await Services.findOne("user", { _id: userId });
-
-  let chatAddedDate = user.chats.find((chat) => chat.chatInfo.equals(chatId));
+ 
+  let userChat = user.chats.find((chat) => chat.chatInfo.equals(chatId));
+  let chatInfo = await Services.findOne("chat",{_id:userChat.chatInfo})
+  let stages = await getChatQuery(chatInfo.messages.length,chatInfo)
   const chat = await Services.aggregate("chat", [
     {
       $match: { _id: await objectId(chatId) },
@@ -105,130 +107,14 @@ const getChat = async (userId, chatId) => {
     {
       $unwind: "$profilePic",
     },
-    {
-      $unwind: "$messages",
-    },
-    {
-      $lookup: {
-        from: "messages",
-        localField: "messages.messageInfo",
-        foreignField: "_id",
-        as: "messages.messageInfo",
-      },
-    },
-    {
-      $unwind: "$messages.messageInfo",
-    },
-    {
-      $group: {
-        _id: "$_id",
-        groupTypeSetting: { $first: "$groupTypeSetting" },
-        name: { $first: "$name" },
-        profilePic: { $first: "$profilePic" },
-        owner: { $first: "$owner" },
-        userPermissionsAndExceptions: {
-          $first: "$userPermissionsAndExceptions",
-        },
-        members: { $first: "$members" },
-        chatType: { $first: "$chatType" },
-        notifications: { $first: "$notifications" },
-        pinnedMessages: { $first: "$pinnedMessages" },
-
-        messages: { $push: "$messages" },
-      },
-    },
-    {
-      $project: {
-        groupTypeSetting: 1,
-        name: 1,
-        profilePic: 1,
-        owner: 1,
-        userPermissionsAndExceptions: 1,
-        chatType: 1,
-        notifications: 1,
-        pinnedMessages: 1,
-        messages: 1,
-        messages: {
-          $filter: {
-            input: "$messages",
-            as: "message",
-            cond: {
-              $gte: ["$$message.messageInfo.createdAt", chatAddedDate.addedAt],
-            },
-          },
-        },
-      },
-    },
-    {
-      $unwind: "$messages",
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "messages.messageInfo.senderId",
-        foreignField: "_id",
-        as: "messages.messageInfo.senderInfo",
-      },
-    },
-    {
-      $unwind: "$messages.messageInfo.senderInfo",
-    },
-    {
-      $group: {
-        _id: "$_id",
-        groupTypeSetting: { $first: "$groupTypeSetting" },
-        name: { $first: "$name" },
-        profilePic: { $first: "$profilePic" },
-        owner: { $first: "$owner" },
-        userPermissionsAndExceptions: {
-          $first: "$userPermissionsAndExceptions",
-        },
-        chatType: { $first: "$chatType" },
-        notifications: { $first: "$notifications" },
-        pinnedMessages: { $first: "$pinnedMessages" },
-
-        messages: { $push: "$messages" },
-      },
-    },
-    {
-      $unwind: "$messages",
-    },
-    {
-      $lookup: {
-        from: "files",
-        localField: "messages.messageInfo.senderInfo.profilePic",
-        foreignField: "_id",
-        as: "messages.messageInfo.senderInfo.profilePic",
-      },
-    },
-    {
-      $unwind: "$messages.messageInfo.senderInfo.profilePic",
-    },
-    {
-      $group: {
-        _id: "$_id",
-        groupTypeSetting: { $first: "$groupTypeSetting" },
-        name: { $first: "$name" },
-        profilePic: { $first: "$profilePic" },
-        owner: { $first: "$owner" },
-        userPermissionsAndExceptions: {
-          $first: "$userPermissionsAndExceptions",
-        },
-        members: { $first: "$members" },
-        chatType: { $first: "$chatType" },
-        notifications: { $first: "$notifications" },
-        pinnedMessages: { $first: "$pinnedMessages" },
-
-        messages: { $push: "$messages" },
-      },
-    },
-    
+    ...stages
   ]);
-  let fileIds = chat[0].messages.map((message)=>message.messageInfo.content.file)
+ 
+  let fileIds = chat[0]?.messages.map((message)=>message.messageInfo.content.file)
 
   const files = await Services.findMany("file",{_id:{$in:fileIds}})
   let index = 0
-  chat[0].messages.forEach((message)=>{
+  chat[0]?.messages.forEach((message)=>{
     if(message.messageInfo.content.file){
       message.messageInfo.content.file = files[index]
       index++
