@@ -9,7 +9,7 @@ router.route('/:id').get(getChatI)
 router.patch("/pinUnpin/:id",pinUnpinChatI)
 router.patch("/addToChats/:id",addToChatsI)
 // router.get('/search/:search',searchChatI)
-
+router.delete('/:id',deleteChatI)
 
 
 export default router

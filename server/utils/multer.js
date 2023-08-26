@@ -6,16 +6,17 @@ import * as fileController from "./file.js";
 import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import errors from "../messages/errors.js";
+import fields from "../messages/fields.js";
 var storage = multer.diskStorage({
   destination: async function (req, file, cb) {
     let fileType;
 
     fileType = await fileTypeGetter(file.mimetype);
     if (!fileType) {
-      throw new CustomError.BadRequestError(
-        ErrorMessages.notAllowedToSend,
-        fields.file,
-      );
+     cb(new CustomError.BadRequestError(
+      errors.notAllowedToSend,
+      fields.file,
+    )) 
     }
 
     const filePath = path.join(consts.MEDIA_SAVE_PATH, fileType);

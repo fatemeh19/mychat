@@ -23,24 +23,17 @@ const setInfo = async (userId, body, file) => {
       abortEarly: false,
       stripUnknown: true,
     });
-  } catch (err) {
-    
-    throw new ValidationError(errors);  }
+  } catch (errors) {
+    throw new ValidationError(errors);
+  }
   const thisUser = await Services.findOne("user", { _id: userId });
 
   if (file) {
     updateProfilePic(thisUser.profilePic, file);
   }
+  console.log("set = ",data)
 
-  const updatedUser = await Services.findByIdAndUpdate("user", userId, data);
-
-  if (!updatedUser) {
-    await RH.CustomError({
-      errorClass: CustomError.NotFoundError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: Fields.user,
-    });
-  }
+  await Services.findByIdAndUpdate("user", userId, data);
 };
 
 const getProfile = async (userId) => {
@@ -67,7 +60,7 @@ const getProfile = async (userId) => {
       },
     },
   ]);
-  
+
   return user[0];
 };
 
@@ -76,20 +69,13 @@ const editProfile = async (userId, body) => {
   try {
     data = await Validators.editProfile.validate(body, {
       stripUnknown: false,
+      abortEarly:true
     });
   } catch (errors) {
-   throw new ValidationError(errors);
+    throw new ValidationError(errors);
   }
 
-
-  const user = await Services.findByIdAndUpdate("user", userId, data);
-  if (!user) {
-    await RH.CustomError({
-      errorClass: CustomError.BadRequestError,
-      errorType: ErrorMessages.NotFoundError,
-      Field: fields.user,
-    });
-  }
+  await Services.findByIdAndUpdate("user", userId, data);
 };
 
 const setStatus = async ({ userId, online }) => {

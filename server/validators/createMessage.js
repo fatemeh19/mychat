@@ -4,7 +4,8 @@ import { messageType } from '../utils/enums.js'
 const createMessage = yup.object({
     content:yup.object({
         // contentType:yup.string().oneOf(messageType,'EnumError'). required(),
-        text:yup.string()
+        text:yup.string(),
+        file:yup.string()
     }),
     // senderId:yup.string(). required(),
     reply:yup.object({

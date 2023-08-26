@@ -14,6 +14,7 @@ import createFolder from "./createFolder.js";
 import pinUnpinChat from "./pinUnpinChat.js"
 import editMessage from "./editMessage.js";
 import editContact from "./editContact.js";
+import editSetting from "./editSetting.js";
 export {
   loginUser,
   registerUser,
@@ -30,5 +31,6 @@ export {
   createFolder,
   pinUnpinChat,
   editMessage,
-  editContact
+  editContact,
+  editSetting
 };

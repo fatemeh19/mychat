@@ -7,6 +7,8 @@ import {
   forwardMessageI,
   createMessageI,
   editMessageI,
+  deleteMessage,
+  searchmessage
   
 } from "../inters/message.js";
 import permissionChecker from "../middlewares/permissionChecker.js";
@@ -22,9 +24,9 @@ router
 
 router.patch("/:pin/:chatId/:messageId", pinUnPinMessageI);
 router.put("/:id",uploadFile.single("file"),editMessageI)
-// router.get("/search/:chatId/:search",searchMessageI)
+router.get("/search/:chatId/:search",searchmessage)
 // router.patch("/seen/:chatId/:messageId",seenMessage)
-
-// .delete(DeleteMessageHttp)
+router
+.delete('/',deleteMessage)
 // ,uploadFile.single('file')]
 export default router;

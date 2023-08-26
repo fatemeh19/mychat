@@ -20,9 +20,17 @@ export default{
     "message": "لطفا اول ایمیل خود را تایید کنید"
   },
   "matches":{
-    "name":"FormatError",
+    "name":"matches",
     "message": "در فرمت صحیحی نیست"
 
+  },
+  "optionality":{
+    "message":"یک فیلد ضروری است"
+
+  },
+  "FormatError":{
+    "name":"FormatError",
+    "message":"فرمت صحیحی ندارد"
   },
   "UnauthorizedError":{
     "name":"UnauthorizedError",

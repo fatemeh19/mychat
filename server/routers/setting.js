@@ -6,7 +6,7 @@ import uploadFile from "../utils/multer.js";
 import { editSettingI, getSettingI } from "../inters/setting.js";
 
 router.patch(
-  "/:id/:title",
+  "/:id",
   uploadFile.fields([
     { name: "notifSound", maxCount: 1 },
     { name: "background", maxCount: 1 },

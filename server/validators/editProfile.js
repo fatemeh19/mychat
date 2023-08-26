@@ -1,10 +1,11 @@
 import yup from 'yup'
-const phoneRegExp =/^(\+98|0)?9\d{9}$/
+import * as regex from '../utils/regex.js'
+
 const editProfile = yup.object({
-    name:yup.string(). required(),
+    name:yup.string().required(),
     lastname:yup.string(),
     username:yup.string(),
-    phoneNumber:yup.string().matches(phoneRegExp). required(),
+    phoneNumber:yup.string().matches(regex.phoneNumber).required(),
     bio:yup.string()
 })
 

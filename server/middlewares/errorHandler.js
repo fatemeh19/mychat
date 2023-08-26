@@ -12,8 +12,8 @@ export default async (error, req, res, next) => {
     
     errors.push({
       field: field?.name,
-      errorType: errorTypeDetail.name,
-      message: await MessageCreator(field?.value, errorTypeDetail.message),
+      errorType: errorTypeDetail?.name,
+      message: await MessageCreator(field?.value, errorTypeDetail?.message||errorTypeDetail),
     });
 
     // it will have field , detail , statusCode

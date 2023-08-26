@@ -5,6 +5,7 @@ const chatSearchType = ['memberIds','chatId']
 const restrictUserDate = ["forever","specificTime"]
 const themes = ['default']
 const privacy = ['everybody','myContacts','nobody']
+const editSettingOptions = ["notificationAndSounds","privacyAndSecurity","chatSetting"]
 export{
     messageType,
     groupType,
@@ -12,5 +13,6 @@ export{
     chatSearchType,
     restrictUserDate,
     themes,
-    privacy
+    privacy,
+    editSettingOptions
 }
