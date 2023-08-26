@@ -16,9 +16,11 @@ const addMember = async (groupId, memberId) => {
   // } = req;
   // req.user.userId = memberId;
   // req.params.id = groupId;
-  await Services.findByIdAndUpdate("chat", groupId, {
+  Services.findByIdAndUpdate("chat", groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });
+  const member = await Services.findOne('user',{_id:memberId})
+  return member
 };
 
 const editGroupType = async (groupId, body) => {
@@ -32,7 +34,7 @@ const editGroupType = async (groupId, body) => {
     throw new ValidationError(errors);
   }
 
-  await Services.findByIdAndUpdate(
+  const editedGroupType = await Services.findByIdAndUpdate(
     "chat",
     groupId,
     {
@@ -42,12 +44,15 @@ const editGroupType = async (groupId, body) => {
       new: true,
     }
   );
+  return editedGroupType
 };
 
 const removeMember = async (groupId, memberId) => {
   await Services.findByIdAndUpdate("chat", groupId, {
     $pull: { members: { memberId: memberId } },
   });
+  const member = await Services.findOne('user',{_id:memberId})
+  return member
 };
 
 const editGroupPermissions = async (groupId,body) => {
@@ -77,7 +82,7 @@ const editGroupPermissions = async (groupId,body) => {
       };
     }
   });
-  await Services.findByIdAndUpdate(
+  const editedGroupPermissions = await Services.findByIdAndUpdate(
     "chat",
     groupId,
     {
@@ -85,7 +90,7 @@ const editGroupPermissions = async (groupId,body) => {
     },
     { new: true }
   );
-  // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
+  return editedGroupPermissions
 };
 const editGroupInfo = async (groupId,body) => {
   console.log(body)
@@ -102,12 +107,13 @@ const editGroupInfo = async (groupId,body) => {
 
 
   
-  await Services.findByIdAndUpdate("chat", groupId, {
+  const editedGroupInfo = await Services.findByIdAndUpdate("chat", groupId, {
     $set: {
       name: data.name,
       description: data.description,
     },
   });
+  return editedGroupInfo
 
 };
 
