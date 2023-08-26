@@ -88,7 +88,7 @@ const editGroupPermissions = async (groupId,body) => {
   // RH.SendResponse({ res, statusCode: StatusCodes.OK, title: "ok" });
 };
 const editGroupInfo = async (groupId,body) => {
-  
+  console.log(body)
   let data;
   try {
     data = await Validators.editGroupInfo.validate(body, {
@@ -105,7 +105,7 @@ const editGroupInfo = async (groupId,body) => {
   await Services.findByIdAndUpdate("chat", groupId, {
     $set: {
       name: data.name,
-      decription: data.description,
+      description: data.description,
     },
   });
 

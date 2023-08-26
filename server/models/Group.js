@@ -20,13 +20,14 @@ const GroupChatSchema = new mongoose.Schema({
       default: false,
     },
   },
-  // description: {
-  //   type: String,
-  //   default:"group desc"
-  // },
+  
   name: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    // default:"group desc"
   },
   profilePic: {
     type:mongoose.Types.ObjectId,
