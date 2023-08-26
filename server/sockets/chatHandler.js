@@ -113,7 +113,8 @@ export default function (io) {
   }
   const searchMessages = async function(chatId,search){
     const socket = this;
-    const messages = await searchMessage(chatId,search)
+    const userId = socket.user.userId;
+    const messages = await searchMessage(userId,chatId,search)
     socket.emit('searchMessage',messages)
   }
 

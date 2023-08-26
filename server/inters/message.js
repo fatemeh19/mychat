@@ -95,9 +95,10 @@ const editMessageI = async (req, res, next) => {
 
 const searchmessage = async (req, res, next) => {
   const {
-    params: { chatId,search }
+    params: { chatId,search },
+    user:{userId}
   } = req;
-  const result = await searchMessage(chatId,search)
+  const result = await searchMessage(userId,chatId,search)
   res.locals.response = {
     statusCode: StatusCodes.OK,
     value: {

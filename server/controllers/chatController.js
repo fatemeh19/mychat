@@ -184,6 +184,19 @@ const getChats = async (userId) => {
     },
   ]);
 
+
+  let fileIds = messages?.map((message)=>message.content.file)
+
+  const files = await Services.findMany("file",{_id:{$in:fileIds}})
+  let i = 0
+  messages?.forEach((message)=>{
+    if(message.content.file){
+      message.content.file = files[i]
+      i++
+    }
+  })
+  
+  
   let index = 0;
   chats.forEach((chat) => {
     if (!chat.messages.length) {
@@ -195,16 +208,14 @@ const getChats = async (userId) => {
       !messages[index] ||
       !chat.messages[0].messageInfo.equals(messages[index]._id)
     ) {
-      messages.forEach((message, i) => {
-        if (message._id.equals(chat.messages[0].messageInfo)) {
-          chat.messages[0].messageInfo = messages[i];
-        }
-      });
+      chat.messages[0].messageInfo = messages.find((message)=>message._id.equals(chat.messages[0].messageInfo))
+    
     } else {
       chat.messages[0].messageInfo = messages[index];
       index++;
     }
   });
+  
 
   return chats;
 };
@@ -473,20 +484,9 @@ const searchChat = async (userId, search) => {
       index--;
     }
   }
-  // chats.forEach((chat, index) => {
-  //   if (!chat.obj1 && !chat.obj2 && !chat.membersInfo.length) {
-  //     chats.splice(index, 1);
-  //   }
-  // });
+ 
   return chats;
-  // RH.SendResponse({
-  //   res,
-  //   statusCode: StatusCodes.OK,
-  //   title: "ok",
-  //   value: {
-  //     chats,
-  //   },
-  // });
+  
 };
 
 export {

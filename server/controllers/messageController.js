@@ -305,7 +305,9 @@ const editMessage = async (body,file,messageId) => {
   return editedMessage
 };
 
-const searchMessage = async (chatId,search) => {
+const searchMessage = async (userId,chatId,search) => {
+  const user = await Services.findOne('user',{_id:userId})
+  const chatInfo = user.chats.find((chat)=>chat.chatInfo.equals(chatId))
   const chat = await Services.findOne("chat", { _id: chatId }, { messages: 1 });
   let messageIds = chat.messages.map((message) => message.messageInfo);
   messageIds = await objectId(messageIds);
@@ -318,6 +320,7 @@ const searchMessage = async (chatId,search) => {
           $and: [
             { $regexFind: { input: "$content.text", regex: searchRegex } },
             { $eq: ["$_id", value] },
+            {$gte: ["$createdAt", chatInfo.addedAt]} 
           ],
         },
         then: index,
@@ -332,16 +335,6 @@ const searchMessage = async (chatId,search) => {
         "content.text": { $regex: search, $options: "i" },
       },
     },
-    {
-      $lookup: {
-        from: "files",
-        localField: "content.file",
-        foreignField: "_id",
-        as: "content.file",
-      },
-    },
-    {$unwind:"$content.file"},
-    
     {
       $lookup: {
         from: "users",
@@ -365,8 +358,7 @@ const searchMessage = async (chatId,search) => {
     {
       $project: {
         indexes: conditions,
-        "content.file":1,
-        "content.text": 1,
+        content:1,
         "senderInfo.name": 1,
         "senderInfo.lastname": 1,
         "senderInfo.profilePic": 1,
@@ -377,8 +369,7 @@ const searchMessage = async (chatId,search) => {
     {
       $project: {
         _id: 1,
-        "content.file":1,
-        "content.text": 1,
+        content:1,
         "senderInfo.name": 1,
         "senderInfo.lastname": 1,
         "senderInfo.profilePic": 1,
@@ -399,6 +390,16 @@ const searchMessage = async (chatId,search) => {
       },
     },
   ]);
+  let fileIds = messages?.map((message)=>message.content.file)
+
+  const files = await Services.findMany("file",{_id:{$in:fileIds}})
+  let index = 0
+  messages?.forEach((message)=>{
+    if(message.content.file){
+      message.content.file = files[index]
+      index++
+    }
+  })
 
   return messages
   
