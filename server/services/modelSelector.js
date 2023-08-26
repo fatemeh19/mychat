@@ -25,8 +25,6 @@ const modelSelector = async (model) => {
       return Setting
     case "file":
       return file
-
-
   }
 };
 
