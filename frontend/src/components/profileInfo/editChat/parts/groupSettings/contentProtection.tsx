@@ -24,7 +24,7 @@ const ContentProtection: FC<ContentProtectionProps> = ({ typeSetting, setTypeSet
             <div className="overflow-hidden w-full flex flex-col items-start gap-2 relative select-none p-[25px] pb-[10px] bg-white transition-all duration-200
                         shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]" ref={contentProtectionRef}>
                 <p className="text-mainColor font-semibold">content protection</p>
-                <Toggle id="saveContent" text="Restrict saving content" toggle={typeSetting.restricSavingContent} dispatchHandler={() => setTypeSetting(prevState => ({ ...prevState, restricSavingContent: !prevState.restricSavingContent }))} />
+                <Toggle id="saveContent" text="Restrict saving content" toggle={typeSetting.restrictSavingContent} dispatchHandler={() => setTypeSetting(prevState => ({ ...prevState, restrictSavingContent: !prevState.restrictSavingContent }))} />
             </div>
             <p className="px-[25px] py-[10px] text-gray-500 text-sm">Members won't be able to copy, save or forward content from this group.</p>
         </div>

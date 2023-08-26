@@ -40,7 +40,7 @@ interface userPermissionsAndExceptionsInterface {
 
 export interface groupTypeSettingInterface {
     groupType: string,//'private' | 'public'
-    restricSavingContent: boolean,
+    restrictSavingContent: boolean,
     approveNewMembers: boolean,
     url: string
 }
