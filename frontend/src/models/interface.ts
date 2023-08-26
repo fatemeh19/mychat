@@ -26,10 +26,19 @@ interface recievedMessageInterface {
     messageInfo: {
         _id: string,
         content: {
-            contentType: string,
+            // contentType: string,
             text: string,
-            url: string,
-            originalName?: string,
+            // url: string,
+            // originalName?: string,
+            file: {
+                _id: string,
+                contentType: string,
+                originalName: string,
+                path: string,
+                createdAt?: any,
+                updatedAt?: any,
+                __v?: number
+            }
         },
         senderId: string,
         edited: boolean,

@@ -45,7 +45,8 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
     const isEdit = useAppSelector(state => state.editMessage).isEdit
     const editedMessage = useAppSelector(state => state.editMessage).editedMessageId
-    const chatMessages = useAppSelector(state => state.chat).Chat.messages
+    const chatType = useAppSelector(state => state.chat.Chat).chatType
+    const chat = useAppSelector(state => state.chat.Chat)
 
     const fileRef = createRef<HTMLInputElement>()
 
@@ -56,10 +57,15 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
         chatCreated === false && dispatch(setFirstChat(true))
     })
     useEffect(() => {
-        isEdit ? editedMessage.messageInfo.content.contentType === messageTypes.text ? setInput(editedMessage.messageInfo.content.text) : setInput('Caption') : setInput('')
+        isEdit ?
+            !editedMessage.messageInfo.content.file
+                ? setInput(editedMessage.messageInfo.content.text)
+                : setInput('Caption')
+            : setInput('')
     }, [isEdit])
     useEffect(() => {
-        chatCreated && (async () => {
+        console.log('chat in sendBox : ', chat)
+        chatType === ChatType.private && chatCreated && (async () => {
             chatId = await fetchChat(chatId, dispatch)
         })()
     }, [firstChat])
@@ -114,7 +120,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             // newMessage.append('content[contentType]', type)
             newMessage.append('content[text]', input)
             file ? newMessage.append('file', file) : null
-            !isEdit && newMessage.append('senderId', userInfo._id)
+            // !isEdit && newMessage.append('senderId', userInfo._id)
             !isEdit && voice ? newMessage.append('file', voice) : null
             !isEdit && showReply && !isForward ? newMessage.append('reply[isReplied]', JSON.stringify(true)) : null
             !isEdit && showReply && !isForward ? newMessage.append('reply[messageId]', repliedMessageId) : null
@@ -227,7 +233,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
 
         }
     }
-    const chat = useAppSelector(state => state.chat.Chat)
     const chatFetched = useAppSelector(state => state.chat).chatFetched
     const sendMediaRef = useRef<HTMLDivElement>(null)
     const sendFilesRef = useRef<HTMLDivElement>(null)

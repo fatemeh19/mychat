@@ -15,6 +15,7 @@ const config = {
 };
 
 export const fetchChat = async (chatId: string, dispatch: any) => {
+    console.log('chatId in fetch chat:', chatId)
     let res: any;
     try {
         res = await callApi().get(`/main/chat/${chatId}`, config)
@@ -22,7 +23,7 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
         if (res.statusText && res.statusText === 'OK') {
             dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
-            dispatch(addChat(Chat))
+            dispatch(addChat(Chat[0]))
             dispatch(setChatFetched(true))
             return res.data.value.chat._id
         }
@@ -46,6 +47,7 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
 }
 
 export const createChat = async (userId: string, memberIds: string[], chatType: string, groupName: string = '', dispatch: any) => {
+    console.log('chat creating ...')
     memberIds.push(userId)
     // chatType
     const data = {

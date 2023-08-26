@@ -4,7 +4,7 @@ import { MouseEvent, useRef, useState, useEffect, FC, Dispatch, SetStateAction }
 
 import Message from "./message"
 import RightClick from "@/src/components/rightClick"
-import { ChatType, MessageBoxDir } from "@/src/models/enum"
+import { ChatType, MessageBoxDir, messageTypes } from "@/src/models/enum"
 import { setToggle } from "@/src/redux/features/toggleSlice"
 import { recievedMessageInterface } from "@/src/models/interface"
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks"
@@ -313,7 +313,12 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     }
 
                     <div className="gap-3 flex flex-col font-[vazir]">
-                        <Message type={msg.messageInfo.content.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                        {
+                            msg.messageInfo.content.file
+                                ? <Message type={messageTypes.text} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                                : <Message type={msg.messageInfo.content.file} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                        }
+
                     </div>
                 </div>
             </div>

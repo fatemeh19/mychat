@@ -161,6 +161,7 @@ export const profilePicHandler = (user: any) => {
 export const userHandler = async () => {
     let user;
     const res = await callApi().get('/main/user/profile', config)
+    console.log('userHandler user profile res : ', res)
     if (res.statusText && res.statusText === 'OK') {
         user = res.data.value.profile;
         if (user.pinnedChats == undefined) {
