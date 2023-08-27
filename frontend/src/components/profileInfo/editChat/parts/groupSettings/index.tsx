@@ -27,7 +27,6 @@ const GroupSettings: FC<PermissionsProps> = () => {
     const [contentProtectionRef, setContentProtectionRef] = useState<RefObject<HTMLDivElement>>()
 
     useEffect(() => {
-        console.log('typesettings in groupSettings : ', typeSetting)
         if (typeSetting.groupType === 'private') {
             setTypeSetting(prevState => ({ ...prevState, url: '', approveNewMembers: false }))
         } else if (typeSetting.groupType === 'public') {
@@ -36,7 +35,6 @@ const GroupSettings: FC<PermissionsProps> = () => {
     }, [typeSetting.groupType])
 
     const saveGroupTypeSettingHandler = () => {
-        console.log('typeSetting : ', typeSetting)
         editGroupType(chatId, typeSetting, dispatch)
     }
     return (

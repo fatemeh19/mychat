@@ -52,7 +52,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     useEffect(() => {
         found = false
         dispatch(setChatFetched(false))
-        console.log('chatList in right : ', chatList)
         chatList.map(async cl => {
             if (cl._id === contactId) {
                 fetchChat(cl._id, dispatch)

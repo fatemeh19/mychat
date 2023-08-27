@@ -56,10 +56,6 @@ const CreateGroup: FC<CreateGroupProps> = ({
         setOpenCreateGroup(false)
     }
 
-    useEffect(() => {
-        console.log('memberIds : ', memberIds)
-    }, [memberIds])
-
     return (
         <>
             {/* <CustomizedDialogs children={<CreateGroup createGroupOpenHandler={createGroupOpenHandler} />} menuDailog={false} open={openCreateGroup} handelOpen={createGroupOpenHandler} /> */}

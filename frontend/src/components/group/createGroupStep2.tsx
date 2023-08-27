@@ -30,9 +30,6 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
         // if create group => add userId to memberIds
         buttonTitle === 'Add' ? null : setMemberIds(prev => [...prev, userId])
     }, [])
-    useEffect(() => {
-        console.log('memberIds : ', memberIds)
-    }, [memberIds])
 
     let [prevContactBoxRef, setPrevContactBoxRef] = useState<LegacyRef<HTMLDivElement> | undefined>()
 
@@ -57,7 +54,6 @@ const CreateGroupStep2: FC<CreateGroupStep2Props> = ({
         if (buttonTitle === 'Add') {
             if (memberIds.length >= 1) {
                 setMemberIds([])
-                console.log('before aply : ', prevContactBoxRef)
                 // @ts-ignore
                 prevContactBoxRef.current.style = ''
             }

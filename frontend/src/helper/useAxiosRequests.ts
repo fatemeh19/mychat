@@ -15,7 +15,6 @@ const config = {
 };
 
 export const fetchChat = async (chatId: string, dispatch: any) => {
-    console.log('chatId in fetch chat:', chatId)
     let res: any;
     try {
         res = await callApi().get(`/main/chat/${chatId}`, config)
@@ -47,7 +46,6 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
 }
 
 export const createChat = async (userId: string, memberIds: string[], chatType: string, groupName: string = '', dispatch: any) => {
-    console.log('chat creating ...')
     memberIds.push(userId)
     // chatType
     const data = {
@@ -59,6 +57,7 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
     // not found chat => create chat
     try {
         res = await callApi().post('/main/chat/', data, config)
+        console.log('create chat res : ', res)
         if (res.statusText && res.statusText === 'Created') {
             const chatId = res.data.value.chatId
             await fetchChat(chatId, dispatch)
@@ -84,6 +83,7 @@ export const createMessage = async (chatId: string, newMessage: any, dispatch: a
     console.log('newMessage:', newMessage)
     try {
         res = await callApi().post(`/main/message/${chatId}`, newMessage, config)
+        console.log('createMessage res : ', res)
         if (res.statusText && res.statusText === 'OK') {
             console.log(res)
             return res.data.value.message
