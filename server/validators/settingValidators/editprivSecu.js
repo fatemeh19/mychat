@@ -9,7 +9,6 @@ const editprivSecu = yup.object({
         lastseen:yup.string().oneOf(privacy). required(),
         profilePic:yup.string().oneOf(privacy). required(),
         addToGroup:yup.string().oneOf(privacy). required(),
-        forwardedMessages:yup.string().oneOf(privacy). required(),
     })
 })
 
