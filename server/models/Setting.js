@@ -42,11 +42,7 @@ const settingSchema = new mongoose.Schema({
         enum: enums.privacy,
         default:  enums.privacy[0]
       },
-      forwardedMessages: {
-        type:String,
-        enum: enums.privacy,
-        default: enums.privacy[0]
-      },
+      
     }, 
   },
   chatSetting: {

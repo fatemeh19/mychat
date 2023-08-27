@@ -11,8 +11,9 @@ const addMemberI = async (req, res, next) => {
   const {
     body: { memberId },
     params: { chatId: groupId },
+    user:{userId}
   } = req;
-  await addMember(groupId, memberId);
+  await addMember(groupId, memberId,userId);
 
   // pass parameters to addToChats
   req.user.userId = memberId;

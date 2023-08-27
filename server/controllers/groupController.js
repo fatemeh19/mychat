@@ -6,16 +6,11 @@ import * as Validators from "../validators/index.js";
 import * as fileController from "../utils/file.js";
 import { objectId } from "../utils/typeConverter.js";
 import ValidationError from "../errors/ValidationError.js";
-const addMember = async (groupId, memberId) => {
-  // if it has joined by link
-  // if new member has privacy limitations send suitable error
-  // limitations for number of members
-  // const {
-  //   body: { memberId },
-  //   params: { chatId: groupId },
-  // } = req;
-  // req.user.userId = memberId;
-  // req.params.id = groupId;
+import privacyFilter from "../utils/privacyFilter.js";
+const addMember = async (groupId, memberId,userId) => {
+   // if new member has privacy limitations send suitable error
+  await privacyFilter({addToGroup:true},userId,memberId)
+ 
   Services.findByIdAndUpdate("chat", groupId, {
     $push: { members: { memberId, joinedAt: Date.now() } },
   });

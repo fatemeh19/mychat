@@ -88,7 +88,13 @@ export default{
   "notAllowedToSend":{
     "name":"notAllowedToSend",
     "message":"شما مجاز به ارسال این نوع فایل نیستید"
+  },
+  "PrivacyError":{
+    "name":"PrivacyError",
+    "message":"این کاربر این عمل را در قبال خود محدود کرده است"
   }
+
+
 
   
 }

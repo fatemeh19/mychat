@@ -5,7 +5,8 @@ export default function (io) {
 
   const add_member = async function (groupId, memberId) {
     const socket = this;
-    const member = await addMember(groupId,memberId)
+    const userId = socket.user.userId;
+    const member = await addMember(groupId,memberId,userId)
     io.to(groupId).emit("addMember", member);
   };
   const edit_groupType = async function (groupId, data) {
