@@ -22,7 +22,7 @@ export const fetchChat = async (chatId: string, dispatch: any) => {
         if (res.statusText && res.statusText === 'OK') {
             dispatch(setFirstChat(false))
             const Chat = res.data.value.chat
-            dispatch(addChat(Chat[0]))
+            dispatch(addChat(Chat))
             dispatch(setChatFetched(true))
             return res.data.value.chat._id
         }
