@@ -2,6 +2,7 @@ import { FC, useRef } from "react";
 import { recievedMessageInterface } from "@/src/models/interface";
 import RepliedMessage from "./repliedMessage";
 import { PiPushPinFill } from "react-icons/pi";
+import { fileHandler } from "@/src/helper/userInformation";
 
 interface VideoMessageProps {
     dir: string,
@@ -15,9 +16,6 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg, sender }) => {
 
     const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
-
-    const fileFullUrl = msg.messageInfo.content.url.split('\\')
-    const fileName = fileFullUrl?.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -38,7 +36,8 @@ const VideoMessage: FC<VideoMessageProps> = ({ dir, msg, sender }) => {
                     <div className="flex flex-col rounded-xl">
                         <video
                             ref={videoRef}
-                            src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
+                            // src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
+                            src={fileHandler(msg.messageInfo.content.file)}
                             className={`
                                 w-[28rem] 
                                 ${isText

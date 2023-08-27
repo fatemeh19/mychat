@@ -72,8 +72,10 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
 
-
+    console.log('chatMessages: ', chatMessages)
     useEffect(() => {
+        console.log('msg : ', msg)
+
         let sender: contactInterface | UserInterface = User
         if (msg.messageInfo.senderId === User._id) {
             sender = User
@@ -315,8 +317,8 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
                     <div className="gap-3 flex flex-col font-[vazir]">
                         {
                             msg.messageInfo.content.file
-                                ? <Message type={messageTypes.text} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
-                                : <Message type={msg.messageInfo.content.file} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                                ? <Message type={msg.messageInfo.content.file.contentType} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
+                                : <Message type={messageTypes.text} dir={information.dir} msg={msg} messageBoxRef={messageBoxRef} />
                         }
 
                     </div>

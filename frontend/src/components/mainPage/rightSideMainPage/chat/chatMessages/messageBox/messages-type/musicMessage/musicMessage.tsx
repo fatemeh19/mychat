@@ -6,6 +6,7 @@ import { BsFillPlayCircleFill, BsFillPauseCircleFill } from 'react-icons/bs'
 import style from './musicStyle.module.css'
 import RepliedMessage from "../repliedMessage";
 import { PiPushPinFill } from "react-icons/pi";
+import { fileHandler } from "@/src/helper/userInformation";
 interface MusicMessageProps {
     dir: string,
     msg: recievedMessageInterface
@@ -22,9 +23,7 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
     const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
-    const fileFullUrl = msg.messageInfo.content.url.split('\\')
-    const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
-    const originalName = msg.messageInfo.content.originalName?.split('.')[0]
+    const originalName = msg.messageInfo.content.file.originalName?.split('.')[0]
 
     let musicRef = useRef<HTMLAudioElement>(null);
     let rengeRef = useRef<HTMLInputElement>(null);
@@ -87,7 +86,7 @@ const MusicMessage: FC<MusicMessageProps> = ({ dir, msg }) => {
                             : <p className="author text-sm"> [unknown] </p>
                     }
                 </div>
-                <audio ref={musicRef} src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} onTimeUpdate={playHandler} onDurationChange={onDurationChangeHandler} onEnded={endHandler} ></audio>
+                <audio ref={musicRef} src={fileHandler(msg.messageInfo.content.file)} onTimeUpdate={playHandler} onDurationChange={onDurationChangeHandler} onEnded={endHandler} ></audio>
             </div>
             <div className={`date absolute right-0 bottom-[-5px] text-xs text-[#9a9a9a] ml-1 mb-[.5px] whitespace-nowrap flex`}>
                 {

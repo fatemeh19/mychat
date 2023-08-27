@@ -64,7 +64,6 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             : setInput('')
     }, [isEdit])
     useEffect(() => {
-        console.log('chat in sendBox : ', chat)
         chatType === ChatType.private && chatCreated && (async () => {
             chatId = await fetchChat(chatId, dispatch)
         })()
@@ -196,6 +195,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
             setInput('')
             setFile(null)
             if (socket) {
+                console.log('new message : ', newMessage)
                 newMessage.forEach(item => console.log(item))
                 chatId && !isEdit && socket.emit('sendMessage', chatId, message)
                 chatId && isForward && !isEdit && socket.emit('forwardMessage', chatId, forwardMessageIds)
@@ -230,7 +230,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
                 //     dispatch(addChatList(chatList))
                 // }
             }
-
+            setVoice(undefined)
         }
     }
     const chatFetched = useAppSelector(state => state.chat).chatFetched

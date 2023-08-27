@@ -36,6 +36,7 @@ const GroupSettings: FC<PermissionsProps> = () => {
 
     const saveGroupTypeSettingHandler = () => {
         editGroupType(chatId, typeSetting, dispatch)
+        dispatch(setOpenGroupType(false))
     }
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 mb-[50px]">

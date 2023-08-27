@@ -11,17 +11,10 @@ interface FileMessageProps {
 
 const FileMessage: FC<FileMessageProps> = ({ dir, msg }) => {
 
-    const [playing, setPlay] = useState(false);
-
-
-
     const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
 
-    const fileFullUrl = msg.messageInfo.content.url.split('\\')
-    const fileUrl = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
-
-    const originalName = msg.messageInfo.content.originalName?.split('.')
+    const originalName = msg.messageInfo.content.file.originalName?.split('.')
     const pasvand = originalName ? originalName[1] : ''
 
     // const Icon2 = playing ? BsFillPauseCircleFill : BsFillPlayCircleFill
@@ -75,7 +68,7 @@ const FileMessage: FC<FileMessageProps> = ({ dir, msg }) => {
                     <Icon className={`w-14 h-14 text-blue-500`} />
                 </div>
                 <div className="info">
-                    <p className="font-semibold text-sm">{msg.messageInfo.content.originalName}</p>
+                    <p className="font-semibold text-sm">{msg.messageInfo.content.file.originalName}</p>
                     <p className="size text-xs text-[#9a9a9a] mt-1 uppercase"> 52.7 MB {pasvand} </p>
                 </div>
                 <div ref={file}></div>

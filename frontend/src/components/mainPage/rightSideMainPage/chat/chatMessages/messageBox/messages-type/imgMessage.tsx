@@ -3,6 +3,7 @@ import Image from "next/image"
 import { useEffect, useState } from 'react'
 import RepliedMessage from "./repliedMessage"
 import { PiPushPinFill } from "react-icons/pi"
+import { fileHandler, profilePicHandler } from "@/src/helper/userInformation"
 
 
 
@@ -11,9 +12,6 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
     const isReplied = msg.messageInfo.reply.isReplied
 
     const [open, setOpen] = useState(false)
-
-    const fileFullUrl = msg.messageInfo.content.url.split('\\')
-    const fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
 
     const date = new Date(msg.messageInfo.createdAt);
     const time = date.getHours() + ":" + date.getMinutes()
@@ -39,7 +37,7 @@ const ImageMessage = ({ msg, dir }: { dir: string, msg: recievedMessageInterface
                         <Image
                             width={500}
                             height={0}
-                            src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`}
+                            src={fileHandler(msg.messageInfo.content.file)}
                             alt=""
                             className={`
                                 w-[28rem] 
