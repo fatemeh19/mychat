@@ -6,11 +6,11 @@ module.exports = {
   ],
   theme: {
     extend: {
-      screens:{
-        'tablet':{
-          'min' :'640px',
-          'max' :'1023px'
-        } 
+      screens: {
+        'tablet': {
+          'min': '640px',
+          'max': '1023px'
+        }
       },
       backgroundColor: {
         // 'mainColor': '#166e48'
@@ -26,6 +26,9 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 
       },
+      colors: {
+        'mainColor': '#2563eb',
+      }
     },
   },
   plugins: [],

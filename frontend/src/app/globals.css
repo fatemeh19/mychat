@@ -133,3 +133,13 @@ body
 .inputField:focus::placeholder{
   opacity:0;
 }
+
+.select
+{
+  background: rgb(204, 204, 204)
+}
+
+.backgroundImageStyle {
+  background-size: cover;
+  background-repeat: no-repeat;
+}

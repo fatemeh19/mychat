@@ -1,35 +1,34 @@
+import { profilePicInterface } from "@/src/models/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface contactInterface {
+export interface contactInterface {
+    _id: string,
     name: string,
-    phoneNumber: string,
-    profilePic: string,
+    profilePic: profilePicInterface,
+    status: {
+        online: boolean,
+        lastseen: string | Date | number
+    },
 }
 interface initialStateInterface {
-    contacts : contactInterface[]
+    contacts: contactInterface[]
 }
 
 const initialState = {
-    contacts : []
+    contacts: []
 } as initialStateInterface
 
 export const contactSlice = createSlice({
     name: "Contacts",
     initialState,
     reducers: {
-        addContact: (state, action: PayloadAction<any>) => {
-            state.contacts[state.contacts.length] = action.payload
-            // console.log('action : ', action)
-        },
         addContactsList: (state, action: PayloadAction<any>) => {
             state.contacts = action.payload
-            // console.log('action : ', action)
         },
     },
 });
 
 export const {
-    addContact,
     addContactsList
 } = contactSlice.actions;
 export default contactSlice.reducer;

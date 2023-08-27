@@ -9,6 +9,8 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Slide } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
+import { setIsEditChat } from '@/src/redux/features/chatSlice';
 // @ts-ignore
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiPaper-root ': {
@@ -38,7 +40,7 @@ const BootstrapDialogMenu = styled(Dialog)(({ theme }) => ({
         position: 'absolute',
         top: 0,
         minHeight: '100vh',
-        margin:0
+        margin: 0
     },
     '& .MuiDialogContent-root': {
         // padding: theme.spacing(2),
@@ -66,9 +68,10 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     return (
         <DialogTitle
             sx={{
-                m: 0, p: 2, mr: 8,
+                m: 0, p: 2, mr: '30px',
                 fontFamily: 'vazir',
-                fontWeight: 500, fontSize: 17
+                fontWeight: 500, fontSize: 17,
+                display: 'flex', justifyContent: 'space-between'
             }} {...other}>
             {children}
             {onClose ? (
@@ -89,18 +92,20 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
         </DialogTitle>
     );
 }
-const Transition=React.forwardRef(function Transition(props,ref){
+const Transition = React.forwardRef(function Transition(props, ref) {
+    // @ts-ignore
     return <Slide direction="left" mountOnEnter ref={ref}  {...props} />
 })
 interface CustomizedDialogsProps {
     children: React.ReactNode,
+    ChildrenMore?: React.ReactNode,
     open: boolean,
-    title: string,
+    title?: string,
     handelOpen: () => void,
-    menuDailog?:Boolean
+    menuDailog?: Boolean
 }
 
-const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, title, handelOpen ,menuDailog }) => {
+const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, ChildrenMore, open, title, handelOpen, menuDailog }) => {
 
     // let scrollWrap = React.createRef<HTMLDivElement>()
     // setTimeout(() => {
@@ -110,42 +115,61 @@ const CustomizedDialogs: React.FC<CustomizedDialogsProps> = ({ children, open, t
     //     })
     // }, 50);
 
+    const dispatch = useAppDispatch()
+    const isEditChat = useAppSelector(state => state.chat).isEditChat
+
+    const [openChildMenu, setOpenChildMenu] = React.useState(false)
+    const [openChildMenuInChild, setOpenChildMenuInChild] = React.useState(true)
 
     return (
-        
+
         <div>
-            { menuDailog ? 
-                    <BootstrapDialogMenu
-                        onClose={() => handelOpen()}
-                        aria-labelledby="customized-dialog-menu"
-                        open={open}
-                        transitionComponent={Transition}
-                        keepMounted
+            {menuDailog ?
+                <BootstrapDialogMenu
+                    onClose={() => handelOpen()}
+                    aria-labelledby="customized-dialog-menu"
+                    open={open}
+                    // @ts-ignore
+                    transitioncomponent={Transition}
+                    keepMounted
+                >
+                    <DialogContent dividers
+                        className='no-scrollbar'
                     >
-                        <DialogContent dividers
-                            className='no-scrollbar'
-                        >
-                            {children}
-                        </DialogContent>
-                    </BootstrapDialogMenu>
+                        {children}
+                    </DialogContent>
+                </BootstrapDialogMenu>
                 :
                 <BootstrapDialog
-                onClose={() => handelOpen()}
-                aria-labelledby="customized-dialog-title"
-                open={open}
-            >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={() => handelOpen()}>
-                    {title}
-                </BootstrapDialogTitle>
-                <DialogContent dividers
-                    className='no-scrollbar'
+                    onClose={() => handelOpen()}
+                    // aria-labelledby="customized-dialog-title"
+                    open={open}
                 >
-                    {children}
-                </DialogContent>
-            </BootstrapDialog>
+                    {title && <BootstrapDialogTitle id="customized-dialog-title" onClose={() => { handelOpen(); isEditChat && dispatch(setIsEditChat(false)) }}>
+                        {title}
+                        {ChildrenMore && <button className='relative'>
+                            <p className='rotate-90' onClick={() => { setOpenChildMenu(!openChildMenu); setOpenChildMenuInChild(true) }}>...</p>
+                            {openChildMenu && <div className='absolute right-0 w-max font-[Vazir]'>
+                                {
+
+
+                                    // @ts-ignore
+                                    React.cloneElement(ChildrenMore, { setOpenChildMenu: setOpenChildMenu, openChildMenuInChild: openChildMenuInChild, setOpenChildMenuInChild: setOpenChildMenuInChild, handelOpen: handelOpen })
+                                }
+                            </div>}
+                        </button>
+                        }
+                    </BootstrapDialogTitle>
+                    }
+                    <DialogContent dividers
+                        className='no-scrollbar'
+                    >
+                        {children}
+                    </DialogContent>
+                </BootstrapDialog>
 
             }
-            
+
         </div>
     );
 }

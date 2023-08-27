@@ -16,8 +16,9 @@ const ContactList: FC<ContactsProps> = ({
     handleAddContact,
     handleOpen
 }) => {
-    const selector = useAppSelector(state => state.userContactsList)
-    const userContactsList = selector.contacts
+    const userContactsList = useAppSelector(state => state.userContactsList).contacts
+    console.log('usrContactList : ', userContactsList)
+
     return (
 
         <>
@@ -27,7 +28,7 @@ const ContactList: FC<ContactsProps> = ({
                     <input type="text" className='outline-none bg-transparent w-full border-none p-3' placeholder='Search..' />
                 </div>
                 <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <div className="no-scrollbar h-full overflow-y-auto pb-[30%]">
+                <div className="no-scrollbar h-full overflow-y-auto pb-[30%] pt-3">
                     {
                         // @ts-ignore
                         (userContactsList.length === 0) ? <NoContact />

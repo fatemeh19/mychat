@@ -1,13 +1,14 @@
 "use client"
 import { FC } from "react"
 import Input from '.'
-
+import { IconType } from 'react-icons'
 interface inputFieldProps {
     name: string,
     label: string,
     children?: React.ReactNode,
     inputClassName?: string,
     containerClassName?: string,
+    icon?: IconType
 }
 
 const InputField: FC<inputFieldProps> = ({
@@ -15,13 +16,14 @@ const InputField: FC<inputFieldProps> = ({
     label,
     children,
     inputClassName,
-    containerClassName
+    containerClassName,
+    icon
 }) => {
 
     return (
         <div className={`${containerClassName} flex gap-2 mx-5`}>
-            <div className="w-8 flex ">{children}</div>
-            <Input name={name} label={label} placeholder={' '}
+            {children && <div className="w-8 flex ">{children}</div>}
+            <Input name={name} label={label} placeholder={' '} icon={icon}
                 inputClassName={`${inputClassName} border-b border-gray-200 focus:border-sky-500 inputField`}
                 // labelClassName='w-full invisible text-cyan-600 text-sm  peer-focus:visible !peer-placeholder-shown:visible'
                 labelClassName='

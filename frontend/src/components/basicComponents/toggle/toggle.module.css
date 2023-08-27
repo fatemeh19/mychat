@@ -1,0 +1,99 @@
+.container
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 45px;
+    width: 100%;
+}
+
+.h4
+{
+    color: #929292;
+    font-weight: 500;
+    font-size: .9rem;
+}
+
+.tgl
+{
+    display: none;
+}
+
+.tgl+.tgl_btn
+{
+    display: block;
+    width: 3.5rem;
+    height: 1.8rem;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tgl_btn:after,
+.tgl_btn:before
+{
+    position: relative;
+    display: block;
+    content: "";
+    width: 43%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+    transition: all .3s;
+}
+
+.tgl_btn:after
+{
+    left: 0;
+}
+
+.tgl_btn:before
+{
+    display: none;
+}
+
+.tgl_ios:checked+.tgl_btn:after
+{
+    left: 50%;
+}
+
+.tgl_ios+.tgl_btn
+{
+    background: #cbcbcb;
+    box-shadow: 0 0 0 .05rem rgba(243, 243, 243, 0.1);
+    border-radius: 2em;
+    padding: 4px;
+    transition: all .4s ease;
+}
+
+.tgl_ios:after
+{
+    border-radius: 2em;
+    background: #fbfbfb;
+    transition:
+        left .3s cubic-bezier(0.175, 0.885, 0.320, 1.275);
+}
+
+.tgl_ios:checked+.tgl_btn
+{
+    background: #1066f1;
+}
+
+
+@media screen and (min-width : 990px)
+{
+    .toggle
+    {
+        width: 46.7% !important;
+
+    }
+}
+
+@media screen and (min-width : 1400px)
+{
+    .toggle
+    {
+        width: 46.7% !important;
+
+    }
+}

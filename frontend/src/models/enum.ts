@@ -1,22 +1,34 @@
 enum messageTypes {
     text = 'text',
-    picture = 'picture',
-    video = 'video',
+    photo = 'photo',
+    videoMessage = 'videoMessage',
     voice = 'voice',
-    gif = 'gif',
     music = 'music',
     file = 'file'
 
 }
 
-enum MessageBoxProps {
+enum fileType {
+    pdf = 'pdf',
+    docx = 'docx',
+    pptx = 'pptx',
+    zip = 'zip',
+    xlsx = 'xlsx',
+}
+
+enum MessageBoxDir {
     rtl = 'rtl',
     ltr = 'ltr'
 }
 
 enum ChatType {
-    Private = 'Private',
-    Group = 'Group',
-    Channel = 'Channel'
+    private = 'private',
+    group = 'group',
+    channel = 'channel'
 }
-export { messageTypes, MessageBoxProps, ChatType }
+
+enum SearchType {
+    chats = 'chats',
+    messages = 'messages'
+}
+export { messageTypes, MessageBoxDir, ChatType, fileType, SearchType }

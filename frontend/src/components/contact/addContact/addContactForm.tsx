@@ -10,7 +10,8 @@ import callApi from "@/src/helper/callApi";
 import ValidationError from "@/src/errors/validationError";
 
 import { useAppDispatch } from "@/src/redux/hooks";
-import { addContact } from "@/src/redux/features/userContactListSlice";
+import { addContactsList } from "@/src/redux/features/userContactListSlice";
+import { fetchUserContactsListData } from "@/src/helper/userInformation";
 
 
 interface addContactFormProps {
@@ -28,8 +29,10 @@ const AddContactFormInner = (props: any) => {
     const { handleAddContact, values } = props;
     addBtn = createRef<HTMLButtonElement>()
     const dispatch = useAppDispatch()
+
     add = (contact: any) => {
-        dispatch(addContact(contact))
+
+        fetchUserContactsListData(dispatch);
         console.log("contact : " + contact)
         handleAddContact()
 
@@ -39,7 +42,7 @@ const AddContactFormInner = (props: any) => {
 
         <Form className=" w-full px-5">
             <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
-            <InputField name='lastName' label="Last name" />
+            <InputField name='lastName' label="Last name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
             <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />} />
             <div className="errMessage ml-8 w-auto text-red-500 text-sm">{values.msg}</div>
             <div className="my-5 gap-1 flex justify-end">
@@ -98,7 +101,8 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             console.log(res)
             if (res.status === 200) {
                 values.msg = "با موفقیت ایجاد شد"
-                addBtn.addEventListener('onClick', add(contact))
+
+                addBtn.current.addEventListener('onClick', add(contact))
             }
         } catch (error) {
             console.log('error in catch add contact form : ', error)

@@ -1,16 +1,23 @@
 'use client'
-import { Dispatch, FC, SetStateAction, createRef, useContext } from "react";
+import { Dispatch, FC, SetStateAction, createRef, useContext, useEffect } from "react";
 import { HiOutlinePlus } from 'react-icons/hi'
 
 
 interface profileImgSelector {
-    setImage: Dispatch<SetStateAction<string>>
+    setImage: Dispatch<SetStateAction<string>>,
+    styleClassName?: string,
+    chatProfilePicName?: any
 }
 
-const ProfileImgSelector: FC<profileImgSelector> = ({ setImage }) => {
+const ProfileImgSelector: FC<profileImgSelector> = ({ chatProfilePicName, setImage, styleClassName }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
+
+    useEffect(() => {
+        // @ts-ignore
+        profileImg.current.src = chatProfilePicName
+    }, [chatProfilePicName])
 
     const changeHandler = (e: any) => {
         // @ts-ignore
@@ -40,21 +47,24 @@ const ProfileImgSelector: FC<profileImgSelector> = ({ setImage }) => {
                 hidden
                 onChange={changeHandler}
             />
-            <div className="
-                wraper
-                overflow-hidden
-                bg-transparent
-                w-64 h-64
-                rounded-full
-                flex flex-col items-center justify-center
-                border-2 border-dashed border-blue-500
-                hover:border-blue-900
-                cursor-pointer
-                group
-                relative
-            ">
+            <div className={`
+                ${`
+                    wraper
+                    overflow-hidden
+                    bg-transparent
+                    w-64 h-64
+                    rounded-full
+                    flex flex-col items-center justify-center
+                    border-2 border-dashed border-blue-500
+                    hover:border-blue-900
+                    cursor-pointer
+                    group
+                    relative
+                    ${styleClassName ?? ''}
+                `}
+            `}>
                 <img
-                    src=""
+                    src=''
                     ref={profileImg}
                     alt=""
                     className="

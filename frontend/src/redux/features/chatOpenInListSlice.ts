@@ -2,25 +2,25 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 interface initialStateInterface {
-    openChat : Boolean
+    chatOpenInList: Boolean
 }
 
 const initialState = {
-    openChat : false
+    chatOpenInList: false
 } as initialStateInterface
 
 export const OpenChatSlice = createSlice({
-    name: "openChat",
+    name: "chatOpenInList",
     initialState,
     reducers: {
-        setOpenChat: (state, action: PayloadAction<any>) => {
-            state.openChat = action.payload
+        setChatOpenInList: (state, action: PayloadAction<any>) => {
+            state.chatOpenInList = action.payload
             // console.log('action : ', action)
         },
     },
 });
 
 export const {
-    setOpenChat,
+    setChatOpenInList,
 } = OpenChatSlice.actions;
 export default OpenChatSlice.reducer;
