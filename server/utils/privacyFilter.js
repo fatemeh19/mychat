@@ -1,8 +1,10 @@
 import * as consts from "./consts.js";
 import * as Services from "../services/dbServices.js";
 import { determinedPrivacyFields } from "./enums.js";
+import BadRequestError from "../errors/BadRequest.js";
+import errors from "../messages/errors.js";
 const privacyFilter = async (contactData, userId, contactId) => {
-  contactData.lastseen = contactData.status.lastseen;
+  contactData.lastseen = contactData?.status?.lastseen;
   const contact = await Services.findOne(
     "user",
     { _id: contactId },
@@ -49,6 +51,8 @@ const privacyFilter = async (contactData, userId, contactId) => {
             case "profilePic":
               contactData[element].path = consts.DEFAULT_PROFILE_PICTURE;
               break;
+            case "addToGroup":
+                throw new BadRequestError(errors.PrivacyError)
           }
           break;
 
@@ -62,4 +66,5 @@ const privacyFilter = async (contactData, userId, contactId) => {
   return contactData;
 };
 
-export default privacyFilter;
+
+export default privacyFilter

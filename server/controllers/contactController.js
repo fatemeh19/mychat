@@ -73,7 +73,6 @@ const addContact = async (userId,body) => {
 
   
 };
-
 const getContacts = async (userId) => {
   
   const user = await Services.findOne("user", { _id: userId });
@@ -171,7 +170,6 @@ const getContact = async (userId,contactId) => {
   contact = await privacyFilter(contact,userId,contactId)
   return contact
 };
-
 const editContact = async (body,userId,id) => {
   
   let data;
