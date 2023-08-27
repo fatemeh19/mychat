@@ -1,7 +1,6 @@
 import * as consts from "./consts.js";
 
 const fileTypeGetter = async (mimetype) => {
-  
   let [fileType, ext] = mimetype.split("/");
   switch (fileType) {
     case "image":
@@ -17,18 +16,21 @@ const fileTypeGetter = async (mimetype) => {
       } else {
         fileType = "music";
       }
-      break
+      break;
+    case "voice":
+      fileType = "voice";
+      break;
     case "application":
       if (!consts.POSSIBLE_FILE_FORMATS.includes(ext)) {
-        return undefined
+        return undefined;
       } else {
         fileType = "file";
       }
       break;
     default:
-      return undefined
+      return undefined;
   }
-  return fileType
+  return fileType;
 };
 
 export default fileTypeGetter;

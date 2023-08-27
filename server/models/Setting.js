@@ -27,12 +27,12 @@ const settingSchema = new mongoose.Schema({
         enum: enums.privacy,
         default: enums.privacy[0],
       },
-      lastSeen: {
+      lastseen: {
         type:String,
         enum: enums.privacy,
         default: enums.privacy[0]
       },
-      profilePhotos: {
+      profilePic: {
         type:String,
         enum: enums.privacy,
         default: enums.privacy[0]

@@ -3,7 +3,6 @@ import path from "path";
 import * as consts from "./consts.js";
 import fileTypeGetter from "./fileTypeIdentifier.js";
 import * as fileController from "./file.js";
-import * as RH from "../middlewares/ResponseHandler.js";
 import * as CustomError from "../errors/index.js";
 import errors from "../messages/errors.js";
 import fields from "../messages/fields.js";
@@ -14,9 +13,9 @@ var storage = multer.diskStorage({
     fileType = await fileTypeGetter(file.mimetype);
     if (!fileType) {
      cb(new CustomError.BadRequestError(
-      errors.notAllowedToSend,
-      fields.file,
+      errors.notAllowedToSend
     )) 
+    return
     }
 
     const filePath = path.join(consts.MEDIA_SAVE_PATH, fileType);
