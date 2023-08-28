@@ -13,6 +13,7 @@ import CustomizedDialogs from "../../popUp";
 import NotificationsAndSounds from "../notificationsAndSounds";
 import EditName from "./editName";
 import EditUsername from "./editUsername";
+import EditPhoneNumber from "./editPhoneNumber";
 interface EditProfileProps {
 
 }
@@ -35,16 +36,26 @@ const EditProfile: FC<EditProfileProps> = ({
     const [nameOpen, setNameOpen] = useState(false)
     const [usernameOpen, setUsernameOpen] = useState(false)
     const [phoneNumberOpen, setPhoneNumberOpen] = useState(false)
+    const [emailOpen, setEmailOpen] = useState(false)
 
     useEffect(() => {
         console.log('userInfo in editProfile : ', userInfo)
-    }, [userInfo])
+        console.log('img in editProfile : ', img)
+    }, [userInfo, img])
+
+    useEffect(() => {
+        return () => {
+            // send data to server wen popUp close ...
+            console.log('send data to server ...')
+
+        }
+    }, [])
     return (
         <>
             {/* <div className="w-full flex gap-5 items-center px-5 pb-3 bg-white shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]"> */}
 
             <div className="w-full">
-                <div className=" p-5 profile grid mb-10">
+                <div className=" p-5 profile grid mb-3">
                     <ImageSelector userInfo={userInfo} setImage={setImg} />
                     <div className="grid justify-center pt-2">
                         <p className="font-bold text-center">{User.name}</p>
@@ -70,7 +81,7 @@ const EditProfile: FC<EditProfileProps> = ({
                     <p className="float-right">{userInfo.phoneNumber}</p>
                 </div>
 
-                <div className="p-4 flow-root cursor-default">
+                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150">
                     <div className="float-left flex gap-3">
                         <BiAt className="text-2xl" />
                         <span className='text-sm'>Email</span>
@@ -89,7 +100,8 @@ const EditProfile: FC<EditProfileProps> = ({
 
             {nameOpen && <CustomizedDialogs title="Edit you name" children={<EditName setNameOpen={setNameOpen} User={User} setUserInfo={setUserInfo} />} open={nameOpen} handelOpen={() => setNameOpen(!nameOpen)} />}
             {usernameOpen && <CustomizedDialogs title="Username" children={<EditUsername setUsernameOpen={setUsernameOpen} User={User} setUserInfo={setUserInfo} />} open={usernameOpen} handelOpen={() => setUsernameOpen(!usernameOpen)} />}
-            {phoneNumberOpen && <CustomizedDialogs title="" children={<p className="font-medium text-sm py-7 px-5">You can only change your phone number using mobile app. Please use an official app on your phone to update your number</p>} open={phoneNumberOpen} handelOpen={() => setPhoneNumberOpen(!phoneNumberOpen)} />}
+            {phoneNumberOpen && <CustomizedDialogs title="" children={<EditPhoneNumber User={User} setPhonNumberOpen={setPhoneNumberOpen} setUserInfo={setUserInfo} />} open={phoneNumberOpen} handelOpen={() => setPhoneNumberOpen(!phoneNumberOpen)} />}
+            {emailOpen && <CustomizedDialogs title="" children={<p className="font-medium text-sm py-7 px-5">You can only change your email using mobile app. Please use an official app on your phone to update your email</p>} open={emailOpen} handelOpen={() => setEmailOpen(!emailOpen)} />}
         </>
     )
 }
