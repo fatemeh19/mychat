@@ -81,7 +81,8 @@ const EditProfile: FC<EditProfileProps> = ({
                     <p className="float-right">{userInfo.phoneNumber}</p>
                 </div>
 
-                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150">
+                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150"
+                    onClick={() => setEmailOpen(!emailOpen)}>
                     <div className="float-left flex gap-3">
                         <BiAt className="text-2xl" />
                         <span className='text-sm'>Email</span>
