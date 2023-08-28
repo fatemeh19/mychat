@@ -7,7 +7,7 @@ import { BiCamera } from 'react-icons/bi'
 
 interface ImgSelector {
     setImage: Dispatch<SetStateAction<string>>,
-    userInfo: UserInterface
+    userInfo: any
 }
 
 const ImageSelector: FC<ImgSelector> = ({ setImage, userInfo }) => {

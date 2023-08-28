@@ -17,6 +17,10 @@ import Folders from "../../Folders";
 import { fetchUserChatList, getFolderChats } from "@/src/helper/userInformation";
 import { setCloseFolders, setOpenFolder } from "@/src/redux/features/folderSlice";
 import { setFolderId } from "@/src/redux/features/userChatListSlice";
+import Settings from "../../setting";
+import NotificationsAndSounds from "../../setting/notificationsAndSounds";
+import PrivacyAndSecurity from "../../setting/privacyAndSecurity";
+import ChatSettings from "../../setting/chatSettings";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
@@ -76,7 +80,7 @@ export function ShowFolder({ folder, setOpen }: { folder: any, setOpen: (bol: bo
 
 
 export function MenuIcon() {
-    
+
     const [open, setOpen] = useState(false)
     const handleOpen = () => {
         setOpen(!open)
@@ -85,10 +89,28 @@ export function MenuIcon() {
     const contactListOpenHandler = () => {
         setContactListOpen(!contactListOpen)
     }
+
     const [settingOpen, setSettingOpen] = useState(false)
     const settingOpenHandler = () => {
         setSettingOpen(!settingOpen)
     }
+    const [editProfileOpen, setEditProfileOpen] = useState(false)
+    const editProfileOpenHandler = () => {
+        setEditProfileOpen(!editProfileOpen)
+    }
+    const [notificationsAndSoundOpen, setNotificationsAndSoundOpen] = useState(false)
+    const notificationsAndSoundOpenHandler = () => {
+        setNotificationsAndSoundOpen(!notificationsAndSoundOpen)
+    }
+    const [privacyAndSecurityOpen, setPrivacyAndSecurityOpen] = useState(false)
+    const privacyAndSecurityOpenHandler = () => {
+        setPrivacyAndSecurityOpen(!privacyAndSecurityOpen)
+    }
+    const [chatSettingsOpen, setChatSettingsOpen] = useState(false)
+    const chatSettingsOpenHandler = () => {
+        setChatSettingsOpen(!chatSettingsOpen)
+    }
+
     const [openCreateGroup, setOpenCreateGroup] = useState(false)
     const createGroupOpenHandler = () => {
         setOpenCreateGroup(!openCreateGroup)
@@ -122,18 +144,51 @@ export function MenuIcon() {
             {contactListOpen ? <Contacts open={contactListOpen}
                 handelOpen={contactListOpenHandler} />
                 : null}
-            {settingOpen ? <CustomizedDialogs open={settingOpen}
-                title="Info"
-                handelOpen={settingOpenHandler}
-                children={<EditProfile />} />
-                : null
-            }
             {settingOpen
                 ? <CustomizedDialogs
                     open={settingOpen}
                     title="Info"
                     handelOpen={settingOpenHandler}
+                    children={<Settings
+                        editProfileOpenHandler={editProfileOpenHandler}
+                        notificationsAndSoundOpenHandler={notificationsAndSoundOpenHandler}
+                        privacyAndSecurityOpenHandler={privacyAndSecurityOpenHandler}
+                        chatSettingsOpenHandler={chatSettingsOpenHandler}
+                        settingOpenHandler={settingOpenHandler}
+                    />}
+                />
+                : null
+            }
+            {editProfileOpen
+                ? <CustomizedDialogs
+                    open={editProfileOpen}
+                    title="Info"
+                    handelOpen={editProfileOpenHandler}
                     children={<EditProfile />} />
+                : null
+            }
+            {notificationsAndSoundOpen
+                ? <CustomizedDialogs
+                    open={notificationsAndSoundOpen}
+                    title="notifications"
+                    handelOpen={notificationsAndSoundOpenHandler}
+                    children={<NotificationsAndSounds />} />
+                : null
+            }
+            {privacyAndSecurityOpen
+                ? <CustomizedDialogs
+                    open={privacyAndSecurityOpen}
+                    title="security"
+                    handelOpen={privacyAndSecurityOpenHandler}
+                    children={<PrivacyAndSecurity />} />
+                : null
+            }
+            {chatSettingsOpen
+                ? <CustomizedDialogs
+                    open={chatSettingsOpen}
+                    title="chat settings"
+                    handelOpen={chatSettingsOpenHandler}
+                    children={<ChatSettings />} />
                 : null
             }
             {
