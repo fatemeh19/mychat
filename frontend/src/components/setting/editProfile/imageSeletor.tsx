@@ -1,14 +1,16 @@
 'use client'
+import { profilePicHandler } from "@/src/helper/userInformation";
+import { UserInterface } from "@/src/redux/features/userInfoSlice";
 import { Dispatch, FC, SetStateAction, createRef, useContext } from "react";
 import { BiCamera } from 'react-icons/bi'
 
 
 interface ImgSelector {
     setImage: Dispatch<SetStateAction<string>>,
-    imageName :string
+    userInfo: UserInterface
 }
 
-const ImageSelector: FC<ImgSelector> = ({ setImage,imageName }) => {
+const ImageSelector: FC<ImgSelector> = ({ setImage, userInfo }) => {
 
     const defaultBtn = createRef<HTMLInputElement>()
     const profileImg = createRef<HTMLImageElement>()
@@ -53,7 +55,7 @@ const ImageSelector: FC<ImgSelector> = ({ setImage,imageName }) => {
                 relative
             ">
                 <img
-                    src={imageName}
+                    src={profilePicHandler(userInfo)}
                     ref={profileImg}
                     alt=""
                     className="
