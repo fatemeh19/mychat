@@ -3,7 +3,7 @@
 import ValidationError from '@/src/errors/validationError';
 import callApi from "./callApi"
 import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, editProfilePicAction, removeMemberFromGroup, setChatCreated, setChatFetched, setChatType, setFirstChat, userPermissionsInterface } from "../redux/features/chatSlice";
-import { groupMemberInterface } from '../models/interface';
+import { groupMemberInterface, profilePicInterface } from '../models/interface';
 import { editUserContactName, editUserContactProfilePic } from '../redux/features/userContactSlice';
 import { editNameInChatOfChatList, editNameInChatOfFolderChatList, editProfilePicInChatOfChatList, editProfilePicInChatOfFolderChatList } from '../redux/features/userChatListSlice';
 
@@ -189,20 +189,11 @@ export const editGroupType = async (chatId: string, data: any, dispatch: any) =>
     }
 }
 
-export const editProfilePic = async (profilePicId: string, formData: any, index: number, dispatch: any) => {
+export const editProfilePic = async (profilePicId: string, formData: any) => {
     try {
         const res = await callApi().patch(`/main/profilePic/${profilePicId}`, formData, config)
         console.log('edit profile pic res : ', res)
-        // edit in chat
-        dispatch(editProfilePicAction(res.data.value.profilePic))
-        // edit in chatInfo
-        dispatch(editUserContactProfilePic(res.data.value.profilePic))
-        // edit in chatList
-        dispatch(editProfilePicInChatOfChatList({ index: index, profilePic: res.data.value.profilePic }))
-        // edit in folderChatList
-        dispatch(editProfilePicInChatOfFolderChatList({ index: index, profilePic: res.data.value.profilePic }))
-
-
+        return res.data.value.profilePic
     } catch (error) {
         console.log('edit profile pic error : ', error)
     }

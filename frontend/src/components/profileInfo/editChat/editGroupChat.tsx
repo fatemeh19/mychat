@@ -1,13 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import EditChatInfo from "./parts/editInfo";
-import { setIsEditChat } from "@/src/redux/features/chatSlice";
+import { editProfilePicAction, setIsEditChat } from "@/src/redux/features/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import EditGeneralSettings from "./parts/editGeneralSetting";
 import EditPermissions from "./parts/editPermissions";
 import { editGroupInfo, editProfilePic } from "@/src/helper/useAxiosRequests";
 import PopUpBtns from "../../popUp/popUpBtns";
 // import findIndex from "@/src/helper/findIndex";
-import { editNameInChatOfChatList } from "@/src/redux/features/userChatListSlice";
+import { editNameInChatOfChatList, editProfilePicInChatOfChatList, editProfilePicInChatOfFolderChatList } from "@/src/redux/features/userChatListSlice";
+import { editUserContactProfilePic } from "@/src/redux/features/userContactSlice";
 
 interface EditGroupChatProps {
 }
@@ -28,7 +29,7 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
     const [formikbtnRef, setFormikbtnRef] = useState<any>()
     // const imageId = useAppSelector(state => state.chat.Chat).profilePic._id
 
-    const editChatHandler = (values: any) => {
+    const editChatHandler = async (values: any) => {
         setGroupName(values.chatName)
         console.log('values:', values)
         const groupInfoData = {
@@ -42,7 +43,16 @@ const EditGroupChat: FC<EditGroupChatProps> = () => {
         if (image !== '') {
             const formData = new FormData()
             formData.append('profilePic', image)
-            editProfilePic(chat.profilePic._id, formData, index, dispatch)
+            const newImage = await editProfilePic(chat.profilePic._id, formData)
+            // edit in chat
+            dispatch(editProfilePicAction(newImage))
+            // edit in chatInfo
+            dispatch(editUserContactProfilePic(newImage))
+            // edit in chatList
+            dispatch(editProfilePicInChatOfChatList({ index: index, profilePic: newImage }))
+            // edit in folderChatList
+            dispatch(editProfilePicInChatOfFolderChatList({ index: index, profilePic: newImage }))
+
         }
         if (chatName !== values.chatName || chat.description !== values.description) {
             editGroupInfo(chat._id, groupInfoData, index, dispatch)
