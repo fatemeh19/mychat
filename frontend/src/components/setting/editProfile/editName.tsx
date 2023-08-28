@@ -23,7 +23,8 @@ const EditName: FC<EditNameProps> = ({ setNameOpen, User, setUserInfo }) => {
 
     const submitHandler = (values: any) => {
         console.log('edit my name values:', values)
-        setUserInfo((prevState) => ({ ...prevState, name: values.name }))
+        setUserInfo((prevState) => ({ ...prevState, name: values.name, lastName: values.lastname }))
+        setNameOpen(false)
     }
     const validation = yup.object().shape({
         name: yup.string().required(),

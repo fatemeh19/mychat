@@ -6,12 +6,13 @@ import {
     BiAt
 
 } from "react-icons/bi";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import ImageSelector from "./imageSeletor";
 import { useAppSelector } from "@/src/redux/hooks";
 import CustomizedDialogs from "../../popUp";
 import NotificationsAndSounds from "../notificationsAndSounds";
 import EditName from "./editName";
+import EditUsername from "./editUsername";
 interface EditProfileProps {
 
 }
@@ -35,6 +36,9 @@ const EditProfile: FC<EditProfileProps> = ({
     const [usernameOpen, setUsernameOpen] = useState(false)
     const [phoneNumberOpne, setPhoneNumberOpen] = useState(false)
 
+    useEffect(() => {
+        console.log('userInfo in editProfile : ', userInfo)
+    }, [userInfo])
     return (
         <>
             {/* <div className="w-full flex gap-5 items-center px-5 pb-3 bg-white shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]"> */}
@@ -72,7 +76,8 @@ const EditProfile: FC<EditProfileProps> = ({
                     </div>
                     <p className="float-right">{userInfo.email}</p>
                 </div>
-                {User.username && <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150">
+                {User.username && <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150"
+                    onClick={() => setUsernameOpen(!usernameOpen)}>
                     <div className="float-left flex gap-3">
                         <BiAt className="text-2xl" />
                         <span className='text-sm'>username</span>
@@ -82,6 +87,7 @@ const EditProfile: FC<EditProfileProps> = ({
             </div>
 
             {nameOpen && <CustomizedDialogs title="Edit you name" children={<EditName setNameOpen={setNameOpen} User={User} setUserInfo={setUserInfo} />} open={nameOpen} handelOpen={() => setNameOpen(!nameOpen)} />}
+            {usernameOpen && <CustomizedDialogs title="Username" children={<EditUsername setUsernameOpen={setUsernameOpen} User={User} setUserInfo={setUserInfo} />} open={usernameOpen} handelOpen={() => setUsernameOpen(!usernameOpen)} />}
         </>
     )
 }
