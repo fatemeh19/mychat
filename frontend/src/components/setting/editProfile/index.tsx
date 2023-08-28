@@ -34,7 +34,7 @@ const EditProfile: FC<EditProfileProps> = ({
 
     const [nameOpen, setNameOpen] = useState(false)
     const [usernameOpen, setUsernameOpen] = useState(false)
-    const [phoneNumberOpne, setPhoneNumberOpen] = useState(false)
+    const [phoneNumberOpen, setPhoneNumberOpen] = useState(false)
 
     useEffect(() => {
         console.log('userInfo in editProfile : ', userInfo)
@@ -61,7 +61,8 @@ const EditProfile: FC<EditProfileProps> = ({
                     <p className="float-right">{userInfo.name}</p>
                 </div>
 
-                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150">
+                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150"
+                    onClick={() => setPhoneNumberOpen(!phoneNumberOpen)}>
                     <div className="float-left flex gap-3">
                         <BiPhoneCall className="text-2xl" />
                         <span className='text-sm'>Phone number</span>
@@ -69,7 +70,7 @@ const EditProfile: FC<EditProfileProps> = ({
                     <p className="float-right">{userInfo.phoneNumber}</p>
                 </div>
 
-                <div className="p-4 flow-root cursor-pointer hover:bg-gray-200 transition-all duration-150 ">
+                <div className="p-4 flow-root cursor-default">
                     <div className="float-left flex gap-3">
                         <BiAt className="text-2xl" />
                         <span className='text-sm'>Email</span>
@@ -88,6 +89,7 @@ const EditProfile: FC<EditProfileProps> = ({
 
             {nameOpen && <CustomizedDialogs title="Edit you name" children={<EditName setNameOpen={setNameOpen} User={User} setUserInfo={setUserInfo} />} open={nameOpen} handelOpen={() => setNameOpen(!nameOpen)} />}
             {usernameOpen && <CustomizedDialogs title="Username" children={<EditUsername setUsernameOpen={setUsernameOpen} User={User} setUserInfo={setUserInfo} />} open={usernameOpen} handelOpen={() => setUsernameOpen(!usernameOpen)} />}
+            {phoneNumberOpen && <CustomizedDialogs title="" children={<p className="font-medium text-sm py-7 px-5">You can only change your phone number using mobile app. Please use an official app on your phone to update your number</p>} open={phoneNumberOpen} handelOpen={() => setPhoneNumberOpen(!phoneNumberOpen)} />}
         </>
     )
 }
