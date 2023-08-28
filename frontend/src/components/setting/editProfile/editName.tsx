@@ -4,11 +4,14 @@ import { Form, Formik } from "formik";
 import * as yup from 'yup'
 import PopUpBtns from "../../popUp/popUpBtns";
 import { profilePicInterface } from "@/src/models/interface";
+import { UserInterface } from "@/src/redux/features/userInfoSlice";
 
 interface EditNameProps {
     setNameOpen: Dispatch<SetStateAction<boolean>>,
+    User: UserInterface,
     setUserInfo: Dispatch<SetStateAction<{
         name: string;
+        lastName: string;
         phoneNumber: string;
         email: string;
         username: string;
@@ -16,7 +19,7 @@ interface EditNameProps {
     }>>
 }
 
-const EditName: FC<EditNameProps> = ({ setNameOpen, setUserInfo }) => {
+const EditName: FC<EditNameProps> = ({ setNameOpen, User, setUserInfo }) => {
 
     const submitHandler = (values: any) => {
         console.log('edit my name values:', values)
@@ -27,7 +30,7 @@ const EditName: FC<EditNameProps> = ({ setNameOpen, setUserInfo }) => {
     })
     return (
         <Formik
-            initialValues={{ name: '' }}
+            initialValues={{ name: User.name, lastname: User.lastname }}
             validationSchema={validation}
             onSubmit={(values) => submitHandler(values)}
         >

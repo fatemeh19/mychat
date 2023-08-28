@@ -24,6 +24,7 @@ const EditProfile: FC<EditProfileProps> = ({
 
     const [userInfo, setUserInfo] = useState({
         name: User.name,
+        lastName: User.lastname,
         phoneNumber: User.phoneNumber,
         email: User.email,
         username: User.username,
@@ -80,7 +81,7 @@ const EditProfile: FC<EditProfileProps> = ({
                 </div>}
             </div>
 
-            {nameOpen && <CustomizedDialogs title="Edit you name" children={<EditName setNameOpen={setNameOpen} setUserInfo={setUserInfo} />} open={nameOpen} handelOpen={() => setNameOpen(!nameOpen)} />}
+            {nameOpen && <CustomizedDialogs title="Edit you name" children={<EditName setNameOpen={setNameOpen} User={User} setUserInfo={setUserInfo} />} open={nameOpen} handelOpen={() => setNameOpen(!nameOpen)} />}
         </>
     )
 }
