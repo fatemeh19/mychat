@@ -17,6 +17,7 @@ import { fetchUserContactsListData } from "@/src/helper/userInformation";
 interface addContactFormProps {
     name: string,
     lastName: string,
+    username: string,
     phone: string,
     handelOpen?: () => void,
     msg: string
@@ -43,6 +44,7 @@ const AddContactFormInner = (props: any) => {
         <Form className=" w-full px-5">
             <InputField name='name' label="First name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
             <InputField name='lastName' label="Last name" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
+            <InputField name='username' label="Username" children={<BiUser className='h-auto text-2xl text-gray-500' />} />
             <InputField name='phone' label="Phone Number" children={<BiPhone className='h-auto text-2xl text-gray-500' />} />
             <div className="errMessage ml-8 w-auto text-red-500 text-sm">{values.msg}</div>
             <div className="my-5 gap-1 flex justify-end">
@@ -69,6 +71,8 @@ const addContactFormValidationSchema = yup.object().shape({
 
 interface addContactFormValue {
     name?: string,
+    lastname?: string,
+    username?: string,
     phone?: Number | '',
     handleAddContact?: () => void
 }
@@ -78,6 +82,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
         return {
             name: '',
             lastName: '',
+            username: 'string',
             phone: '',
             msg: ''
         }
@@ -95,6 +100,7 @@ const AddContactForm = withFormik<addContactFormValue, addContactFormProps>({
             const contact = {
                 name: values.name,
                 lastname: values.lastName,
+                username: values.username,
                 phoneNumber: values.phone
             };
             const res = await callApi().post('/main/contact/', contact, config)
