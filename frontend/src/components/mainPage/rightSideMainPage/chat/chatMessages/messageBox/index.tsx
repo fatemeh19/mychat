@@ -72,10 +72,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
     const SelectedMessagesMainIds = useAppSelector(state => state.selectedMessage).SelectedMessagesMainIds
     const userContactList = useAppSelector(state => state.userContactsList).contacts
 
-    console.log('chatMessages: ', chatMessages)
     useEffect(() => {
-        console.log('msg : ', msg)
-
         let sender: contactInterface | UserInterface = User
         if (msg.messageInfo.senderId === User._id) {
             sender = User

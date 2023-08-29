@@ -160,9 +160,7 @@ export const profilePicHandler = (user: any) => {
 
 export const fileHandler = (file: any) => {
     const fileName = (file.path).split(`\\`);
-    console.log('path : ', `/uploads/${fileName[fileName.length - 2]}/${fileName[fileName.length - 1]}`)
     return `/uploads/${fileName[fileName.length - 2]}/${fileName[fileName.length - 1]}`
-
 }
 
 export const userHandler = async () => {

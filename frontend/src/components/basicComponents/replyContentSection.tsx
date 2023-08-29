@@ -21,14 +21,9 @@ const ReplyContentSection: FC<ReplyContentSectionProps> = ({
 
     const userContactList = useAppSelector(state => state.userContactsList).contacts
     const user = useAppSelector(state => state.userInfo).User
-    const forwardMessageIds = useAppSelector(state => state.forwardMessage).forwardMessageIds
 
 
     let sender: contactInterface | UserInterface
-
-    useEffect(() => {
-        console.log('repliedMessage in reply section: ', repliedMessage)
-    }, [repliedMessage])
 
     if (repliedMessage?.messageInfo.senderId === user._id) sender = user
     else {
