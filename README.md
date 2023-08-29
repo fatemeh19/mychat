@@ -33,3 +33,6 @@ const data = {
 # useEffect : return
 in editUserProfile i want to save the change after close the popUp and for that i use return in useEffect but in return i don't have access to current state but the previus state for solve this problem i put the dependencies state in dependencies in useEffect and with this after close popup i can access to current state but here there is another problem that after every change in state return run ---- this problem not solve and stil exist : with this problem now work like this : after every change in profile Info like name or username of phone number this change go to server like telegram but i didn't want this.
 (---think or search to solve this problem later----)
+
+# notification doc
+https://developer.mozilla.org/en-US/docs/Web/API/notification

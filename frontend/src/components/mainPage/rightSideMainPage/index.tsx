@@ -83,9 +83,26 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         }
     }, [contactId, chatList.length])
 
+    const members = useAppSelector(state => state.chat).groupMembers
+
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
             dispatch(addMessage(message))
+            console.log(message)
+            let senderName = ''
+            members.map(member => {
+                if (member._id === message.messageInfo.senderId)
+                    senderName = member.name
+
+            })
+            if (Notification.permission === "granted") {
+                const notification = new Notification("New message from my Chat", {
+                    icon: "https://cdn-icons-png.flaticon.com/512/733/733585.png",
+                    body: `${senderName}: ${message.messageInfo.content.text}`,
+                    silent: true,
+                })
+                console.log(notification)
+            }
         })
         socket.on('deleteMessage', (data: any) => {
             const chatMessageIds = chatMessages.map((cm: recievedMessageInterface) => cm._id)
@@ -138,7 +155,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     }, [pinnedMessages])
     useEffect(() => {
         // console.log('chatMessages : ', chatMessages)
-
     }, [chatMessages])
     return (
         <>

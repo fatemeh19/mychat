@@ -26,8 +26,19 @@ export default function LeftSideMainPage() {
             }
         })
         dispatch(addSocket(socketIO))
+
     }, [])
 
+    window.addEventListener('load', () => {
+        console.log('loading ...')
+        if (!("Notification" in window)) {
+            // Check if the browser supports notifications
+            alert("This browser does not support desktop notification");
+        } else if (Notification.permission !== "denied") {
+            // We need to ask the user for permission
+            Notification.requestPermission()
+        }
+    })
 
 
     return (
