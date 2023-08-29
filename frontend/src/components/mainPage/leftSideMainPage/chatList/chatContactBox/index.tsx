@@ -96,7 +96,7 @@ const ChatContactBox: FC<chatContactProps> = ({
                 // if(chatMessages[chatMessages?.length - 1].messageInfo.senderId==contactId){
 
                 // }
-                if (chatMessages[chatMessages?.length - 1].messageInfo.content.file.contentType != 'text'
+                if (chatMessages[chatMessages?.length - 1].messageInfo.content.file
                     && chatMessages[chatMessages?.length - 1].messageInfo.content.text == ''
                 ) {
                     let text = chatMessages[chatMessages?.length - 1].messageInfo.content.file.originalName
