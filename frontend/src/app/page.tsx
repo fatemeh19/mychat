@@ -1,10 +1,10 @@
-import Register from './auth/register/page'
+import Login from './auth/login/page'
 
 export default function MainPage() {
 
   return (
     <main >
-      <Register />
+      <Login />
     </main>
   )
 }
