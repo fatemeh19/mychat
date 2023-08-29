@@ -4,7 +4,7 @@ import { addFoldersList, folderInterface, setCloseFolders } from "../redux/featu
 import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
-import { addUserInfo } from "../redux/features/userInfoSlice"
+import { addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
 
 const token = localStorage.getItem('token')
@@ -215,5 +215,21 @@ export const getFolderChats = async (folderId: string, dispatch: any, chatList: 
             }
         }
         dispatch(addFolderChatList(folderChatList))
+    }
+}
+export const updateUserProfile = async (data: any, dispatch: any) => {
+    try {
+        const res = await callApi().patch('/main/user/profile', data, config)
+        console.log('update user profile res : ', res)
+        if (res.status === 200) {
+            dispatch(updateUserProfileInfo({ name: data.name, lastname: data.lastname, phoneNumber: data.phoneNumber, username: data.username }))
+        }
+    } catch (error) {
+        console.log('update user profile error : ', error)
+        // @ts-ignore
+        if (error.Error.errors[0].field === 'phoneNumber') {
+            // @ts-ignore
+            alert(error.Error.errors[0].message)
+        }
     }
 }

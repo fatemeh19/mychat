@@ -11,7 +11,7 @@ interface EditNameProps {
     User: UserInterface,
     setUserInfo: Dispatch<SetStateAction<{
         name: string;
-        lastName: string;
+        lastname: string;
         phoneNumber: string;
         email: string;
         username: string;
@@ -22,8 +22,8 @@ interface EditNameProps {
 const EditName: FC<EditNameProps> = ({ setNameOpen, User, setUserInfo }) => {
 
     const submitHandler = (values: any) => {
-        console.log('edit my name values:', values)
-        setUserInfo((prevState) => ({ ...prevState, name: values.name, lastName: values.lastname }))
+        // console.log('edit my name values:', values)
+        setUserInfo((prevState) => ({ ...prevState, name: values.name, lastname: values.lastname }))
         setNameOpen(false)
     }
     const validation = yup.object().shape({
@@ -39,7 +39,7 @@ const EditName: FC<EditNameProps> = ({ setNameOpen, User, setUserInfo }) => {
                 <div className="overflow-hidden w-full flex flex-col items-end relative select-none pb-[50px]">
                     <div className="no-scrollbar flex flex-col overflow-y-auto w-full px-5">
                         <InputField name="name" label="First name" containerClassName={'w-full !mx-0'} />
-                        <InputField name="lastName" label="Last name" containerClassName={'w-full !mx-0'} />
+                        <InputField name="lastname" label="Last name" containerClassName={'w-full !mx-0'} />
                     </div>
                     <PopUpBtns title1="Cancle" id1="cancle" name1="cancle" title2="Save" id2="save" name2="save" onClickHandler1={() => setNameOpen(false)} onClickHandler2={() => { submitHandler }} btnContainerClassName={'flex justify-end gap-5'} />
                 </div>

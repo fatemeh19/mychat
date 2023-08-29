@@ -97,18 +97,22 @@ export function MenuIcon() {
     const [editProfileOpen, setEditProfileOpen] = useState(false)
     const editProfileOpenHandler = () => {
         setEditProfileOpen(!editProfileOpen)
+        setSettingOpen(!settingOpen)
     }
     const [notificationsAndSoundOpen, setNotificationsAndSoundOpen] = useState(false)
     const notificationsAndSoundOpenHandler = () => {
         setNotificationsAndSoundOpen(!notificationsAndSoundOpen)
+        setSettingOpen(!settingOpen)
     }
     const [privacyAndSecurityOpen, setPrivacyAndSecurityOpen] = useState(false)
     const privacyAndSecurityOpenHandler = () => {
         setPrivacyAndSecurityOpen(!privacyAndSecurityOpen)
+        setSettingOpen(!settingOpen)
     }
     const [chatSettingsOpen, setChatSettingsOpen] = useState(false)
     const chatSettingsOpenHandler = () => {
         setChatSettingsOpen(!chatSettingsOpen)
+        setSettingOpen(!settingOpen)
     }
 
     const [openCreateGroup, setOpenCreateGroup] = useState(false)
@@ -164,7 +168,7 @@ export function MenuIcon() {
                     open={editProfileOpen}
                     title="Info"
                     handelOpen={editProfileOpenHandler}
-                    children={<EditProfile />} />
+                    children={<EditProfile editProfileOpen={editProfileOpen} />} />
                 : null
             }
             {notificationsAndSoundOpen

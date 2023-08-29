@@ -11,7 +11,7 @@ interface EditPhoneNumberProps {
     User: UserInterface,
     setUserInfo: Dispatch<SetStateAction<{
         name: string;
-        lastName: string;
+        lastname: string;
         phoneNumber: string;
         email: string;
         username: string;
@@ -22,7 +22,7 @@ interface EditPhoneNumberProps {
 const EditPhoneNumber: FC<EditPhoneNumberProps> = ({ setPhonNumberOpen, User, setUserInfo }) => {
 
     const submitHandler = (values: any) => {
-        console.log(values)
+        // console.log(values)
         setUserInfo(prevState => ({ ...prevState, phoneNumber: values.phoneNumber }))
         setPhonNumberOpen(false)
     }

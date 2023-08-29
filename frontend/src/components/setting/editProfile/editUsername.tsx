@@ -11,7 +11,7 @@ interface EditUsernameProps {
     User: UserInterface,
     setUserInfo: Dispatch<SetStateAction<{
         name: string;
-        lastName: string;
+        lastname: string;
         phoneNumber: string;
         email: string;
         username: string;
@@ -22,7 +22,7 @@ interface EditUsernameProps {
 const EditUsername: FC<EditUsernameProps> = ({ setUsernameOpen, User, setUserInfo }) => {
 
     const submitHandler = (values: any) => {
-        console.log(values)
+        // console.log(values)
         setUserInfo(prevState => ({ ...prevState, username: values.username }))
         setUsernameOpen(false)
     }

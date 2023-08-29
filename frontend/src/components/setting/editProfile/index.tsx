@@ -8,30 +8,40 @@ import {
 } from "react-icons/bi";
 import { FC, useEffect, useState } from "react";
 import ImageSelector from "./imageSeletor";
-import { useAppSelector } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import CustomizedDialogs from "../../popUp";
 import NotificationsAndSounds from "../notificationsAndSounds";
 import EditName from "./editName";
 import EditUsername from "./editUsername";
 import EditPhoneNumber from "./editPhoneNumber";
+import { editProfilePic } from "@/src/helper/useAxiosRequests";
+import { updateUserProfilePic } from "@/src/redux/features/userInfoSlice";
+import { updateUserProfile } from "@/src/helper/userInformation";
 interface EditProfileProps {
-
+    editProfileOpen: boolean
 }
 
 const EditProfile: FC<EditProfileProps> = ({
-
+    editProfileOpen
 }) => {
     const [img, setImg] = useState<string>('')
     const User = useAppSelector(state => state.userInfo).User
+    const dispatch = useAppDispatch()
 
     const [userInfo, setUserInfo] = useState({
         name: User.name,
-        lastName: User.lastname,
+        lastname: User.lastname,
         phoneNumber: User.phoneNumber,
         email: User.email,
         username: User.username,
         profilePic: User.profilePic
     })
+    let data: {
+        name: string,
+        lastname: string,
+        phoneNumber: string,
+        username: string
+    };
 
     const [nameOpen, setNameOpen] = useState(false)
     const [usernameOpen, setUsernameOpen] = useState(false)
@@ -39,17 +49,32 @@ const EditProfile: FC<EditProfileProps> = ({
     const [emailOpen, setEmailOpen] = useState(false)
 
     useEffect(() => {
-        console.log('userInfo in editProfile : ', userInfo)
-        console.log('img in editProfile : ', img)
+        // console.log('userInfo : ', userInfo)
+        data = {
+            name: userInfo.name,
+            lastname: userInfo.lastname,
+            phoneNumber: userInfo.phoneNumber,
+            username: userInfo.username
+        }
     }, [userInfo, img])
 
     useEffect(() => {
         return () => {
-            // send data to server wen popUp close ...
-            console.log('send data to server ...')
+            (async () => {
+                const formData = new FormData()
+                formData.append('profilePic', img)
+                if (data.name !== User.name || data.lastname !== User.lastname || data.phoneNumber !== User.phoneNumber || data.username !== User.username) {
+                    updateUserProfile(data, dispatch)
+                }
+                if (img) {
+                    const newImage = await editProfilePic(User.profilePic._id, formData)
+                    dispatch(updateUserProfilePic(newImage))
 
+                }
+            })()
         }
-    }, [])
+    }, [userInfo, img])
+
     return (
         <>
             {/* <div className="w-full flex gap-5 items-center px-5 pb-3 bg-white shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]"> */}
