@@ -13,6 +13,7 @@ import {
   createChat,
   getChat,
   getChats,
+  muteUnmuteNotifications
 } from "../controllers/chatController.js";
 
 const createChatI = async (req, res,next) => {
@@ -108,6 +109,16 @@ const deleteChatI = async (req, res, next) => {
   }
   next()
 };
+const muteUnmuteNotificationsI = async (req, res, next)=>{
+  const {id} = req.params
+  await muteUnmuteNotifications(id)
+  res.locals.response = {
+    statusCode : StatusCodes.OK,
+    responseType:messages.ok
+  }
+  next()
+
+}
 
 
 
@@ -118,4 +129,5 @@ export {
   createChatI,
   getChatI,
   getChatsI,
+  muteUnmuteNotificationsI
 };

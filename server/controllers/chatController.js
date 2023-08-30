@@ -488,6 +488,12 @@ const searchChat = async (userId, search) => {
   return chats;
   
 };
+const muteUnmuteNotifications = async (chatId)=>{
+  const chat = await Services.findOne("chat",{_id:chatId})
+  chat.notifications = chat.notifications? false : true
+  await chat.save()
+
+}
 
 export {
   addToChats,
@@ -497,4 +503,5 @@ export {
   getChat,
   getChats,
   searchChat,
+  muteUnmuteNotifications
 };
