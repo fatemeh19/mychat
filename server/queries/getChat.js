@@ -29,6 +29,7 @@ export default async (withMessages,userChat)=>{
               notifications: { $first: "$notifications" },
               pinnedMessages: { $first: "$pinnedMessages" },
       
+              description:{$first:"$description"},
               messages: { $push: "$messages" },
             },
           },
@@ -43,6 +44,7 @@ export default async (withMessages,userChat)=>{
               notifications: 1,
               pinnedMessages: 1,
               messages: 1,
+              description:1,
               messages: {
                 $filter: {
                   input: "$messages",
@@ -81,7 +83,7 @@ export default async (withMessages,userChat)=>{
               chatType: { $first: "$chatType" },
               notifications: { $first: "$notifications" },
               pinnedMessages: { $first: "$pinnedMessages" },
-      
+              description:{$first:"$description"},
               messages: { $push: "$messages" },
             },
           },
@@ -113,7 +115,7 @@ export default async (withMessages,userChat)=>{
               chatType: { $first: "$chatType" },
               notifications: { $first: "$notifications" },
               pinnedMessages: { $first: "$pinnedMessages" },
-      
+              description:{$first:"$description"},
               messages: { $push: "$messages" },
             },
           }]
