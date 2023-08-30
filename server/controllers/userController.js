@@ -57,6 +57,7 @@ const getProfile = async (userId) => {
         email: 1,
         profilePic: 1,
         bio: 1,
+        settingId:1
       },
     },
   ]);

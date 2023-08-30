@@ -153,6 +153,7 @@ const getContact = async (userId,contactId) => {
       bio: 1,
       status: 1,
       username: 1,
+      settingId:1
     }
   );
   const profilePic = await Services.findOne("file",{_id:contact.profilePic})
