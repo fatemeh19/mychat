@@ -7,6 +7,7 @@ import { addContactsList } from "../redux/features/userContactListSlice"
 import { addSetting, addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
 import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface } from "../models/interface"
+import { settingTitle } from "../models/enum"
 
 const token = localStorage.getItem('token')
 const config = {
@@ -28,7 +29,11 @@ export const fetchUserContactsListData = async (dispatch: any) => {
 
 export const fetchUserProfileData = async (dispatch: any) => {
 
-    dispatch(addUserInfo(await userHandler()))
+    const user = await userHandler()
+    dispatch(addUserInfo(user))
+
+    getSetting(user.settingId, dispatch)
+
 
 }
 
@@ -247,7 +252,7 @@ export const getSetting = async (settingId: string, dispatch: any) => {
     }
 }
 
-export const editSetting = async (title: string, editedSetting: notificationAndSoundsInterface | privacyAndSecurityInterface | chatSettingInterface, settingId: string, dispatch: any) => {
+export const editSetting = async (title: settingTitle, editedSetting: notificationAndSoundsInterface | privacyAndSecurityInterface | chatSettingInterface, settingId: string, dispatch: any) => {
     try {
         const data = {
             title,

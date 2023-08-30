@@ -18,7 +18,8 @@ interface initialStateInterface {
 }
 
 const initialState = {
-    User: {}
+    User: {},
+    setting: {}
 } as initialStateInterface
 
 export const UserSlice = createSlice({
