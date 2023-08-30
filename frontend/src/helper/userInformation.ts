@@ -4,8 +4,9 @@ import { addFoldersList, folderInterface, setCloseFolders } from "../redux/featu
 import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
-import { addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
+import { addSetting, addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
+import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface } from "../models/interface"
 
 const token = localStorage.getItem('token')
 const config = {
@@ -229,5 +230,33 @@ export const updateUserProfile = async (data: any, dispatch: any) => {
             // @ts-ignore
             alert(error.Error.errors[0].message)
         }
+    }
+}
+
+export const getSetting = async (settingId: string, dispatch: any) => {
+    try {
+        const res = await callApi().get(`/main/setting/${settingId}`, config)
+        console.log('get setting res: ', res)
+
+        if (res.status === 200) {
+            dispatch(addSetting(res.data.value.setting))
+        }
+    } catch (error) {
+        console.log('get setting error: ', error)
+
+    }
+}
+
+export const editSetting = async (title: string, editedSetting: notificationAndSoundsInterface | privacyAndSecurityInterface | chatSettingInterface, settingId: string, dispatch: any) => {
+    try {
+        const data = {
+            title,
+            editedSetting
+        }
+        const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
+        console.log('edit setting res : ', res)
+    } catch (error) {
+        console.log('edit setting error : ', error)
+
     }
 }

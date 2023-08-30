@@ -31,4 +31,10 @@ enum SearchType {
     chats = 'chats',
     messages = 'messages'
 }
-export { messageTypes, MessageBoxDir, ChatType, fileType, SearchType }
+enum privacyOption {
+    everybody = 'everybody'
+}
+enum ThemOption {
+    default = 'default'
+}
+export { messageTypes, MessageBoxDir, ChatType, fileType, SearchType, privacyOption, ThemOption }
