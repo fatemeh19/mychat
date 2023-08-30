@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import Chat from "./chat"
 import ChatInfo from "./chatInfo"
@@ -14,6 +14,7 @@ import PinnedSection from "./chat/pinnedSection"
 import callApi from "@/src/helper/callApi"
 import { addUserContact } from "@/src/redux/features/userContactSlice"
 import { useRouter } from "next/navigation"
+import { fileHandler } from "@/src/helper/userInformation"
 
 interface IUserInfo {
     name: string,
@@ -44,6 +45,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const pinnedMessages = useAppSelector(state => state.chat).Chat.pinnedMessages
     const openPinSection = useAppSelector(state => state.open).openPinSectin
     const userContacts = useAppSelector(state => state.userContactsList).contacts
+    const setting = useAppSelector(state => state.userInfo).setting
 
     const router = useRouter()
 
@@ -96,12 +98,21 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
 
             })
             if (Notification.permission === "granted") {
-                const notification = new Notification("New message from my Chat", {
-                    icon: "https://cdn-icons-png.flaticon.com/512/733/733585.png",
-                    body: `${senderName}: ${message.messageInfo.content.text}`,
-                    silent: true,
-                })
-                console.log(notification)
+                console.log(setting.notificationAndSounds.notifs)
+                console.log(typeof setting.notificationAndSounds.notifs)
+                if (setting.notificationAndSounds.notifs) {
+                    const notification = new Notification("New message from my Chat", {
+                        icon: "https://cdn-icons-png.flaticon.com/512/733/733585.png",
+                        body: `${senderName}: ${message.messageInfo.content.text}`,
+                        silent: true,
+                    })
+                    // new Audio('/uploads/music/cheshmat.mp3').play()
+                    new Audio('/defaults/defaultNotification.mp3').play()
+
+                    // after sound return like obj
+                    // new Audio(fileHandler(sound)).play
+
+                }
             }
         })
         socket.on('deleteMessage', (data: any) => {
@@ -149,13 +160,6 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
         }
     })
 
-    useEffect(() => {
-        // console.log('pinnedMessages : ', pinnedMessages)
-
-    }, [pinnedMessages])
-    useEffect(() => {
-        // console.log('chatMessages : ', chatMessages)
-    }, [chatMessages])
     return (
         <>
             {

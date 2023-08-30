@@ -4,7 +4,7 @@ import { addFoldersList, folderInterface, setCloseFolders } from "../redux/featu
 import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
-import { addSetting, addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
+import { addSetting, addUserInfo, editChatSetting, editNotificationSetting, editPrivacySetting, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
 import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface } from "../models/interface"
 import { settingTitle } from "../models/enum"
@@ -252,14 +252,37 @@ export const getSetting = async (settingId: string, dispatch: any) => {
     }
 }
 
-export const editSetting = async (title: settingTitle, editedSetting: notificationAndSoundsInterface | privacyAndSecurityInterface | chatSettingInterface, settingId: string, dispatch: any) => {
+export const editSetting = async (settingId: string, data: FormData, dispatch: any) => {
     try {
-        const data = {
-            title,
-            editedSetting
-        }
         const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
         console.log('edit setting res : ', res)
+        console.log(data.get('title'))
+        if (res.status === 200) {
+            if (data.get('title') === settingTitle.notificationAndSounds) {
+                const notifData = {
+
+                    notifs: !!data.get('notifs'),
+                    sound: ''
+                    // هرموقع که آدرس صدا برگشت قرارش میدم
+                    // sound:res.data.value.sound
+                }
+                dispatch(editNotificationSetting(notifData))
+            }
+            // if (data.title === settingTitle.privacyAndSecurity) {
+            //     const privacyData = {
+            //         blockedUsers: data.blockedUsers,
+            //         phoneNumber: data.phoneNumber
+            //     }
+            //     dispatch(editPrivacySetting(privacyData))
+            // }
+            // if (data.title === settingTitle.chatSetting) {
+            //     const chatData = {
+            //         background: data.background,
+            //         theme: data.theme
+            //     }
+            //     dispatch(editChatSetting(chatData))
+            // }
+        }
     } catch (error) {
         console.log('edit setting error : ', error)
 

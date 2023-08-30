@@ -41,7 +41,7 @@ export const UserSlice = createSlice({
         addSetting: (state, action: PayloadAction<settingInterface>) => {
             state.setting = action.payload
         },
-        editNotificationSetting: (state, action: PayloadAction<notificationAndSoundsInterface>) => {
+        editNotificationSetting: (state, action: PayloadAction<any>) => {
             state.setting.notificationAndSounds = action.payload
         },
         editPrivacySetting: (state, action: PayloadAction<privacyAndSecurityInterface>) => {
