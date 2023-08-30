@@ -110,12 +110,12 @@ const getChat = async (userId, chatId) => {
     ...stages
   ]);
  
-  let fileIds = chat[0]?.messages.map((message)=>message.messageInfo.content.file)
+  let fileIds = chat[0]?.messages.map((message)=>message.messageInfo.content?.file)
 
   const files = await Services.findMany("file",{_id:{$in:fileIds}})
   let index = 0
   chat[0]?.messages.forEach((message)=>{
-    if(message.messageInfo.content.file){
+    if(message.messageInfo.content?.file){
       message.messageInfo.content.file = files[index]
       index++
     }
