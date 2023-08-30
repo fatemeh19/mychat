@@ -127,4 +127,8 @@ const blockUnblock = async (body, userId) => {
     }
   );
 };
+
+const searchUsername = async (search)=>{
+
+}
 export { blockUnblock, setInfo, getProfile, editProfile, setStatus };
