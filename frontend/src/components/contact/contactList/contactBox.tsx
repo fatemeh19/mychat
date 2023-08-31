@@ -79,7 +79,7 @@ const ContactBox: FC<ContactBoxProps> = ({
             }}>
             <div className={''} ref={contactBoxRef}>
                 <Image
-                    src={profilePicHandler(contact)}
+                    src={contact.profilePic ? profilePicHandler(contact) : '/defaults/defaultProfilePic.png'}
                     className="w-[56px] h-[56px] object-cover rounded-full border-2 border-white"
                     width={500} height={50} alt="contact-profile" />
                 <div className="w-5 h-5 bg-blue-500 absolute bottom-0 right-0 rounded-full flex items-center justify-center">

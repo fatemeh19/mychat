@@ -68,19 +68,20 @@ interface notificationAndSoundsInterface {
     sound: string
 }
 
+interface privacyInterface {
+    lastseen: privacyOption,
+    profilePic: privacyOption,
+    phoneNumber: privacyOption,
+    addToGroup: privacyOption,
+}
+
+interface securityInterface {
+    blockedUsers: string[]
+}
+
 interface privacyAndSecurityInterface {
-    security: {
-        blockedUsers: string[]
-    },
-    privacy: {
-        lastseen: privacyOption,
-        profilePic: privacyOption,
-        phoneNumber: privacyOption,
-        lastSeen: privacyOption,
-        profilePhotos: privacyOption,
-        addToGroup: privacyOption,
-        forwardedMessages: privacyOption
-    }
+    security: securityInterface
+    privacy: privacyInterface
 }
 
 interface chatSettingInterface {
@@ -103,6 +104,8 @@ export type {
     groupMemberInterface,
     settingInterface,
     notificationAndSoundsInterface,
+    privacyInterface,
+    securityInterface,
     privacyAndSecurityInterface,
     chatSettingInterface
 }

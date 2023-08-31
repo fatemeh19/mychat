@@ -44,10 +44,10 @@ export const UserSlice = createSlice({
         editNotificationSetting: (state, action: PayloadAction<any>) => {
             state.setting.notificationAndSounds = action.payload
         },
-        editPrivacySetting: (state, action: PayloadAction<privacyAndSecurityInterface>) => {
+        editPrivacySetting: (state, action: PayloadAction<any>) => {
             state.setting.privacyAndSecurity = action.payload
         },
-        editChatSetting: (state, action: PayloadAction<chatSettingInterface>) => {
+        editChatSetting: (state, action: PayloadAction<any>) => {
             state.setting.chatSetting = action.payload
         },
     },

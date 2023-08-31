@@ -39,7 +39,9 @@ enum settingTitle {
 }
 
 enum privacyOption {
-    everybody = 'everybody'
+    everybody = 'everybody',
+    myContacts = 'myContacts',
+    nobody = 'nobody'
 }
 
 enum ThemOption {

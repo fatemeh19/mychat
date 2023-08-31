@@ -40,13 +40,10 @@ const NotificationsAndSounds: FC<NotificationsAndSoundsProps> = () => {
     const formData = new FormData()
     useEffect(() => {
         return () => {
-            formData.append('title', settingTitle.notificationAndSounds)
             formData.append('notifs', notificationSetting.notifs.toString())
             file && formData.append('notifSound', file)
 
-
-            editSetting(setting._id, formData, dispatch)
-
+            editSetting(settingTitle.notificationAndSounds, setting._id, formData, dispatch)
         }
     }, [notificationSetting.notifs, file])
 

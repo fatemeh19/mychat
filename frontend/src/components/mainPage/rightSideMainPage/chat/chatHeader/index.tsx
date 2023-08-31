@@ -198,7 +198,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
                                         <Image
                                             width={500}
                                             height={500}
-                                            src={profilePicHandler(userContact)}
+                                            src={userContact.profilePic ? profilePicHandler(userContact) : '/defaults/defaultProfilePic.png'}
                                             alt='chat profile'
                                             className='rounded-full w-[50px] h-[50px] object-cover'
                                         />

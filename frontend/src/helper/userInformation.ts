@@ -252,36 +252,23 @@ export const getSetting = async (settingId: string, dispatch: any) => {
     }
 }
 
-export const editSetting = async (settingId: string, data: FormData, dispatch: any) => {
+export const editSetting = async (title: string, settingId: string, data: FormData, dispatch: any) => {
     try {
+        data.append('title', title)
         const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
         console.log('edit setting res : ', res)
         console.log(data.get('title'))
         if (res.status === 200) {
-            if (data.get('title') === settingTitle.notificationAndSounds) {
-                const notifData = {
-
-                    notifs: !!data.get('notifs'),
-                    sound: ''
-                    // هرموقع که آدرس صدا برگشت قرارش میدم
-                    // sound:res.data.value.sound
-                }
-                dispatch(editNotificationSetting(notifData))
+            if (title === settingTitle.notificationAndSounds) {
+                dispatch(editNotificationSetting(data))
             }
-            // if (data.title === settingTitle.privacyAndSecurity) {
-            //     const privacyData = {
-            //         blockedUsers: data.blockedUsers,
-            //         phoneNumber: data.phoneNumber
-            //     }
-            //     dispatch(editPrivacySetting(privacyData))
-            // }
-            // if (data.title === settingTitle.chatSetting) {
-            //     const chatData = {
-            //         background: data.background,
-            //         theme: data.theme
-            //     }
-            //     dispatch(editChatSetting(chatData))
-            // }
+            if (title === settingTitle.privacyAndSecurity) {
+                console.log("privacy setting data : ", data)
+                dispatch(editPrivacySetting(data))
+            }
+            if (title === settingTitle.chatSetting) {
+                dispatch(editChatSetting(data))
+            }
         }
     } catch (error) {
         console.log('edit setting error : ', error)

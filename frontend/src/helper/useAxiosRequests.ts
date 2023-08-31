@@ -59,10 +59,13 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
         res = await callApi().post('/main/chat/', data, config)
         console.log('create chat res : ', res)
         if (res.statusText && res.statusText === 'Created') {
-            const chatId = res.data.value.chatId
-            await fetchChat(chatId, dispatch)
+            console.log('res.data.value.chat._id: ', res.data.value.chat._id)
+            const chat = res.data.value.chat
+            dispatch(addChat(chat))
+            dispatch(setChatFetched(true))
+            // await fetchChat(chatId, dispatch)
             dispatch(setChatCreated(true))
-            return res.data.value.chatId
+            return chat._id
 
 
         }
@@ -116,6 +119,7 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
         dispatch(addMemberToGroup(addedMember))
     } catch (error) {
         console.log('add group member error : ', error)
+        return error
     }
 }
 

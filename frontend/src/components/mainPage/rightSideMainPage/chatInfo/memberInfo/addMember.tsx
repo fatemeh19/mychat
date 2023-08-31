@@ -25,7 +25,9 @@ const AddMember: FC<AddMemberProps> = () => {
         const memberId = memberIds[0]
 
         const addedMember = userContacts.filter(userContact => userContact._id === memberId)
-        addGroupMember(chatId, memberId, addedMember[0], dispatch) // memberIds insted of memberId
+        // @ts-ignore
+        const error = addGroupMember(chatId, memberId, addedMember[0], dispatch) // memberIds insted of memberId
+        error.catch(error => alert('error in add member'))
         setOpenAddContactToGroup(false)
         setMemberIds([])
 
