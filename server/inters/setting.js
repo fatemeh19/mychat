@@ -9,38 +9,39 @@ import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
-import { getSetting,editSetting } from "../controllers/settingController.js";
+import { getSetting, editSetting } from "../controllers/settingController.js";
 import messages from "../messages/messages.js";
 
 const editSettingI = async (req, res, next) => {
   const {
     body,
-    params: { id: settingId},
+    params: { id: settingId },
     files,
   } = req;
-  await editSetting(body,settingId,files)
-
+  const setting = await editSetting(body, settingId, files);
 
   res.locals.response = {
-    statusCode : StatusCodes.OK,
-    responseType:messages.ok
-  }
-  next()};
+    statusCode: StatusCodes.OK,
+    value: { setting },
+    responseType: messages.ok,
+  };
+  next();
+};
 
 const getSettingI = async (req, res, next) => {
   const {
     params: { id: settingId },
   } = req;
-  const setting = await getSetting(settingId)
- 
+  const setting = await getSetting(settingId);
+
   res.locals.response = {
-    statusCode : StatusCodes.OK,
+    statusCode: StatusCodes.OK,
     value: {
-      setting
+      setting,
     },
-    responseType:messages.ok
-  }
-   next()
+    responseType: messages.ok,
+  };
+  next();
 };
 
 export { editSettingI, getSettingI };

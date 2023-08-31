@@ -7,10 +7,6 @@ const settingSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
-    sound: {
-      type: String,
-      default: consts.DEFAULT_NOTIF_SOUND,
-    },
   },
   privacyAndSecurity: {
     security: {

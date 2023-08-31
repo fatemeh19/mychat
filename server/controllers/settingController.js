@@ -31,18 +31,6 @@ const editSetting = async (body, settingId, files) => {
     { [title]: 1 }
   );
 
-  if (files.notifSound) {
-    if (setting[title].sound != consts.DEFAULT_NOTIF_SOUND) {
-      await fileController.deleteFile(setting[title].sound);
-    }
-    data.sound = files.notifSound[0].path;
-  } else if (data.notifs) {
-    data.sound = consts.DEFAULT_NOTIF_SOUND;
-    await fileController.deleteFile(setting[title].sound);
-  } else {
-    data.sound = undefined;
-    await fileController.deleteFile(setting[title].sound);
-  }
 
   if (files.background) {
     if (setting[title].background != consts.DEFAULT_BACKGROUND_PICTURE) {
@@ -54,7 +42,7 @@ const editSetting = async (body, settingId, files) => {
     await fileController.deleteFile(setting[title].background);
   }
 
-  await Services.findByIdAndUpdate(
+  const updatedSetting = await Services.findByIdAndUpdate(
     "setting",
     { _id: settingId },
     {
@@ -64,6 +52,7 @@ const editSetting = async (body, settingId, files) => {
       new: true,
     }
   );
+  return updatedSetting
 };
 
 const getSetting = async (settingId) => {
