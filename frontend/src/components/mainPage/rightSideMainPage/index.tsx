@@ -15,6 +15,7 @@ import callApi from "@/src/helper/callApi"
 import { addUserContact } from "@/src/redux/features/userContactSlice"
 import { useRouter } from "next/navigation"
 import { fileHandler } from "@/src/helper/userInformation"
+import { ChatType } from "@/src/models/enum"
 
 interface IUserInfo {
     name: string,
@@ -42,6 +43,7 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     const socket = useAppSelector(state => state.socket).Socket
     const chatList = useAppSelector(state => state.userChatList).chatList
     const chatMessages = useAppSelector(state => state.chat).Chat.messages
+    const chatType = useAppSelector(state => state.chat).Chat.chatType
     const pinnedMessages = useAppSelector(state => state.chat).Chat.pinnedMessages
     const openPinSection = useAppSelector(state => state.open).openPinSectin
     const userContacts = useAppSelector(state => state.userContactsList).contacts
@@ -86,17 +88,31 @@ export default function RightSideMainPage({ contactId }: { contactId: any }) {
     }, [contactId, chatList.length])
 
     const members = useAppSelector(state => state.chat).groupMembers
-
+    const userContactList = useAppSelector(state => state.userContactsList).contacts
+    const User = useAppSelector(state => state.userInfo).User
     useEffect(() => {
         socket?.on('sendMessage', (message) => {
             dispatch(addMessage(message))
             console.log(message)
             let senderName = ''
-            members.map(member => {
-                if (member._id === message.messageInfo.senderId)
-                    senderName = member.name
+            if (chatType === ChatType.group) {
+                members.map(member => {
+                    if (member._id === message.messageInfo.senderId)
+                        senderName = member.name
 
-            })
+                })
+            } else {
+                if (message.messageInfo.senderId === User._id) {
+                    // @ts-ignore
+                    senderName = User.name
+                } else {
+                    const userContactListIds = userContactList.map(uc => uc._id)
+                    let index = findIndex(0, userContactList.length, userContactListIds, message.messageInfo.senderId)
+                    // @ts-ignore
+                    setSender(userContactList[index])
+                    senderName = userContactList[index].name
+                }
+            }
             if (Notification.permission === "granted") {
                 console.log(setting.notificationAndSounds.notifs)
                 console.log(typeof setting.notificationAndSounds.notifs)

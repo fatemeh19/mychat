@@ -6,6 +6,7 @@ import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, e
 import { groupMemberInterface, profilePicInterface } from '../models/interface';
 import { editUserContactName, editUserContactProfilePic } from '../redux/features/userContactSlice';
 import { editNameInChatOfChatList, editNameInChatOfFolderChatList, editProfilePicInChatOfChatList, editProfilePicInChatOfFolderChatList } from '../redux/features/userChatListSlice';
+import { addChatToUserChatList } from './userInformation';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -65,6 +66,7 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
             dispatch(setChatFetched(true))
             // await fetchChat(chatId, dispatch)
             dispatch(setChatCreated(true))
+            addChatToUserChatList(chat, dispatch)
             return chat._id
 
 
