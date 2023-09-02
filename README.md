@@ -36,3 +36,4 @@ in editUserProfile i want to save the change after close the popUp and for that 
 
 # notification doc
 https://developer.mozilla.org/en-US/docs/Web/API/notification
+issue : i cann't make notification silent

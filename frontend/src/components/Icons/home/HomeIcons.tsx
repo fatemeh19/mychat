@@ -19,7 +19,7 @@ import { setCloseFolders, setOpenFolder } from "@/src/redux/features/folderSlice
 import { setFolderId } from "@/src/redux/features/userChatListSlice";
 import Settings from "../../setting";
 import NotificationsAndSounds from "../../setting/notificationsAndSounds";
-import PrivacyAndSecurity from "../../setting/privacyAndSecurity";
+import PrivacyAndSecurity from "../../setting/privacyAndSecurity/privacyAndSecurity";
 import ChatSettings from "../../setting/chatSettings";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {

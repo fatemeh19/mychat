@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FC } from "react";
 import EditProfile from "./editProfile";
 import NotificationsAndSounds from "./notificationsAndSounds";
-import PrivacyAndSecurity from "./privacyAndSecurity";
+import PrivacyAndSecurity from "./privacyAndSecurity/privacyAndSecurity";
 import ChatSettings from "./chatSettings";
 import { BiBell, BiChat, BiKey, BiNotification, BiUser } from "react-icons/bi";
 

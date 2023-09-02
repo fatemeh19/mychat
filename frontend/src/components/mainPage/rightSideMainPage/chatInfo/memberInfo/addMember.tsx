@@ -25,6 +25,7 @@ const AddMember: FC<AddMemberProps> = () => {
         const memberId = memberIds[0]
 
         const addedMember = userContacts.filter(userContact => userContact._id === memberId)
+        // @ts-ignore
         addGroupMember(chatId, memberId, addedMember[0], dispatch) // memberIds insted of memberId
         setOpenAddContactToGroup(false)
         setMemberIds([])

@@ -30,7 +30,6 @@ export default function LeftSideMainPage() {
     }, [])
 
     window.addEventListener('load', () => {
-        console.log('loading ...')
         if (!("Notification" in window)) {
             // Check if the browser supports notifications
             alert("This browser does not support desktop notification");

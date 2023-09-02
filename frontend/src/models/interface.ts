@@ -1,3 +1,4 @@
+import { ThemOption, privacyOption } from "./enum"
 
 interface infoFace {
     img: string | ArrayBuffer | null,
@@ -16,20 +17,10 @@ interface profilePicInterface {
 
 interface recievedMessageInterface {
     _id: string,
-    // content: {
-    //     contentType: string,
-    //     url: string,
-    //     text: string,
-    //     originalName?: string,
-    // },
-    // message :
     messageInfo: {
         _id: string,
         content: {
-            // contentType: string,
             text: string,
-            // url: string,
-            // originalName?: string,
             file: {
                 _id: string,
                 contentType: string,
@@ -71,4 +62,50 @@ interface groupMemberInterface {
     }
     profilePic: profilePicInterface
 }
-export type { infoFace, profilePicInterface, recievedMessageInterface, groupMemberInterface }
+
+interface notificationAndSoundsInterface {
+    notifs: boolean,
+    sound: string
+}
+
+interface privacyInterface {
+    lastseen: privacyOption,
+    profilePic: privacyOption,
+    phoneNumber: privacyOption,
+    addToGroup: privacyOption,
+}
+
+interface securityInterface {
+    blockedUsers: string[]
+}
+
+interface privacyAndSecurityInterface {
+    security: securityInterface
+    privacy: privacyInterface
+}
+
+interface chatSettingInterface {
+    background: string,
+    theme: ThemOption
+}
+
+interface settingInterface {
+    _id: string,
+    notificationAndSounds: notificationAndSoundsInterface,
+    privacyAndSecurity: privacyAndSecurityInterface,
+    chatSetting: chatSettingInterface,
+    __v: 0
+}
+
+export type {
+    infoFace,
+    profilePicInterface,
+    recievedMessageInterface,
+    groupMemberInterface,
+    settingInterface,
+    notificationAndSoundsInterface,
+    privacyInterface,
+    securityInterface,
+    privacyAndSecurityInterface,
+    chatSettingInterface
+}

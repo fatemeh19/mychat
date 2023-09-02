@@ -54,7 +54,6 @@ const Member: FC<MemberProps> = ({ member }) => {
         setConfirmInfo({
             confirmDiscription: 'Remove Fatemeh from the group?'
         })
-
     }
 
     return (
@@ -73,7 +72,7 @@ const Member: FC<MemberProps> = ({ member }) => {
                     
                 `}>
                 <img
-                    src={profilePicHandler(member)}
+                    src={member.profilePic ? profilePicHandler(member) : '/defaults/defaultProfilePic.png'}
                     alt=""
                     className="
                         w-full 

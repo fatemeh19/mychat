@@ -4,8 +4,10 @@ import { addFoldersList, folderInterface, setCloseFolders } from "../redux/featu
 import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
-import { addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
+import { addSetting, addUserInfo, editChatSetting, editNotificationSetting, editPrivacySetting, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
+import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface } from "../models/interface"
+import { settingTitle } from "../models/enum"
 
 const token = localStorage.getItem('token')
 const config = {
@@ -27,7 +29,11 @@ export const fetchUserContactsListData = async (dispatch: any) => {
 
 export const fetchUserProfileData = async (dispatch: any) => {
 
-    dispatch(addUserInfo(await userHandler()))
+    const user = await userHandler()
+    dispatch(addUserInfo(user))
+
+    getSetting(user.settingId, dispatch)
+
 
 }
 
@@ -66,6 +72,7 @@ const contactChatList = async (chatBox: any) => {
 export const fetchUserChatList = async (dispatch: any) => {
     let allChatList = []
     const res = await callApi().get('/main/chat/', config)
+    console.log('fetchChatList : ', res)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
         dispatch(addChatList([]))
@@ -145,6 +152,7 @@ export const addChatToUserChatList = async (newChat: chatInterface, dispatch: an
         lastMessageTime: lastMessageTime,
         open: false,
     }
+    console.log('chat in userInformation:', chat)
     dispatch(addChat(chat))
     dispatch(addChatToFolderChatList(chat))
 }
@@ -229,5 +237,44 @@ export const updateUserProfile = async (data: any, dispatch: any) => {
             // @ts-ignore
             alert(error.Error.errors[0].message)
         }
+    }
+}
+
+export const getSetting = async (settingId: string, dispatch: any) => {
+    try {
+        const res = await callApi().get(`/main/setting/${settingId}`, config)
+        console.log('get setting res: ', res)
+
+        if (res.status === 200) {
+            dispatch(addSetting(res.data.value.setting))
+        }
+    } catch (error) {
+        console.log('get setting error: ', error)
+
+    }
+}
+
+export const editSetting = async (title: string, settingId: string, data: FormData, dispatch: any) => {
+    try {
+        data.append('title', title)
+        console.log(data)
+        const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
+        console.log('edit setting res : ', res)
+        console.log(data.get('title'))
+        if (res.status === 200) {
+            if (title === settingTitle.notificationAndSounds) {
+                dispatch(editNotificationSetting(data))
+            }
+            if (title === settingTitle.privacyAndSecurity) {
+                console.log("privacy setting data : ", data)
+                dispatch(editPrivacySetting(data))
+            }
+            if (title === settingTitle.chatSetting) {
+                dispatch(editChatSetting(data))
+            }
+        }
+    } catch (error) {
+        console.log('edit setting error : ', error)
+
     }
 }
