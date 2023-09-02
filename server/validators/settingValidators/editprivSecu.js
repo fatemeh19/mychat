@@ -2,7 +2,7 @@ import yup from 'yup'
 import {privacy} from '../../utils/enums.js'
 const editprivSecu = yup.object({
     security:yup.object({
-        blockedUsers:yup.array(). required()
+        blockedUsers:yup.array()
     }),
     privacy:yup.object({
         phoneNumber:yup.string().oneOf(privacy). required(),

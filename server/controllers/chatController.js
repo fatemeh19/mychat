@@ -132,21 +132,31 @@ const getChats = async (userId) => {
   chatIds = await objectId(chatIds);
   const chats = await Services.aggregate("chat", [
     { $match: { _id: { $in: chatIds } } },
-    {
-      $lookup: {
-        from: "files",
-        localField: "profilePic",
-        foreignField: "_id",
-        as: "profilePic",
-      },
-    },
-    { $unwind: "$profilePic" },
+    // {
+    //   $lookup: {
+    //     from: "files",
+    //     localField: "profilePic",
+    //     foreignField: "_id",
+    //     as: "profilePic",
+    //   },
+    // },
+    // { $unwind: "$profilePic" },
     {
       $sort: {
         updatedAt: -1,
       },
     },
   ]);
+  let profilePicIds = chats.map((chat)=>chat.profilePic)
+
+  const profilePics = await Services.findMany("file",{_id:{$in:profilePicIds}})
+  let j = 0
+  chats?.forEach((chat)=>{
+    if(chat.profilePic){
+      chat.profilePic = profilePics[j]
+      j++
+    }
+  })
 
   let messageIds = chats.map(
     (chat) => chat.messages[chat.messages.length - 1]?.messageInfo
@@ -185,12 +195,12 @@ const getChats = async (userId) => {
   ]);
 
 
-  let fileIds = messages?.map((message)=>message.content.file)
+  let fileIds = messages?.map((message)=>message.content?.file)
 
   const files = await Services.findMany("file",{_id:{$in:fileIds}})
   let i = 0
   messages?.forEach((message)=>{
-    if(message.content.file){
+    if(message.content?.file){
       message.content.file = files[i]
       i++
     }

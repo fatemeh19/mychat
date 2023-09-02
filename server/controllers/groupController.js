@@ -112,7 +112,7 @@ const editGroupInfo = async (groupId,body) => {
 
 };
 
-const getMembers = async (groupId) => {
+const getMembers = async (groupId,userId) => {
   const chat = await Services.findOne("chat", { _id: groupId });
   let memberIds = chat.members.map((member) => member.memberId);
   memberIds = await objectId(memberIds);
@@ -136,6 +136,9 @@ const getMembers = async (groupId) => {
       },
     },
   ]);
+  for (let member of members) {
+    member = await privacyFilter(member,userId,member._id)
+  }
 
   return members
   
