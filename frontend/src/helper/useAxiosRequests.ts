@@ -6,6 +6,7 @@ import { addChat, addMemberToGroup, editGroupInfoAction, editGroupTypeSetting, e
 import { groupMemberInterface, profilePicInterface } from '../models/interface';
 import { editUserContactName, editUserContactProfilePic } from '../redux/features/userContactSlice';
 import { editNameInChatOfChatList, editNameInChatOfFolderChatList, editProfilePicInChatOfChatList, editProfilePicInChatOfFolderChatList } from '../redux/features/userChatListSlice';
+import { addChatToUserChatList } from './userInformation';
 
 const token = localStorage.getItem('token')
 const config = {
@@ -59,10 +60,15 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
         res = await callApi().post('/main/chat/', data, config)
         console.log('create chat res : ', res)
         if (res.statusText && res.statusText === 'Created') {
-            const chatId = res.data.value.chatId
-            await fetchChat(chatId, dispatch)
+            console.log('res.data.value.chat._id: ', res.data.value.chat._id)
+            const chat = res.data.value.chat
+            console.log('chat in useAxios : ', chat)
+            dispatch(addChat(chat))
+            dispatch(setChatFetched(true))
+            // await fetchChat(chatId, dispatch)
             dispatch(setChatCreated(true))
-            return res.data.value.chatId
+            addChatToUserChatList(chat, dispatch)
+            return chat._id
 
 
         }
@@ -115,7 +121,13 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
         // ----------------- add member to group member by dispatch
         dispatch(addMemberToGroup(addedMember))
     } catch (error) {
+        // @ts-ignore
+        const err = error.Error.errors[0]
         console.log('add group member error : ', error)
+        if (err.errorType === 'PrivacyError') {
+            console.log('error')
+            alert(err.message)
+        }
     }
 }
 

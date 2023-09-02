@@ -34,7 +34,7 @@ export interface userExceptionsInterface {
 }
 
 interface userPermissionsAndExceptionsInterface {
-    permissions: userPermissionsInterface
+    permissions: userPermissionsInterface,
     exceptions: userExceptionsInterface[]
 }
 

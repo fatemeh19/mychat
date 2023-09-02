@@ -54,7 +54,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                             :
                             <Link key={Contact._id} href={`/chat/${Contact._id}`} >
                                 <ChatContactBox
-                                    profilePicName={profilePicHandler(Contact)}
+                                    profilePicName={Contact.profilePic ? profilePicHandler(Contact) : '/defaults/defaultProfilePic.png'}
                                     contactId={Contact._id} chatOpennedP={true}
                                     lastMessegeByContact={false}
                                     ContactName={Contact.name} status={Contact.status}
@@ -72,7 +72,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                 const findChat = chatList.filter(chat => chat._id === searchedChat._id)[0]
                                 return <Link key={findChat._id} href={`/chat/${findChat._id}`} >
                                     <ChatContactBox
-                                        profilePicName={profilePicHandler(findChat.chatInfo)}
+                                        profilePicName={findChat.chatInfo.profilePic ? profilePicHandler(findChat.chatInfo) : '/defaults/defaultProfilePic.png'}
                                         contactId={findChat.chatInfo._id} chatOpennedP={findChat.open}
                                         lastMessegeByContact={false}
                                         ContactName={findChat.chatInfo.name}
@@ -89,7 +89,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                             : searchedMessages.map(searchedMessage => {
                                 return <a key={searchedMessage._id} href={`#${chat.messages[searchedMessage.index]._id}`} >
                                     <ChatContactBox
-                                        profilePicName={profilePicHandler(searchedMessage.senderInfo)}
+                                        profilePicName={searchedMessage.senderInfo.profilePic ? profilePicHandler(searchedMessage.senderInfo) : '/defaults/defaultProfilePic.png'}
                                         contactId={''} chatOpennedP={false}
                                         lastMessegeByContact={false}
                                         ContactName={searchedMessage.senderInfo.name}
@@ -112,8 +112,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                                 {/* @ts-ignore */}
 
                                                 <ChatContactBox
-                                                    profilePicName=
-                                                    {profilePicHandler(chatBox.chatInfo)}
+                                                    profilePicName={chatBox.chatInfo.profilePic ? profilePicHandler(chatBox.chatInfo) : '/defaults/defaultProfilePic.png'}
                                                     contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
                                                     lastMessegeByContact={false}
                                                     ContactName={chatBox.chatInfo.name}
@@ -144,8 +143,7 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                                                 {/* @ts-ignore */}
 
                                                 <ChatContactBox
-                                                    profilePicName=
-                                                    {profilePicHandler(chatBox.chatInfo)}
+                                                    profilePicName={chatBox.chatInfo.profilePic ? profilePicHandler(chatBox.chatInfo) : '/defaults/defaultProfilePic.png'}
                                                     contactId={chatBox.chatInfo._id} chatOpennedP={chatBox.open}
                                                     lastMessegeByContact={false}
                                                     ContactName={chatBox.chatInfo.name}
@@ -171,13 +169,6 @@ export default function ChatListItems({ popup }: { popup: boolean }) {
                 }
             </div>
 
-            {/* <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name'} status={false} lastMessage={''} ContactSeen={false} lastMessageTime={'4:30 PM'} numberOfUnSeen={''} recivedMessage={true} isTyping={true}  />
-                <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name2'} status={true} lastMessage={'hi, how you doin?'} ContactSeen={false} lastMessageTime={'9:36 AM'} numberOfUnSeen={'4'} recivedMessage={false} isTyping={false}  />
-                <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={true} ContactName={'Contact name3'} status={true} lastMessage={'Wow really cool'} ContactSeen={false} lastMessageTime={'1:15 AM'} numberOfUnSeen={'1'} recivedMessage={false} isTyping={false}  />
-                <div className=""><hr className="w-full text-gray-100 opacity-[.3]" /></div>
-                <ChatContactBox profilePicName={profilePicName}  lastMessegeByContact={false} ContactName={'Contact name2'} status={false} lastMessage={'hi, how you doin?'} ContactSeen={true} lastMessageTime={'9:36 AM'} numberOfUnSeen={''} recivedMessage={false} isTyping={false}  /> */}
         </div >
     )
 }

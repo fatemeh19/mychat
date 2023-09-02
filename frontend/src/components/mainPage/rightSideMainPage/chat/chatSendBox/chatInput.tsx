@@ -1,5 +1,6 @@
 "use client"
 
+import { ChatType } from "@/src/models/enum";
 import { useAppSelector } from "@/src/redux/hooks";
 // import EmojiPicker from "emoji-picker-react";
 import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
@@ -22,7 +23,7 @@ const ChatInput: FC<ChatInputProps> = ({ sendHandler, input, setInput }) => {
 
     useEffect(() => {
         // chatFetched : add this because before chat fetched this code runs and make error by userPermission undefined
-        if (chatFetched === true) {
+        if (chatFetched === true && chat.chatType === ChatType.group) {
             const permissions = chat.userPermissionsAndExceptions.permissions
             if (permissions) {
                 const textarea = textareaAutosizeParentRef.current?.children[0]

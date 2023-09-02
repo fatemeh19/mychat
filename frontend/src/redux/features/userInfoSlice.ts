@@ -1,4 +1,4 @@
-import { profilePicInterface } from "@/src/models/interface";
+import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface, profilePicInterface, settingInterface } from "@/src/models/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserInterface {
@@ -9,14 +9,17 @@ export interface UserInterface {
     profilePic: profilePicInterface,
     email: string,
     _id: string,
+    settingId: string,
     pinnedChats: any[]
 }
 interface initialStateInterface {
-    User: UserInterface
+    User: UserInterface,
+    setting: settingInterface
 }
 
 const initialState = {
-    User: {}
+    User: {},
+    setting: {}
 } as initialStateInterface
 
 export const UserSlice = createSlice({
@@ -25,18 +28,27 @@ export const UserSlice = createSlice({
     reducers: {
         addUserInfo: (state, action: PayloadAction<any>) => {
             state.User = action.payload
-            // console.log('action : ', action)
         },
         updateUserProfilePic: (state, action: PayloadAction<profilePicInterface>) => {
             state.User.profilePic = action.payload
-            // console.log('action : ', action)
         },
         updateUserProfileInfo: (state, action: PayloadAction<{ name: string, lastname: string, phoneNumber: string, username: string }>) => {
             state.User.name = action.payload.name
             state.User.lastname = action.payload.lastname
             state.User.phoneNumber = action.payload.phoneNumber
             state.User.username = action.payload.username
-            // console.log('action : ', action)
+        },
+        addSetting: (state, action: PayloadAction<settingInterface>) => {
+            state.setting = action.payload
+        },
+        editNotificationSetting: (state, action: PayloadAction<any>) => {
+            state.setting.notificationAndSounds = action.payload
+        },
+        editPrivacySetting: (state, action: PayloadAction<any>) => {
+            state.setting.privacyAndSecurity = action.payload
+        },
+        editChatSetting: (state, action: PayloadAction<any>) => {
+            state.setting.chatSetting = action.payload
         },
     },
 });
@@ -44,6 +56,10 @@ export const UserSlice = createSlice({
 export const {
     addUserInfo,
     updateUserProfilePic,
-    updateUserProfileInfo
+    updateUserProfileInfo,
+    addSetting,
+    editNotificationSetting,
+    editPrivacySetting,
+    editChatSetting
 } = UserSlice.actions;
 export default UserSlice.reducer;

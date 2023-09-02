@@ -239,7 +239,7 @@ const ChatSendBox: FC<chatSendProps> = ({ contactId }) => {
     const sendVoiceRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
         // chatFetched : add this because before chat fetched this code runs and make error by userPermission undefined
-        if (chatFetched === true) {
+        if (chatFetched === true && chat.chatType === ChatType.group) {
             const permissions = chat.userPermissionsAndExceptions.permissions
             if (permissions) {
                 !permissions.sendMedia.all
