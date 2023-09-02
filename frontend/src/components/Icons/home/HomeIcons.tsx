@@ -21,6 +21,8 @@ import Settings from "../../setting";
 import NotificationsAndSounds from "../../setting/notificationsAndSounds";
 import PrivacyAndSecurity from "../../setting/privacyAndSecurity/privacyAndSecurity";
 import ChatSettings from "../../setting/chatSettings";
+import SelectBlockUser from "../../setting/blockedUsers/selectBlockUser";
+import BlockedUsers from "../../setting/blockedUsers";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
@@ -109,6 +111,16 @@ export function MenuIcon() {
         setPrivacyAndSecurityOpen(!privacyAndSecurityOpen)
         setSettingOpen(!settingOpen)
     }
+    const [securityOpen, setSecurityOpen] = useState(false)
+    const securityOpenHandler = () => {
+        setSecurityOpen(!securityOpen)
+        setSettingOpen(!settingOpen)
+    }
+    const [blockUserOpen, setBlockUserOpen] = useState(false)
+    const blockUserOpenHandler = () => {
+        setBlockUserOpen(!blockUserOpen)
+    }
+
     const [chatSettingsOpen, setChatSettingsOpen] = useState(false)
     const chatSettingsOpenHandler = () => {
         setChatSettingsOpen(!chatSettingsOpen)
@@ -180,11 +192,24 @@ export function MenuIcon() {
                 : null
             }
             {privacyAndSecurityOpen
-                ? <CustomizedDialogs
-                    open={privacyAndSecurityOpen}
-                    title="security"
-                    handelOpen={privacyAndSecurityOpenHandler}
-                    children={<PrivacyAndSecurity />} />
+                ? securityOpen
+                    ? <CustomizedDialogs
+                        open={securityOpen}
+                        title="Blocked users"
+                        handelOpen={securityOpenHandler}
+                        children={<BlockedUsers />} />
+                    : blockUserOpen
+                        ? <CustomizedDialogs
+                            open={blockUserOpen}
+                            title="Select user to block"
+                            handelOpen={blockUserOpenHandler}
+                            children={<SelectBlockUser />} />
+                        : <CustomizedDialogs
+                            open={privacyAndSecurityOpen}
+                            title="security"
+                            handelOpen={privacyAndSecurityOpenHandler}
+                            children={<PrivacyAndSecurity
+                                blockUserOpenHandler={blockUserOpenHandler} />} />
                 : null
             }
             {chatSettingsOpen

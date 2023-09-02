@@ -7,10 +7,10 @@ import { editSetting } from "@/src/helper/userInformation";
 import { settingTitle } from "@/src/models/enum";
 
 interface PrivacyAndSecurityProps {
-
+    blockUserOpenHandler: () => void
 }
 
-const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = () => {
+const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler }) => {
 
     const dispatch = useAppDispatch()
 
@@ -38,7 +38,7 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = () => {
 
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 flex flex-col gap-3">
-            <Security securityState={securityState} setSecurityState={setSecurityState} />
+            <Security securityState={securityState} setSecurityState={setSecurityState} blockUserOpenHandler={blockUserOpenHandler} />
             <Privacy privacyState={privacyState} setPrivacyState={setPrivacyState} />
         </div>
     );
