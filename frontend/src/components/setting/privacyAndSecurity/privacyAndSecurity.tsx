@@ -24,10 +24,10 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = () => {
     const formData = new FormData()
     useEffect(() => {
         return () => {
-            formData.append('phoneNumber', privacyState.phoneNumber)
-            formData.append('lastseen', privacyState.lastseen)
-            formData.append('profilePic', privacyState.profilePic)
-            formData.append('addToGroup', privacyState.addToGroup)
+            formData.append('privacy[phoneNumber]', privacyState.phoneNumber)
+            formData.append('privacy[lastseen]', privacyState.lastseen)
+            formData.append('privacy[profilePic]', privacyState.profilePic)
+            formData.append('privacy[addToGroup]', privacyState.addToGroup)
 
             securityState.blockedUsers.map(blockUser => {
                 formData.append('security[blockedUsers]', blockUser)

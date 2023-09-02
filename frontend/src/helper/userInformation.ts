@@ -72,6 +72,7 @@ const contactChatList = async (chatBox: any) => {
 export const fetchUserChatList = async (dispatch: any) => {
     let allChatList = []
     const res = await callApi().get('/main/chat/', config)
+    console.log('fetchChatList : ', res)
     if (res.statusText && res.statusText === 'OK') {
         const chatList = res.data.value.chats;
         dispatch(addChatList([]))
@@ -151,6 +152,7 @@ export const addChatToUserChatList = async (newChat: chatInterface, dispatch: an
         lastMessageTime: lastMessageTime,
         open: false,
     }
+    console.log('chat in userInformation:', chat)
     dispatch(addChat(chat))
     dispatch(addChatToFolderChatList(chat))
 }
@@ -255,6 +257,7 @@ export const getSetting = async (settingId: string, dispatch: any) => {
 export const editSetting = async (title: string, settingId: string, data: FormData, dispatch: any) => {
     try {
         data.append('title', title)
+        console.log(data)
         const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
         console.log('edit setting res : ', res)
         console.log(data.get('title'))

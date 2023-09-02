@@ -62,6 +62,7 @@ export const createChat = async (userId: string, memberIds: string[], chatType: 
         if (res.statusText && res.statusText === 'Created') {
             console.log('res.data.value.chat._id: ', res.data.value.chat._id)
             const chat = res.data.value.chat
+            console.log('chat in useAxios : ', chat)
             dispatch(addChat(chat))
             dispatch(setChatFetched(true))
             // await fetchChat(chatId, dispatch)
@@ -120,8 +121,13 @@ export const addGroupMember = async (chatId: string, memberId: string, addedMemb
         // ----------------- add member to group member by dispatch
         dispatch(addMemberToGroup(addedMember))
     } catch (error) {
+        // @ts-ignore
+        const err = error.Error.errors[0]
         console.log('add group member error : ', error)
-        return error
+        if (err.errorType === 'PrivacyError') {
+            console.log('error')
+            alert(err.message)
+        }
     }
 }
 
