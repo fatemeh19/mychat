@@ -21,8 +21,8 @@ import Settings from "../../setting";
 import NotificationsAndSounds from "../../setting/notificationsAndSounds";
 import PrivacyAndSecurity from "../../setting/privacyAndSecurity/privacyAndSecurity";
 import ChatSettings from "../../setting/chatSettings";
-import SelectBlockUser from "../../setting/blockedUsers/selectBlockUser";
-import BlockedUsers from "../../setting/blockedUsers";
+import SelectBlockUser from "../../setting/privacyAndSecurity/blockedUsers/selectBlockUser";
+import BlockedUsers from "../../setting/privacyAndSecurity/blockedUsers";
 
 export function AllMessageIcon({ open, setOpen }: { open: boolean, setOpen: (bol: boolean) => void }) {
     const dispatch = useAppDispatch()
@@ -113,9 +113,11 @@ export function MenuIcon() {
     }
     const [securityOpen, setSecurityOpen] = useState(false)
     const securityOpenHandler = () => {
-        setSecurityOpen(!securityOpen)
-        setSettingOpen(!settingOpen)
+        // setSecurityOpen(!securityOpen)
+        setBlockUserOpen(false)
     }
+    const [blockList, setBlockList] = useState(false)
+
     const [blockUserOpen, setBlockUserOpen] = useState(false)
     const blockUserOpenHandler = () => {
         setBlockUserOpen(!blockUserOpen)
@@ -191,7 +193,7 @@ export function MenuIcon() {
                     children={<NotificationsAndSounds />} />
                 : null
             }
-            {privacyAndSecurityOpen
+            {/* {privacyAndSecurityOpen
                 ? securityOpen
                     ? <CustomizedDialogs
                         open={securityOpen}
@@ -204,6 +206,27 @@ export function MenuIcon() {
                             title="Select user to block"
                             handelOpen={blockUserOpenHandler}
                             children={<SelectBlockUser />} />
+                        : <CustomizedDialogs
+                            open={privacyAndSecurityOpen}
+                            title="security"
+                            handelOpen={privacyAndSecurityOpenHandler}
+                            children={<PrivacyAndSecurity
+                                blockUserOpenHandler={blockUserOpenHandler} />} />
+                : null
+            } */}
+            {privacyAndSecurityOpen
+                ? securityOpen
+                    ? <CustomizedDialogs
+                        open={securityOpen}
+                        title="Select user to block"
+                        handelOpen={securityOpenHandler}
+                        children={<SelectBlockUser />} />
+                    : blockUserOpen
+                        ? <CustomizedDialogs
+                            open={blockUserOpen}
+                            title="Blocked users"
+                            handelOpen={blockUserOpenHandler}
+                            children={<BlockedUsers securityOpenHandler={securityOpenHandler} />} />
                         : <CustomizedDialogs
                             open={privacyAndSecurityOpen}
                             title="security"

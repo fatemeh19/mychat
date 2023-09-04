@@ -10,10 +10,10 @@ import { setOpenChat } from "@/src/redux/features/openSlice";
 import { setShowReply } from "@/src/redux/features/repliedMessageSlice";
 import { setActiveSelection } from "@/src/redux/features/selectedMessagesSlice";
 import { addChatList, openHandle } from "@/src/redux/features/userChatListSlice";
-import { addUserInfo } from "@/src/redux/features/userInfoSlice";
+import { addBlockedUser, addUserInfo } from "@/src/redux/features/userInfoSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import Image from "next/image"
-import { FC, MouseEvent, useEffect, useRef, useState } from "react"
+import { Dispatch, FC, MouseEvent, SetStateAction, useEffect, useRef, useState } from "react"
 import { BiCheckDouble } from "react-icons/bi";
 
 interface chatContactProps {
@@ -33,7 +33,11 @@ interface chatContactProps {
     profilePicName: string,
     contactId: string,
     chatbox?: any,
-    popup: boolean
+    popup: boolean,
+    block?: boolean,
+    setBlockHandlerState?: Dispatch<SetStateAction<() => void>>,
+    setOpenBlockConfirm?: Dispatch<SetStateAction<boolean>>,
+    setBlockingUserName?: Dispatch<SetStateAction<string>>
 }
 const initialContextMenu = {
     show: false,
@@ -54,7 +58,11 @@ const ChatContactBox: FC<chatContactProps> = ({
     profilePicName,
     contactId,
     chatbox,
-    popup
+    popup,
+    block,
+    setBlockHandlerState,
+    setOpenBlockConfirm,
+    setBlockingUserName
 }) => {
     const dispatch = useAppDispatch()
     const [online, setOnline] = useState(status?.online)
@@ -288,12 +296,33 @@ const ChatContactBox: FC<chatContactProps> = ({
 
     }
 
+    const blockedUserIds = useAppSelector(state => state.userInfo.setting.privacyAndSecurity.security).blockedUsers
 
+    const handelBlock = () => {
+        let flag = false
+        blockedUserIds.map(id => {
+            if (id === chatbox.chatInfo._id) {
+                flag = true
+            }
+        })
+        if (!flag) dispatch(addBlockedUser(chatbox.chatInfo._id))
+        setOpenBlockConfirm && setOpenBlockConfirm(false)
 
+    }
     return (
 
         <div onContextMenuCapture={contaxtMenuHandler}
-            onClick={() => handler(chatList, dispatch, contactId, popup)}
+            onClick={() => {
+                block && setBlockHandlerState
+                    ? setBlockHandlerState(() => handelBlock)
+                    : handler(chatList, dispatch, contactId, popup)
+                block && setOpenBlockConfirm && setOpenBlockConfirm(true)
+                if (block && setOpenBlockConfirm) {
+                    setOpenBlockConfirm(true)
+                    setBlockingUserName && setBlockingUserName(chatbox.chatInfo.name)
+                }
+            }
+            }
             className={`container cursor-pointer w-full flex p-5  gap-5 container-chatbox hover:bg-gray-50 
         lg:gap-5  lg:p-5 lg:justify-normal 
         ${popup ? '' : 'tablet:px-2 tablet:py-3 tablet:gap-0 tablet:justify-center'} 

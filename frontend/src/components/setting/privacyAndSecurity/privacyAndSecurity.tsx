@@ -21,6 +21,10 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler 
     const [privacyState, setPrivacyState] = useState<privacyInterface>(privacy)
     const [securityState, setSecurityState] = useState<securityInterface>(security)
 
+    useEffect(() => {
+        setSecurityState(prevState => ({ ...prevState, blockedUsers: [] }))
+    }, [])
+
     const formData = new FormData()
     useEffect(() => {
         return () => {
@@ -32,6 +36,8 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler 
             securityState.blockedUsers.map(blockUser => {
                 formData.append('security[blockedUsers]', blockUser)
             })
+
+            console.log('securityState.blockedUsers: ', securityState.blockedUsers)
             editSetting(settingTitle.privacyAndSecurity, settingId, formData, dispatch)
         }
     }, [privacyState, securityState])
