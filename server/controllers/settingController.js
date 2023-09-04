@@ -4,8 +4,9 @@ import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
 import ValidationError from "../errors/ValidationError.js";
 import * as Validators from "../validators/index.js";
+import { objectId } from "../utils/typeConverter.js";
+import privacyFilter from "../utils/privacyFilter.js";
 const editSetting = async (body, settingId, files) => {
-  
   try {
     await Validators.editSetting.validate(body, {
       stripUnknown: true,
@@ -14,7 +15,7 @@ const editSetting = async (body, settingId, files) => {
   } catch (errors) {
     throw new ValidationError(errors);
   }
-  const {title} = body
+  const { title } = body;
   let data;
   try {
     let validator = await validatorSelector(title);
@@ -30,7 +31,6 @@ const editSetting = async (body, settingId, files) => {
     { _id: settingId },
     { [title]: 1 }
   );
-
 
   if (files.background) {
     if (setting[title].background != consts.DEFAULT_BACKGROUND_PICTURE) {
@@ -52,11 +52,64 @@ const editSetting = async (body, settingId, files) => {
       new: true,
     }
   );
-  return updatedSetting
+  return updatedSetting;
 };
 
-const getSetting = async (settingId) => {
-  const setting = await Services.findOne("setting", { _id: settingId });
+const getSetting = async (settingId, userId) => {
+  // const setting = await Services.findOne("setting", { _id: settingId });
+
+  const user = await Services.findOne("user", { _id: userId });
+  let userContacts = user.contacts;
+
+  // const blockedUsersIds = await objectId(
+  //   setting.privacyAndSecurity.security.blockedUsers
+  // );
+
+  let setting = await Services.aggregate("setting", [
+    {
+      $match: { _id: await objectId(settingId) },
+    },
+    { $unwind: "$privacyAndSecurity.security.blockedUsers" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "privacyAndSecurity.security.blockedUsers",
+        foreignField: "_id",
+        as: "privacyAndSecurity.security.blockedUsers",
+      },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        privacyAndSecurity: { $first: "$privacyAndSecurity" },
+        notificationAndSounds: { $first: "$notificationAndSounds" },
+        chatSetting: { $first: "$chatSetting" },
+      },
+    },
+  ]);
+  
+  const profilePicIds = setting[0].privacyAndSecurity.security.blockedUsers.map(
+    (blockedUser) => blockedUser.profilePic
+  );
+  const profilePics = await Services.findMany("file", {
+    _id: { $in: profilePicIds },
+  });
+
+  setting[0].privacyAndSecurity.security.blockedUsers.forEach(
+    (blockedUser, index) => {
+      blockedUser.profilePic = profilePics[index];
+    }
+  );
+
+  for (let blockedUser of setting[0].privacyAndSecurity.security.blockedUsers) {
+    let isContact = userContacts.find((userContact)=>userContact.userId.equals(blockedUser._id))
+    if(isContact){
+      blockedUser.name = isContact.name || blockedUser.name;
+      blockedUser.lastname = isContact.lastname || blockedUser.lastname;
+    }
+    blockedUser = await privacyFilter(blockedUser,userId,blockedUser._id)
+  }
+
 
   return setting;
 };
