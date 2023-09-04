@@ -56,8 +56,29 @@ const editSetting = async (body, settingId, files) => {
 };
 
 const getSetting = async (settingId, userId) => {
-  // const setting = await Services.findOne("setting", { _id: settingId });
+  const settingg = await Services.findOne("setting", { _id: settingId });
 
+  let stages =settingg.privacyAndSecurity.security.blockedUsers.length? [
+    { $unwind: "$privacyAndSecurity.security.blockedUsers" },
+
+    {
+    
+    $lookup: {
+      from: "users",
+      localField: "privacyAndSecurity.security.blockedUsers",
+      foreignField: "_id",
+      as: "privacyAndSecurity.security.blockedUsers",
+    },
+  },
+  {
+    $group: {
+      _id: "$_id",
+      privacyAndSecurity: { $first: "$privacyAndSecurity" },
+      notificationAndSounds: { $first: "$notificationAndSounds" },
+      chatSetting: { $first: "$chatSetting" },
+    },
+  }] : []
+  
   const user = await Services.findOne("user", { _id: userId });
   let userContacts = user.contacts;
 
@@ -69,49 +90,51 @@ const getSetting = async (settingId, userId) => {
     {
       $match: { _id: await objectId(settingId) },
     },
-    { $unwind: "$privacyAndSecurity.security.blockedUsers" },
-    {
-      $lookup: {
-        from: "users",
-        localField: "privacyAndSecurity.security.blockedUsers",
-        foreignField: "_id",
-        as: "privacyAndSecurity.security.blockedUsers",
-      },
-    },
-    {
-      $group: {
-        _id: "$_id",
-        privacyAndSecurity: { $first: "$privacyAndSecurity" },
-        notificationAndSounds: { $first: "$notificationAndSounds" },
-        chatSetting: { $first: "$chatSetting" },
-      },
-    },
+    ...stages
+    // { $unwind: "$privacyAndSecurity.security.blockedUsers" },
+    // {
+    //   $lookup: {
+    //     from: "users",
+    //     localField: "privacyAndSecurity.security.blockedUsers",
+    //     foreignField: "_id",
+    //     as: "privacyAndSecurity.security.blockedUsers",
+    //   },
+    // },
+    // {
+    //   $group: {
+    //     _id: "$_id",
+    //     privacyAndSecurity: { $first: "$privacyAndSecurity" },
+    //     notificationAndSounds: { $first: "$notificationAndSounds" },
+    //     chatSetting: { $first: "$chatSetting" },
+    //   },
+    // },
   ]);
   
-  const profilePicIds = setting[0].privacyAndSecurity.security.blockedUsers.map(
-    (blockedUser) => blockedUser.profilePic
-  );
-  const profilePics = await Services.findMany("file", {
-    _id: { $in: profilePicIds },
-  });
+  // const profilePicIds = setting[0]?.privacyAndSecurity?.security?.blockedUsers.map(
+  //   (blockedUser) => blockedUser.profilePic
+  // );
+  // const profilePics = await Services.findMany("file", {
+  //   _id: { $in: profilePicIds },
+  // });
 
-  setting[0].privacyAndSecurity.security.blockedUsers.forEach(
-    (blockedUser, index) => {
-      blockedUser.profilePic = profilePics[index];
-    }
-  );
+  // setting[0]?.privacyAndSecurity.security.blockedUsers.forEach(
+  //   (blockedUser, index) => {
+  //     blockedUser.profilePic = profilePics[index];
+  //   }
+  // );
 
-  for (let blockedUser of setting[0].privacyAndSecurity.security.blockedUsers) {
-    let isContact = userContacts.find((userContact)=>userContact.userId.equals(blockedUser._id))
-    if(isContact){
-      blockedUser.name = isContact.name || blockedUser.name;
-      blockedUser.lastname = isContact.lastname || blockedUser.lastname;
-    }
-    blockedUser = await privacyFilter(blockedUser,userId,blockedUser._id)
-  }
+  // let blus = setting[0]?.privacyAndSecurity?.security?.blockedUsers || []
+  // for (let blockedUser of blus) {
+  //   let isContact = userContacts.find((userContact)=>userContact.userId.equals(blockedUser._id))
+  //   if(isContact){
+  //     blockedUser.name = isContact.name || blockedUser.name;
+  //     blockedUser.lastname = isContact.lastname || blockedUser.lastname;
+  //   }
+  //   blockedUser = await privacyFilter(blockedUser,userId,blockedUser._id)
+  // }
 
 
-  return setting;
+  return setting[0];
 };
 
 export { editSetting, getSetting };
