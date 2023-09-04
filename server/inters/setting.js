@@ -31,8 +31,9 @@ const editSettingI = async (req, res, next) => {
 const getSettingI = async (req, res, next) => {
   const {
     params: { id: settingId },
+    user:{userId}
   } = req;
-  const setting = await getSetting(settingId);
+  const setting = await getSetting(settingId,userId);
 
   res.locals.response = {
     statusCode: StatusCodes.OK,

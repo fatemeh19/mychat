@@ -125,11 +125,7 @@ const getContacts = async (userId) => {
     },
     { $unwind: "$index" },
   ]);
-  // contacts.forEach((contact) => {
-  //   contact.name = userContacts[contact.index].name || contact.name;
-  //   contact.lastname = userContacts[contact.index].lastname || contact.lastname;
-    
-  // });
+  
   for (let contact of contacts) {
     contact.name = userContacts[contact.index].name || contact.name;
     contact.lastname = userContacts[contact.index].lastname || contact.lastname;
