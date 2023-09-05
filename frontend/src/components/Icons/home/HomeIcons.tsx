@@ -108,20 +108,33 @@ export function MenuIcon() {
     }
     const [privacyAndSecurityOpen, setPrivacyAndSecurityOpen] = useState(false)
     const privacyAndSecurityOpenHandler = () => {
+        console.log('privacyAndSecurityOpen: ', privacyAndSecurityOpen)
+        setSecurityOpen(false)
         setPrivacyAndSecurityOpen(!privacyAndSecurityOpen)
-        setSettingOpen(!settingOpen)
+        // setSettingOpen(!settingOpen)
     }
     const [securityOpen, setSecurityOpen] = useState(false)
     const securityOpenHandler = () => {
-        // setSecurityOpen(!securityOpen)
-        setBlockUserOpen(false)
+        console.log("securityOpen: ", securityOpen)
+        setBlockUserOpen(true)
+        setSecurityOpen(!securityOpen)
     }
     const [flag, setFlag] = useState(false)
 
     const [blockUserOpen, setBlockUserOpen] = useState(false)
     const blockUserOpenHandler = () => {
+        console.log('blockUserOpen;', blockUserOpen)
         setBlockUserOpen(!blockUserOpen)
-        if (!blockUserOpen) setFlag(true)
+        securityOpenHandler()
+        if (!blockUserOpen) {
+            setFlag(true)
+        }
+    }
+    const [selectBlockedUserOpen, setSelectBlockedUserOpen] = useState(false)
+    const selectBlockedUserOpenHandler = () => {
+        // setBlockUserOpen(false)
+        console.log('selectBlockedUserOpen;', selectBlockedUserOpen)
+        setSelectBlockedUserOpen(!selectBlockedUserOpen)
     }
 
     const [chatSettingsOpen, setChatSettingsOpen] = useState(false)
@@ -138,6 +151,16 @@ export function MenuIcon() {
     const folderSettingHandler = () => {
         setOpenFolderSetting(!openFolderSetting)
     }
+
+    useEffect(() => {
+        console.log('privacyAndSecurityOpen', privacyAndSecurityOpen)
+        console.log('securityOpen', securityOpen)
+        console.log('selectBlockedUserOpen', selectBlockedUserOpen)
+        console.log('blockUserOpen', blockUserOpen)
+    }, [privacyAndSecurityOpen,
+        securityOpen,
+        selectBlockedUserOpen,
+        blockUserOpen])
     return (
 
         <div className="flex justify-center logo-icon py-2  sm:hover:bg-[#0d49cb]">
@@ -194,7 +217,7 @@ export function MenuIcon() {
                     children={<NotificationsAndSounds />} />
                 : null
             }
-            {privacyAndSecurityOpen
+            {/* {privacyAndSecurityOpen
                 ? securityOpen
                     ? <CustomizedDialogs
                         open={securityOpen}
@@ -214,28 +237,30 @@ export function MenuIcon() {
                             children={<PrivacyAndSecurity
                                 blockUserOpenHandler={blockUserOpenHandler} flag={flag} setFlag={setFlag} />} />
                 : null
-            }
-            {/* {privacyAndSecurityOpen
+            } */}
+            {privacyAndSecurityOpen
                 ? securityOpen
-                    ? <CustomizedDialogs
-                        open={securityOpen}
-                        title="Select user to block"
-                        handelOpen={securityOpenHandler}
-                        children={<SelectBlockUser />} />
-                    : blockUserOpen
+                    ? selectBlockedUserOpen
                         ? <CustomizedDialogs
+                            open={selectBlockedUserOpen}
+                            title="Select user to block"
+                            handelOpen={selectBlockedUserOpenHandler}
+                            children={<SelectBlockUser />} />
+                        :
+                        // <p>hi</p>
+                        <CustomizedDialogs
                             open={blockUserOpen}
                             title="Blocked users"
                             handelOpen={blockUserOpenHandler}
-                            children={<BlockedUsers securityOpenHandler={securityOpenHandler} />} />
-                        : <CustomizedDialogs
-                            open={privacyAndSecurityOpen}
-                            title="security"
-                            handelOpen={privacyAndSecurityOpenHandler}
-                            children={<PrivacyAndSecurity
-                                blockUserOpenHandler={blockUserOpenHandler} />} />
+                            children={<BlockedUsers selectBlockedUserOpenHandler={selectBlockedUserOpenHandler} />} />
+                    : <CustomizedDialogs
+                        open={privacyAndSecurityOpen}
+                        title="Privacy and Security"
+                        handelOpen={privacyAndSecurityOpenHandler}
+                        children={<PrivacyAndSecurity
+                            securityOpenHandler={securityOpenHandler} flag={flag} setFlag={setFlag} />} />
                 : null
-            } */}
+            }
             {chatSettingsOpen
                 ? <CustomizedDialogs
                     open={chatSettingsOpen}

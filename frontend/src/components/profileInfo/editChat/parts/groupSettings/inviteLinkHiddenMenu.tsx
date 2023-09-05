@@ -62,7 +62,7 @@ const InviteLinkHiddenMenu: FC<InviteLinkHiddenMenuProps> = ({ openHiddenMenu, s
                             <BsTrash3 className={`w-5 h-5`} />
                             <p>Revoke Link</p>
                         </li>
-                        <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={revokeLinkHandler} confirmInfo={confirmInfo} />
+                        <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={revokeLinkHandler} confirmInfo={confirmInfo} confirmButtonText="Revoke link" />
                     </ul>
 
 

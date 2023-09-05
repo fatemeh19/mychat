@@ -14,10 +14,11 @@ interface ConfirmModalProps {
     showConfirm: boolean,
     setShowConfirm: Dispatch<SetStateAction<boolean>>,
     open: boolean,
-    setOpen: Dispatch<SetStateAction<boolean>>
+    setOpen: Dispatch<SetStateAction<boolean>>,
+    confirmButtonText: string
 }
 
-const ConfirmModal: FC<ConfirmModalProps> = ({ showConfirm, setShowConfirm, open, setOpen, confirmInfo, confirmHandler }) => {
+const ConfirmModal: FC<ConfirmModalProps> = ({ showConfirm, setShowConfirm, open, setOpen, confirmInfo, confirmHandler, confirmButtonText }) => {
 
     const deleteToggle = useAppSelector(state => state.toggle).Toggle
 
@@ -32,7 +33,7 @@ const ConfirmModal: FC<ConfirmModalProps> = ({ showConfirm, setShowConfirm, open
                     {confirmInfo.confirmOption && <Toggle id="deleteAll" text={confirmInfo.confirmOption} toggle={deleteToggle} />}
                     <div className="btns flex gap-1 justify-end">
                         <button className='text-blue-500 py-2 pl-4 font-semibold rounded-md hover:text-blue-700 transition-all duration-150' onClick={() => setShowConfirm(false)}>Cancel</button>
-                        <button className='text-blue-500 py-2 pl-4 font-semibold rounded-md hover:text-blue-700 transition-all duration-150' onClick={confirmHandler}>Confirm</button>
+                        <button className='text-blue-500 py-2 pl-4 font-semibold rounded-md hover:text-blue-700 transition-all duration-150' onClick={confirmHandler}>{confirmButtonText}</button>
                     </div>
                 </div>}
                 open={open}

@@ -404,8 +404,8 @@ const ChatContactBox: FC<chatContactProps> = ({
 
                 </div>
             </div>
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={addOrRemoveChatToFolder} confirmInfo={confirmInfo} />
-            <ConfirmModal showConfirm={showConfirmPin} setShowConfirm={setShowConfirmPin} open={openPin} setOpen={setOpenPin} confirmHandler={pinUnpinChat} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={addOrRemoveChatToFolder} confirmInfo={confirmInfo} confirmButtonText="Confirm" />
+            <ConfirmModal showConfirm={showConfirmPin} setShowConfirm={setShowConfirmPin} open={openPin} setOpen={setOpenPin} confirmHandler={pinUnpinChat} confirmInfo={confirmInfo} confirmButtonText="Pin chat" />
         </div>
 
     )

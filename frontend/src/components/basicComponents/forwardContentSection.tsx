@@ -1,3 +1,4 @@
+import { fileHandler } from "@/src/helper/userInformation";
 import { messageTypes } from "@/src/models/enum";
 import { recievedMessageInterface } from "@/src/models/interface";
 import { contactInterface } from "@/src/redux/features/userContactListSlice";
@@ -25,11 +26,6 @@ const ForwardContentSection: FC<ForwardContentSectionProps> = ({
 
 
     let sender: contactInterface | UserInterface
-
-    useEffect(() => {
-        console.log('repliedMessage in reply section: ', forwaredMessage)
-    }, [forwaredMessage])
-
     if (forwaredMessage?.messageInfo.senderId === user._id) sender = user
     else {
         let senderFromContact = userContactList.filter(contact => {
@@ -40,18 +36,11 @@ const ForwardContentSection: FC<ForwardContentSectionProps> = ({
         sender = senderFromContact
     }
 
-
-    let fileName: any[] = []
-    if (isReplied && forwaredMessage?.messageInfo.content.url) {
-        const fileFullUrl = forwaredMessage?.messageInfo.content.url.split('\\')
-        fileName = fileFullUrl.slice(fileFullUrl.length - 3, fileFullUrl.length)
-    }
-
     return (
         <div className={`flex items-center gap-2 ${containerClassName ?? ''}`}>
             {
-                forwaredMessage?.messageInfo.content.contentType === messageTypes.photo && <div>
-                    <Image width={40} height={40} alt="" src={`/${fileName[0]}/${fileName[1]}/${fileName[2]}`} className="w-[40px] h-[40px]" />
+                forwaredMessage?.messageInfo.content.file && forwaredMessage?.messageInfo.content.file.contentType === messageTypes.photo && <div>
+                    <Image width={40} height={40} alt="" src={fileHandler(forwaredMessage.messageInfo.content.file)} className="w-[40px] h-[40px]" />
                 </div>
             }
             <div className="flex flex-col">
@@ -63,7 +52,7 @@ const ForwardContentSection: FC<ForwardContentSectionProps> = ({
                     {
                         forwaredMessage?.messageInfo.content.text !== ''
                             ? forwardMessageIds.length > 1 ? `${forwardMessageIds.length} messages` : forwaredMessage?.messageInfo.content.text
-                            : forwaredMessage?.messageInfo.content.contentType
+                            : forwaredMessage?.messageInfo.content.file.contentType
                     }
                 </p>
             </div>

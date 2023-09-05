@@ -120,6 +120,7 @@ const SelectBlockUser: FC<SelectBlockUserProps> = () => {
                         setShowConfirm={() => setOpenBlockConfirm(!open)}
                         confirmHandler={blockHandlerState}
                         confirmInfo={{ confirmDiscription: `Are you sure you want to block ${blockingUserName}?` }}
+                        confirmButtonText="Block user"
                     />}
 
             </div>

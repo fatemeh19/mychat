@@ -83,7 +83,7 @@ const Member: FC<MemberProps> = ({ member }) => {
                 />
             </div>
             <p >{member.name}</p>
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteMember} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteMember} confirmInfo={confirmInfo} confirmButtonText="Delete member" />
         </div>
     );
 }
