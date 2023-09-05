@@ -116,11 +116,12 @@ export function MenuIcon() {
         // setSecurityOpen(!securityOpen)
         setBlockUserOpen(false)
     }
-    const [blockList, setBlockList] = useState(false)
+    const [flag, setFlag] = useState(false)
 
     const [blockUserOpen, setBlockUserOpen] = useState(false)
     const blockUserOpenHandler = () => {
         setBlockUserOpen(!blockUserOpen)
+        if (!blockUserOpen) setFlag(true)
     }
 
     const [chatSettingsOpen, setChatSettingsOpen] = useState(false)
@@ -193,13 +194,13 @@ export function MenuIcon() {
                     children={<NotificationsAndSounds />} />
                 : null
             }
-            {/* {privacyAndSecurityOpen
+            {privacyAndSecurityOpen
                 ? securityOpen
                     ? <CustomizedDialogs
                         open={securityOpen}
                         title="Blocked users"
                         handelOpen={securityOpenHandler}
-                        children={<BlockedUsers />} />
+                        children={<BlockedUsers securityOpenHandler={securityOpenHandler} />} />
                     : blockUserOpen
                         ? <CustomizedDialogs
                             open={blockUserOpen}
@@ -211,10 +212,10 @@ export function MenuIcon() {
                             title="security"
                             handelOpen={privacyAndSecurityOpenHandler}
                             children={<PrivacyAndSecurity
-                                blockUserOpenHandler={blockUserOpenHandler} />} />
+                                blockUserOpenHandler={blockUserOpenHandler} flag={flag} setFlag={setFlag} />} />
                 : null
-            } */}
-            {privacyAndSecurityOpen
+            }
+            {/* {privacyAndSecurityOpen
                 ? securityOpen
                     ? <CustomizedDialogs
                         open={securityOpen}
@@ -234,7 +235,7 @@ export function MenuIcon() {
                             children={<PrivacyAndSecurity
                                 blockUserOpenHandler={blockUserOpenHandler} />} />
                 : null
-            }
+            } */}
             {chatSettingsOpen
                 ? <CustomizedDialogs
                     open={chatSettingsOpen}

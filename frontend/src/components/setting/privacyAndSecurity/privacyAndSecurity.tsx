@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import Security from "./security";
 import Privacy from "./privary";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
@@ -7,10 +7,12 @@ import { editSetting } from "@/src/helper/userInformation";
 import { settingTitle } from "@/src/models/enum";
 
 interface PrivacyAndSecurityProps {
-    blockUserOpenHandler: () => void
+    blockUserOpenHandler: () => void,
+    flag: boolean,
+    setFlag: Dispatch<SetStateAction<boolean>>
 }
 
-const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler }) => {
+const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler, flag, setFlag }) => {
 
     const dispatch = useAppDispatch()
 
@@ -21,24 +23,23 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ blockUserOpenHandler 
     const [privacyState, setPrivacyState] = useState<privacyInterface>(privacy)
     const [securityState, setSecurityState] = useState<securityInterface>(security)
 
-    useEffect(() => {
-        setSecurityState(prevState => ({ ...prevState, blockedUsers: [] }))
-    }, [])
-
     const formData = new FormData()
     useEffect(() => {
-        return () => {
-            formData.append('privacy[phoneNumber]', privacyState.phoneNumber)
-            formData.append('privacy[lastseen]', privacyState.lastseen)
-            formData.append('privacy[profilePic]', privacyState.profilePic)
-            formData.append('privacy[addToGroup]', privacyState.addToGroup)
+        if (flag) {
+            return () => {
+                formData.append('privacy[phoneNumber]', privacyState.phoneNumber)
+                formData.append('privacy[lastseen]', privacyState.lastseen)
+                formData.append('privacy[profilePic]', privacyState.profilePic)
+                formData.append('privacy[addToGroup]', privacyState.addToGroup)
 
-            securityState.blockedUsers.map(blockUser => {
-                formData.append('security[blockedUsers]', blockUser)
-            })
+                console.log('securityState.blockedUsers: ', securityState.blockedUsers)
+                securityState.blockedUsers.map(blockUser => {
+                    formData.append('security[blockedUsers]', blockUser)
+                })
 
-            console.log('securityState.blockedUsers: ', securityState.blockedUsers)
-            editSetting(settingTitle.privacyAndSecurity, settingId, formData, dispatch)
+                editSetting(settingTitle.privacyAndSecurity, settingId, formData, dispatch)
+                setFlag(false)
+            }
         }
     }, [privacyState, securityState])
 

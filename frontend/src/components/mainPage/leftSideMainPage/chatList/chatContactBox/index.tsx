@@ -301,6 +301,7 @@ const ChatContactBox: FC<chatContactProps> = ({
     const handelBlock = () => {
         let flag = false
         blockedUserIds.map(id => {
+            console.log('chatbox: ', chatbox)
             if (id === chatbox.chatInfo._id) {
                 flag = true
             }

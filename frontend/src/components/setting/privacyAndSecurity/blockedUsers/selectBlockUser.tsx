@@ -8,6 +8,7 @@ import { contactInterface } from "@/src/redux/features/userContactListSlice";
 import ContactBox from "@/src/components/contact/contactList/contactBox";
 import CustomizedDialogs from "@/src/components/popUp";
 import ConfirmModal from "@/src/components/basicComponents/confirmModal";
+import { ChatType } from "@/src/models/enum";
 
 enum tabName {
     chats = "CHATS",
@@ -71,28 +72,30 @@ const SelectBlockUser: FC<SelectBlockUserProps> = () => {
                     tabOpen === tabName.chats && chats.length > 0
                         ?
                         chatList.map(chat => {
-                            return <ChatContactBox
-                                key={chat._id}
-                                chatbox={chat}
-                                ContactName={chat.chatInfo.name}
-                                profilePicName={chat.chatInfo.profilePic ? profilePicHandler(chat.chatInfo) : '/defaults/defaultProfilePic.png'}
-                                contactId={chat.chatInfo._id}
-                                chatOpennedP={true}
-                                lastMessegeByContact={false}
-                                status={chat.chatInfo.status}
-                                lastMessage={''}
-                                ContactSeen={false}
-                                lastMessageTime={''}
-                                numberOfUnSeen={''}
-                                recivedMessage={true}
-                                isTyping={false}
-                                popup={true}
+                            if (chat.chatType === ChatType.private) {
+                                return <ChatContactBox
+                                    key={chat._id}
+                                    chatbox={chat}
+                                    ContactName={chat.chatInfo.name}
+                                    profilePicName={chat.chatInfo.profilePic ? profilePicHandler(chat.chatInfo) : '/defaults/defaultProfilePic.png'}
+                                    contactId={chat.chatInfo._id}
+                                    chatOpennedP={true}
+                                    lastMessegeByContact={false}
+                                    status={chat.chatInfo.status}
+                                    lastMessage={''}
+                                    ContactSeen={false}
+                                    lastMessageTime={''}
+                                    numberOfUnSeen={''}
+                                    recivedMessage={true}
+                                    isTyping={false}
+                                    popup={true}
 
-                                block={true}
-                                setBlockHandlerState={setBlockHandlerState}
-                                setOpenBlockConfirm={setOpenBlockConfirm}
-                                setBlockingUserName={setBlockingUserName}
-                            />
+                                    block={true}
+                                    setBlockHandlerState={setBlockHandlerState}
+                                    setOpenBlockConfirm={setOpenBlockConfirm}
+                                    setBlockingUserName={setBlockingUserName}
+                                />
+                            }
                         })
                         : tabOpen === tabName.contacts && contacts.length > 0
                             ? contacts.map(contact => {

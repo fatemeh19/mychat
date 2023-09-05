@@ -246,7 +246,7 @@ export const getSetting = async (settingId: string, dispatch: any) => {
         console.log('get setting res: ', res)
 
         if (res.status === 200) {
-            dispatch(addSetting(res.data.value.setting))
+            dispatch(addSetting(res.data.value.setting[0]))
         }
     } catch (error) {
         console.log('get setting error: ', error)
