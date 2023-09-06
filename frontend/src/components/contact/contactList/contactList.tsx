@@ -7,6 +7,7 @@ import Link from "next/link";
 import NoContact from "./noContact";
 import { useAppSelector } from "@/src/redux/hooks";
 import PopUpBtns from "../../popUp/popUpBtns";
+import { chatBoxInterface } from "@/src/redux/features/userChatListSlice";
 interface ContactsProps {
     handleAddContact: () => void,
     handleOpen: () => void
@@ -17,6 +18,7 @@ const ContactList: FC<ContactsProps> = ({
     handleOpen
 }) => {
     const userContactsList = useAppSelector(state => state.userContactsList).contacts
+    const chatList = useAppSelector(state => state.userChatList).chatList
     console.log('usrContactList : ', userContactsList)
 
     return (
@@ -32,14 +34,36 @@ const ContactList: FC<ContactsProps> = ({
                     {
                         // @ts-ignore
                         (userContactsList.length === 0) ? <NoContact />
-                            : userContactsList.map((contact) => (
+                            : userContactsList.map((contact) => {
+                                // ------------------------- if this user have chat alredy show the chat
+                                let flag = false
                                 // @ts-ignore
-                                <Link key={contact._id} href={`/chat/${contact._id}`} >
-                                    {/* @ts-ignore */}
-                                    <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={true} />
-                                </Link>
+                                let chat: chatBoxInterface = {}
+                                chatList.map(cl => {
+                                    if (cl.chatInfo._id === contact._id) {
+                                        flag = true
+                                        chat = cl
+                                    }
+                                })
+                                if (flag) {
+                                    // @ts-ignore
+                                    return (
+                                        <Link key={chat._id} href={`/chat/${chat._id}`} >
+                                            <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={true} />
+                                        </Link>
+                                    )
+                                    // ------------------------- end
+                                    // ------------------------- if not open the contact box
+                                } else {
 
-                            ))
+                                    return (
+                                        <Link key={contact._id} href={`/chat/${contact._id}`} >
+                                            <ContactBox key={contact._id} contact={contact} handleOpen={handleOpen} isOpenChat={true} />
+                                        </Link>
+
+                                    )
+                                }
+                            })
                     }
 
                 </div>

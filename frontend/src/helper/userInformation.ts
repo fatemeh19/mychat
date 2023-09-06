@@ -4,10 +4,8 @@ import { addFoldersList, folderInterface, setCloseFolders } from "../redux/featu
 import { addChat, addChatList, addChatToFolderChatList, addFolderChatList, addGroupChat, addPrivateChat, setFolderId } from "../redux/features/userChatListSlice"
 import { chatInterface } from "../redux/features/chatSlice"
 import { addContactsList } from "../redux/features/userContactListSlice"
-import { addSetting, addUserInfo, editChatSetting, editNotificationSetting, editPrivacySetting, updateUserProfileInfo } from "../redux/features/userInfoSlice"
+import { addSetting, addUserInfo, updateUserProfileInfo } from "../redux/features/userInfoSlice"
 import callApi from "./callApi"
-import { chatSettingInterface, notificationAndSoundsInterface, privacyAndSecurityInterface } from "../models/interface"
-import { settingTitle } from "../models/enum"
 
 const token = localStorage.getItem('token')
 const config = {
@@ -246,7 +244,7 @@ export const getSetting = async (settingId: string, dispatch: any) => {
         console.log('get setting res: ', res)
 
         if (res.status === 200) {
-            dispatch(addSetting(res.data.value.setting[0]))
+            dispatch(addSetting(res.data.value.setting))
         }
     } catch (error) {
         console.log('get setting error: ', error)

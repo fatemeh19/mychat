@@ -22,7 +22,7 @@ const BlockedUsers: FC<BlockedUsersProps> = ({ selectBlockedUserOpenHandler }) =
             <p className="text-sm text-gray-700 px-5">Blocked users can't send you messages of add you to groups. They will not see your profile photos, stories, online and lasst seen status.</p>
             <div className="w-full flex items-start px-5 py-3 bg-white cursor-pointer shadow-[0_3px_3px_-2px_rgb(0,0,0,0.1)]">
                 {
-                    blockedUsers.map((userId, index) => {
+                    blockedUsers.map((user, index) => {
                         return <p key={index}>user block {index}</p>
                         // return <Member member={user} />
                     })

@@ -75,6 +75,12 @@ interface privacyInterface {
     addToGroup: privacyOption,
 }
 
+export interface blockedUser {
+    _id: string,
+    name: string,
+    profilePic: profilePicInterface
+}
+
 interface securityInterface {
     blockedUsers: string[]
 }
