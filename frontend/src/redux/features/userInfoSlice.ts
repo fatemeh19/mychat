@@ -50,6 +50,9 @@ export const UserSlice = createSlice({
         editChatSetting: (state, action: PayloadAction<any>) => {
             state.setting.chatSetting = action.payload
         },
+        addBlockedUser: (state, action: PayloadAction<string>) => {
+            state.setting.privacyAndSecurity.security.blockedUsers.push(action.payload)
+        }
     },
 });
 
@@ -60,6 +63,7 @@ export const {
     addSetting,
     editNotificationSetting,
     editPrivacySetting,
+    addBlockedUser,
     editChatSetting
 } = UserSlice.actions;
 export default UserSlice.reducer;

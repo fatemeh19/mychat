@@ -323,7 +323,7 @@ const MessageBox: FC<MessageBoxProps> = ({ msg }) => {
             </div>
             {/* ----------------------------- delete modal */}
 
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={confirmHandler} confirmInfo={confirmInfo} confirmButtonText="Confirm" />
             {forwardPopupOpen
                 ? <CustomizedDialogs
                     open={forwardPopupOpen}

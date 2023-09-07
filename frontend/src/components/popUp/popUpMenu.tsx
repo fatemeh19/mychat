@@ -94,7 +94,7 @@ const PopUpMenu: FC<PopUpMenuProps> = ({ setOpenChildMenu, openChildMenuInChild,
                         <p>{chatType === ChatType.group ? 'Delete and Leave' : 'Delete Chat'}</p>
                     </li>
 
-                    <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteAndLeaveGroupHandler} confirmInfo={confirmInfo} />
+                    <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteAndLeaveGroupHandler} confirmInfo={confirmInfo} confirmButtonText="Delete and Leave" />
                 </ul>
             }
         </>

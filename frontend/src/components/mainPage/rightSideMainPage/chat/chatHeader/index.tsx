@@ -242,7 +242,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ infoState, setInfoVState }) => {
 
 
             }
-            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} confirmInfo={confirmInfo} />
+            <ConfirmModal showConfirm={showConfirm} setShowConfirm={setShowConfirm} open={open} setOpen={setOpen} confirmHandler={deleteHandler_multipleMessage} confirmInfo={confirmInfo} confirmButtonText='Delete messages' />
             {forwardPopupOpen
                 ? <CustomizedDialogs
                     open={forwardPopupOpen}

@@ -246,7 +246,7 @@ export const getSetting = async (settingId: string, dispatch: any) => {
         console.log('get setting res: ', res)
 
         if (res.status === 200) {
-            dispatch(addSetting(res.data.value.setting))
+            dispatch(addSetting(res.data.value.setting[0]))
         }
     } catch (error) {
         console.log('get setting error: ', error)
@@ -260,18 +260,18 @@ export const editSetting = async (title: string, settingId: string, data: FormDa
         console.log(data)
         const res = await callApi().patch(`/main/setting/${settingId}`, data, config)
         console.log('edit setting res : ', res)
-        console.log(data.get('title'))
         if (res.status === 200) {
-            if (title === settingTitle.notificationAndSounds) {
-                dispatch(editNotificationSetting(data))
-            }
-            if (title === settingTitle.privacyAndSecurity) {
-                console.log("privacy setting data : ", data)
-                dispatch(editPrivacySetting(data))
-            }
-            if (title === settingTitle.chatSetting) {
-                dispatch(editChatSetting(data))
-            }
+            // if (title === settingTitle.notificationAndSounds) {
+            // dispatch(editNotificationSetting(data))
+            // }
+            // if (title === settingTitle.privacyAndSecurity) {
+            //     console.log("privacy setting data : ", data)
+            //     dispatch(editPrivacySetting(data))
+            // }
+            // if (title === settingTitle.chatSetting) {
+            //     dispatch(editChatSetting(data))
+            // }
+            dispatch(addSetting(res.data.value.setting))
         }
     } catch (error) {
         console.log('edit setting error : ', error)

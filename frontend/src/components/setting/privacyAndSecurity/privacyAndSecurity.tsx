@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import Security from "./security";
 import Privacy from "./privary";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
@@ -7,10 +7,12 @@ import { editSetting } from "@/src/helper/userInformation";
 import { settingTitle } from "@/src/models/enum";
 
 interface PrivacyAndSecurityProps {
-
+    securityOpenHandler: () => void,
+    flag: boolean,
+    setFlag: Dispatch<SetStateAction<boolean>>
 }
 
-const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = () => {
+const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = ({ securityOpenHandler, flag, setFlag }) => {
 
     const dispatch = useAppDispatch()
 
@@ -23,22 +25,27 @@ const PrivacyAndSecurity: FC<PrivacyAndSecurityProps> = () => {
 
     const formData = new FormData()
     useEffect(() => {
-        return () => {
-            formData.append('privacy[phoneNumber]', privacyState.phoneNumber)
-            formData.append('privacy[lastseen]', privacyState.lastseen)
-            formData.append('privacy[profilePic]', privacyState.profilePic)
-            formData.append('privacy[addToGroup]', privacyState.addToGroup)
+        if (flag) {
+            return () => {
+                formData.append('privacy[phoneNumber]', privacyState.phoneNumber)
+                formData.append('privacy[lastseen]', privacyState.lastseen)
+                formData.append('privacy[profilePic]', privacyState.profilePic)
+                formData.append('privacy[addToGroup]', privacyState.addToGroup)
 
-            securityState.blockedUsers.map(blockUser => {
-                formData.append('security[blockedUsers]', blockUser)
-            })
-            editSetting(settingTitle.privacyAndSecurity, settingId, formData, dispatch)
+                console.log('securityState.blockedUsers: ', securityState.blockedUsers)
+                securityState.blockedUsers.map(blockUser => {
+                    formData.append('security[blockedUsers]', blockUser)
+                })
+
+                editSetting(settingTitle.privacyAndSecurity, settingId, formData, dispatch)
+                setFlag(false)
+            }
         }
     }, [privacyState, securityState])
 
     return (
         <div className="overflow-auto overflow-x-hidden chat-scrollbar bg-gray-100 flex flex-col gap-3">
-            <Security securityState={securityState} setSecurityState={setSecurityState} />
+            <Security securityOpenHandler={securityOpenHandler} />
             <Privacy privacyState={privacyState} setPrivacyState={setPrivacyState} />
         </div>
     );
