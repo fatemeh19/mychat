@@ -9,7 +9,7 @@ import fields from "../messages/fields.js";
 import * as consts from "../utils/consts.js";
 import validatorSelector from "../validators/settingValidators/index.js";
 import * as fileController from "../utils/file.js";
-import { getSetting, editSetting } from "../controllers/settingController.js";
+import { getSetting, editSetting,getBlockedUsers } from "../controllers/settingController.js";
 import messages from "../messages/messages.js";
 
 const editSettingI = async (req, res, next) => {
@@ -44,5 +44,20 @@ const getSettingI = async (req, res, next) => {
   };
   next();
 };
+const getBlockedUsersI = async (req, res, next)=>{
+  const {user:{userId}} = req
+  const blockedUsers = await getBlockedUsers(userId)
 
-export { editSettingI, getSettingI };
+  res.locals.response = {
+    statusCode: StatusCodes.OK,
+    value: {
+      blockedUsers,
+    },
+    responseType: messages.ok,
+  };
+  next()
+
+
+}
+
+export { editSettingI, getSettingI, getBlockedUsersI };

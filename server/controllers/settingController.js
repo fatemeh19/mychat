@@ -56,85 +56,70 @@ const editSetting = async (body, settingId, files) => {
 };
 
 const getSetting = async (settingId, userId) => {
-  const settingg = await Services.findOne("setting", { _id: settingId });
+  const setting = await Services.findOne("setting", { _id: settingId });
 
-  let stages =settingg.privacyAndSecurity.security.blockedUsers.length? [
-    { $unwind: "$privacyAndSecurity.security.blockedUsers" },
-
-    {
-    
-    $lookup: {
-      from: "users",
-      localField: "privacyAndSecurity.security.blockedUsers",
-      foreignField: "_id",
-      as: "privacyAndSecurity.security.blockedUsers",
-    },
-  },
-  {
-    $group: {
-      _id: "$_id",
-      privacyAndSecurity: { $first: "$privacyAndSecurity" },
-      notificationAndSounds: { $first: "$notificationAndSounds" },
-      chatSetting: { $first: "$chatSetting" },
-    },
-  }] : []
-  
-  const user = await Services.findOne("user", { _id: userId });
-  let userContacts = user.contacts;
-
-  // const blockedUsersIds = await objectId(
-  //   setting.privacyAndSecurity.security.blockedUsers
-  // );
-
-  let setting = await Services.aggregate("setting", [
-    {
-      $match: { _id: await objectId(settingId) },
-    },
-    ...stages
-    // { $unwind: "$privacyAndSecurity.security.blockedUsers" },
-    // {
-    //   $lookup: {
-    //     from: "users",
-    //     localField: "privacyAndSecurity.security.blockedUsers",
-    //     foreignField: "_id",
-    //     as: "privacyAndSecurity.security.blockedUsers",
-    //   },
-    // },
-    // {
-    //   $group: {
-    //     _id: "$_id",
-    //     privacyAndSecurity: { $first: "$privacyAndSecurity" },
-    //     notificationAndSounds: { $first: "$notificationAndSounds" },
-    //     chatSetting: { $first: "$chatSetting" },
-    //   },
-    // },
-  ]);
-  
-  // const profilePicIds = setting[0]?.privacyAndSecurity?.security?.blockedUsers.map(
-  //   (blockedUser) => blockedUser.profilePic
-  // );
-  // const profilePics = await Services.findMany("file", {
-  //   _id: { $in: profilePicIds },
-  // });
-
-  // setting[0]?.privacyAndSecurity.security.blockedUsers.forEach(
-  //   (blockedUser, index) => {
-  //     blockedUser.profilePic = profilePics[index];
-  //   }
-  // );
-
-  // let blus = setting[0]?.privacyAndSecurity?.security?.blockedUsers || []
-  // for (let blockedUser of blus) {
-  //   let isContact = userContacts.find((userContact)=>userContact.userId.equals(blockedUser._id))
-  //   if(isContact){
-  //     blockedUser.name = isContact.name || blockedUser.name;
-  //     blockedUser.lastname = isContact.lastname || blockedUser.lastname;
-  //   }
-  //   blockedUser = await privacyFilter(blockedUser,userId,blockedUser._id)
-  // }
-
-
-  return setting[0];
+  return setting;
 };
 
-export { editSetting, getSetting };
+const getBlockedUsers = async (userId)=>{
+  
+  const user = await Services.findOne('user',{_id:userId})
+  
+  let setting = await Services.aggregate("setting", [
+    {
+      $match: { _id: user.settingId},
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "privacyAndSecurity.security.blockedUsers",
+        foreignField: "_id",
+        as: "blockedUsers",
+      },
+    },
+   
+    {
+      $project:{
+        blockedUsers:{
+          _id:1,
+          name:1,
+          lastname:1,
+          profilePic:1
+        }
+      }
+    }
+
+
+    
+  ]);
+  
+
+
+  const profilePicIds = setting[0]?.blockedUsers.map(
+    (blockedUser) => blockedUser.profilePic
+  );
+  const profilePics = await Services.findMany("file", {
+    _id: { $in: profilePicIds },
+  });
+
+  setting[0]?.blockedUsers.forEach(
+    (blockedUser, index) => {
+      blockedUser.profilePic = profilePics[index];
+    }
+  );
+
+  let blus = setting[0]?.blockedUsers || []
+  for (let blockedUser of blus) {
+    let isContact = user.contacts.find((userContact)=>userContact.userId.equals(blockedUser._id))
+    if(isContact){
+      blockedUser.name = isContact.name || blockedUser.name;
+      blockedUser.lastname = isContact.lastname || blockedUser.lastname;
+    }
+    blockedUser = await privacyFilter(blockedUser,userId,blockedUser._id)
+  }
+  return setting[0].blockedUsers
+  
+
+
+}
+export { editSetting, getSetting,getBlockedUsers };

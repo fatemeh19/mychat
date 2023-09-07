@@ -3,7 +3,7 @@ const router = express.Router();
 
 import uploadFile from "../utils/multer.js";
 
-import { editSettingI, getSettingI } from "../inters/setting.js";
+import { editSettingI, getSettingI, getBlockedUsersI } from "../inters/setting.js";
 
 router.patch(
   "/:id",
@@ -14,4 +14,5 @@ router.patch(
   editSettingI
 );
 router.get("/:id",getSettingI);
+
 export default router;

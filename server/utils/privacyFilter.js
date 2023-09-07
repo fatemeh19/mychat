@@ -5,6 +5,8 @@ import BadRequestError from "../errors/BadRequest.js";
 import errors from "../messages/errors.js";
 const privacyFilter = async (contactData, userId, contactId) => {
   contactData.lastseen = contactData?.status?.lastseen;
+ 
+  // console.log(contactData, userId, contactId)
   const contact = await Services.findOne(
     "user",
     { _id: contactId },
